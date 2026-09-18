@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>香港城市監察 HK City Monitor</title>
+    <style>
+        :root {
+            --bg-base: #0B0B0D;
+            --bg-panel: #101013;
+            --bg-elevated: #141419;
+            --bg-inset: #0D0D10;
+            --border-thin: #1C1C22;
+            --border-mid: #2A2A32;
+            --border-strong: #3A3A44;
+            --text-primary: #D0CCC4;
+            --text-secondary: #8A867E;
+            --text-tertiary: #5A5750;
+            --text-quaternary: #403D38;
+            --red: #C43D3D;
+            --red-dim: #7A2A2A;
+            --orange: #C47A3D;
+            --orange-dim: #7A4E2A;
+            --green: #4D8F4D;
+            --green-dim: #2E5A2E;
+            --gold: #B8A040;
+            --grid-line: #15151A;
+            --grid-line-bright: #1E1E25;
+            --water: #14141B;
+            --land: #0E0E12;
+            --font-main: 'Helvetica Neue', 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+            --radius-none: 0px;
+            --radius-sm: 2px;
+            --radius-md: 3px;
+            --tracking-tight: -0.01em;
+            --tracking-normal: 0.01em;
+            --tracking-wide: 0.04em;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg-base);
+            font-family: var(--font-main);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: 13px;
+            letter-spacing: var(--tracking-normal);
+            cursor: default;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        /* ============================================================
+           APP SHELL
+           ============================================================ */
+        .app-shell {
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: 44px 1fr 190px 30px;
+            grid-template-columns: 260px 1fr;
+            grid-template-areas:
+                "statusbar statusbar"
+                "sidebar   map"
+                "sidebar   panels"
+                "ticker    ticker";
+            background: var(--bg-base);
+        }
+
+        /* ============================================================
+           STATUS BAR — top
+           ============================================================ */
+        .statusbar {
+            grid-area: statusbar;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border-thin);
+            font-size: 12px;
+            letter-spacing: var(--tracking-wide);
+            position: relative;
+            z-index: 100;
+            min-width: 0;
+        }
+        .statusbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            flex-shrink: 0;
+        }
+        .brand-mark {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-mid);
+            background: var(--bg-inset);
+            flex-shrink: 0;
+            border-radius: var(--radius-sm);
+        }
+        .brand-mark svg {
+            display: block;
+            width: 14px;
+            height: 14px;
+        }
+        .brand-name {
+            font-size: 13px;
+            font-weight: 550;
+            color: var(--text-primary);
+            white-space: nowrap;
+            letter-spacing: var(--tracking-tight);
+        }
+        .brand-name-sub {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: var(--tracking-wide);
+            white-space: nowrap;
+            margin-left: 2px;
+        }
+        .statusbar-center {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-shrink: 0;
+        }
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: var(--tracking-wide);
+            color: var(--green);
+            text-transform: uppercase;
+        }
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: live-pulse 1.6s ease-in-out infinite;
+        }
+        @keyframes live-pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.35;
+                transform: scale(0.7);
+            }
+        }
+        .status-divider {
+            width: 1px;
+            height: 18px;
+            background: var(--border-thin);
+            margin: 0 2px;
+            flex-shrink: 0;
+        }
+        .datasource-count {
+            font-size: 11px;
+            color: var(--text-secondary);
+            letter-spacing: var(--tracking-wide);
+            white-space: nowrap;
+        }
+        .datasource-count span {
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+        .statusbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-primary);
+            letter-spacing: var(--tracking-wide);
+        }
+        .clock-hkt {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================================
+           SIDEBAR — left control column
+           ============================================================ */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border-thin);
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 90;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-mid) transparent;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 3px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-mid);
+        }
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        .sidebar-section-label {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: var(--tracking-wide);
+            font-weight: 600;
+            padding-bottom: 3px;
+            border-bottom: 1px solid var(--border-thin);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .seg-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .seg-btn {
+            padding: 5px 10px;
+            font-size: 11px;
+            font-family: var(--font-main);
+            color: var(--text-secondary);
+            background: var(--bg-inset);
+            border: 1px solid var(--border-thin);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            letter-spacing: var(--tracking-normal);
+            transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+            white-space: nowrap;
+        }
+        .seg-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--border-mid);
+        }
+        .seg-btn:active {
+            background: var(--bg-elevated);
+        }
+        .seg-btn.active {
+            color: var(--text-primary);
+            background: var(--bg-elevated);
+            border-color: var(--border-strong);
+            font-weight: 600;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+        .seg-btn.active.emergency-scope {
+            border-color: var(--red);
+            color: var(--red);
+        }
+        .seg-btn.active.upcoming-scope {
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+        .seg-btn.active.all-scope {
+            border-color: var(--border-strong);
+        }
+        .checkbox-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 2px 0;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 3px 4px;
+            border-radius: var(--radius-sm);
+            transition: color 0.1s ease;
+        }
+        .checkbox-item:hover {
+            color: var(--text-primary);
+        }
+        .checkbox-item input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 13px;
+            height: 13px;
+            border: 1px solid var(--border-mid);
+            background: var(--bg-inset);
+            border-radius: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            transition: background 0.1s ease, border-color 0.1s ease;
+        }
+        .checkbox-item input[type="checkbox"]:checked {
+            background: var(--bg-elevated);
+            border-color: var(--border-strong);
+        }
+        .checkbox-item input[type="checkbox"]:checked::after {
+            content: "";
+            width: 7px;
+            height: 7px;
+            background: var(--text-primary);
+            border-radius: 1px;
+            display: block;
+        }
+        .checkbox-item .cb-label {
+            white-space: nowrap;
+            letter-spacing: var(--tracking-normal);
+        }
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-thin);
+            font-size: 10px;
+            color: var(--text-quaternary);
+            letter-spacing: var(--tracking-wide);
+            text-align: center;
+            font-family: var(--font-mono);
+        }
+
+        /* ============================================================
+           MAP AREA — hero
+           ============================================================ */
+        .map-area {
+            grid-area: map;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-base);
+            border-bottom: 1px solid var(--border-thin);
+        }
+        .map-area::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 0.5px, transparent 0.5px),
+                linear-gradient(90deg, var(--grid-line) 0.5px, transparent 0.5px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.55;
+        }
+        .map-area::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.35) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .map-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            display: block;
+        }
+        .scanline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(80, 80, 96, 0.25);
+            z-index: 4;
+            pointer-events: none;
+            animation: scanline-sweep 6s linear infinite;
+        }
+        @keyframes scanline-sweep {
+            0% {
+                top: -1px;
+                opacity: 0.4;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.6;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+        .map-overlay-content {
+            position: absolute;
+            z-index: 5;
+            pointer-events: none;
+        }
+        /* Legend bottom-left */
+        .map-legend {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            z-index: 6;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            pointer-events: none;
+            background: rgba(10, 10, 12, 0.8);
+            padding: 8px 10px;
+            border: 1px solid var(--border-thin);
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+        .map-legend-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .map-legend-swatch {
+            width: 10px;
+            height: 10px;
+            border-radius: 1px;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .map-legend-swatch.red {
+            background: var(--red);
+            border-color: var(--red);
+        }
+        .map-legend-swatch.orange {
+            background: var(--orange);
+            border-color: var(--orange);
+        }
+        /* Drawing sheet block — bottom-right (signature memory point) */
+        .sheet-block {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            z-index: 6;
+            background: rgba(10, 10, 12, 0.85);
+            border: 1px solid var(--border-thin);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-tertiary);
+            letter-spacing: var(--tracking-wide);
+            pointer-events: none;
+            text-align: right;
+            line-height: 1.6;
+        }
+        .sheet-block .sheet-title {
+            font-size: 10px;
+            color: var(--text-secondary);
+            letter-spacing: 0.08em;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        /* Financial ticker floating — top-right of map */
+        .fin-ticker {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            z-index: 6;
+            display: flex;
+            gap: 14px;
+            pointer-events: none;
+            background: rgba(10, 10, 12, 0.78);
+            border: 1px solid var(--border-thin);
+            border-radius: var(--radius-sm);
+            padding: 7px 12px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+        }
+        .fin-item {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            align-items: flex-end;
+        }
+        .fin-label {
+            font-size: 9px;
+            color: var(--text-tertiary);
+            letter-spacing: var(--tracking-wide);
+            text-transform: uppercase;
+        }
+        .fin-value {
+            color: var(--text-primary);
+        }
+        .fin-change.up {
+            color: var(--red);
+        }
+        .fin-change.down {
+            color: var(--green);
+        }
+        .fin-change.flat {
+            color: var(--text-tertiary);
+        }
+
+        /* Incident tags on map (HTML overlay) */
+        .incident-tag {
+            position: absolute;
+            z-index: 7;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+        }
+        .incident-tag .tag-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border: 1px solid;
+            border-radius: var(--radius-sm);
+            background: rgba(10, 10, 12, 0.88);
+            font-size: 10px;
+            color: var(--text-primary);
+            letter-spacing: var(--tracking-normal);
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        .incident-tag .tag-box .tag-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 1px;
+            flex-shrink: 0;
+        }
+        .incident-tag.emergency .tag-box {
+            border-color: var(--red);
+            box-shadow: inset 0 0 0 1px rgba(196, 61, 61, 0.2);
+        }
+        .incident-tag.emergency .tag-box .tag-dot {
+            background: var(--red);
+        }
+        .incident-tag.upcoming .tag-box {
+            border-color: var(--orange);
+            box-shadow: inset 0 0 0 1px rgba(196, 122, 61, 0.2);
+        }
+        .incident-tag.upcoming .tag-box .tag-dot {
+            background: var(--orange);
+        }
+        .incident-tag .tag-line {
+            position: absolute;
+            width: 1px;
+            background: rgba(180, 180, 190, 0.5);
+            pointer-events: none;
+        }
+        .incident-tag .tag-anchor-dot {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            border: 1.5px solid;
+            pointer-events: none;
+        }
+        .incident-tag.emergency .tag-anchor-dot {
+            border-color: var(--red);
+            background: rgba(196, 61, 61, 0.12);
+        }
+        .incident-tag.upcoming .tag-anchor-dot {
+            border-color: var(--orange);
+            background: rgba(196, 122, 61, 0.12);
+        }
+
+        /* ============================================================
+           BOTTOM PANELS
+           ============================================================ */
+        .panels-row {
+            grid-area: panels;
+            display: grid;
+            grid-template-columns: 1.2fr 0.9fr 1.1fr;
+            gap: 0;
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border-thin);
+            padding: 8px 10px;
+        }
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-thin);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+            overflow: hidden;
+        }
+        .panel:not(:last-child) {
+            margin-right: 8px;
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border-thin);
+            flex-shrink: 0;
+        }
+        .panel-title {
+            font-size: 11px;
+            color: var(--text-primary);
+            letter-spacing: var(--tracking-wide);
+            font-weight: 600;
+        }
+        .panel-title-sub {
+            font-size: 9px;
+            color: var(--text-tertiary);
+            letter-spacing: var(--tracking-wide);
+            font-family: var(--font-mono);
+        }
+
+        /* Road cameras */
+        .cam-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 6px;
+            flex: 1;
+            min-height: 0;
+        }
+        .cam-tile {
+            background: var(--bg-inset);
+            border: 1px solid var(--border-thin);
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            min-height: 0;
+        }
+        .cam-tile canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .cam-label {
+            position: relative;
+            z-index: 2;
+            font-size: 9px;
+            color: rgba(220, 220, 220, 0.8);
+            background: rgba(5, 5, 7, 0.7);
+            padding: 2px 6px;
+            font-family: var(--font-mono);
+            letter-spacing: var(--tracking-wide);
+            margin: 3px;
+            border-radius: 1px;
+            white-space: nowrap;
+        }
+
+        /* Water supply incident list */
+        .supply-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-height: 0;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-mid) transparent;
+        }
+        .supply-list::-webkit-scrollbar {
+            width: 2px;
+        }
+        .supply-list::-webkit-scrollbar-thumb {
+            background: var(--border-mid);
+        }
+        .supply-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 4px 6px;
+            border: 1px solid var(--border-thin);
+            border-radius: var(--radius-sm);
+            background: var(--bg-inset);
+            font-size: 11px;
+            letter-spacing: var(--tracking-normal);
+        }
+        .supply-item.red {
+            border-left: 2px solid var(--red);
+        }
+        .supply-item.orange {
+            border-left: 2px solid var(--orange);
+        }
+        .supply-item .s-name {
+            flex-shrink: 0;
+            color: var(--text-primary);
+            font-weight: 500;
+            min-width: 68px;
+        }
+        .supply-item .s-status {
+            color: var(--text-secondary);
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+        .supply-item .s-time {
+            margin-left: auto;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+        .supply-item.red .s-status {
+            color: var(--red);
+        }
+        .supply-item.orange .s-status {
+            color: var(--orange);
+        }
+
+        /* Hospital wait times */
+        .hospital-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-height: 0;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-mid) transparent;
+        }
+        .hospital-list::-webkit-scrollbar {
+            width: 2px;
+        }
+        .hospital-list::-webkit-scrollbar-thumb {
+            background: var(--border-mid);
+        }
+        .hospital-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 6px;
+            border: 1px solid var(--border-thin);
+            border-radius: var(--radius-sm);
+            background: var(--bg-inset);
+            font-size: 11px;
+            letter-spacing: var(--tracking-normal);
+        }
+        .hospital-item .h-name {
+            color: var(--text-primary);
+            font-weight: 500;
+            min-width: 110px;
+            flex-shrink: 0;
+        }
+        .hospital-item .h-triage {
+            font-size: 9px;
+            color: var(--text-tertiary);
+            font-family: var(--font-mono);
+            background: var(--bg-elevated);
+            padding: 2px 5px;
+            border-radius: 1px;
+            flex-shrink: 0;
+        }
+        .hospital-item .h-wait {
+            margin-left: auto;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .hospital-item .h-wait-bar {
+            width: 38px;
+            height: 4px;
+            background: var(--bg-elevated);
+            border-radius: 1px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .hospital-item .h-wait-bar .fill {
+            height: 100%;
+            background: var(--orange);
+            border-radius: 1px;
+        }
+
+        /* ============================================================
+           TICKER — bottom marquee
+           ============================================================ */
+        .ticker {
+            grid-area: ticker;
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border-thin);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 80;
+        }
+        .ticker-scroll {
+            display: flex;
+            white-space: nowrap;
+            animation: ticker-move 28s linear infinite;
+            will-change: transform;
+            font-size: 11px;
+            letter-spacing: var(--tracking-normal);
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+        .ticker-scroll:hover {
+            animation-play-state: paused;
+        }
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 16px;
+        }
+        .ticker-item .t-sep {
+            color: var(--text-quaternary);
+            font-size: 9px;
+        }
+        .ticker-item .t-tag {
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 1px;
+            letter-spacing: var(--tracking-wide);
+            font-weight: 600;
+        }
+        .ticker-item .t-tag.red {
+            background: rgba(196, 61, 61, 0.2);
+            color: var(--red);
+            border: 1px solid rgba(196, 61, 61, 0.3);
+        }
+        .ticker-item .t-tag.orange {
+            background: rgba(196, 122, 61, 0.2);
+            color: var(--orange);
+            border: 1px solid rgba(196, 122, 61, 0.3);
+        }
+        .ticker-item .t-tag.green {
+            background: rgba(77, 143, 77, 0.2);
+            color: var(--green);
+            border: 1px solid rgba(77, 143, 77, 0.3);
+        }
+        .ticker-item .t-text {
+            color: var(--text-secondary);
+        }
+        @keyframes ticker-move {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ============================================================
+           RESPONSIVE FALLBACKS
+           ============================================================ */
+        @media (max-width: 1400px) {
+            .app-shell {
+                grid-template-rows: 40px 1fr 165px 26px;
+                grid-template-columns: 220px 1fr;
+            }
+            .sidebar {
+                padding: 10px 8px;
+                gap: 10px;
+            }
+            .seg-btn {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+            .brand-name {
+                font-size: 12px;
+            }
+            .fin-ticker {
+                gap: 10px;
+                padding: 5px 9px;
+                font-size: 10px;
+            }
+            .panels-row {
+                padding: 6px 8px;
+            }
+            .panel {
+                padding: 6px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-shell">
+
+        <!-- ========== STATUS BAR ========== -->
+        <header class="statusbar" role="banner">
+            <div class="statusbar-left">
+                <div class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="12" height="12" stroke="#D0CCC4" stroke-width="1.2" fill="none" opacity="0.7"/>
+                        <path d="M4 8.5 L6.5 5 L8 7 L10 4.5" stroke="#D0CCC4" stroke-width="1.2" fill="none" stroke-linecap="square"/>
+                        <circle cx="10" cy="4.5" r="1.2" fill="#D0CCC4"/>
+                    </svg>
+                </div>
+                <span class="brand-name">香港城市監察</span>
+                <span class="brand-name-sub">HK City Monitor</span>
+            </div>
+            <div class="statusbar-center">
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span>LIVE</span>
+                </div>
+                <div class="status-divider"></div>
+                <div class="datasource-count">數據源 <span>24</span></div>
+                <div class="status-divider"></div>
+                <div class="datasource-count">區域 <span>18</span></div>
+            </div>
+            <div class="statusbar-right">
+                <span class="clock-hkt">HKT</span>
+                <span id="clock-display">2026-09-18 21:52:00</span>
+            </div>
+        </header>
+
+        <!-- ========== SIDEBAR ========== -->
+        <aside class="sidebar" role="navigation" aria-label="控制面板">
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">時間範圍</div>
+                <div class="seg-btn-group" id="time-range-group">
+                    <button class="seg-btn active all-scope" data-time="1h">1小時</button>
+                    <button class="seg-btn" data-time="6h">6小時</button>
+                    <button class="seg-btn" data-time="24h">24小時</button>
+                    <button class="seg-btn" data-time="7d">7日</button>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">分類</div>
+                <div class="seg-btn-group" id="category-group">
+                    <button class="seg-btn active all-scope" data-cat="all">全部</button>
+                    <button class="seg-btn" data-cat="water">供水</button>
+                    <button class="seg-btn" data-cat="medical">醫療</button>
+                    <button class="seg-btn" data-cat="traffic">交通</button>
+                    <button class="seg-btn" data-cat="weather">天氣</button>
+                    <button class="seg-btn" data-cat="border">口岸</button>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">圖層</div>
+                <div class="checkbox-list" id="layer-list">
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="cb-label">供水網絡</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="cb-label">事故標記</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="cb-label">交通流量</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="cb-label">天氣雷達</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span class="cb-label">口岸人流</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox">
+                        <span class="cb-label">施工圍封</span>
+                    </label>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                CTRL ROOM CONSOLE 0918
+            </div>
+        </aside>
+
+        <!-- ========== MAP HERO AREA ========== -->
+        <main class="map-area" role="main" aria-label="香港地圖">
+            <canvas class="map-canvas" id="map-canvas" width="1660" height="816"></canvas>
+            <div class="scanline" aria-hidden="true"></div>
+            <div class="map-legend" aria-label="圖例">
+                <div class="map-legend-row">
+                    <span class="map-legend-swatch red"></span>
+                    <span>緊急停水</span>
+                </div>
+                <div class="map-legend-row">
+                    <span class="map-legend-swatch orange"></span>
+                    <span>即將停水</span>
+                </div>
+            </div>
+            <div class="sheet-block">
+                <div class="sheet-title">DRAWING HK-0918</div>
+                SCALE 1:50000<br>SHEET 1 OF 1<br>REV 2152 HKT
+            </div>
+            <div class="fin-ticker" aria-label="市場數據">
+                <div class="fin-item">
+                    <span class="fin-label">恒生指數</span>
+                    <span class="fin-value">24,750.78 <span class="fin-change up">+0.15%</span></span>
+                </div>
+                <div class="fin-item">
+                    <span class="fin-label">騰訊</span>
+                    <span class="fin-value">419.0 <span class="fin-change down">-1.64%</span></span>
+                </div>
+                <div class="fin-item">
+                    <span class="fin-label">阿里巴巴</span>
+                    <span class="fin-value">109.3 <span class="fin-change up">+4.00%</span></span>
+                </div>
+            </div>
+
+            <!-- Incident tags — positioned by percentage relative to map container -->
+            <!-- 深水埗區 (emergency) — Kowloon west -->
+            <div class="incident-tag emergency" style="left:38%; top:34%;">
+                <div class="tag-box">
+                    <span class="tag-dot"></span>
+                    <span>深水埗區 緊急停水</span>
+                </div>
+            </div>
+            <!-- 九龍城區 (emergency) — Kowloon east -->
+            <div class="incident-tag emergency" style="left:56%; top:33%;">
+                <div class="tag-box">
+                    <span class="tag-dot"></span>
+                    <span>九龍城區 緊急停水</span>
+                </div>
+            </div>
+            <!-- 油尖旺區 (emergency) — Kowloon south tip -->
+            <div class="incident-tag emergency" style="left:44%; top:47%;">
+                <div class="tag-box">
+                    <span class="tag-dot"></span>
+                    <span>油尖旺區 緊急停水</span>
+                </div>
+            </div>
+            <!-- 東區 (emergency) — Hong Kong Island east -->
+            <div class="incident-tag emergency" style="left:58%; top:66%;">
+                <div class="tag-box">
+                    <span class="tag-dot"></span>
+                    <span>東區 緊急停水</span>
+                </div>
+            </div>
+            <!-- 康怡廣場 (upcoming) — HK Island east -->
+            <div class="incident-tag upcoming" style="left:61%; top:60%;">
+                <div class="tag-box">
+                    <span class="tag-dot"></span>
+                    <span>康怡廣場 即將停水 23/09 00:30</span>
+                </div>
+            </div>
+            <!-- 青宏苑 (upcoming) — Tsing Yi / New Territories west -->
+            <div class="incident-tag upcoming" style="left:26%; top:24%;">
+                <div class="tag-box">
+                    <span class="tag-dot"></span>
+                    <span>青宏苑 即將停水 22/09 10:00</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- ========== BOTTOM PANELS ========== -->
+        <section class="panels-row" aria-label="功能面板">
+            <!-- Panel 1: Road Cameras -->
+            <div class="panel" id="panel-cameras">
+                <div class="panel-header">
+                    <span class="panel-title">路面快拍</span>
+                    <span class="panel-title-sub">CCTV / 4 FEEDS</span>
+                </div>
+                <div class="cam-grid">
+                    <div class="cam-tile">
+                        <canvas class="cam-canvas" width="320" height="150" data-street="彌敦道"></canvas>
+                        <span class="cam-label">彌敦道</span>
+                    </div>
+                    <div class="cam-tile">
+                        <canvas class="cam-canvas" width="320" height="150" data-street="軒尼詩道"></canvas>
+                        <span class="cam-label">軒尼詩道</span>
+                    </div>
+                    <div class="cam-tile">
+                        <canvas class="cam-canvas" width="320" height="150" data-street="廣東道"></canvas>
+                        <span class="cam-label">廣東道</span>
+                    </div>
+                    <div class="cam-tile">
+                        <canvas class="cam-canvas" width="320" height="150" data-street="皇后大道"></canvas>
+                        <span class="cam-label">皇后大道</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 2: Water Supply Incidents -->
+            <div class="panel" id="panel-supply">
+                <div class="panel-header">
+                    <span class="panel-title">供水事故</span>
+                    <span class="panel-title-sub">WATER / 6 EVENTS</span>
+                </div>
+                <div class="supply-list">
+                    <div class="supply-item red">
+                        <span class="s-name">東區</span>
+                        <span class="s-status">緊急停水</span>
+                        <span class="s-time">恢復未定</span>
+                    </div>
+                    <div class="supply-item red">
+                        <span class="s-name">深水埗區</span>
+                        <span class="s-status">緊急停水</span>
+                        <span class="s-time">恢復未定</span>
+                    </div>
+                    <div class="supply-item red">
+                        <span class="s-name">九龍城區</span>
+                        <span class="s-status">緊急停水</span>
+                        <span class="s-time">恢復未定</span>
+                    </div>
+                    <div class="supply-item red">
+                        <span class="s-name">油尖旺區</span>
+                        <span class="s-status">緊急停水</span>
+                        <span class="s-time">恢復未定</span>
+                    </div>
+                    <div class="supply-item orange">
+                        <span class="s-name">康怡廣場</span>
+                        <span class="s-status">即將停水</span>
+                        <span class="s-time">23/09 00:30</span>
+                    </div>
+                    <div class="supply-item orange">
+                        <span class="s-name">青宏苑</span>
+                        <span class="s-status">即將停水</span>
+                        <span class="s-time">22/09 10:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 3: Hospital Wait Times -->
+            <div class="panel" id="panel-hospital">
+                <div class="panel-header">
+                    <span class="panel-title">急症室輪候</span>
+                    <span class="panel-title-sub">A&E / WAIT TIME</span>
+                </div>
+                <div class="hospital-list">
+                    <div class="hospital-item">
+                        <span class="h-name">基督教聯合醫院</span>
+                        <span class="h-triage">非緊急</span>
+                        <span class="h-wait-bar"><span class="fill" style="width:80%;"></span></span>
+                        <span class="h-wait">8 小時</span>
+                    </div>
+                    <div class="hospital-item">
+                        <span class="h-name">廣華醫院</span>
+                        <span class="h-triage">非緊急</span>
+                        <span class="h-wait-bar"><span class="fill" style="width:72%;"></span></span>
+                        <span class="h-wait">7.5 小時</span>
+                    </div>
+                    <div class="hospital-item">
+                        <span class="h-name">瑪嘉烈醫院</span>
+                        <span class="h-triage">非緊急</span>
+                        <span class="h-wait-bar"><span class="fill" style="width:62%;"></span></span>
+                        <span class="h-wait">6.5 小時</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== TICKER ========== -->
+        <footer class="ticker" aria-label="最新事故走馬燈">
+            <div class="ticker-scroll" id="ticker-scroll">
+                <!-- Duplicate content twice for seamless loop -->
+                <span class="ticker-item"><span class="t-tag red">緊急</span><span class="t-text">東區 緊急停水 恢復時間未定</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag red">緊急</span><span class="t-text">深水埗區 緊急停水 恢復時間未定</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag red">緊急</span><span class="t-text">九龍城區 緊急停水 恢復時間未定</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag red">緊急</span><span class="t-text">油尖旺區 緊急停水 恢復時間未定</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag orange">即將</span><span class="t-text">康怡廣場 即將停水 23/09 00:30</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag orange">即將</span><span class="t-text">青宏苑 即將停水 22/09 10:00</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag green">醫療</span><span class="t-text">基督教聯合醫院 非緊急 8小時</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag green">醫療</span><span class="t-text">廣華醫院 7.5小時</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag green">醫療</span><span class="t-text">瑪嘉烈醫院 6.5小時</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-text">恒生指數 24,750.78 +0.15%</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-text">騰訊 419.0 -1.64%</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-text">阿里巴巴 109.3 +4.00%</span><span class="t-sep">/</span></span>
+                <!-- Dup for loop -->
+                <span class="ticker-item"><span class="t-tag red">緊急</span><span class="t-text">東區 緊急停水 恢復時間未定</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag red">緊急</span><span class="t-text">深水埗區 緊急停水 恢復時間未定</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag red">緊急</span><span class="t-text">九龍城區 緊急停水 恢復時間未定</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag red">緊急</span><span class="t-text">油尖旺區 緊急停水 恢復時間未定</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag orange">即將</span><span class="t-text">康怡廣場 即將停水 23/09 00:30</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag orange">即將</span><span class="t-text">青宏苑 即將停水 22/09 10:00</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag green">醫療</span><span class="t-text">基督教聯合醫院 非緊急 8小時</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag green">醫療</span><span class="t-text">廣華醫院 7.5小時</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-tag green">醫療</span><span class="t-text">瑪嘉烈醫院 6.5小時</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-text">恒生指數 24,750.78 +0.15%</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-text">騰訊 419.0 -1.64%</span><span class="t-sep">/</span></span>
+                <span class="ticker-item"><span class="t-text">阿里巴巴 109.3 +4.00%</span><span class="t-sep">/</span></span>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ========================
+            // CLOCK
+            // ========================
+            const clockEl = document.getElementById('clock-display');
+            const FIXED_DATE = new Date(2026, 8, 18, 21, 52, 0); // Sept = 8 (0-indexed)
+            let tickCounter = 0;
+
+            function updateClock() {
+                tickCounter++;
+                const now = new Date(FIXED_DATE.getTime() + tickCounter * 1000);
+                const pad = (n) => String(n).padStart(2, '0');
+                const dateStr = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+                const timeStr = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+                clockEl.textContent = dateStr + ' ' + timeStr;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // ========================
+            // SIDEBAR INTERACTIONS
+            // ========================
+            const timeGroup = document.getElementById('time-range-group');
+            timeGroup.addEventListener('click', (e) => {
+                const btn = e.target.closest('.seg-btn');
+                if (!btn) return;
+                timeGroup.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+
+            const catGroup = document.getElementById('category-group');
+            catGroup.addEventListener('click', (e) => {
+                const btn = e.target.closest('.seg-btn');
+                if (!btn) return;
+                catGroup.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+
+            const layerList = document.getElementById('layer-list');
+            layerList.addEventListener('change', (e) => {
+                const checkbox = e.target;
+                if (checkbox && checkbox.type === 'checkbox') {
+                    // Visual state update for markers can be hooked here if needed
+                }
+            });
+
+            // ========================
+            // MAP CANVAS — Hong Kong abstract geography
+            // ========================
+            const mapCanvas = document.getElementById('map-canvas');
+            const ctx = mapCanvas.getContext('2d');
+            const W = mapCanvas.width;
+            const H = mapCanvas.height;
+
+            function drawMap() {
+                ctx.clearRect(0, 0, W, H);
+
+                // Background
+                ctx.fillStyle = '#0B0B0D';
+                ctx.fillRect(0, 0, W, H);
+
+                // Coordinate grid (drawn manually for fine control)
+                ctx.strokeStyle = 'rgba(22, 22, 28, 0.55)';
+                ctx.lineWidth = 0.5;
+                const gridStep = 40;
+                for (let x = gridStep; x < W; x += gridStep) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, H);
+                    ctx.stroke();
+                }
+                for (let y = gridStep; y < H; y += gridStep) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(W, y);
+                    ctx.stroke();
+                }
+
+                // === LAND MASSES ===
+                // Helper to draw filled polygon with path points
+                function fillPoly(points, color) {
+                    ctx.beginPath();
+                    ctx.moveTo(points[0][0], points[0][1]);
+                    for (let i = 1; i < points.length; i++) {
+                        ctx.lineTo(points[i][0], points[i][1]);
+                    }
+                    ctx.closePath();
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#2A2A32';
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+
+                // New Territories (mainland) — large northern mass
+                const ntPoints = [
+                    [180, 55],
+                    [400, 48],
+                    [700, 42],
+                    [1000, 40],
+                    [1250, 48],
+                    [1380, 70],
+                    [1420, 130],
+                    [1350, 210],
+                    [1200, 260],
+                    [1050, 295],
+                    [950, 315],
+                    [820, 320],
+                    [700, 310],
+                    [600, 295],
+                    [480, 260],
+                    [380, 220],
+                    [320, 170],
+                    [240, 110],
+                    [180, 80],
+                ];
+                fillPoly(ntPoints, '#0E0E12');
+
+                // Kowloon Peninsula — extends south from NT
+                const klnPoints = [
+                    [640, 310],
+                    [700, 310],
+                    [820, 320],
+                    [900, 320],
+                    [960, 325],
+                    [880, 370],
+                    [800, 378],
+                    [730, 374],
+                    [670, 360],
+                    [620, 335],
+                ];
+                fillPoly(klnPoints, '#0F0F14');
+
+                // Hong Kong Island — south of harbour
+                const hkiPoints = [
+                    [520, 435],
+                    [580, 428],
+                    [700, 418],
+                    [820, 414],
+                    [940, 420],
+                    [1030, 430],
+                    [980, 480],
+                    [880, 510],
+                    [780, 530],
+                    [680, 525],
+                    [600, 505],
+                    [540, 470],
+                ];
+                fillPoly(hkiPoints, '#0E0E12');
+
+                // Lantau Island — west
+                const ltPoints = [
+                    [140, 190],
+                    [180, 180],
+                    [250, 175],
+                    [300, 185],
+                    [340, 210],
+                    [350, 260],
+                    [330, 310],
+                    [290, 350],
+                    [240, 370],
+                    [190, 360],
+                    [150, 320],
+                    [120, 260],
+                ];
+                fillPoly(ltPoints, '#0D0D11');
+
+                // Additional small islands (Lamma, Cheung Chau, Peng Chau)
+                // Lamma
+                fillPoly([
+                    [480, 545],
+                    [510, 535],
+                    [540, 540],
+                    [530, 565],
+                    [495, 565],
+                ], '#0D0D11');
+                // Cheung Chau
+                fillPoly([
+                    [160, 410],
+                    [190, 400],
+                    [205, 415],
+                    [185, 435],
+                    [155, 430],
+                ], '#0D0D11');
+                // Peng Chau
+                fillPoly([
+                    [350, 390],
+                    [370, 384],
+                    [380, 398],
+                    [360, 408],
+                ], '#0D0D11');
+
+                // === VICTORIA HARBOUR — water between Kowloon and HK Island ===
+                const harbourPoints = [
+                    [520, 435],
+                    [580, 428],
+                    [700, 418],
+                    [820, 414],
+                    [940, 420],
+                    [1030, 430],
+                    [960, 415],
+                    [880, 410],
+                    [800, 405],
+                    [730, 400],
+                    [670, 405],
+                    [620, 412],
+                    [540, 425],
+                ];
+                ctx.beginPath();
+                ctx.moveTo(harbourPoints[0][0], harbourPoints[0][1]);
+                for (let i = 1; i < harbourPoints.length; i++) {
+                    ctx.lineTo(harbourPoints[i][0], harbourPoints[i][1]);
+                }
+                ctx.closePath();
+                ctx.fillStyle = '#14141B';
+                ctx.fill();
+                ctx.strokeStyle = '#1E1E25';
+                ctx.lineWidth = 0.6;
+                ctx.stroke();
+
+                // Harbour subtle texture lines
+                ctx.strokeStyle = 'rgba(30, 30, 38, 0.4)';
+                ctx.lineWidth = 0.4;
+                for (let i = 0; i < 12; i++) {
+                    const yBase = 412 + i * 2.5;
+                    if (yBase > 428) break;
+                    ctx.beginPath();
+                    ctx.moveTo(550 + Math.sin(i * 0.7) * 10, yBase);
+                    ctx.lineTo(900 + Math.cos(i * 0.5) * 15, yBase);
+                    ctx.stroke();
+                }
+
+                // === INCIDENT ANCHOR POINTS (drawn directly on canvas) ===
+                // These align with the HTML tag positions (approximate)
+                const anchors = [
+                    { x: 0.38 * W, y: 0.355 * H, type: 'red' }, // 深水埗區
+                    { x: 0.56 * W, y: 0.345 * H, type: 'red' }, // 九龍城區
+                    { x: 0.44 * W, y: 0.49 * H, type: 'red' }, // 油尖旺區
+                    { x: 0.58 * W, y: 0.68 * H, type: 'red' }, // 東區
+                    { x: 0.61 * W, y: 0.615 * H, type: 'orange' }, // 康怡廣場
+                    { x: 0.26 * W, y: 0.26 * H, type: 'orange' }, // 青宏苑
+                ];
+
+                anchors.forEach(a => {
+                    ctx.beginPath();
+                    ctx.arc(a.x, a.y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = a.type === 'red' ? '#C43D3D' : '#C47A3D';
+                    ctx.fill();
+                    ctx.strokeStyle = '#2A2A32';
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                    // outer ring
+                    ctx.beginPath();
+                    ctx.arc(a.x, a.y, 7, 0, Math.PI * 2);
+                    ctx.strokeStyle = a.type === 'red' ? 'rgba(196,61,61,0.3)' : 'rgba(196,122,61,0.3)';
+                    ctx.lineWidth = 0.6;
+                    ctx.stroke();
+                });
+
+                // Thin leader lines from canvas anchors toward tag areas (decorative alignment)
+                // We'll draw them subtly to connect canvas anchors to rough tag locations
+                const leaders = [
+                    { x1: 0.38 * W, y1: 0.355 * H, x2: 0.38 * W, y2: 0.32 * H, type: 'red' },
+                    { x1: 0.56 * W, y1: 0.345 * H, x2: 0.56 * W, y2: 0.31 * H, type: 'red' },
+                    { x1: 0.44 * W, y1: 0.49 * H, x2: 0.44 * W, y2: 0.46 * H, type: 'red' },
+                    { x1: 0.58 * W, y1: 0.68 * H, x2: 0.58 * W, y2: 0.65 * H, type: 'red' },
+                    { x1: 0.61 * W, y1: 0.615 * H, x2: 0.61 * W, y2: 0.585 * H, type: 'orange' },
+                    { x1: 0.26 * W, y1: 0.26 * H, x2: 0.26 * W, y2: 0.235 * H, type: 'orange' },
+                ];
+                leaders.forEach(l => {
+                    ctx.beginPath();
+                    ctx.moveTo(l.x1, l.y1);
+                    ctx.lineTo(l.x2, l.y2);
+                    ctx.strokeStyle = l.type === 'red' ? 'rgba(196,61,61,0.45)' : 'rgba(196,122,61,0.45)';
+                    ctx.lineWidth = 0.7;
+                    ctx.setLineDash([3, 3]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                });
+
+                // Region labels (subtle, embedded in map)
+                ctx.fillStyle = 'rgba(100, 96, 88, 0.5)';
+                ctx.font = '10px "SF Mono", "Cascadia Code", Consolas, monospace';
+                ctx.letterSpacing = '1px';
+                ctx.fillText('新界', 780, 140);
+                ctx.fillText('九龍', 770, 345);
+                ctx.fillText('香港島', 720, 490);
+                ctx.fillText('大嶼山', 180, 280);
+                ctx.fillText('維多利亞港', 690, 400);
+            }
+            drawMap();
+
+            // ========================
+            // CAMERA CANVASES — abstract low-light street scenes
+            // ========================
+            const camCanvases = document.querySelectorAll('.cam-canvas');
+            camCanvases.forEach(canvas => {
+                const cctx = canvas.getContext('2d');
+                const cw = canvas.width;
+                const ch = canvas.height;
+                const streetName = canvas.dataset.street || '';
+
+                // Dark background
+                cctx.fillStyle = '#0A0A0C';
+                cctx.fillRect(0, 0, cw, ch);
+
+                // Subtle fog / gradient
+                const fogGrad = cctx.createLinearGradient(0, 0, 0, ch);
+                fogGrad.addColorStop(0, 'rgba(18, 18, 22, 0.6)');
+                fogGrad.addColorStop(0.5, 'rgba(12, 12, 15, 0.3)');
+                fogGrad.addColorStop(1, 'rgba(8, 8, 10, 0.7)');
+                cctx.fillStyle = fogGrad;
+                cctx.fillRect(0, 0, cw, ch);
+
+                // Street edge lines
+                cctx.strokeStyle = 'rgba(60, 60, 70, 0.3)';
+                cctx.lineWidth = 1.2;
+                cctx.beginPath();
+                cctx.moveTo(0, ch * 0.55);
+                cctx.lineTo(cw, ch * 0.5);
+                cctx.stroke();
+                cctx.beginPath();
+                cctx.moveTo(0, ch * 0.75);
+                cctx.lineTo(cw, ch * 0.7);
+                cctx.stroke();
+
+                // Dashed centre line
+                cctx.strokeStyle = 'rgba(70, 70, 80, 0.3)';
+                cctx.lineWidth = 0.8;
+                cctx.setLineDash([6, 8]);
+                cctx.beginPath();
+                cctx.moveTo(0, ch * 0.62);
+                cctx.lineTo(cw, ch * 0.58);
+                cctx.stroke();
+                cctx.setLineDash([]);
+
+                // Building silhouettes
+                const buildingColors = [
+                    'rgba(16, 16, 20, 0.8)',
+                    'rgba(14, 14, 18, 0.85)',
+                    'rgba(18, 18, 22, 0.7)',
+                ];
+                for (let i = 0; i < 8; i++) {
+                    const bx = i * (cw / 8) + Math.random() * 15;
+                    const bw = 30 + Math.random() * 55;
+                    const bh = 30 + Math.random() * 50;
+                    const by = ch * 0.45 - bh + Math.random() * 10;
+                    cctx.fillStyle = buildingColors[i % 3];
+                    cctx.fillRect(bx, by, bw, bh);
+                    // window lights
+                    cctx.fillStyle = 'rgba(50, 50, 55, 0.2)';
+                    for (let wy = by + 6; wy < by + bh - 4; wy += 8) {
+                        for (let wx = bx + 4; wx < bx + bw - 4; wx += 6) {
+                            if (Math.random() > 0.45) {
+                                cctx.fillRect(wx, wy, 2, 3);
+                            }
+                        }
+                    }
+                }
+
+                // Street name watermark
+                cctx.fillStyle = 'rgba(120, 116, 106, 0.25)';
+                cctx.font = '8px "SF Mono", "Cascadia Code", Consolas, monospace';
+                cctx.fillText(streetName, 6, ch - 6);
+
+                // Corner bracket marks (like viewfinder)
+                const bracketColor = 'rgba(60, 60, 68, 0.4)';
+                const bl = 6;
+                const bSize = 14;
+                cctx.strokeStyle = bracketColor;
+                cctx.lineWidth = 0.8;
+                // top-left
+                cctx.beginPath();
+                cctx.moveTo(bl, bl + bSize);
+                cctx.lineTo(bl, bl);
+                cctx.lineTo(bl + bSize, bl);
+                cctx.stroke();
+                // top-right
+                cctx.beginPath();
+                cctx.moveTo(cw - bl - bSize, bl);
+                cctx.lineTo(cw - bl, bl);
+                cctx.lineTo(cw - bl, bl + bSize);
+                cctx.stroke();
+                // bottom-left
+                cctx.beginPath();
+                cctx.moveTo(bl, ch - bl - bSize);
+                cctx.lineTo(bl, ch - bl);
+                cctx.lineTo(bl + bSize, ch - bl);
+                cctx.stroke();
+                // bottom-right
+                cctx.beginPath();
+                cctx.moveTo(cw - bl - bSize, ch - bl);
+                cctx.lineTo(cw - bl, ch - bl);
+                cctx.lineTo(cw - bl, ch - bl - bSize);
+                cctx.stroke();
+            });
+
+            // ========================
+            // WINDOW RESIZE — redraw map to fit
+            // ========================
+            function handleResize() {
+                const mapArea = document.querySelector('.map-area');
+                const rect = mapArea.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                const newW = Math.floor(rect.width * dpr);
+                const newH = Math.floor(rect.height * dpr);
+                if (newW > 0 && newH > 0) {
+                    mapCanvas.width = newW;
+                    mapCanvas.height = newH;
+                    mapCanvas.style.width = rect.width + 'px';
+                    mapCanvas.style.height = rect.height + 'px';
+                    drawMap();
+                }
+            }
+            window.addEventListener('resize', () => {
+                handleResize();
+            });
+            // Initial sizing
+            setTimeout(() => {
+                handleResize();
+            }, 50);
+            // Re-draw after fonts settle
+            window.addEventListener('load', () => {
+                handleResize();
+            });
+
+            // ========================
+            // TICKER DUPLICATION for seamless loop (already in HTML)
+            // ========================
+            const tickerScroll = document.getElementById('ticker-scroll');
+            // Duplicate content is already embedded; ensure animation uses -50%
+            // This creates a seamless loop as content is exactly doubled.
+
+            // ========================
+            // INCIDENT TAG LINE ALIGNMENT (CSS handles most, JS ensures consistent)
+            // ========================
+            function syncTagLines() {
+                const tags = document.querySelectorAll('.incident-tag');
+                tags.forEach(tag => {
+                    const box = tag.querySelector('.tag-box');
+                    if (!box) return;
+                    // The tag-line is decorative; CSS handles anchor dot via pseudo elements if present
+                    // For this implementation, the tag-box is the primary visual.
+                    // Add subtle bottom connector if not present
+                    let line = tag.querySelector('.tag-line');
+                    if (!line) {
+                        line = document.createElement('span');
+                        line.className = 'tag-line';
+                        tag.appendChild(line);
+                    }
+                    // Position line from bottom of box downward
+                    const boxHeight = box.offsetHeight;
+                    line.style.top = boxHeight + 'px';
+                    line.style.left = '12px';
+                    line.style.height = '18px';
+                });
+            }
+            // Run after layout
+            setTimeout(syncTagLines, 100);
+            window.addEventListener('resize', () => {
+                setTimeout(syncTagLines, 80);
+            });
+
+            console.log('香港城市監察 HK City Monitor 已啟動');
+        })();
+    </script>
+</body>
+</html>

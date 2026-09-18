@@ -113,6 +113,12 @@ def shape(kind: str, body: bytes, ctype: str) -> str:
     if kind == "image":
         return f"image {len(body)}B"
 
+    if kind == "js":
+        # some HK feeds ship data as JavaScript ('var x = [...]'), not JSON — real
+        # payload, wrong label; say which so nobody wires a JSON parser straight in
+        m = re.match(r"\s*(?:var|let|const)\s+([\w$]+)\s*=", text)
+        return f"JavaScript data file, `{m.group(1) if m else '?'}` = (strip the prefix, then JSON)" if m else f"JavaScript {len(body)}B"
+
     # html
     if "<html" in text[:2000].lower():
         title = re.search(r"<title[^>]*>(.*?)</title>", text, re.S | re.I)
@@ -132,6 +138,8 @@ def classify(kind: str, ctype: str, shape_text: str) -> tuple[bool, str]:
         return False, "endpoint exists but rejects these parameters (wrong dataType / missing args)"
     if "unparseable" in shape_text:
         return False, "200 but the body is not parseable as declared"
+    if kind == "js" and "JavaScript" not in shape_text:
+        return False, "expected a JavaScript payload, got something else"
     if kind == "json" and "json" not in ctype and not shape_text.startswith("JSON"):
         return False, "200 but not JSON (likely an HTML page or a wrong path)"
     if kind in ("xml", "rss") and "HTML page" in shape_text:

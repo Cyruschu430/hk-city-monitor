@@ -115,83 +115,69 @@
       "group": "weather",
       "name": "天文台 潮汐資料",
       "type": "json",
-      "url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=hhOT&lang=tc",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HHOT&station=QUB&year=2024&rformat=json",
       "auth": "none",
       "cadence": "hourly",
-      "notes": "dataType=hhOT is REJECTED ('Please include valid parameters') — wrong name. Find the correct tide dataType in the HKO Open Data API documentation PDF.",
-      "todo": true
+      "notes": "SOLVED: tide is HHOT (UPPERCASE) and lives on opendata.php, NOT weather.php. Needs station (QUB, CCH, ...) + year; month/day/hour optional. HLT returns astronomical high/low tides. Both verified 200 JSON.",
+      "todo": false,
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=QUB&year=2024&rformat=json"
+      ]
     },
     {
       "id": "hko_radiation",
       "group": "weather",
       "name": "天文台 環境伽馬輻射水平",
       "type": "json",
-      "url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=radiation&lang=tc",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=RYES&station=HKO&date=20260917&rformat=json&lang=en",
       "candidates": [
         "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc",
         "https://www.hko.gov.hk/tc/radiation/r1.htm"
       ],
       "auth": "none",
       "cadence": "hourly",
-      "todo": true,
-      "notes": "Guessed dataType rejected. Find the correct one in the HKO Open Data API documentation PDF."
+      "todo": false,
+      "notes": "SOLVED: ambient gamma dose rate is dataType=RYES (Weather and Radiation Level Report) on opendata.php. Needs station + date (YYYYMMDD, up to yesterday). The earlier guesses rmn/radiation were wrong."
     },
     {
       "id": "hko_earthquake",
       "group": "weather",
       "name": "天文台 地震速報",
       "type": "json",
-      "url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=qem&lang=tc",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=qem&lang=en",
       "candidates": [
-        "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=feltearthquake&lang=tc",
-        "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=earthquake&lang=tc"
+        "https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=feltearthquake&lang=en"
       ],
       "auth": "none",
       "cadence": "as issued",
-      "todo": true,
-      "notes": "Guessed dataTypes rejected. Find the correct ones for the worldwide M6+ quick report and locally-felt tremor reports."
+      "todo": false,
+      "notes": "SOLVED: earthquakes live on a SEPARATE endpoint, earthquake.php — not weather.php. qem = worldwide M6+ quick report (lat/lon/mag/region/ptime); feltearthquake = locally felt tremors (returns {} when none, which is a valid empty result, not an error)."
     },
     {
       "id": "hko_radar",
       "group": "weather",
       "name": "天文台 天氣雷達圖（256km）",
       "type": "image",
-      "url": "",
+      "url": "https://www.hko.gov.hk/wxinfo/radars/rad_256_png/2d256nradar_202609181924.jpg",
       "candidates": [
-        "https://www.hko.gov.hk/wxinfo/radars/rad_1064.jpg",
-        "https://www.hko.gov.hk/wxinfo/radars/radar_256_1024.jpg",
-        "https://www.hko.gov.hk/wxinfo/radars/r_256_1024.jpg"
+        "https://www.hko.gov.hk/wxinfo/radars/rad_256_png/2d256nradar_202609181930.jpg",
+        "https://www.hko.gov.hk/wxinfo/radars/rad_256_png/2d256nradar.jpg"
       ],
       "auth": "none",
       "cadence": "6 minutes",
       "todo": true,
-      "notes": "Real URL not yet pinned — all guessed patterns 404. The radar page loads the image from JS, so extract it from the page source."
+      "notes": "FOUND. URL is TIMESTAMPED: .../rad_256_png/2d256nradar_{YYYYMMDDHHMM}.jpg (~88KB). Images refresh every ~6 minutes, so the app must build the current timestamp (try now, then step back 6/12 minutes until a 200). The sample above was live when probed; the fixed sample will eventually 404 — that is expected, not a broken source."
     },
     {
       "id": "hko_satellite",
       "group": "weather",
       "name": "天文台 衛星雲圖",
       "type": "image",
-      "url": "",
+      "url": "https://www.hko.gov.hk/wxinfo/intersat/satellite/image/asia/202609181900+181100GLB__global_150_internet.jpg",
       "auth": "none",
       "cadence": "hourly",
       "todo": true,
-      "notes": "Real URL not yet pinned."
-    },
-    {
-      "id": "epd_aqhi",
-      "group": "weather",
-      "name": "環保署 空氣質素健康指數（AQHI）",
-      "type": "json",
-      "url": "",
-      "candidates": [
-        "https://www.aqhi.gov.hk/epd/aqhi/rest/aqhi/getAllAqhi",
-        "https://www.aqhi.gov.hk/api/aqhi"
-      ],
-      "auth": "none",
-      "cadence": "hourly",
-      "todo": true,
-      "notes": "Guessed paths all 404. Find the real XHR the aqhi.gov.hk front end calls, or the data.gov.hk resource for the AQHI dataset. Also want the AQHI station list with coordinates."
+      "notes": "FOUND. Also a TIMESTAMPED path under /wxinfo/intersat/satellite/image/asia/ — the filename carries a date plus an offset token, so the exact naming rule still needs pinning. ~216KB."
     },
     {
       "id": "td_speedmap",
@@ -281,8 +267,8 @@
       "url": "https://www.sb.gov.hk/chi/bwt/status.html?type=outbound",
       "auth": "none",
       "cadence": "15 minutes",
-      "todo": true,
-      "notes": "Green/yellow/red status plus average waiting time per land control point, and incident notices. The page itself has no data — find the JSON endpoint its JS calls. Highest-value unresolved source."
+      "todo": false,
+      "notes": "The human page. The machine-readable data is sb_bwt_json (/bwt/json/overview_tc.json) — use that; do not parse this HTML."
     },
     {
       "id": "hkemobility_control_point",
@@ -747,6 +733,98 @@
       "auth": "none",
       "cadence": "real-time",
       "notes": "VERIFIED on the NEW hostname www.map.gov.hk (migrated from geodata.gov.hk around 2026-05-04). CORS '*'. Returns name/address/district in ZH+EN plus HK1980 grid x/y. Use ALS for addresses and this for place names."
+    },
+    {
+      "id": "epd_aqhi_rss",
+      "group": "weather",
+      "name": "環保署 空氣質素健康指數（各監測站，RSS）",
+      "type": "rss",
+      "url": "https://www.aqhi.gov.hk/epd/ddata/html/out/aqhi_ind_rss_Eng.xml",
+      "auth": "none",
+      "cadence": "hourly",
+      "todo": false,
+      "notes": "FOUND — the official EPD feed (data.gov.hk dataset hk-epd-airteam-current-aqhi-of-individual-air-quality-monitoring-stations). Each item's title is the station name and the description carries '<station> - <type>: <AQHI> <risk>'. ChT/ChS variants alongside. Host is www.aqhi.gov.hk — the bare aqhi.gov.hk does not resolve."
+    },
+    {
+      "id": "epd_aqhi_24h",
+      "group": "weather",
+      "name": "環保署 AQHI 過去 24 小時逐站讀數",
+      "type": "js",
+      "url": "https://www.aqhi.gov.hk/js/data/past_24_pollutant.js",
+      "auth": "none",
+      "cadence": "hourly",
+      "todo": false,
+      "notes": "The file the aqhi.gov.hk page itself loads. It is JavaScript, not JSON: 'var station_24_data = [...]'. Strip the 'var ... = ' prefix then parse. Per-station hourly rows with StationID, DateTime, StationNameEN/CT/CS, aqhi and NO2/O3/SO2/CO/PM10/PM25 — i.e. the full pollutant breakdown, ~226KB."
+    },
+    {
+      "id": "epd_aqhi_forecast",
+      "group": "weather",
+      "name": "環保署 AQHI 預報／健康風險級別",
+      "type": "js",
+      "url": "https://www.aqhi.gov.hk/js/data/forecast_aqhi.js",
+      "auth": "none",
+      "cadence": "daily",
+      "todo": false,
+      "notes": "'var aqhi_report = [...]' with DateTime, StationTypeEN, AQHIRiskEN, AQHIRange. Strip the var prefix."
+    },
+    {
+      "id": "sb_bwt_json",
+      "group": "border",
+      "name": "保安局「口岸通」陸路管制站即時狀況（JSON）",
+      "type": "json",
+      "url": "https://www.sb.gov.hk/bwt/json/overview_tc.json",
+      "auth": "none",
+      "cadence": "15 minutes",
+      "todo": false,
+      "notes": "SOLVED — this is the JSON behind 口岸通, and it is the highest-value source in the project. updateDate + cpInfoList[]; each control point has code, cpName, openFrom/openTo and arrival/departure, each broken down into resident / visitor / car / cross-border shuttle, with status 1/2/3 for the green-yellow-red level. Keyless. NOTE: there is no Chinese in the path — /bwt/json/overview_tc.json sits directly under www.sb.gov.hk."
+    },
+    {
+      "id": "kmb_eta",
+      "group": "transport",
+      "name": "九巴／龍運 路線及到站時間（免 key！）",
+      "type": "json",
+      "url": "https://data.etabus.gov.hk/v1/transport/kmb/eta/18492910339410B1/1/1",
+      "candidates": [
+        "https://data.etabus.gov.hk/v1/transport/kmb/route/",
+        "https://data.etabus.gov.hk/v1/transport/kmb/route-stop/1/outbound/1"
+      ],
+      "auth": "none",
+      "cadence": "1 minute",
+      "todo": false,
+      "notes": "NO KEY NEEDED — data.etabus.gov.hk is KMB's own open data portal. Verified: /route/ lists all routes (~349KB); /route-stop/{route}/{direction}/{service_type} for the stop sequence; /eta/{stop_id}/{route}/{service_type} for arrivals. GOTCHA: direction must be the literal 'outbound' or 'inbound' — O/I/1/2 all return 422 'Invalid direction'."
+    },
+    {
+      "id": "mtr_next_train",
+      "group": "transport",
+      "name": "港鐵 下一班列車（免 key）",
+      "type": "json",
+      "url": "https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=ADM",
+      "auth": "none",
+      "cadence": "real-time",
+      "todo": false,
+      "notes": "Keyless mirror on rt.data.gov.hk — the official opendata.mtr.com.hk Next Train API instead wants a free registration. line=ISL / sta=ADM returns UP and DOWN trains with platform and ttnt."
+    },
+    {
+      "id": "hkia_flights",
+      "group": "aviation",
+      "name": "香港國際機場 航班（免 key）",
+      "type": "json",
+      "url": "https://www.hongkongairport.com/flightinfo-rest/rest/flights?date=2026-09-18&lang=en",
+      "auth": "none",
+      "cadence": "real-time",
+      "todo": false,
+      "notes": "The public feed hongkongairport.com itself uses — keyless (the official AAHK Data Services API wants a free developer account; this does not). Add arrival=true&cargo=false to filter. /rest/flights/past also works; /rest/flights/search is 404. ~210KB."
+    },
+    {
+      "id": "lwb_eta",
+      "group": "transport",
+      "name": "龍運巴士 ETA",
+      "type": "json",
+      "url": "https://data.etabus.gov.hk/v1/transport/lwb/route/",
+      "auth": "none",
+      "cadence": "1 minute",
+      "todo": true,
+      "notes": "Service is live (it answers structured 422 JSON) but the parameter format differs from KMB and is unconfirmed. Cheap to finish — try the KMB path shapes with the lwb prefix."
     }
   ]
 }

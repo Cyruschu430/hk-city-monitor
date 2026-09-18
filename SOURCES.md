@@ -3,7 +3,7 @@
 > **本檔案由 `scripts/probe_sources.py` 自動生成，唔好手改。**
 > 改源 → 改 `sources.json` → 跑 `python3 scripts/probe_sources.py`。
 
-最後實測：`2026-09-18 19:33 CST`　·　**55 / 65 個源成功**
+最後實測：`2026-09-18 19:39 CST`　·　**67 / 72 個源成功**
 
 每個 URL 都真係發過 HTTP 請求。🟢 = 200 而且回傳真數據　🟡 = 未解決／要 key　🔴 = 失敗。
 
@@ -12,8 +12,8 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | 運輸署 交通快拍攝影機位置 | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | irregular | none | CSV ~1013 rows, cols: key, region, district, description, easting, northing |
-| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 33374B |
-| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 591911B |
+| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 32200B |
+| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 588609B |
 | 天文台 天氣攝影機目錄頁 | `https://www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm` | 🟢 ok | static | none | HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko |
 
 - **運輸署 交通快拍攝影機位置** — UTF-16LE with a DOUBLE BOM (\xff\xfe\xff\xfe) and tab-delimited. Columns: key, region, district, description, easting, northing, latitude, longitude, url. Python's utf-16 codec leaves a stray \ufeff on the first field name — strip it or every row reads empty.
@@ -30,23 +30,27 @@
 | 天文台 本港現況（溫度、濕度、雨量、紫外線） | `https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc` | 🟢 ok | 10 minutes | none | JSON object, keys: rainfall, warningMessage, icon, iconUpdateTime, uvindex, updateTime |
 | 天文台 九天天氣預報 | `https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc` | 🟢 ok | twice daily | none | JSON object, keys: generalSituation, weatherForecast, updateTime, seaTemp, soilTemp |
 | 天文台 特別天氣提示 | `https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=swt&lang=tc` | 🟢 ok | as issued | none | JSON object, keys: swt |
-| 天文台 潮汐資料 | `https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=hhOT&lang=tc` | 🔴 wrong-payload | hourly | none | declared JSON but unparseable (starts 'Please include valid parameters in API r') |
-| 天文台 環境伽馬輻射水平 | `https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=radiation&lang=tc` | 🔴 wrong-payload | hourly | none | declared JSON but unparseable (starts 'Please include valid parameters in API r') |
-| 天文台 地震速報 | `https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=qem&lang=tc` | 🔴 wrong-payload | as issued | none | declared JSON but unparseable (starts 'Please include valid parameters in API r') |
-| 天文台 天氣雷達圖（256km） | `https://www.hko.gov.hk/wxinfo/radars/rad_1064.jpg -> HTTP 404; https://www.hko.gov.hk/w…` | 🔴 fail | 6 minutes | none | — |
-| 天文台 衛星雲圖 | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | hourly | none | — |
-| 環保署 空氣質素健康指數（AQHI） | `https://www.aqhi.gov.hk/epd/aqhi/rest/aqhi/getAllAqhi -> HTTP 404; https://www.aqhi.gov…` | 🔴 fail | hourly | none | — |
+| 天文台 潮汐資料 | `https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HHOT&station=QUB&…` | 🟢 ok | hourly | none | JSON object, keys: fields, data |
+| 天文台 環境伽馬輻射水平 | `https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=RYES&station=HKO&…` | 🟢 ok | hourly | none | JSON object, keys: HKOReadingsAccumRainfall, HKOReadingsAvgRainfall, HKOReadingsMaxRH, HKOReadingsMaxTemp, HKOReadingsMinGrassTemp, HKOReadingsMinRH |
+| 天文台 地震速報 | `https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=qem&lang=en` | 🟢 ok | as issued | none | JSON object, keys: lat, lon, mag, region, ptime, updateTime |
+| 天文台 天氣雷達圖（256km） | `https://www.hko.gov.hk/wxinfo/radars/rad_256_png/2d256nradar_202609181924.jpg` | 🟡 ok | 6 minutes | none | image 88161B |
+| 天文台 衛星雲圖 | `https://www.hko.gov.hk/wxinfo/intersat/satellite/image/asia/202609181900+181100GLB__glo…` | 🟡 ok | hourly | none | image 216531B |
+| 環保署 空氣質素健康指數（各監測站，RSS） | `https://www.aqhi.gov.hk/epd/ddata/html/out/aqhi_ind_rss_Eng.xml` | 🟢 ok | hourly | none | XML, 18 <item> entries, root tags: rss, channel, title, link, image |
+| 環保署 AQHI 過去 24 小時逐站讀數 | `https://www.aqhi.gov.hk/js/data/past_24_pollutant.js` | 🟢 ok | hourly | none | JavaScript data file, `station_24_data` = (strip the prefix, then JSON) |
+| 環保署 AQHI 預報／健康風險級別 | `https://www.aqhi.gov.hk/js/data/forecast_aqhi.js` | 🟢 ok | daily | none | JavaScript data file, `aqhi_report` = (strip the prefix, then JSON) |
 
 - **天文台 天氣警告一覽** — CORS allow-origin * so the browser can fetch directly. Returns {} when no warning is in force. Otherwise keyed by warning code with name, code, actionCode, issueTime, updateTime, expireTime.
 - **天文台 詳細天氣警告資訊** — Full warning text, useful for a detail drawer.
 - **天文台 本港現況（溫度、濕度、雨量、紫外線）** — temperature.data[] per place, humidity, rainfall.data[] per 18 districts, uvindex, icon. recordTime/updateTime fields carry the observation time.
 - **天文台 特別天氣提示** — Returns a nearly-empty body when nothing is active.
-- **天文台 潮汐資料** — dataType=hhOT is REJECTED ('Please include valid parameters') — wrong name. Find the correct tide dataType in the HKO Open Data API documentation PDF.
-- **天文台 環境伽馬輻射水平** — Guessed dataType rejected. Find the correct one in the HKO Open Data API documentation PDF.
-- **天文台 地震速報** — Guessed dataTypes rejected. Find the correct ones for the worldwide M6+ quick report and locally-felt tremor reports.
-- **天文台 天氣雷達圖（256km）** — Real URL not yet pinned — all guessed patterns 404. The radar page loads the image from JS, so extract it from the page source.
-- **天文台 衛星雲圖** — Real URL not yet pinned.
-- **環保署 空氣質素健康指數（AQHI）** — Guessed paths all 404. Find the real XHR the aqhi.gov.hk front end calls, or the data.gov.hk resource for the AQHI dataset. Also want the AQHI station list with coordinates.
+- **天文台 潮汐資料** — SOLVED: tide is HHOT (UPPERCASE) and lives on opendata.php, NOT weather.php. Needs station (QUB, CCH, ...) + year; month/day/hour optional. HLT returns astronomical high/low tides. Both verified 200 JSON.
+- **天文台 環境伽馬輻射水平** — SOLVED: ambient gamma dose rate is dataType=RYES (Weather and Radiation Level Report) on opendata.php. Needs station + date (YYYYMMDD, up to yesterday). The earlier guesses rmn/radiation were wrong.
+- **天文台 地震速報** — SOLVED: earthquakes live on a SEPARATE endpoint, earthquake.php — not weather.php. qem = worldwide M6+ quick report (lat/lon/mag/region/ptime); feltearthquake = locally felt tremors (returns {} when none, which is a valid empty result, not an error).
+- **天文台 天氣雷達圖（256km）** — FOUND. URL is TIMESTAMPED: .../rad_256_png/2d256nradar_{YYYYMMDDHHMM}.jpg (~88KB). Images refresh every ~6 minutes, so the app must build the current timestamp (try now, then step back 6/12 minutes until a 200). The sample above was live when probed; the fixed sample will eventually 404 — that is expected, not a broken source.
+- **天文台 衛星雲圖** — FOUND. Also a TIMESTAMPED path under /wxinfo/intersat/satellite/image/asia/ — the filename carries a date plus an offset token, so the exact naming rule still needs pinning. ~216KB.
+- **環保署 空氣質素健康指數（各監測站，RSS）** — FOUND — the official EPD feed (data.gov.hk dataset hk-epd-airteam-current-aqhi-of-individual-air-quality-monitoring-stations). Each item's title is the station name and the description carries '<station> - <type>: <AQHI> <risk>'. ChT/ChS variants alongside. Host is www.aqhi.gov.hk — the bare aqhi.gov.hk does not resolve.
+- **環保署 AQHI 過去 24 小時逐站讀數** — The file the aqhi.gov.hk page itself loads. It is JavaScript, not JSON: 'var station_24_data = [...]'. Strip the 'var ... = ' prefix then parse. Per-station hourly rows with StationID, DateTime, StationNameEN/CT/CS, aqhi and NO2/O3/SO2/CO/PM10/PM25 — i.e. the full pollutant breakdown, ~226KB.
+- **環保署 AQHI 預報／健康風險級別** — 'var aqhi_report = [...]' with DateTime, StationTypeEN, AQHIRiskEN, AQHIRange. Strip the var prefix.
 
 ## transport
 
@@ -59,6 +63,9 @@
 | 運輸署 實時停車場空位 | `https://resource.data.one.gov.hk/td/carpark/vacancy_all.json` | 🟢 ok | real-time | none | JSON object, keys: car_park |
 | 實時空置車位（一站式整合版） | `https://api.data.gov.hk/v1/carpark-info-vacancy` | 🟢 ok | real-time | none | JSON object, keys: results |
 | 城巴／新大嶼山巴士 ETA | `https://rt.data.gov.hk/v1/transport/batch/stop-eta` | 🟡 needs-params | 1 minute | none | — |
+| 九巴／龍運 路線及到站時間（免 key！） | `https://data.etabus.gov.hk/v1/transport/kmb/eta/18492910339410B1/1/1` | 🟢 ok | 1 minute | none | JSON object, keys: type, version, generated_timestamp, data |
+| 港鐵 下一班列車（免 key） | `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=ADM` | 🟢 ok | real-time | none | JSON object, keys: sys_time, curr_time, data, isdelay, status, message |
+| 龍運巴士 ETA | `https://data.etabus.gov.hk/v1/transport/lwb/route/` | 🟡 needs-params | 1 minute | none | — |
 
 - **運輸署 行車速度圖** — REAL PATHS NOT FOUND: resource.data.one.gov.hk/td/speedmap.xml returns 404 (the 404 body is a decoy PHP index that lists paths which do not exist). Use td_traffic_speed_city (JSON) instead; for XML find the current TIS path on data.gov.hk.
 - **運輸署 行車時間顯示器** — REAL PATH NOT FOUND: resource.data.one.gov.hk/td/journeytime.xml returns 404. See the City Dashboard journey-time dataset on data.gov.hk.
@@ -67,18 +74,23 @@
 - **運輸署 實時停車場空位** — Real-time vacancy counts. The JSON body starts with a UTF-8 BOM — decode as utf-8-sig or json.loads throws. Key: car_park[].
 - **實時空置車位（一站式整合版）** — Merges TD and Kai Tak (start-up Kowloon East) car park feeds.
 - **城巴／新大嶼山巴士 ETA** — Batch endpoint — a GET returns 422, it needs a POST body of stop ids. Also has per-route ETA endpoints under rt.data.gov.hk.
+- **九巴／龍運 路線及到站時間（免 key！）** — NO KEY NEEDED — data.etabus.gov.hk is KMB's own open data portal. Verified: /route/ lists all routes (~349KB); /route-stop/{route}/{direction}/{service_type} for the stop sequence; /eta/{stop_id}/{route}/{service_type} for arrivals. GOTCHA: direction must be the literal 'outbound' or 'inbound' — O/I/1/2 all return 422 'Invalid direction'.
+- **港鐵 下一班列車（免 key）** — Keyless mirror on rt.data.gov.hk — the official opendata.mtr.com.hk Next Train API instead wants a free registration. line=ISL / sta=ADM returns UP and DOWN trains with platform and ttnt.
+- **龍運巴士 ETA** — Service is live (it answers structured 422 JSON) but the parameter format differs from KMB and is unconfirmed. Cheap to finish — try the KMB path shapes with the lwb prefix.
 
 ## border
 
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
-| 保安局「口岸通」陸路管制站情況 | `https://www.sb.gov.hk/chi/bwt/status.html?type=outbound` | 🟡 ok | 15 minutes | none | HTML page — title: 口岸通 |
+| 保安局「口岸通」陸路管制站情況 | `https://www.sb.gov.hk/chi/bwt/status.html?type=outbound` | 🟢 ok | 15 minutes | none | HTML page — title: 口岸通 |
 | 香港出行易 管制站狀況 | `https://www.hkemobility.gov.hk/tc/control-point` | 🟡 ok | 15 minutes | none | HTML page — title: HKeMobility |
 | 入境處 13 個出入境管制站＋開放時間 | `https://www.immd.gov.hk/hkt/contactus/control_points.html` | 🟢 ok | static | none | HTML page — title: 出入境管制站地點 | 入境事務處 |
+| 保安局「口岸通」陸路管制站即時狀況（JSON） | `https://www.sb.gov.hk/bwt/json/overview_tc.json` | 🟢 ok | 15 minutes | none | JSON object, keys: updateDate, cpInfoList, otherInfo, remark |
 
-- **保安局「口岸通」陸路管制站情況** — Green/yellow/red status plus average waiting time per land control point, and incident notices. The page itself has no data — find the JSON endpoint its JS calls. Highest-value unresolved source.
+- **保安局「口岸通」陸路管制站情況** — The human page. The machine-readable data is sb_bwt_json (/bwt/json/overview_tc.json) — use that; do not parse this HTML.
 - **香港出行易 管制站狀況** — Page is a ~3.5KB JS app. Find its data endpoint. Covers passenger and private-car channels.
 - **入境處 13 個出入境管制站＋開放時間** — Static list of 13 control points with opening hours. Hardcode once — lets the UI show 現正開放／已關閉 without any live source.
+- **保安局「口岸通」陸路管制站即時狀況（JSON）** — SOLVED — this is the JSON behind 口岸通, and it is the highest-value source in the project. updateDate + cpInfoList[]; each control point has code, cpName, openFrom/openTo and arrival/departure, each broken down into resident / visitor / car / cross-border shuttle, with status 1/2/3 for the green-yellow-red level. Keyless. NOTE: there is no Chinese in the path — /bwt/json/overview_tc.json sits directly under www.sb.gov.hk.
 
 ## aviation
 
@@ -86,9 +98,11 @@
 |---|---|---|---|---|---|
 | adsb.lol 香港範圍航班（社群 ADS-B） | `https://api.adsb.lol/v2/point/22.32/114.17/100` | 🟢 ok | ~10 seconds | none | JSON object, keys: ac, msg, now, total, ctime, ptime |
 | OpenSky Network 香港 bbox | `https://opensky-network.org/api/states/all?lamin=22.10&lomin=113.80&lamax=22.60&lomax=1…` | 🟢 ok | ~10 seconds | register | JSON object, keys: time, states |
+| 香港國際機場 航班（免 key） | `https://www.hongkongairport.com/flightinfo-rest/rest/flights?date=2026-09-18&lang=en` | 🟢 ok | real-time | none | JSON array, 8 items |
 
 - **adsb.lol 香港範圍航班（社群 ADS-B）** — NO KEY, NO REGISTRATION. Verified: 40 aircraft within 100nm of Hong Kong. This is the practical flights layer — OpenSky's anonymous tier is rate-limited. Radius in nautical miles.
 - **OpenSky Network 香港 bbox** — Verified: 23 aircraft in the HK bbox anonymously. Free account raises the rate limit. Use as fallback to adsb.lol.
+- **香港國際機場 航班（免 key）** — The public feed hongkongairport.com itself uses — keyless (the official AAHK Data Services API wants a free developer account; this does not). Add arrival=true&cargo=false to filter. /rest/flights/past also works; /rest/flights/search is 404. ~210KB.
 
 ## marine
 
@@ -210,16 +224,11 @@
 
 ## 未解決 / 待辦
 
-- `hko_tide` — 天文台 潮汐資料 → endpoint exists but rejects these parameters (wrong dataType / missing args)
-- `hko_radiation` — 天文台 環境伽馬輻射水平 → endpoint exists but rejects these parameters (wrong dataType / missing args)
-- `hko_earthquake` — 天文台 地震速報 → endpoint exists but rejects these parameters (wrong dataType / missing args)
-- `hko_radar` — 天文台 天氣雷達圖（256km） → https://www.hko.gov.hk/wxinfo/radars/rad_1064.jpg -> HTTP 404; https://www.hko.gov.hk/wxinfo/radars/radar_256_1024.jpg -> HTTP 404; https://www.hko.gov.hk/wxinfo/radars/r_256_1024.jpg -> HTTP 404
-- `hko_satellite` — 天文台 衛星雲圖 → not an HTTP endpoint (websocket or still unknown)
-- `epd_aqhi` — 環保署 空氣質素健康指數（AQHI） → https://www.aqhi.gov.hk/epd/aqhi/rest/aqhi/getAllAqhi -> HTTP 404; https://www.aqhi.gov.hk/api/aqhi -> HTTP 404
+- `hko_radar` — 天文台 天氣雷達圖（256km） → image 88161B
+- `hko_satellite` — 天文台 衛星雲圖 → image 216531B
 - `td_speedmap` — 運輸署 行車速度圖 → not an HTTP endpoint (websocket or still unknown)
 - `td_journeytime` — 運輸署 行車時間顯示器 → not an HTTP endpoint (websocket or still unknown)
 - `bus_eta_citybus_nlb` — 城巴／新大嶼山巴士 ETA → 422 — endpoint exists, needs POST body/parameters
-- `sb_bwt_status` — 保安局「口岸通」陸路管制站情況 → HTML page — title: 口岸通
 - `hkemobility_control_point` — 香港出行易 管制站狀況 → HTML page — title: HKeMobility
 - `aisstream` — AISStream 船隻 AIS（WebSocket） → not an HTTP endpoint (websocket or still unknown)
 - `fsd_press` — 消防處 新聞公報 → HTML page — title: 新聞公報 | 香港消防處
@@ -228,3 +237,4 @@
 - `cc_infant_formula_survey` — 消委會 嬰幼兒奶粉價格調查 → HTML page — title: 嬰幼兒配方奶粉價格調查 | 消費者委員會
 - `cc_complaints_stats` — 消委會 投訴統計 → CSV ~1811 rows, cols: 
 - `td_routes_and_fares` — 運輸署 公共交通路線及收費（巴士/小巴/渡輪/電車） → CSV ~42 rows, cols: ROUTE_ID, ROUTE_SEQ, CHANGE
+- `lwb_eta` — 龍運巴士 ETA → 422 — endpoint exists, needs POST body/parameters

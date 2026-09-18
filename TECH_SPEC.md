@@ -54,16 +54,17 @@
 | 特別交通消息 | `https://resource.data.one.gov.hk/td/{tc,en,sc}/specialtrafficnews.xml` | 即時 | 🟢 |
 | 停車場空位（整合版） | `https://api.data.gov.hk/v1/carpark-info-vacancy` | 即時 | 🟢 |
 | 巴士 ETA（城巴＋新大嶼山） | `https://rt.data.gov.hk/v1/transport/batch/stop-eta`、`/v1.1/transport/batch/stop-route` | 1 分鐘 | 🟢 |
-| 巴士 ETA（九巴／龍運） | KMB API | 1 分鐘 | 🟡 要免費註冊 key |
-| 港鐵 / 輕鐵 | MTR API | 實時 | 🟡 待驗 |
+| **九巴／龍運 ETA（免 key！）** | `data.etabus.gov.hk/v1/transport/kmb/eta/{stop_id}/{route}/{service_type}`；路線表 `/route/`；站序 `/route-stop/{route}/{direction}/{service_type}` | 1 分鐘 | 🟢 實測免 key。⚠️ **`direction` 一定要係字面 `outbound`／`inbound`** —— 用 `O`／`I`／`1`／`2` 全部回 422 |
+| **港鐵下一班車（免 key）** | `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=ADM` | 實時 | 🟢 實測免 key（官方 `opendata.mtr.com.hk` 反而要免費註冊） |
+| 龍運 LWB ETA | `data.etabus.gov.hk/v1/transport/lwb/...` | 1 分鐘 | 🟡 service 活，但參數格式同 KMB 唔同，未確認 |
 | 的士車隊（am730 / Big Boss 等） | data.gov.hk 各有 dataset | 實時 | 🟡 待驗 |
 | 電動車充電站（中電） | data.gov.hk | 不定期 | 🟡 |
 
 ### 3.3 口岸／關口 🛂
 | 源 | Endpoint | 更新 | 狀態 |
 |---|---|---|---|
-| 保安局「口岸通」（綠／黃／紅＋平均輪候時間＋突發） | `https://www.sb.gov.hk/chi/bwt/status.html?type=outbound` | **15 分鐘** | 🟡 頁面實測 200，但數據由 JS 後載 → **要捉 JSON endpoint**（具體待辦） |
-| 香港出行易 管制站狀況 | `https://www.hkemobility.gov.hk/tc/control-point` | 15 分鐘 | 🟡 頁面只有 3.5KB（純 JS app）→ 要捉 API |
+| **保安局「口岸通」JSON（綠／黃／紅＋輪候＋突發）** | `https://www.sb.gov.hk/bwt/json/overview_tc.json` | **15 分鐘** | 🟢 **已解決！** 實測 JSON：`updateDate` + `cpInfoList[]`，每個管制站有 `code`、`cpName`、`openFrom/openTo`，同 `arrival`／`departure` 各自再分 **香港居民／訪港旅客／私家車／跨境穿梭巴士**，每項有 `status` 1-3 = 綠／黃／紅。免 key |
+| 香港出行易 管制站狀況 | `https://www.hkemobility.gov.hk/tc/control-point` | 15 分鐘 | 🔴 拆過佢 **1.58MB** 主 JS：只有 `/api/drss`、`/api/ppis`、`/api/cctv` 等地圖／路線 API，**冇管制站輪候時間**；試 `/api/controlPoint` 等全部 403。**口岸通已經取代佢，唔值得再追** |
 | 13 個管制站清單＋開放時間 | 入境處 `immd.gov.hk/hkt/contactus/control_points.html` | 靜態 | 🟢 可直接寫死（可標「現正開放／已關閉」） |
 | 出入境旅客流量（統計） | data.gov.hk | 日／月 | 🟢 非即時，只做背景數字 |
 | 海關車輛清關統計 | `hk-customs-ced_stat-vehicle-clearance` | 月 | 🟢 非即時 |
@@ -73,7 +74,7 @@
 |---|---|---|---|
 | **adsb.lol**（社群 ADS-B） | `https://api.adsb.lol/v2/point/{lat}/{lon}/{radius_nm}` | ~10 秒 | 🟢🟢 **實測香港 100nm 內 40 部飛機，零 key、零註冊** |
 | OpenSky Network | `https://opensky-network.org/api/states/all?lamin=22.10&lomin=113.80&lamax=22.60&lomax=114.50` | ~10 秒 | 🟢 實測 23 部。匿名有速率限制，註冊免費提升 |
-| 香港國際機場航班 | HKIA API | 15 分鐘 | 🟡 待驗 |
+| **香港國際機場航班（免 key）** | `https://www.hongkongairport.com/flightinfo-rest/rest/flights?date=YYYY-MM-DD&lang=en` | 實時 | 🟢 實測。加 `arrival=true&cargo=false` 可過濾。官方 AAHK Data Services API 要開發者帳號，但呢條唔使 |
 
 ### 3.5 海事 🚢
 | 源 | 更新 | 狀態 |
@@ -87,11 +88,28 @@
 ### 3.6 天氣／環境 🌦
 | 源 | Endpoint | 更新 | 狀態 |
 |---|---|---|---|
-| 天文台開放數據 API | `https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType={warnsum\|warningInfo\|rhrread\|fnd\|hhOT\|swt}&lang=tc` | 實時～10 分鐘 | 🟢 逐個實測 200（`hhOT`=潮汐、`swt`=特別天氣提示）。**CORS `*` → 瀏覽器直接 fetch 得** |
-| 雷達圖 / 衛星雲圖 / 過去一小時雨量 | HKO 圖像 | 實時 | 🔴 URL 未 pin 實（我試嘅幾個 pattern 都 404）— **待辦** |
-| 空氣質素健康指數 AQHI（環保署） | — | 每小時 | 🔴 endpoint 未搵到（`aqhi.gov.hk` 猜嘅路徑全 404）— **待辦：去 data.gov.hk 搵真 dataset** |
+| 天文台開放數據 API（**三個唔同 endpoint！**） | 見下 | 實時～每小時 | 🟢 全部實測 |
+| **天氣雷達圖（256km）** | `hko.gov.hk/wxinfo/radars/rad_256_png/2d256nradar_{YYYYMMDDHHMM}.jpg` | ~6 分鐘 | 🟢 實測 88KB。**URL 帶時間戳** → app 要自己砌當前時間，唔中就跟 6／12 分鐘回退再試 |
+| **衛星雲圖** | `hko.gov.hk/wxinfo/intersat/satellite/image/asia/{date}+{offset}GLB__global_150_internet.jpg` | 每小時 | 🟢 實測 216KB。命名規則仍要 pin 實 |
+| 過去一小時雨量 | HKO 圖像 | 實時 | 🟡 待 pin |
+| **空氣質素健康指數 AQHI（各站現況）** | `https://www.aqhi.gov.hk/epd/ddata/html/out/aqhi_ind_rss_Eng.xml` | 每小時 | 🟢 實測 18 個監測站。⚠️ 真 host 係 `www.aqhi.gov.hk`，冇 `www` 解析唔到 |
+| **AQHI 過去 24 小時逐站讀數** | `https://www.aqhi.gov.hk/js/data/past_24_pollutant.js` | 每小時 | 🟢 實測。**唔係 JSON，係 JS**（`var station_24_data = [...]`），要剝個前綴。有 NO2/O3/SO2/CO/PM10/PM25 完整污染物 |
+| AQHI 預報 / 健康風險級別 | `https://www.aqhi.gov.hk/js/data/forecast_aqhi.js` | 每日 | 🟢 實測（`var aqhi_report = [...]`）
+| AQHI 監測站**座標** | — | — | 🔴 所有 feed 只有站名同 StationID，**冇經緯度**。座標只喺 EPD 個互動下載工具後面 |
 | 伽馬輻射水平、閃電位置、地震速報 | HKO open data | 每小時／即時 | 🟡 待驗 |
 | CEDD 斜坡感測器 | — | — | 🔴 非公開，唔納入 |
+
+**天文台 API 要記住：唔同數據喺唔同 endpoint，`dataType` 大細寫有別**
+
+| 想要 | Endpoint | 實測 |
+|---|---|---|
+| 天氣警告 / 現況 / 九天預報 / 特別天氣提示 | `data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType={warnsum\|warningInfo\|rhrread\|fnd\|swt}&lang=tc` | 🟢 keys 實測（無警告時 `warnsum` 回 `{}` 屬正常） |
+| **潮汐** | `.../opendata.php?dataType=HHOT&station=QUB&year=2024&rformat=json`（高低潮 = `HLT`） | 🟢 **`HHOT` 大寫，而且喺 `opendata.php` 唔係 `weather.php`**。要 `station`+`year` |
+| **環境伽馬輻射** | `.../opendata.php?dataType=RYES&station=HKO&date=20260917&rformat=json` | 🟢 `RYES`（唔係 `rmn`／`radiation`）。要 `station`+`date` |
+| **地震** | `.../opendata/earthquake.php?dataType=qem`（全球 M6+）／`feltearthquake`（本地有感） | 🟢 **完全另一個 endpoint `earthquake.php`**。`felt` 無事時回 `{}`，係正常 |
+
+> 教訓：唔好猜 `dataType` 名。呢四個名估錯咗一輪（`hhOT` 要 `HHOT`、潮汐要換 endpoint、地震要換 endpoint）。
+> 權威來源係 data.weather.gov.hk 嘅 HKO Open Data API 文件 PDF。
 
 ### 3.7 政務／新聞 📰（全部免 key）
 | 源 | 狀態 |
@@ -237,12 +255,12 @@ data.gov.hk **冇**任何消費者格價數據（消委會只有投訴統計）�
 跑 `python3 scripts/probe_sources.py` 會重新實測 **48 個源**，並生成 `SOURCES.md`（唔好手改）
 ＋ `data/sources_report.json`。以下係 🔴／🟡，即係仲要解決嘅：
 
-1. **天文台雷達圖 256km** — 所有估嘅 pattern 都 404，要由雷達頁 JS 抽真 URL
-2. **天文台衛星雲圖** — 同上
-3. **天文台潮汐／輻射／地震速報** — `hhOT` 等 dataType 名錯（API 回「Please include valid parameters」），要查官方 API 文件 PDF
-4. **環保署 AQHI** — 估嘅路徑全 404，要抽 aqhi.gov.hk 前端真正嘅 XHR
-5. **保安局「口岸通」JSON** — 頁面真、數據係 JS 載入，要捉 endpoint（**最高價值嘅未解決項**）
-6. **香港出行易 管制站 API** — 同上
+1. ~~天文台雷達圖~~ ✅ **已解**（帶時間戳 URL）
+2. ~~天文台衛星雲圖~~ ✅ **已解**（命名規則仍要 pin 實）
+3. ~~天文台潮汐／輻射／地震~~ ✅ **已解**（`HHOT`／`RYES`／`earthquake.php`）
+4. ~~環保署 AQHI~~ ✅ **已解**（RSS + 兩個 JS 檔）
+5. ~~保安局「口岸通」JSON~~ ✅ **已解**：`sb.gov.hk/bwt/json/overview_tc.json`
+6. ~~香港出行易 管制站 API~~ ✅ **已放棄** —— 拆完個 JS bundle 確認佢自己都冇呢個 API，口岸通已取代
 7. ~~CSDI 存取模式~~ ✅ **已解**：file-api + FeatureServer（CORS 開）+ WFS 三個途徑都實測過
 8. ~~地址搜尋 ALS~~ ✅ **已解**：`www.als.gov.hk/lookup`，CORS `*`
 9. ~~康文署設施 dataset~~ ✅ **已解**：11 個 CSDI dataset 全部實測 🟢

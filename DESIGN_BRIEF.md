@@ -4,10 +4,52 @@
 > "一定要靚" is a requirement, not a preference. Vague prettiness is not acceptable;
 > every claim below is a number you can check. If you deviate, say so and say why.
 
+## 0. CORRECTION 2026-09-18 — read this before §1
+
+The layout below was written as **full-bleed map + floating panel column**. That is WRONG.
+Cyrus corrected the direction: it is a **big-screen tile wall** with **embedded video as the
+headline**, and categories are a drill-down on top. The reference is Palantir, not a web
+dashboard.
+
+**The real contract:**
+
+- **A wall of tiles filling a 12 × 5 grid at 1920×1080.** Tiles are flush; the 1px grid line *is*
+  the divider. **The packing must be exact (60/60 cells)** — a one-cell hole in a video wall reads
+  as a dead feed, not as whitespace.
+- **Video and cameras are the biggest tiles, at the top.** They carry the screen.
+- **A category strip across the top** (`全部 / 供水 / 醫療 / 交通 / 天氣 / 口岸`) with live counts.
+  Pressing a category narrows the wall. Nobody sees all 171 sources at once.
+- **No floating glass cards, no rounded corners, no shadows.** Flat tiles, hairline borders,
+  a corner accent. Depth comes from the grid, not from blur.
+
+### ⚠️ Live video: the finding that changes the design
+
+The v0.1 app embedded YouTube with `youtube.com/embed/live_stream?channel=<CHANNEL_ID>`.
+**That pattern is unreliable and must not be used.**
+
+- Rendered over `file://` → **YouTube Error 153** (player configuration error).
+- Rendered over `https://` with a real referrer → **"This video is unavailable"**.
+- Checked all three channels at 2026-09-18 21:44 → **none was live**
+  (`isLiveNow=false`, no `videoId`, no `hlsManifestUrl`).
+
+So a hardcoded channel embed is a black rectangle most of the time, and the panel labelled
+「直播」 in v0.1 was probably showing nothing.
+
+**The fix — and it makes the wall better:**
+
+1. **Camera stills are the video backbone.** 1,013 TD traffic cameras + 34 HKO weather cameras,
+   keyless, 2–5 minute refresh, **always populated**. Three HKO HD feeds at 1920×1080 carry the
+   top row, and one of them burns in its own timestamp — proof the frame is current.
+2. **TV becomes a resolved status tile, not an embed.** A collector checks each channel for a live
+   `videoId` and writes it to a static JSON. The tile shows the stream when one exists and says
+   「現時無直播」 when none does. **An honest empty state beats a black rectangle pretending to be
+   a feed** — the same rule as §6.
+
 ## 1. The feeling, in one line
 
-A **control-room instrument**, not a website. Dense, calm, precise, dark.
-The reference register is World Monitor's high-density command-centre view, tuned to Hong Kong.
+A **control-room instrument**, not a website. Dense, calm, precise, dark — closer to a wall of
+instrument panels than a page of cards. The reference register is a command centre, tuned to
+Hong Kong.
 
 Three words that must survive every design decision: **dense, legible, honest.**
 

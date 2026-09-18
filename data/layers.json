@@ -1,0 +1,82 @@
+{
+ "_comment": "Map layer registry. geom ∈ point/polygon/line/raster/none.",
+ "geoms": [
+  "point",
+  "polygon",
+  "line",
+  "raster",
+  "none"
+ ],
+ "layers": [
+  {
+   "id": "cameras_all",
+   "source": "td_camera_list",
+   "render": "image_wall",
+   "geom": "point",
+   "title": {
+    "tc": "交通快拍相機",
+    "en": "Traffic Cameras"
+   },
+   "popup": "camera_popup",
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "hko_cameras",
+   "source": "hko_webcam_index",
+   "render": "image_wall",
+   "geom": "point",
+   "title": {
+    "tc": "天氣攝影機",
+    "en": "Weather Cameras"
+   },
+   "popup": "camera_popup",
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "rain_nowcast",
+   "source": "hko_rain_nowcast",
+   "render": "raster_map",
+   "geom": "raster",
+   "title": {
+    "tc": "降雨臨近預報",
+    "en": "Rainfall Nowcast"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "ae_hospitals",
+   "source": "ha_ae_waiting",
+   "render": "gauge_grid",
+   "geom": "none",
+   "title": {
+    "tc": "急症室",
+    "en": "A&E Departments"
+   },
+   "popup": "ae_popup",
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "water_suspension",
+   "source": "wsd_water_suspension",
+   "render": "list",
+   "geom": "none",
+   "title": {
+    "tc": "停水通知",
+    "en": "Water Suspensions"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "district"
+   }
+  }
+ ]
+}

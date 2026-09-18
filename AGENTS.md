@@ -145,3 +145,17 @@ already know is there.
 - `SSL handshake failure` — suspect **your own client first**. Older HK government TLS stacks only
   negotiate at `SECLEVEL=1` (see `set_ciphers("DEFAULT@SECLEVEL=1")` in `probe_sources.py`).
   Water Supplies went from red to green with no change to the source.
+
+### Pitfall 10 — publisher RSS indexes are authoritative; guessed feed paths lie
+RTHK's feed list comes from its own index page (`news.rthk.hk/rthk/ch/rss.htm`), which lists five
+feeds. Guessing the paths produced three that returned **200 with an HTML app shell and zero items** —
+a false success, and exactly why the probe classifies the payload instead of the status. One guess also
+had a duplicated letter (`c_expressnews_cgreaterchina.xml` vs the real `c_expressnews_greaterchina.xml`),
+which no amount of retrying would have fixed. Read the publisher's index; do not enumerate URLs from memory.
+
+### Pitfall 11 — news RSS needs the server, not the browser
+The event-layer feeds (news.gov.hk's seven categories, RTHK's five) are official and reliable, but
+their CORS policy is closed (`sc.news.gov.hk` only for the government ones), so a static front end
+cannot fetch them. They must go through the VPS collector that writes a static JSON the page reads —
+this is the one part of the build that genuinely needs a server. RTHK's 交通消息 has **no RSS at all**
+(page only); TD Special Traffic News is the authoritative traffic source, so nothing is lost.

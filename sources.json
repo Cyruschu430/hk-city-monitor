@@ -2045,6 +2045,127 @@
       "cadence": "weekly",
       "todo": false,
       "notes": "Red tide (algal bloom) observations — a genuinely Hong Kong-specific hazard: it closes beaches and kills farmed fish. Weekly, keyless, and almost nobody surfaces it. Pairs with the beach water quality grading."
+    },
+    {
+      "id": "rthk_local",
+      "group": "news",
+      "name": "港台 本地新聞 / RTHK Local News",
+      "type": "rss",
+      "url": "https://rthk.hk/rthk/news/rss/c_expressnews_clocal.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "RTHK RTHK Local News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+    },
+    {
+      "id": "rthk_world",
+      "group": "news",
+      "name": "港台 國際新聞 / RTHK International News",
+      "type": "rss",
+      "url": "https://rthk.hk/rthk/news/rss/c_expressnews_cinternational.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "RTHK RTHK International News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+    },
+    {
+      "id": "rthk_finance",
+      "group": "news",
+      "name": "港台 財經新聞 / RTHK Finance News",
+      "type": "rss",
+      "url": "https://rthk.hk/rthk/news/rss/c_expressnews_cfinance.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "RTHK RTHK Finance News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+    },
+    {
+      "id": "rthk_sport",
+      "group": "news",
+      "name": "港台 體育新聞 / RTHK Sport News",
+      "type": "rss",
+      "url": "https://rthk.hk/rthk/news/rss/c_expressnews_csport.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "RTHK RTHK Sport News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+    },
+    {
+      "id": "rthk_china",
+      "group": "news",
+      "name": "港台 兩岸新聞 / RTHK Greater China News",
+      "type": "rss",
+      "url": "https://rthk.hk/rthk/news/rss/c_expressnews_greaterchina.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "RTHK RTHK Greater China News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+    },
+    {
+      "id": "gov_news_admin",
+      "group": "news",
+      "name": "政府新聞公報 · 行政",
+      "type": "rss",
+      "url": "https://www.news.gov.hk/tc/categories/admin/html/articlelist.rss.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "news.gov.hk admin category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+    },
+    {
+      "id": "gov_news_finance",
+      "group": "news",
+      "name": "政府新聞公報 · 財經",
+      "type": "rss",
+      "url": "https://www.news.gov.hk/tc/categories/finance/html/articlelist.rss.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "news.gov.hk finance category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+    },
+    {
+      "id": "gov_news_environment",
+      "group": "news",
+      "name": "政府新聞公報 · 環境",
+      "type": "rss",
+      "url": "https://www.news.gov.hk/tc/categories/environment/html/articlelist.rss.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "news.gov.hk environment category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+    },
+    {
+      "id": "gov_news_health",
+      "group": "news",
+      "name": "政府新聞公報 · 衞生",
+      "type": "rss",
+      "url": "https://www.news.gov.hk/tc/categories/health/html/articlelist.rss.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "news.gov.hk health category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+    },
+    {
+      "id": "gov_news_infrastructure",
+      "group": "news",
+      "name": "政府新聞公報 · 基建",
+      "type": "rss",
+      "url": "https://www.news.gov.hk/tc/categories/infrastructure/html/articlelist.rss.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "news.gov.hk infrastructure category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+    },
+    {
+      "id": "gov_news_school_work",
+      "group": "news",
+      "name": "政府新聞公報 · 教育",
+      "type": "rss",
+      "url": "https://www.news.gov.hk/tc/categories/school_work/html/articlelist.rss.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "notes": "news.gov.hk school_work category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
     }
   ]
 }

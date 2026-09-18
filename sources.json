@@ -2017,6 +2017,34 @@
       "todo": false,
       "auto": true,
       "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Immigration Department · hk-immd-set2-address-and-working-hours-of-offices"
+    },
+    {
+      "id": "epd_beach_grading",
+      "group": "civic",
+      "name": "環保署 泳灘水質等級（採樣後 48 小時內）",
+      "type": "rss",
+      "url": "https://cd.epic.epd.gov.hk/beachpsi/tc/beach2.rss",
+      "candidates": [
+        "https://cd.epic.epd.gov.hk/beachpsi/en/beach2.rss"
+      ],
+      "auth": "none",
+      "cadence": "daily",
+      "todo": false,
+      "notes": "Beach water quality grading per gazetted beach — the RSS is the live one (grades are posted within 48 hours of sampling, so it is 'recent' rather than real-time, and the panel must say so rather than implying a live reading). The CSDI dataset carries the geometry: epd_rcd_1631501467099_56497. The yearly historical CSVs are reference material, not a layer."
+    },
+    {
+      "id": "afcd_red_tide",
+      "group": "civic",
+      "name": "漁護署 紅潮情況（每週）",
+      "type": "json",
+      "url": "https://redtide.afcd.gov.hk/data/RTMS_ob_RTLC.json",
+      "candidates": [
+        "https://redtide.afcd.gov.hk/data/RTMS_ob_RTLE.json"
+      ],
+      "auth": "none",
+      "cadence": "weekly",
+      "todo": false,
+      "notes": "Red tide (algal bloom) observations — a genuinely Hong Kong-specific hazard: it closes beaches and kills farmed fish. Weekly, keyless, and almost nobody surfaces it. Pairs with the beach water quality grading."
     }
   ]
 }

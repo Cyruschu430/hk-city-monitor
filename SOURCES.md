@@ -3,7 +3,7 @@
 > **本檔案由 `scripts/probe_sources.py` 自動生成，唔好手改。**
 > 改源 → 改 `sources.json` → 跑 `python3 scripts/probe_sources.py`。
 
-最後實測：`2026-09-18 20:44 CST`　·　**155 / 164 個源成功**
+最後實測：`2026-09-18 21:11 CST`　·　**158 / 167 個源成功**
 
 每個 URL 都真係發過 HTTP 請求。🟢 = 200 而且回傳真數據　🟡 = 未解決／要 key　🔴 = 失敗。
 
@@ -12,8 +12,8 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | 運輸署 交通快拍攝影機位置 | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | irregular | none | CSV ~1013 rows, cols: key, region, district, description, easting, northing |
-| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 30286B |
-| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 582530B |
+| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 31307B |
+| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 580176B |
 | 天文台 天氣攝影機目錄頁 | `https://www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm` | 🟢 ok | static | none | HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko |
 
 - **運輸署 交通快拍攝影機位置** — UTF-16LE with a DOUBLE BOM (\xff\xfe\xff\xfe) and tab-delimited. Columns: key, region, district, description, easting, northing, latitude, longitude, url. Python's utf-16 codec leaves a stray \ufeff on the first field name — strip it or every row reads empty.
@@ -46,7 +46,7 @@
 | 環保署 AQHI（City Dashboard 版，JSON/CSV/XML） | `https://dashboard.data.gov.hk/api/aqhi-individual?format=json` | 🟢 ok | hourly | none | JSON array, 18 items |
 | 天文台 香港暑熱指數（10 分鐘） | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/recent10_10min_hkhi.csv` | 🟢 ok | 10 minutes | none | CSV ~100 rows, cols: Date time, Automatic Weather Station, 10 minute mean Hong Kong Heat Index |
 | 天文台 1 分鐘平均氣溫（分區） | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperatur…` | 🟢 ok | 10 minutes | none | CSV ~39 rows, cols: Date time, Automatic Weather Station, Air Temperature(degree Celsius) |
-| Gridded rainfall nowcast in Hong Kong | `https://data.weather.gov.hk/weatherAPI/hko_data/F3/Gridded_rainfall_nowcast_tc.csv` | 🟢 ok | Every 12 Minutes | none | 2694132B of application/octet-stream |
+| Gridded rainfall nowcast in Hong Kong | `https://data.weather.gov.hk/weatherAPI/hko_data/F3/Gridded_rainfall_nowcast_tc.csv` | 🟢 ok | Every 12 Minutes | none | 2694123B of application/octet-stream |
 | Latest 15-minute mean UV index from 7:00 a.m. to 6:00 p.m. Hong Kong time | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_15min_uvindex.csv` | 🟢 ok | Every 15 minutes from 7:00 a.m. to 6:00 p.m. Hong Kong time | none | 56B of application/octet-stream |
 | Latest tidal information | `https://data.weather.gov.hk/weatherAPI/hko_data/tide/ALL_tc.csv` | 🟢 ok | Every 5 Minutes | none | 256B of application/octet-stream |
 | Rainfall in the past hour from Automatic Weather Station | `https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=tc` | 🟢 ok | Every 15 minutes | none | JSON object, keys: obsTime, hourlyRainfall |
@@ -56,7 +56,7 @@
 | Regional weather in Hong Kong – the latest 1-minute mean relative humidity | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv` | 🟢 ok | Every 10 Minutes | none | 792B of application/octet-stream |
 | Regional weather in Hong Kong – the latest 1-minute mean sea level pressure | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_pressure.csv` | 🟢 ok | Every 10 Minutes | none | 444B of application/octet-stream |
 | Regional weather in Hong Kong – the latest 10-minute mean visibility | `https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LTMV&lang=tc&rfor…` | 🟢 ok | Every 10 Minutes | none | 197B of text/csv |
-| Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv` | 🟢 ok | Every 10 Minutes | none | 1271B of application/octet-stream |
+| Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv` | 🟢 ok | Every 10 Minutes | none | 1273B of application/octet-stream |
 | Regional weather in Hong Kong – the maximum and minimum air temperature from 1-minute mean temperatures since midnight | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_since_midnight_…` | 🟢 ok | Every 10 Minutes | none | 1530B of application/octet-stream |
 | Past 24-hour Air Quality Health Index of individual Air Quality Monitoring stations | `https://www.aqhi.gov.hk/epd/ddata/html/out/24aqhi_Eng.xml` | 🟢 ok | Hourly | none | XML, 432 <item> entries, root tags: AQHI24HrReport, title, link, description, language |
 | Past 24-hour Pollutant Concentration of individual Air Quality Monitoring stations | `https://www.aqhi.gov.hk/epd/ddata/html/out/24pc_Eng.xml` | 🟢 ok | Hourly | none | XML, 0 <item> entries, root tags: AQHI24HrPollutantConcentration, title, link, description, language |
@@ -215,7 +215,7 @@
 | AISStream 船隻 AIS（WebSocket） | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | real-time | free-key | — |
 | 海事處 跨境渡輪到港／離港（5 分鐘） | `https://www.mardep.gov.hk/e_files/hk/opendata/arrival_tc.csv` | 🟢 ok | 5 minutes | none | CSV ~57 rows, cols: 抵達時間|出發地|營運公司|碼頭|泊位|現況 |
 | 海事處 船隻抵港／離港（20 分鐘） | `https://www.mardep.gov.hk/e_files/en/opendata/RN0010.XML` | 🟢 ok | 15 minutes | none | XML, 0 <item> entries, root tags: RN0010, G_SQL1, VESSEL_NAME, SHIP_TYPE_DESC, LIC_MD_REF |
-| Latest tidal information | `https://tide1.hydro.gov.hk/hotide/OpenData/All_tc.csv` | 🟢 ok | 10 minutes | none | 196B of text/csv |
+| Latest tidal information | `https://tide1.hydro.gov.hk/hotide/OpenData/All_tc.csv` | 🟢 ok | 10 minutes | none | 197B of text/csv |
 | Vessel arrivals and departures | `https://www.mardep.gov.hk/e_files/en/opendata/RP05005i.XML` | 🟢 ok | Every 20 minutes | none | XML, 0 <item> entries, root tags: RP05005IXML, G_SQL1, CALL_SIGN, VESSEL_NAME, SHIP_TYPE |
 
 - **AISStream 船隻 AIS（WebSocket）** — THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope. Fallback if that measurement says NO-GO: a free-tier keyed REST AIS provider (VesselAPI and similar) is the next step, but do not add one to this catalogue until a real endpoint has been requested and returns data — vendor marketing pages are not sources.
@@ -257,7 +257,7 @@
 | 康文署 即時可訂場節數（羽毛球／籃球／網球／草地足球／排球） | `https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/badminton/file` | 🟢 ok | 5 minutes | none | large json response, truncated at the 4MB probe cap — reachable, payload not parsed |
 | 消防處 自動體外心臟去顫器（AED）位置（實時） | `https://es.hkfsd.gov.hk/aed_api/export_aed.php?lang=TC` | 🟢 ok | real-time | none | CSV ~4624 rows, cols: AED Name, AED Address, Detailed location of the AED installed, Location Google Map coordinate: latitude, Location Google Map coordinate: longitude, Whether the AED can be used by anyone |
 | Highlights of the Chief Executive’s Policy Address | `https://www.ceo.gov.hk/public/open-data/tc/policy_address/2019_pa_highlights_chi.json` | 🟢 ok | Annually, on the delivery day of the Policy Address | none | JSON array, 57 items |
-| Events happening in Hong Kong Science Park | `https://opendata.hkstp.org/corporate/info/v1/upcomingevent` | 🟢 ok | Real-time | none | JSON object, keys: value |
+| Events happening in Hong Kong Science Park | `https://opendata.hkstp.org/corporate/info/v1/upcomingevent` | 🟢 ok | Real-time | none | empty body |
 | HKSTP Carpark availability – Space (EV) available | `https://opendata.hkstp.org/carpark/v1/ev-vacancy` | 🟢 ok | Real-time | none | JSON object, keys: value |
 | HKSTP Carpark availability – Space available | `https://opendata.hkstp.org/carpark/v1/vacancy` | 🟢 ok | Real-time | none | JSON object, keys: value |
 | Real-time “Next Bus”
@@ -391,12 +391,18 @@ arrival time and related data of Citybus.** — Auto-imported from the CKAN full
 | 地政總署 地址搜尋（ALS / Location Search API） | `https://www.als.gov.hk/lookup?q=30%20Luen%20Wan%20Street` | 🟢 ok | monthly | none | JSON object, keys: RequestAddress, SuggestedAddress |
 | 地政總署 Location Search API（GeoInfo Map） | `https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=cultural%20centre` | 🟢 ok | real-time | none | JSON array, 27 items |
 | 天文台 氣象站網絡（含座標，CSDI） | `https://portal.csdi.gov.hk/server/rest/services/common/hko_rcd_1634995599372_15888/Feat…` | 🟡 ok | snapshot | none | JSON object, keys: type, features |
+| 地政總署 三維數碼地圖 · 建築物（3D Tiles） | `https://data.map.gov.hk/api/3d-data/3dsd/WGS84/building/tileset.json` | 🟢 ok | as issued | free-key | JSON object, keys: asset, geometricError, root |
+| 地政總署 三維數碼地圖 · 基建（3D Tiles） | `https://data.map.gov.hk/api/3d-data/3dsd/WGS84/infrastructure/tileset.json` | 🟢 ok | as issued | free-key | JSON object, keys: asset, geometricError, root |
+| 地政總署 可視化三維地圖 · 方格模型（3D Tiles 1.1） | `https://data.map.gov.hk/api/3d-data/3dtiles/f2/tileset.json` | 🟢 ok | as issued | free-key | JSON object, keys: asset, geometricError, root |
 
 - **CARTO dark-matter 底圖 style** — Keyless vector basemap style for MapLibre. 93 layers, CJK-capable font stacks (HanWangHeiLight / NanumBarunGothic), glyph server at tiles.basemaps.cartocdn.com/fonts/{fontstack}/{range}.pbf. MUST be referenced as a style URL — passing it as an inline style object to MapLibre 4.7.x silently fails.
 - **CSDI 空間數據共享平台 API** — VERIFIED — this is the reusable CSDI access pattern, two forms: (a) whole-dataset GeoJSON via /csdi-webpage/file-api?dataset_id=<id>&format=geojson&layer_name=<layer>; (b) ArcGIS FeatureServer at /server/rest/services/common/<dataset_id>/FeatureServer/0/query?where=1=1&outFields=*&f=geojson which ECHOES the Origin header, so it is CORS-open and usable straight from the browser. WFS GetFeature also works (typeNames=csdi:<layer>, outputFormat=geojson — use 'geojson' not 'json').
 - **地政總署 地址搜尋（ALS / Location Search API）** — VERIFIED and this is the geocoder the app needs. REAL HOST IS www.als.gov.hk (the older als.ogcio.gov.hk / geodata.gov.hk guesses were wrong). Send Accept: application/json (defaults to XML). CORS is '*' so the browser can call it directly. Returns SuggestedAddress[] with GeospatialInformation{Latitude,Longitude,Easting,Northing} and a GeoAddress code. Whole address dataset: https://www.als.gov.hk/data/ALS-GeoJSON.zip. Use this to geocode news/event text — never let an LLM invent coordinates.
 - **地政總署 Location Search API（GeoInfo Map）** — VERIFIED on the NEW hostname www.map.gov.hk (migrated from geodata.gov.hk around 2026-05-04). CORS '*'. Returns name/address/district in ZH+EN plus HK1980 grid x/y. Use ALS for addresses and this for place names.
 - **天文台 氣象站網絡（含座標，CSDI）** — 氣象站位置圖層 —— 分區氣溫／風速要落圖就靠佢。用 CSDI FeatureServer 通用路徑，未實測（dataset id 來自 CSDI portal）。
+- **地政總署 三維數碼地圖 · 建築物（3D Tiles）** — VERIFIED 200, a valid 3D Tiles 1.2.3 tileset: gltfUpAxis Y, 218,927 components, 12,199,184 triangles, 36,557,692 vertices — the whole HK territory of buildings. WGS84, Cesium 3D Tiles open format, free for commercial and non-commercial use with attribution to the Government. Get a free key by emailing 3dmap@landsd.gov.hk (Lands Department, GIS Projects Section). LIMITS: 100 concurrent users, 5GB/s — so do not build a demo that hammers it. NOTE: the docs publish a sample key and the endpoint currently answers without one; do NOT rely on that, and never commit a key to this repo — it belongs in the Cloudflare Worker secret. 12M triangles means this loads on demand, never on first paint.
+- **地政總署 三維數碼地圖 · 基建（3D Tiles）** — VERIFIED 200, valid tileset: 1,826 components, 7,602,740 triangles, 22,797,304 vertices. Same key, licence and limits as the building tileset.
+- **地政總署 可視化三維地圖 · 方格模型（3D Tiles 1.1）** — VERIFIED 200: 3D Tiles 1.1, geometricError 271850.84. The mesh-model (方格形式) visualisation map built from oblique aerial imagery, covering the whole territory — heavier but more faithful than the individualised building models.
 
 ## global
 

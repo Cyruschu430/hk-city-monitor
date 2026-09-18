@@ -20,6 +20,42 @@
 Worker 硬規則：**目標 URL 白名單**（唔可以係開放 proxy，否則會俾人當免費跳板）＋ rate limit。
 細節見 `SECURITY.md`。相機牆仍然可以純靜態。
 
+## 0.00 地圖引擎決定（2026-09-18 查實兩個參考之後）
+
+**兩個參考都做到 2D 同 3D，但做法完全唔同：**
+
+| | 做法 | 實作 |
+|---|---|---|
+| **World Monitor** | **雙引擎**，runtime 切換 | 3D = `globe.gl + Three.js`；平面 = `deck.gl + MapLibre GL JS`。用 `VITE_MAP_INTERACTION_MODE = globe\|flat` 切，存 localStorage |
+| **God's Eye View** | **單引擎**，scene mode 切換 | CesiumJS。**免 token 預設係 2D**（Esri World Imagery）＋ 免 key 地形；加 Cesium ion token 先出 photorealistic 3D |
+
+### 決定：單引擎（Cesium），2D 做預設，3D 做 opt-in
+
+**理由**：雙引擎 = 每樣嘢寫兩次。World Monitor 列出嘅 deck.gl layer 同 globe 嘅 render
+係兩套實作。我哋得一個人，唔可以照抄。
+
+單引擎令：
+- 圖層只寫**一次**
+- **「要唔要 3D」呢個決定可以無限期推遲** —— 因為加 token 就有，唔使改架構
+- 免 token 預設 2D 用 Esri World Imagery（順便：Cyrus 係 Esri 人）
+
+### 新增硬規則：圖層定義要引擎中立
+
+```
+layers.json 一條定義  →  由當前引擎 render
+```
+
+**唔准**為 2D 同 3D 各寫一份圖層定義。`render` 種類（8 種）係抽象嘅，
+引擎係實作細節。違反呢條 = 返工。
+
+### 誠實講代價
+
+- Cesium 比 MapLibre **大好多**（bundle size 要實測，未量度 —— 唔准吹數字）。
+  手機首屏會慢，要有 loading 態（零件 8）
+- 現有 P0 相機牆係 MapLibre 寫嘅 → 轉引擎要重做。但相機牆只係 marker + cluster，細
+- **HK 尺度（18 區、相機、口岸）其實平面圖好用過地球儀。**
+  「我嗰區停水」用地球儀答係錯工具。所以 **平面係預設**，地球係加分項
+
 ## 0. 一句話設計
 
 ```

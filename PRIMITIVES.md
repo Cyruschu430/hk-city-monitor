@@ -7,6 +7,19 @@
 
 ---
 
+## 0.0 前提更正（2026-09-18 實測，重要）
+
+早期假設「MVP 唔需要後端，純靜態前端出 Cloudflare Pages 就睇到」——**對全目錄係錯嘅**。
+實測 164 個源：**62 個**可以瀏覽器直連，**99 個（60%）CORS 封閉**，一定要經 proxy。
+
+所以需要一個 **Cloudflare Worker**（Cyrus 定咗 host 喺 Cloudflare），佢同時係：
+1. 解 CORS
+2. 藏 key（key 只喺 Worker env，前端永遠冇）
+3. 藏源頭 IP（攻擊者只見 Cloudflare）
+
+Worker 硬規則：**目標 URL 白名單**（唔可以係開放 proxy，否則會俾人當免費跳板）＋ rate limit。
+細節見 `SECURITY.md`。相機牆仍然可以純靜態。
+
 ## 0. 一句話設計
 
 ```

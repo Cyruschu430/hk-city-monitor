@@ -28,6 +28,25 @@
 | 6 | **Location context** | 「我住嗰區／我條路線」，一個設定過濾所有圖層 | ⬜ 要建 |
 | 7 | **Time context** | 而家／今日／未來 7 日／今季／今年。每個 vertical 自己宣告 | ⬜ 要建 |
 | 8 | **Honesty states** | loading／live／stale／error 四態 | ✅ `DESIGN_BRIEF.md` |
+| **9** | **Fetch layer** | 每個源標明「瀏覽器直接 fetch」定「必須經 proxy」 | 🟡 已實測，未實作 |
+
+### ⚠️ 零件 9 係我第一次漏咗嘅（實測後補）
+
+實測 164 個源嘅 CORS：
+
+```
+可以瀏覽器直連（ACAO=*）          62
+必須經 proxy（冇 ACAO／白名單）    99   ← 60%
+```
+
+**呢個推翻咗我早期「純靜態就做得到、唔需要後端」嘅講法。** 嗰個結論對相機牆成立
+（TD／HKO 都 `ACAO=*`），但對全目錄唔成立：入境處輪候、水務署停水、天文台雷達、
+RTHK 同政府新聞 RSS、Yahoo 報價、adsb.lol 全部 CORS 封閉。
+
+`sources.json` 每個源而家都有 `fetch: "browser" | "proxy"`。**Panel 定義唔使改**
+—— 呢個係源嘅屬性，唔係 panel 嘅。但 renderer 要知數據邊度嚟。
+
+**規則**：加新源之後一定要量度 CORS，唔准假設。
 
 ### 乜嘢叫「可重用」——用實例講
 

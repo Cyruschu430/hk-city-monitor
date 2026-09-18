@@ -2533,6 +2533,60 @@
       "fetch": "proxy",
       "notes": "VERIFIED 200: 3D Tiles 1.1, geometricError 271850.84. The mesh-model (方格形式) visualisation map built from oblique aerial imagery, covering the whole territory — heavier but more faithful than the individualised building models.",
       "cors_note": "CORS 回 echo Origin（技術上可直接 fetch），但 key 唔可以落前端 → 一定要經 Worker"
+    },
+    {
+      "id": "landsd_basemap_tiles",
+      "group": "geospatial",
+      "name": "地政總署 地形圖 XYZ tile（底圖）",
+      "type": "tiles",
+      "url": "https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/WGS84/14/13387/7151.png",
+      "auth": "none",
+      "cadence": "as issued",
+      "todo": false,
+      "fetch": "browser",
+      "notes": "VERIFIED 200, image/png, 256×256, 30,360 bytes, ACAO=* — keyless, CORS-open, no key. URL: /xyz/basemap/{WGS84|HK80}/{z}/{x}/{y}.png, z10-20. The official HK topographic basemap, so the map is Hong Kong rather than a generic world basemap. MANDATORY attribution: Lands Department logo on the map face plus 'Map from Lands Department'. Courtesy limit: do not invoke with large numbers of requests in a short period — cache tiles in the Worker."
+    },
+    {
+      "id": "landsd_label_tiles",
+      "group": "geospatial",
+      "name": "地政總署 地名標籤 XYZ tile（繁中／英／簡）",
+      "type": "tiles",
+      "url": "https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/hk/tc/WGS84/14/13387/7151.png",
+      "candidates": [
+        "https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/hk/en/WGS84/14/13387/7151.png"
+      ],
+      "auth": "none",
+      "cadence": "as issued",
+      "todo": false,
+      "fetch": "browser",
+      "notes": "VERIFIED 200, 256×256, 4,521 bytes, only 2.4% non-transparent pixels — the signature of a real transparent label overlay with actual text, not a blank tile. URL: /xyz/label/hk/{tc|en|sc}/{WGS84|HK80}/{z}/{x}/{y}.png. This is the source of the Hong Kong feel Cyrus asked for: official Hong Kong place names in Traditional Chinese, as a separate overlay layer on the basemap. Works on top of any basemap including the imagery tiles."
+    },
+    {
+      "id": "landsd_imagery_tiles",
+      "group": "geospatial",
+      "name": "地政總署 影像圖 XYZ tile（航拍／衛星）",
+      "type": "tiles",
+      "url": "https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/imagery/WGS84/14/13387/7151.png",
+      "auth": "none",
+      "cadence": "as issued",
+      "todo": false,
+      "fetch": "browser",
+      "notes": "VERIFIED 200, 256×256, 183,355 bytes, ACAO=* — a real aerial image tile, keyless. URL: /xyz/imagery/{sr}/{z}/{x}/{y}.png, z0-20 WGS84. LandsD's own aerial photo and satellite imagery, so a keyless satellite basemap exists without Esri — though Esri World_Imagery (also keyless, verified) remains a good alternative or blend. Copyright covers Digital Aerial Photo and Digital Orthophoto."
+    },
+    {
+      "id": "esri_world_imagery",
+      "group": "geospatial",
+      "name": "Esri World Imagery XYZ tile（免 key，免費）",
+      "type": "tiles",
+      "url": "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/14/7151/13387",
+      "candidates": [
+        "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer?f=json"
+      ],
+      "auth": "none",
+      "cadence": "continuous",
+      "todo": false,
+      "fetch": "browser",
+      "notes": "VERIFIED 200, image/jpeg, ACAO=* — Esri's World Imagery tile service is publicly readable with no key and no billing, which is why projects like gods-eye-view boot keyless on it. NOTE the tile order is {z}/{y}/{x}, not {z}/{x}/{y} — the opposite of the LandsD tiles, and the classic source of a blank or wrong-place map. Immediate source of a global satellite basemap around Hong Kong's edges, where LandsD coverage stops."
     }
   ]
 }

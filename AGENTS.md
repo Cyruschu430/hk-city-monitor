@@ -30,7 +30,7 @@ sources.
 |---|---|
 | Build | **Vite + TypeScript**, `strict: true` |
 | Map | **MapLibre GL JS (base) + deck.gl (overlay).** No globe, no Cesium — city scale means a flat map, decided 2026-09-18 after Cyrus pointed out that a globe is the wrong instrument for 18 districts and that 3D can come from Open3Dhk directly. See PRIMITIVES.md §0.00 |
-| Basemap | CARTO dark-matter GL style URL (keyless). *Never* an inline style object — see Pitfalls |
+| Basemap | **LandsD XYZ tiles** (keyless, verified): `mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/WGS84/{z}/{x}/{y}.png` + the **Traditional Chinese label overlay** `…/xyz/label/hk/tc/WGS84/{z}/{x}/{y}.png`, and `…/xyz/imagery/…` for aerial. Changed 2026-09-18: the official HK basemap is what makes this recognisably a Hong Kong product, and Google bills per use. CARTO/OSM stays only as a fallback. **Attribution is mandatory (LandsD logo on the map face).** Esri World Imagery is a keyless global alternative — but its tile order is `{z}/{y}/{x}`. *Never* an inline style object — see Pitfalls |
 | **3D** | **A layer, not an engine.** Open3Dhk 3D Tiles via deck.gl `Tile3DLayer`, lazy-loaded only when a vertical asks for it. 12.2M triangles must never be on first paint |
 | **Layers** | `layers.json` definitions are **engine-agnostic**: one definition, rendered by MapLibre (2D) or deck.gl (3D). Never write a 2D set and a 3D set |
 | UI | Vanilla TS + a small DOM helper. **No React/Vue/Svelte.** |

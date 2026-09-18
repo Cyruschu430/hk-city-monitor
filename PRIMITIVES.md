@@ -42,6 +42,29 @@ Worker 硬規則：**目標 URL 白名單**（唔可以係開放 proxy，否則�
 | **God's Eye View** | 單引擎 CesiumJS，免 token 預設 2D | 地球向 |
 | **我哋** | **MapLibre（底）＋ deck.gl（疊 3D Tiles）** | 城市尺度、無地球 |
 
+### 底圖決定：地政總署 XYZ tile，唔用 CARTO／Google
+
+**三個 LandsD XYZ tile API 全部實測 🟢 免 key、`ACAO=*`、256×256 真 tile：**
+
+| 用途 | URL | 實測 |
+|---|---|---|
+| **地形圖底圖** | `mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/WGS84/{z}/{x}/{y}.png` | 30,360b、100% 不透明 |
+| **地名標籤（繁中）** | `…/xyz/label/hk/tc/WGS84/{z}/{x}/{y}.png` | 4,521b、**2.4% 不透明**（真嘅透明地名層） |
+| **影像圖（航拍）** | `…/xyz/imagery/WGS84/{z}/{x}/{y}.png` | 183,355b、真航拍 |
+
+**點解改用 LandsD 而唔用 CARTO／Google**
+1. **香港特色**（Cyrus 要求）：LandsD 係官方香港地圖 ＋ **繁體中文地名標籤**。
+   CARTO 係通用底圖，地名未必齊。Google 更加係每用一次計錢
+2. **Google 多人用就會燒 API key**（Cyrus 指出）→ 唔可以用喺公開免費專案
+3. LandsD 三個都**免 key**，冇 billing 風險
+
+**亦保留 Esri World Imagery 做替代**（實測免 key、免費、`ACAO=*`）——
+全球覆蓋，補香港邊界以外。⚠️ **佢個 tile 次序係 `{z}/{y}/{x}`，同 LandsD 相反** —— 掉轉就會出錯位置，係經典陷阱。
+
+⚠️ **強制標註**：LandsD 要求地圖面**要有地政總署標誌** ＋ "Map from Lands Department" 版權聲明。
+呢個係 UI 要求，唔係註腳。
+⚠️ **禮貌限速**：官方寫明「唔可以短時間大量請求」→ Worker 要 cache tile。
+
 ### Open3Dhk 實測（地政總署，2026-09-18）
 
 | 圖層 | URL | 實測 |

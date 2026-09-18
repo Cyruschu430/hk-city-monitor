@@ -277,8 +277,9 @@
       ],
       "auth": "none",
       "cadence": "1 minute",
-      "notes": "Batch endpoint — a GET returns 422, it needs a POST body of stop ids. Also has per-route ETA endpoints under rt.data.gov.hk.",
-      "kind": "api"
+      "notes": "Batch endpoint — a GET returns 422, it needs a POST body of stop ids. Also has per-route ETA endpoints under rt.data.gov.hk. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.",
+      "kind": "api",
+      "todo": true
     },
     {
       "id": "sb_bwt_status",
@@ -896,7 +897,7 @@
       "auth": "none",
       "cadence": "1 minute",
       "todo": true,
-      "notes": "Service is live (it answers structured 422 JSON) but the parameter format differs from KMB and is unconfirmed. Cheap to finish — try the KMB path shapes with the lwb prefix.",
+      "notes": "Service is live (it answers structured 422 JSON) but the parameter format differs from KMB and is unconfirmed. Cheap to finish — try the KMB path shapes with the lwb prefix. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.",
       "kind": "api"
     },
     {
@@ -1199,7 +1200,7 @@
       "auth": "none",
       "cadence": "1 minute",
       "todo": true,
-      "notes": "Sun Ferry estimated arrivals, refreshed every minute. The route code goes in the query string — confirm the valid codes from their site before wiring it."
+      "notes": "Sun Ferry estimated arrivals, refreshed every minute. The route code goes in the query string — confirm the valid codes from their site before wiring it. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source."
     },
     {
       "id": "hkkf_eta",
@@ -1274,6 +1275,748 @@
       "cadence": "10 minutes",
       "todo": false,
       "notes": "One-minute-mean temperature by station — the finest temperature resolution HKO publishes. Sibling files cover humidity, grass temperature, sea-level pressure and 10-minute wind."
+    },
+    {
+      "id": "ck_hk_ceo_opendata_policy_address_highlights_by_ce",
+      "group": "civic",
+      "name": "Highlights of the Chief Executive’s Policy Address",
+      "type": "dataset",
+      "url": "https://www.ceo.gov.hk/public/open-data/tc/policy_address/2019_pa_highlights_chi.json",
+      "candidates": [
+        "https://www.ceo.gov.hk/public/open-data/en/policy_address/2019_pa_highlights_eng.json",
+        "https://www.ceo.gov.hk/public/open-data/sc/policy_address/2019_pa_highlights_sim.json",
+        "https://www.ceo.gov.hk/public/open-data/en/policy_address/2018_pa_highlights_eng.json"
+      ],
+      "auth": "none",
+      "cadence": "Annually, on the delivery day of the Policy Address",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Chief Executive's Office · hk-ceo-opendata-policy-address-highlights-by-ce"
+    },
+    {
+      "id": "ck_hkstp_hkstp_hkstp_corporate_info_upcoming_event",
+      "group": "civic",
+      "name": "Events happening in Hong Kong Science Park",
+      "type": "dataset",
+      "url": "https://opendata.hkstp.org/corporate/info/v1/upcomingevent",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "Real-time",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-corporate-info-upcoming-event"
+    },
+    {
+      "id": "ck_hkstp_hkstp_hkstp_carpark_ev_vacancy",
+      "group": "civic",
+      "name": "HKSTP Carpark availability – Space (EV) available",
+      "type": "dataset",
+      "url": "https://opendata.hkstp.org/carpark/v1/ev-vacancy",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "Real-time",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-carpark-ev-vacancy"
+    },
+    {
+      "id": "ck_hkstp_hkstp_hkstp_carpark_vacancy",
+      "group": "civic",
+      "name": "HKSTP Carpark availability – Space available",
+      "type": "dataset",
+      "url": "https://opendata.hkstp.org/carpark/v1/vacancy",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "Real-time",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-carpark-vacancy"
+    },
+    {
+      "id": "ck_nlb_bus_nlb_bus_service_v1",
+      "group": "transport",
+      "name": "Bus service of New Lantao Bus Company (1973) Limited (First generation)",
+      "type": "dataset",
+      "url": "https://rt.data.gov.hk/v1/transport/nlb/route.php?action=list",
+      "candidates": [
+        "https://rt.data.gov.hk/v1/transport/nlb/stop.php?action=list",
+        "https://rt.data.gov.hk/v1/transport/nlb/stop.php?action=estimatedArrivals"
+      ],
+      "auth": "none",
+      "cadence": "Real-time",
+      "todo": true,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · New Lantao Bus Company (1973) Limited · nlb-bus-nlb-bus-service-v1 · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source."
+    },
+    {
+      "id": "ck_nlb_bus_nlb_bus_service_v2",
+      "group": "transport",
+      "name": "Bus service of New Lantao Bus Company (1973) Limited (Second generation)",
+      "type": "dataset",
+      "url": "https://rt.data.gov.hk/v2/transport/nlb/route.php?action=list",
+      "candidates": [
+        "https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=list&routeId={routeId}",
+        "https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=estimatedArrivals&routeId={routeId}&stopId={stopId}&language={languageCode}"
+      ],
+      "auth": "none",
+      "cadence": "Real-time",
+      "todo": true,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · New Lantao Bus Company (1973) Limited · nlb-bus-nlb-bus-service-v2 · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source."
+    },
+    {
+      "id": "ck_hk_td_tis_1_special_traffic_news",
+      "group": "transport",
+      "name": "Special Traffic News",
+      "type": "dataset",
+      "url": "http://resource.data.one.gov.hk/td/en/specialtrafficnews.xml",
+      "candidates": [
+        "http://resource.data.one.gov.hk/td/sc/specialtrafficnews.xml"
+      ],
+      "auth": "none",
+      "cadence": "real-time",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_1-special-traffic-news"
+    },
+    {
+      "id": "ck_hk_td_tis_19_special_traffic_news_v2",
+      "group": "transport",
+      "name": "Special Traffic News (2nd Generation)",
+      "type": "dataset",
+      "url": "https://www.td.gov.hk/tc/special_news/trafficnews.xml",
+      "candidates": [
+        "https://www.td.gov.hk/en/special_news/trafficnews.xml",
+        "https://www.td.gov.hk/sc/special_news/trafficnews.xml"
+      ],
+      "auth": "none",
+      "cadence": "real-time",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_19-special-traffic-news-v2"
+    },
+    {
+      "id": "ck_ctb_eta_transport_realtime_eta",
+      "group": "civic",
+      "name": "Real-time “Next Bus”\narrival time and related data of Citybus.",
+      "type": "dataset",
+      "url": "https://rt.data.gov.hk/v1/transport/citybus-nwfb/company/ctb",
+      "candidates": [
+        "https://rt.data.gov.hk/v1/transport/citybus-nwfb/route/ctb",
+        "https://rt.data.gov.hk/v1/transport/citybus-nwfb/stop",
+        "https://rt.data.gov.hk/v1/transport/citybus-nwfb/route-stop/ctb"
+      ],
+      "auth": "none",
+      "cadence": "Estimated Time of Arrival (ETA) data updated every 1 minute. \n\nOther data set update upon there is any adjustment.",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Citybus Limited · ctb-eta-transport-realtime-eta"
+    },
+    {
+      "id": "ck_hk_dpo_datagovhk1_pressrelease_search",
+      "group": "civic",
+      "name": "Press Release Search",
+      "type": "dataset",
+      "url": "https://api.data.gov.hk/v1/pressrelease/search",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "every 15 minutes",
+      "todo": true,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Digital Policy Office · hk-dpo-datagovhk1-pressrelease-search · Probed 400 'REQUEST ERROR: official parameter missing'. The parameter name is undocumented — q / query / lang / offset / limit all still 400. Needs one more discovery pass. Nothing depends on it: the news layer runs on the gov press-release RSS feeds, which work."
+    },
+    {
+      "id": "ck_hk_hko_rss_gridded_rainfall_nowcast_in_hong_kong",
+      "group": "weather",
+      "name": "Gridded rainfall nowcast in Hong Kong",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/F3/Gridded_rainfall_nowcast_tc.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/F3/Gridded_rainfall_nowcast.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/F3/Gridded_rainfall_nowcast_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 12 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-gridded-rainfall-nowcast-in-hong-kong"
+    },
+    {
+      "id": "ck_hk_hko_rss_latest_fifteen_minute_mean_uv_index",
+      "group": "weather",
+      "name": "Latest 15-minute mean UV index from 7:00 a.m. to 6:00 p.m. Hong Kong time",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_15min_uvindex.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_15min_uvindex_uc.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_15min_uvindex_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 15 minutes from 7:00 a.m. to 6:00 p.m. Hong Kong time",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-fifteen-minute-mean-uv-index"
+    },
+    {
+      "id": "ck_hk_hko_rss_latest_tidal_info",
+      "group": "weather",
+      "name": "Latest tidal information",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/tide/ALL_tc.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/tide/ALL_en.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/tide/ALL_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 5 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-tidal-info"
+    },
+    {
+      "id": "ck_hk_hko_rss_rainfall_in_the_past_hour",
+      "group": "weather",
+      "name": "Rainfall in the past hour from Automatic Weather Station",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=tc",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=en",
+        "https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=sc"
+      ],
+      "auth": "none",
+      "cadence": "Every 15 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-rainfall-in-the-past-hour"
+    },
+    {
+      "id": "ck_hk_hko_rss_regional_weather_past_24_hour_tempera",
+      "group": "weather",
+      "name": "Regional weather in Hong Kong - past 24-hour temperature difference",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_past24_temperature_diff.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_past24_temperature_diff_uc.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_past24_temperature_diff_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 10 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-regional-weather-past-24-hour-temperature-difference"
+    },
+    {
+      "id": "ck_hk_hko_rss_latest_one_minute_solar_radiation_inf",
+      "group": "weather",
+      "name": "Regional weather in Hong Kong – the latest 1-minute global solar radiation and direct solar radiation and diffuse radiat",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_solar.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_solar_uc.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_solar_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 10 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-solar-radiation-info"
+    },
+    {
+      "id": "ck_hk_hko_rss_latest_one_minute_mean_grass_temp",
+      "group": "weather",
+      "name": "Regional weather in Hong Kong – the latest 1-minute mean grass temperature from 5:00 p.m. to 8:00 a.m. the following dat",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_grass.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_grass_uc.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_grass_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 10 minutes from 5:00 p.m. to 8:00 a.m. the following date Hong Kong time",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-grass-temp"
+    },
+    {
+      "id": "ck_hk_hko_rss_latest_one_minute_mean_rh",
+      "group": "weather",
+      "name": "Regional weather in Hong Kong – the latest 1-minute mean relative humidity",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity_uc.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 10 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-rh"
+    },
+    {
+      "id": "ck_hk_hko_rss_latest_one_minute_mean_sea_level_pres",
+      "group": "weather",
+      "name": "Regional weather in Hong Kong – the latest 1-minute mean sea level pressure",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_pressure.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_pressure_uc.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_pressure_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 10 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-sea-level-pressure"
+    },
+    {
+      "id": "ck_hk_hko_rss_regional_weather_latest_10_min_mean_v",
+      "group": "weather",
+      "name": "Regional weather in Hong Kong – the latest 10-minute mean visibility",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LTMV&lang=tc&rformat=csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LTMV&lang=en&rformat=csv",
+        "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LTMV&lang=sc&rformat=csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 10 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-regional-weather-latest-10-min-mean-visibility"
+    },
+    {
+      "id": "ck_hk_hko_rss_latest_ten_minute_wind_info",
+      "group": "weather",
+      "name": "Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind_uc.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 10 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-ten-minute-wind-info"
+    },
+    {
+      "id": "ck_hk_hko_rss_max_and_min_air_temp_since_midnight",
+      "group": "weather",
+      "name": "Regional weather in Hong Kong – the maximum and minimum air temperature from 1-minute mean temperatures since midnight",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_since_midnight_maxmin.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_since_midnight_maxmin_uc.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_since_midnight_maxmin_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 10 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-max-and-min-air-temp-since-midnight"
+    },
+    {
+      "id": "ck_hk_immd_set5_statistics_passenger_traffic_festiv",
+      "group": "border",
+      "name": "Statistics on Passenger Traffic for Festive Periods",
+      "type": "dataset",
+      "url": "https://www.immd.gov.hk/opendata/eng/transport/immigration_clearance/statistics_passenger_traffic_festival_periods.csv",
+      "candidates": [
+        "https://www.immd.gov.hk/opendata/hkt/transport/immigration_clearance/statistics_passenger_traffic_festival_periods.csv",
+        "https://www.immd.gov.hk/opendata/hks/transport/immigration_clearance/statistics_passenger_traffic_festival_periods.csv"
+      ],
+      "auth": "none",
+      "cadence": "Daily during the specified festive periods [The dates of each festive periods are to be determined on each festivals (e.g. Lunar New Year, Easter, Ching Ming, Labour Day, National Day).]",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Immigration Department · hk-immd-set5-statistics-passenger-traffic-festive-period"
+    },
+    {
+      "id": "ck_hk_lcsd_lib_lib_computers",
+      "group": "civic",
+      "name": "Availability of Computer Facilities at Hong Kong Public Libraries",
+      "type": "dataset",
+      "url": "https://sls.hkpl.gov.hk/api/cfm-admin-service/open-api/library/selectLibraryPageInfoForPSI?language=en-US",
+      "candidates": [
+        "https://sls.hkpl.gov.hk/api/cfm-admin-service/open-api/library/selectLibraryPageInfoForPSI?language=zh-HK",
+        "https://sls.hkpl.gov.hk/api/cfm-admin-service/open-api/library/selectLibraryPageInfoForPSI?language=zh-CN"
+      ],
+      "auth": "none",
+      "cadence": "Every 10 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Leisure and Cultural Services Department · hk-lcsd-lib-lib-computers"
+    },
+    {
+      "id": "ck_hk_lcsd_facility_facility_tsp",
+      "group": "civic",
+      "name": "Available Session of Turf Soccer Pitches by Venue",
+      "type": "dataset",
+      "url": "https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/turf-soccer-pitch/file",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "Every 5 Minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Leisure and Cultural Services Department · hk-lcsd-facility-facility-tsp"
+    },
+    {
+      "id": "ck_hk_md_hydro_10mintues_latest_tidal_information",
+      "group": "marine",
+      "name": "Latest tidal information",
+      "type": "dataset",
+      "url": "https://tide1.hydro.gov.hk/hotide/OpenData/All_tc.csv",
+      "candidates": [
+        "https://tide1.hydro.gov.hk/hotide/OpenData/All_en.csv",
+        "https://tide1.hydro.gov.hk/hotide/OpenData/All_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "10 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Marine Department · hk-md-hydro-10mintues-latest-tidal-information"
+    },
+    {
+      "id": "ck_hk_md_mardep_vessel_arrivals_and_departures",
+      "group": "marine",
+      "name": "Vessel arrivals and departures",
+      "type": "dataset",
+      "url": "https://www.mardep.gov.hk/e_files/en/opendata/RP05005i.XML",
+      "candidates": [
+        "https://www.mardep.gov.hk/e_files/en/opendata/RP04005i.XML",
+        "https://www.mardep.gov.hk/e_files/en/opendata/RP06005i.XML",
+        "https://www.mardep.gov.hk/e_files/en/opendata/RP05505i.XML"
+      ],
+      "auth": "none",
+      "cadence": "Every 20 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Marine Department · hk-md-mardep-vessel-arrivals-and-departures"
+    },
+    {
+      "id": "ck_hk_td_msd_1_metered_parking_spaces_data",
+      "group": "transport",
+      "name": "Distribution of Metered Parking Spaces and Occupancy of those Installed with New Parking Meters",
+      "type": "dataset",
+      "url": "https://resource.data.one.gov.hk/td/psiparkingspaces/spaceinfo/parkingspaces.csv",
+      "candidates": [
+        "https://resource.data.one.gov.hk/td/psiparkingspaces/occupancystatus/occupancystatus.csv"
+      ],
+      "auth": "none",
+      "cadence": "FROM EVERY MINUTE TO DAILY",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-msd_1-metered-parking-spaces-data"
+    },
+    {
+      "id": "ck_hk_td_sm_2_journey_time_indicators",
+      "group": "transport",
+      "name": "Journey time indicators",
+      "type": "dataset",
+      "url": "https://static.data.gov.hk/td/journey-time-indicators/notification.csv",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "Every 2 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_2-journey-time-indicators"
+    },
+    {
+      "id": "ck_hk_td_sm_8_journey_time_indicators_v2",
+      "group": "transport",
+      "name": "Journey time indicators (2nd Generation)",
+      "type": "dataset",
+      "url": "https://resource.data.one.gov.hk/td/jss/Journeytimev2.xml",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "Every 2 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_8-journey-time-indicators-v2"
+    },
+    {
+      "id": "ck_hk_td_msd_2_non_metered_parking_spaces_data",
+      "group": "transport",
+      "name": "Location and occupancy status of non-metered on-street parking spaces installed with sensors",
+      "type": "dataset",
+      "url": "https://data.nmospiot.gov.hk/api/pvds/Download/parkingspace",
+      "candidates": [
+        "https://data.nmospiot.gov.hk/api/pvds/Download/occupancystatus"
+      ],
+      "auth": "none",
+      "cadence": "FROM EVERY MINUTE TO DAILY",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-msd_2-non-metered-parking-spaces-data"
+    },
+    {
+      "id": "ck_hk_td_sm_7_real_time_arrival_data_of_gmb",
+      "group": "transport",
+      "name": "Real-time arrival data of green minibuses (GMBs)",
+      "type": "dataset",
+      "url": "https://data.etagmb.gov.hk/last-update/",
+      "candidates": [
+        "https://data.etagmb.gov.hk/route/{region}",
+        "https://data.etagmb.gov.hk/route/{region}/{route_code}"
+      ],
+      "auth": "none",
+      "cadence": "Estimated Time of Arrival (ETA) data: every minute. Other data: when necessary.",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_7-real-time-arrival-data-of-gmb"
+    },
+    {
+      "id": "ck_hk_td_sm_3_speed_map_panels",
+      "group": "transport",
+      "name": "Speed map panels",
+      "type": "dataset",
+      "url": "https://static.data.gov.hk/td/speed-map-panels/notification.csv",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "Every 2 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_3-speed-map-panels"
+    },
+    {
+      "id": "ck_hk_td_sm_9_speed_map_panels_v2",
+      "group": "transport",
+      "name": "Speed map panels (2nd Generation)",
+      "type": "dataset",
+      "url": "https://static.data.gov.hk/td/speed-map-panels-v2/info/Speed_Map_Panel_Locations_tc.csv",
+      "candidates": [
+        "https://static.data.gov.hk/td/speed-map-panels-v2/info/Speed_Map_Panel_Locations_en.csv",
+        "https://static.data.gov.hk/td/speed-map-panels-v2/info/Speed_Map_Panel_Locations_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 2 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_9-speed-map-panels-v2"
+    },
+    {
+      "id": "ck_hk_td_tis_33_traffic_data_traffic_detectors_inst",
+      "group": "transport",
+      "name": "Traffic Data collected by Traffic Detectors Installed at Smart Lampposts",
+      "type": "dataset",
+      "url": "https://static.data.gov.hk/td/traffic-data-slp/info/traffic_speed_volume_occ_info-slp.csv",
+      "candidates": [
+        "https://resource.data.one.gov.hk/td/traffic-detectors/rawSpeedVol_SLP-all.xml"
+      ],
+      "auth": "none",
+      "cadence": "Every 1 minute",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_33-traffic-data-traffic-detectors-installed-at-smart-lampposts"
+    },
+    {
+      "id": "ck_hk_td_sm_4_traffic_data_strategic_major_roads",
+      "group": "transport",
+      "name": "Traffic Data of Strategic / Major Roads",
+      "type": "dataset",
+      "url": "https://static.data.gov.hk/td/traffic-data-strategic-major-roads/info/traffic_speed_volume_occ_info.csv",
+      "candidates": [
+        "https://resource.data.one.gov.hk/td/traffic-detectors/rawSpeedVol-all.xml",
+        "https://static.data.gov.hk/td/traffic-data-strategic-major-roads/info/speed_segments_info.csv",
+        "https://resource.data.one.gov.hk/td/traffic-detectors/irnAvgSpeed-all.xml"
+      ],
+      "auth": "none",
+      "cadence": "Every 1 minute (Raw Data). Every 2 minutes (Processed Data)",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_4-traffic-data-strategic-major-roads"
+    },
+    {
+      "id": "ck_hk_td_tis_2_traffic_snapshot_images",
+      "group": "transport",
+      "name": "Traffic snapshot images",
+      "type": "dataset",
+      "url": "https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.xml",
+      "candidates": [
+        "https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_En.xml",
+        "https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Sc.xml",
+        "https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_En.csv"
+      ],
+      "auth": "none",
+      "cadence": "Every 2 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_2-traffic-snapshot-images"
+    },
+    {
+      "id": "ck_hk_td_sm_1_traffic_speed_map",
+      "group": "transport",
+      "name": "Traffic speed map",
+      "type": "dataset",
+      "url": "https://static.data.gov.hk/td/traffic-speed-map/notification.csv",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "Every 5 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_1-traffic-speed-map"
+    },
+    {
+      "id": "ck_wkcda_wkcarpark_wkcarpark",
+      "group": "civic",
+      "name": "Car Park Information of West Kowloon Cultural District Authoirty",
+      "type": "dataset",
+      "url": "https://openapi.westkowloon.hk/datagovhk/carpark",
+      "candidates": [],
+      "auth": "none",
+      "cadence": "Car Park vacancy information updated every 5 minutes",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · West Kowloon Cultural District Authority · wkcda-wkcarpark-wkcarpark"
+    },
+    {
+      "id": "ck_hk_dpo_datagovhk2_city_dashboard_aqhi",
+      "group": "civic",
+      "name": "Air Quality Health Index (City Dashboard Version)",
+      "type": "dataset",
+      "url": "https://static.data.gov.hk/opendata/dataset/aqhi/aqhi.csv",
+      "candidates": [
+        "https://static.data.gov.hk/opendata/dataset/aqhi/aqhi.json",
+        "https://static.data.gov.hk/opendata/dataset/aqhi/aqhi.xml",
+        "https://dashboard.data.gov.hk/api/aqhi-individual?format=csv"
+      ],
+      "auth": "none",
+      "cadence": "AQHI: Hourly / Forecast: 00:30, 10:30 and 16:30 everyday and as required",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Digital Policy Office · hk-dpo-datagovhk2-city-dashboard-aqhi"
+    },
+    {
+      "id": "ck_hk_epd_airteam_past24hr_aqhi_of_individual_air_q",
+      "group": "weather",
+      "name": "Past 24-hour Air Quality Health Index of individual Air Quality Monitoring stations",
+      "type": "dataset",
+      "url": "https://www.aqhi.gov.hk/epd/ddata/html/out/24aqhi_Eng.xml",
+      "candidates": [
+        "https://www.aqhi.gov.hk/epd/ddata/html/out/24aqhi_ChT.xml",
+        "https://www.aqhi.gov.hk/epd/ddata/html/out/24aqhi_ChS.xml"
+      ],
+      "auth": "none",
+      "cadence": "Hourly",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past24hr-aqhi-of-individual-air-quality-monitoring-stations"
+    },
+    {
+      "id": "ck_hk_epd_airteam_past24hr_pc_of_individual_air_qua",
+      "group": "weather",
+      "name": "Past 24-hour Pollutant Concentration of individual Air Quality Monitoring stations",
+      "type": "dataset",
+      "url": "https://www.aqhi.gov.hk/epd/ddata/html/out/24pc_Eng.xml",
+      "candidates": [
+        "https://www.aqhi.gov.hk/epd/ddata/html/out/24pc_ChT.xml",
+        "https://www.aqhi.gov.hk/epd/ddata/html/out/24pc_ChS.xml"
+      ],
+      "auth": "none",
+      "cadence": "Hourly",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past24hr-pc-of-individual-air-quality-monitoring-stations"
+    },
+    {
+      "id": "ck_hk_epd_airteam_past_record_of_air_pollution_inde",
+      "group": "weather",
+      "name": "Past Record of Air Pollution Index (English Version)",
+      "type": "dataset",
+      "url": "http://www.aqhi.gov.hk/api_history/download/hourly/eng/hr071999.csv",
+      "candidates": [
+        "http://www.aqhi.gov.hk/api_history/download/hourly/eng/hr081999.csv",
+        "http://www.aqhi.gov.hk/api_history/download/hourly/eng/hr091999.csv",
+        "http://www.aqhi.gov.hk/api_history/download/hourly/eng/hr101999.csv"
+      ],
+      "auth": "none",
+      "cadence": "Only the hourly Air Pollution Index (API) of the period from July 1999 to December 2013 is available",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past-record-of-air-pollution-index-en"
+    },
+    {
+      "id": "ck_hk_epd_airteam_past_record_of_air_pollution_inde_2",
+      "group": "weather",
+      "name": "Past Record of Air Pollution Index (Traditional Chinese Version)",
+      "type": "dataset",
+      "url": "http://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr071999c.csv",
+      "candidates": [
+        "http://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr081999c.csv",
+        "http://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr091999c.csv",
+        "http://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr101999c.csv"
+      ],
+      "auth": "none",
+      "cadence": "Only the hourly Air Pollution Index (API) of the period from July 1999 to December 2013 is available",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past-record-of-air-pollution-index-tc"
+    },
+    {
+      "id": "ck_hk_hko_rss_hourly_ambient_gamma_radiation_level_",
+      "group": "weather",
+      "name": "Hourly ambient gamma radiation level in Hong Kong",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_hourly_rmn.csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_hourly_rmn_uc.csv",
+        "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_hourly_rmn_sc.csv"
+      ],
+      "auth": "none",
+      "cadence": "Hourly",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-hourly-ambient-gamma-radiation-level-in-hong-kong"
+    },
+    {
+      "id": "ck_hk_hko_rss_cloud_ground_lightning_count_past_hou",
+      "group": "weather",
+      "name": "Lightning count over Hong Kong territory in the past hour",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LHL&lang=tc&rformat=csv",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LHL&lang=en&rformat=csv",
+        "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LHL&lang=sc&rformat=csv"
+      ],
+      "auth": "none",
+      "cadence": "Hourly",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-cloud-ground-lightning-count-past-hour"
+    },
+    {
+      "id": "ck_hk_hko_rss_local_weather_forecast",
+      "group": "weather",
+      "name": "Local weather forecast",
+      "type": "dataset",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=tc",
+      "candidates": [
+        "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=en",
+        "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=sc"
+      ],
+      "auth": "none",
+      "cadence": "Hourly and when there is update",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-local-weather-forecast"
+    },
+    {
+      "id": "ck_hk_immd_set2_address_and_working_hours_of_office",
+      "group": "border",
+      "name": "Address and Working Hours of Offices",
+      "type": "dataset",
+      "url": "https://www.immd.gov.hk/opendata/eng/law-and-security/office_address_working_hours/office_address_and_working_hours.csv",
+      "candidates": [
+        "https://www.immd.gov.hk/opendata/hkt/law-and-security/office_address_working_hours/office_address_and_working_hours.csv",
+        "https://www.immd.gov.hk/opendata/hks/law-and-security/office_address_working_hours/office_address_and_working_hours.csv"
+      ],
+      "auth": "none",
+      "cadence": "As and when there is a change to the address or working hours of Immigration offices",
+      "todo": false,
+      "auto": true,
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Immigration Department · hk-immd-set2-address-and-working-hours-of-offices"
     }
   ]
 }

@@ -3,7 +3,7 @@
 > **本檔案由 `scripts/probe_sources.py` 自動生成，唔好手改。**
 > 改源 → 改 `sources.json` → 跑 `python3 scripts/probe_sources.py`。
 
-最後實測：`2026-09-18 20:09 CST`　·　**95 / 103 個源成功**
+最後實測：`2026-09-18 20:26 CST`　·　**142 / 151 個源成功**
 
 每個 URL 都真係發過 HTTP 請求。🟢 = 200 而且回傳真數據　🟡 = 未解決／要 key　🔴 = 失敗。
 
@@ -12,8 +12,8 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | 運輸署 交通快拍攝影機位置 | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | irregular | none | CSV ~1013 rows, cols: key, region, district, description, easting, northing |
-| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 30826B |
-| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 588539B |
+| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 30756B |
+| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 577151B |
 | 天文台 天氣攝影機目錄頁 | `https://www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm` | 🟢 ok | static | none | HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko |
 
 - **運輸署 交通快拍攝影機位置** — UTF-16LE with a DOUBLE BOM (\xff\xfe\xff\xfe) and tab-delimited. Columns: key, region, district, description, easting, northing, latitude, longitude, url. Python's utf-16 codec leaves a stray \ufeff on the first field name — strip it or every row reads empty.
@@ -46,6 +46,25 @@
 | 環保署 AQHI（City Dashboard 版，JSON/CSV/XML） | `https://dashboard.data.gov.hk/api/aqhi-individual?format=json` | 🟢 ok | hourly | none | JSON array, 18 items |
 | 天文台 香港暑熱指數（10 分鐘） | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/recent10_10min_hkhi.csv` | 🟢 ok | 10 minutes | none | CSV ~100 rows, cols: Date time, Automatic Weather Station, 10 minute mean Hong Kong Heat Index |
 | 天文台 1 分鐘平均氣溫（分區） | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperatur…` | 🟢 ok | 10 minutes | none | CSV ~39 rows, cols: Date time, Automatic Weather Station, Air Temperature(degree Celsius) |
+| Gridded rainfall nowcast in Hong Kong | `https://data.weather.gov.hk/weatherAPI/hko_data/F3/Gridded_rainfall_nowcast_tc.csv` | 🟢 ok | Every 12 Minutes | none | 2694131B of application/octet-stream |
+| Latest 15-minute mean UV index from 7:00 a.m. to 6:00 p.m. Hong Kong time | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_15min_uvindex.csv` | 🟢 ok | Every 15 minutes from 7:00 a.m. to 6:00 p.m. Hong Kong time | none | 56B of application/octet-stream |
+| Latest tidal information | `https://data.weather.gov.hk/weatherAPI/hko_data/tide/ALL_tc.csv` | 🟢 ok | Every 5 Minutes | none | 256B of application/octet-stream |
+| Rainfall in the past hour from Automatic Weather Station | `https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=tc` | 🟢 ok | Every 15 minutes | none | JSON object, keys: obsTime, hourlyRainfall |
+| Regional weather in Hong Kong - past 24-hour temperature difference | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_past24_temperat…` | 🟢 ok | Every 10 Minutes | none | 1277B of application/octet-stream |
+| Regional weather in Hong Kong – the latest 1-minute global solar radiation and direct solar radiation and diffuse radiat | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_solar.csv` | 🟢 ok | Every 10 Minutes | none | 232B of application/octet-stream |
+| Regional weather in Hong Kong – the latest 1-minute mean grass temperature from 5:00 p.m. to 8:00 a.m. the following dat | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_grass.csv` | 🟢 ok | Every 10 minutes from 5:00 p.m. to 8:00 a.m. the following date Hong Kong time | none | 160B of application/octet-stream |
+| Regional weather in Hong Kong – the latest 1-minute mean relative humidity | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv` | 🟢 ok | Every 10 Minutes | none | 792B of application/octet-stream |
+| Regional weather in Hong Kong – the latest 1-minute mean sea level pressure | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_pressure.csv` | 🟢 ok | Every 10 Minutes | none | 444B of application/octet-stream |
+| Regional weather in Hong Kong – the latest 10-minute mean visibility | `https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LTMV&lang=tc&rfor…` | 🟢 ok | Every 10 Minutes | none | 197B of text/csv |
+| Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv` | 🟢 ok | Every 10 Minutes | none | 1259B of application/octet-stream |
+| Regional weather in Hong Kong – the maximum and minimum air temperature from 1-minute mean temperatures since midnight | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_since_midnight_…` | 🟢 ok | Every 10 Minutes | none | 1530B of application/octet-stream |
+| Past 24-hour Air Quality Health Index of individual Air Quality Monitoring stations | `https://www.aqhi.gov.hk/epd/ddata/html/out/24aqhi_Eng.xml` | 🟢 ok | Hourly | none | XML, 432 <item> entries, root tags: AQHI24HrReport, title, link, description, language |
+| Past 24-hour Pollutant Concentration of individual Air Quality Monitoring stations | `https://www.aqhi.gov.hk/epd/ddata/html/out/24pc_Eng.xml` | 🟢 ok | Hourly | none | XML, 0 <item> entries, root tags: AQHI24HrPollutantConcentration, title, link, description, language |
+| Past Record of Air Pollution Index (English Version) | `https://www.aqhi.gov.hk/api_history/download/hourly/eng/hr071999.csv` | 🟢 ok | Only the hourly Air Pollution Index (API) of the period from July 1999 to December 2013 is available | none | 33655B of application/octet-stream |
+| Past Record of Air Pollution Index (Traditional Chinese Version) | `https://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr071999c.csv` | 🟢 ok | Only the hourly Air Pollution Index (API) of the period from July 1999 to December 2013 is available | none | 33486B of application/octet-stream |
+| Hourly ambient gamma radiation level in Hong Kong | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_hourly_rmn.csv` | 🟢 ok | Hourly | none | 415B of application/octet-stream |
+| Lightning count over Hong Kong territory in the past hour | `https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LHL&lang=tc&rform…` | 🟢 ok | Hourly | none | 340B of text/csv |
+| Local weather forecast | `https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=tc` | 🟢 ok | Hourly and when there is update | none | JSON object, keys: generalSituation, tcInfo, fireDangerWarning, forecastPeriod, forecastDesc, outlook |
 
 - **天文台 天氣警告一覽** — CORS allow-origin * so the browser can fetch directly. Returns {} when no warning is in force. Otherwise keyed by warning code with name, code, actionCode, issueTime, updateTime, expireTime.
 - **天文台 詳細天氣警告資訊** — Full warning text, useful for a detail drawer.
@@ -67,6 +86,25 @@
 - **環保署 AQHI（City Dashboard 版，JSON/CSV/XML）** — Cleaner than the RSS for machine use, and gives per-station current AQHI as real JSON. Hourly, plus a forecast published three times a day.
 - **天文台 香港暑熱指數（10 分鐘）** — The HK Heat Index (a local apparent-temperature measure) every 10 minutes — complements WBGT. Relevant to outdoor work, sport and elderly care.
 - **天文台 1 分鐘平均氣溫（分區）** — One-minute-mean temperature by station — the finest temperature resolution HKO publishes. Sibling files cover humidity, grass temperature, sea-level pressure and 10-minute wind.
+- **Gridded rainfall nowcast in Hong Kong** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-gridded-rainfall-nowcast-in-hong-kong
+- **Latest 15-minute mean UV index from 7:00 a.m. to 6:00 p.m. Hong Kong time** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-fifteen-minute-mean-uv-index
+- **Latest tidal information** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-tidal-info
+- **Rainfall in the past hour from Automatic Weather Station** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-rainfall-in-the-past-hour
+- **Regional weather in Hong Kong - past 24-hour temperature difference** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-regional-weather-past-24-hour-temperature-difference
+- **Regional weather in Hong Kong – the latest 1-minute global solar radiation and direct solar radiation and diffuse radiat** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-solar-radiation-info
+- **Regional weather in Hong Kong – the latest 1-minute mean grass temperature from 5:00 p.m. to 8:00 a.m. the following dat** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-grass-temp
+- **Regional weather in Hong Kong – the latest 1-minute mean relative humidity** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-rh
+- **Regional weather in Hong Kong – the latest 1-minute mean sea level pressure** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-sea-level-pressure
+- **Regional weather in Hong Kong – the latest 10-minute mean visibility** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-regional-weather-latest-10-min-mean-visibility
+- **Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-ten-minute-wind-info
+- **Regional weather in Hong Kong – the maximum and minimum air temperature from 1-minute mean temperatures since midnight** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-max-and-min-air-temp-since-midnight
+- **Past 24-hour Air Quality Health Index of individual Air Quality Monitoring stations** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past24hr-aqhi-of-individual-air-quality-monitoring-stations
+- **Past 24-hour Pollutant Concentration of individual Air Quality Monitoring stations** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past24hr-pc-of-individual-air-quality-monitoring-stations
+- **Past Record of Air Pollution Index (English Version)** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past-record-of-air-pollution-index-en
+- **Past Record of Air Pollution Index (Traditional Chinese Version)** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past-record-of-air-pollution-index-tc
+- **Hourly ambient gamma radiation level in Hong Kong** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-hourly-ambient-gamma-radiation-level-in-hong-kong
+- **Lightning count over Hong Kong territory in the past hour** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-cloud-ground-lightning-count-past-hour
+- **Local weather forecast** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-local-weather-forecast
 
 ## transport
 
@@ -86,6 +124,21 @@
 | 新渡輪 下一班船 ETA（1 分鐘） | `https://www.sunferry.com.hk/eta/?route=CW` | 🟡 needs-params | 1 minute | none | — |
 | 港九小輪 ETA／時間表／票價 | `https://www.hkkfeta.com/opendata/route/` | 🟢 ok | 1 minute | none | JSON object, keys: type, version, generated_timestamp, data |
 | 運輸署 交通數據分析系統（5 分鐘） | `https://tdas-api.hkemobility.gov.hk/tdas/api/route -> HTTP 403` | 🔴 fail | 5 minutes | none | — |
+| Bus service of New Lantao Bus Company (1973) Limited (First generation) | `https://rt.data.gov.hk/v1/transport/nlb/route.php?action=list` | 🟡 ok | Real-time | none | JSON object, keys: routes |
+| Bus service of New Lantao Bus Company (1973) Limited (Second generation) | `https://rt.data.gov.hk/v2/transport/nlb/route.php?action=list` | 🟡 ok | Real-time | none | JSON object, keys: routes |
+| Special Traffic News | `https://resource.data.one.gov.hk/td/en/specialtrafficnews.xml` | 🟢 ok | real-time | none | XML, 0 <item> entries, root tags: body, message, msgID, CurrentStatus, ChinText |
+| Special Traffic News (2nd Generation) | `https://www.td.gov.hk/tc/special_news/trafficnews.xml` | 🟢 ok | real-time | none | XML, 0 <item> entries, root tags: list, message, INCIDENT_NUMBER, INCIDENT_HEADING_EN, INCIDENT_HEADING_CN |
+| Distribution of Metered Parking Spaces and Occupancy of those Installed with New Parking Meters | `https://resource.data.one.gov.hk/td/psiparkingspaces/spaceinfo/parkingspaces.csv` | 🟢 ok | FROM EVERY MINUTE TO DAILY | none | large dataset response, truncated at the 4MB probe cap — reachable, payload not parsed |
+| Journey time indicators | `https://static.data.gov.hk/td/journey-time-indicators/notification.csv` | 🟢 ok | Every 2 minutes | none | 70B of text/csv |
+| Journey time indicators (2nd Generation) | `https://resource.data.one.gov.hk/td/jss/Journeytimev2.xml` | 🟢 ok | Every 2 minutes | none | XML, 0 <item> entries, root tags: jtis_journey_list, jtis_journey_time, LOCATION_ID, DESTINATION_ID, CAPTURE_DATE |
+| Location and occupancy status of non-metered on-street parking spaces installed with sensors | `https://data.nmospiot.gov.hk/api/pvds/Download/parkingspace` | 🟢 ok | FROM EVERY MINUTE TO DAILY | none | 43059B of text/csv |
+| Real-time arrival data of green minibuses (GMBs) | `https://data.etagmb.gov.hk/last-update/` | 🟢 ok | Estimated Time of Arrival (ETA) data: every minute. Other data: when necessary. | none | JSON object, keys: type, version, generated_timestamp, data |
+| Speed map panels | `https://static.data.gov.hk/td/speed-map-panels/notification.csv` | 🟢 ok | Every 2 minutes | none | 70B of text/csv |
+| Speed map panels (2nd Generation) | `https://static.data.gov.hk/td/speed-map-panels-v2/info/Speed_Map_Panel_Locations_tc.csv` | 🟢 ok | Every 2 minutes | none | 830B of text/csv |
+| Traffic Data collected by Traffic Detectors Installed at Smart Lampposts | `https://static.data.gov.hk/td/traffic-data-slp/info/traffic_speed_volume_occ_info-slp.csv` | 🟢 ok | Every 1 minute | none | 4389B of text/csv |
+| Traffic Data of Strategic / Major Roads | `https://static.data.gov.hk/td/traffic-data-strategic-major-roads/info/traffic_speed_vol…` | 🟢 ok | Every 1 minute (Raw Data). Every 2 minutes (Processed Data) | none | 171744B of text/csv |
+| Traffic snapshot images | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | Every 2 minutes | none | XML, 0 <item> entries, root tags: image-list, image, key, region, district |
+| Traffic speed map | `https://static.data.gov.hk/td/traffic-speed-map/notification.csv` | 🟢 ok | Every 5 minutes | none | 70B of text/csv |
 
 - **運輸署 行車速度圖** — REAL PATHS NOT FOUND: resource.data.one.gov.hk/td/speedmap.xml returns 404 (the 404 body is a decoy PHP index that lists paths which do not exist). Use td_traffic_speed_city (JSON) instead; for XML find the current TIS path on data.gov.hk.
 - **運輸署 行車時間顯示器** — REAL PATH NOT FOUND: resource.data.one.gov.hk/td/journeytime.xml returns 404. See the City Dashboard journey-time dataset on data.gov.hk.
@@ -93,14 +146,29 @@
 - **行車速度圖（City Dashboard 版，JSON）** — JSON twin of the TIS XML — much easier for a static front end.
 - **運輸署 實時停車場空位** — Real-time vacancy counts. The JSON body starts with a UTF-8 BOM — decode as utf-8-sig or json.loads throws. Key: car_park[].
 - **實時空置車位（一站式整合版）** — Merges TD and Kai Tak (start-up Kowloon East) car park feeds.
-- **城巴／新大嶼山巴士 ETA** — Batch endpoint — a GET returns 422, it needs a POST body of stop ids. Also has per-route ETA endpoints under rt.data.gov.hk.
+- **城巴／新大嶼山巴士 ETA** — Batch endpoint — a GET returns 422, it needs a POST body of stop ids. Also has per-route ETA endpoints under rt.data.gov.hk. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.
 - **九巴／龍運 路線及到站時間（免 key！）** — NO KEY NEEDED — data.etabus.gov.hk is KMB's own open data portal. Verified: /route/ lists all routes (~349KB); /route-stop/{route}/{direction}/{service_type} for the stop sequence; /eta/{stop_id}/{route}/{service_type} for arrivals. GOTCHA: direction must be the literal 'outbound' or 'inbound' — O/I/1/2 all return 422 'Invalid direction'.
 - **港鐵 下一班列車（免 key）** — Keyless mirror on rt.data.gov.hk — the official opendata.mtr.com.hk Next Train API instead wants a free registration. line=ISL / sta=ADM returns UP and DOWN trains with platform and ttnt.
-- **龍運巴士 ETA** — Service is live (it answers structured 422 JSON) but the parameter format differs from KMB and is unconfirmed. Cheap to finish — try the KMB path shapes with the lwb prefix.
+- **龍運巴士 ETA** — Service is live (it answers structured 422 JSON) but the parameter format differs from KMB and is unconfirmed. Cheap to finish — try the KMB path shapes with the lwb prefix. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.
 - **綠色專線小巴 ETA（1 分鐘）** — Green minibus real-time arrivals, keyless. Paths use region codes and the dataset lists the full set of templates (/route/{region}, /route-stop/{route_id}/{route_seq}, /stop-route/{stop_id}, /eta/route-stop/{route_id}/{route_seq}/{stop_seq}).
-- **新渡輪 下一班船 ETA（1 分鐘）** — Sun Ferry estimated arrivals, refreshed every minute. The route code goes in the query string — confirm the valid codes from their site before wiring it.
+- **新渡輪 下一班船 ETA（1 分鐘）** — Sun Ferry estimated arrivals, refreshed every minute. The route code goes in the query string — confirm the valid codes from their site before wiring it. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.
 - **港九小輪 ETA／時間表／票價** — Hong Kong & Kowloon Ferry open data: piers, routes, timetables, fares and ETA. One operator quietly publishing a clean JSON API — worth supporting by using it.
 - **運輸署 交通數據分析系統（5 分鐘）** — 403 on every attempt — including with Referer and Origin headers set to hk eMobility, so it is not a simple hotlink guard: the endpoint is likely keyed or IP-restricted. Left in the catalogue as a known-gated source rather than deleted, because it is the live road-speed API behind 香港出行易. We already have TD's speed map and journey time feeds, so nothing is blocked by this.
+- **Bus service of New Lantao Bus Company (1973) Limited (First generation)** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · New Lantao Bus Company (1973) Limited · nlb-bus-nlb-bus-service-v1 · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.
+- **Bus service of New Lantao Bus Company (1973) Limited (Second generation)** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · New Lantao Bus Company (1973) Limited · nlb-bus-nlb-bus-service-v2 · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.
+- **Special Traffic News** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_1-special-traffic-news
+- **Special Traffic News (2nd Generation)** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_19-special-traffic-news-v2
+- **Distribution of Metered Parking Spaces and Occupancy of those Installed with New Parking Meters** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-msd_1-metered-parking-spaces-data
+- **Journey time indicators** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_2-journey-time-indicators
+- **Journey time indicators (2nd Generation)** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_8-journey-time-indicators-v2
+- **Location and occupancy status of non-metered on-street parking spaces installed with sensors** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-msd_2-non-metered-parking-spaces-data
+- **Real-time arrival data of green minibuses (GMBs)** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_7-real-time-arrival-data-of-gmb
+- **Speed map panels** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_3-speed-map-panels
+- **Speed map panels (2nd Generation)** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_9-speed-map-panels-v2
+- **Traffic Data collected by Traffic Detectors Installed at Smart Lampposts** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_33-traffic-data-traffic-detectors-installed-at-smart-lampposts
+- **Traffic Data of Strategic / Major Roads** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_4-traffic-data-strategic-major-roads
+- **Traffic snapshot images** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_2-traffic-snapshot-images
+- **Traffic speed map** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_1-traffic-speed-map
 
 ## border
 
@@ -111,12 +179,16 @@
 | 入境處 13 個出入境管制站＋開放時間 | `https://www.immd.gov.hk/hkt/contactus/control_points.html` | 🟢 ok | static | none | HTML page — title: 出入境管制站地點 | 入境事務處 |
 | 保安局「口岸通」陸路管制站即時狀況（JSON） | `https://www.sb.gov.hk/bwt/json/overview_tc.json` | 🟢 ok | 15 minutes | none | JSON object, keys: updateDate, cpInfoList, otherInfo, remark |
 | 入境處 陸路管制站輪候時間（官方 15 分鐘） | `https://secure1.info.gov.hk/immd/mobileapps/2bb9ae17/data/CPQueueTimeR.json` | 🟢 ok | 15 minutes | none | JSON object, keys: HYW, HZM, LMC, LSC, LWS, MKT |
+| Statistics on Passenger Traffic for Festive Periods | `https://www.immd.gov.hk/opendata/eng/transport/immigration_clearance/statistics_passeng…` | 🟢 ok | Daily during the specified festive periods [The dates of each festive periods are to be determined on each festivals (e.g. Lunar New Year, Easter, Ching Ming, Labour Day, National Day).] | none | 607719B of text/csv |
+| Address and Working Hours of Offices | `https://www.immd.gov.hk/opendata/eng/law-and-security/office_address_working_hours/offi…` | 🟢 ok | As and when there is a change to the address or working hours of Immigration offices | none | 16372B of text/csv |
 
 - **保安局「口岸通」陸路管制站情況** — The human page. The machine-readable data is sb_bwt_json (/bwt/json/overview_tc.json) — use that; do not parse this HTML.
 - **香港出行易 管制站狀況** — Page is a ~3.5KB JS app. Find its data endpoint. Covers passenger and private-car channels.
 - **入境處 13 個出入境管制站＋開放時間** — Static list of 13 control points with opening hours. Hardcode once — lets the UI show 現正開放／已關閉 without any live source.
 - **保安局「口岸通」陸路管制站即時狀況（JSON）** — SOLVED — this is the JSON behind 口岸通, and it is the highest-value source in the project. updateDate + cpInfoList[]; each control point has code, cpName, openFrom/openTo and arrival/departure, each broken down into resident / visitor / car / cross-border shuttle, with status 1/2/3 for the green-yellow-red level. Keyless. NOTE: there is no Chinese in the path — /bwt/json/overview_tc.json sits directly under www.sb.gov.hk.
 - **入境處 陸路管制站輪候時間（官方 15 分鐘）** — THE OFFICIAL control-point waiting time feed from Immigration — 15-minute cadence, no key. This is better than reading 口岸通's page: 口岸通 gives a green/yellow/red band, this gives the actual queue time. Keep 口岸通 too — it adds the incident notices and the cross-boundary shuttle waits. Found only by the full CKAN scan; a keyword search misses it. Verified response keys are the control-point codes themselves: HYW, HZM, LMC, LSC, LWS, MKT.
+- **Statistics on Passenger Traffic for Festive Periods** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Immigration Department · hk-immd-set5-statistics-passenger-traffic-festive-period
+- **Address and Working Hours of Offices** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Immigration Department · hk-immd-set2-address-and-working-hours-of-offices
 
 ## aviation
 
@@ -143,10 +215,14 @@
 | AISStream 船隻 AIS（WebSocket） | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | real-time | free-key | — |
 | 海事處 跨境渡輪到港／離港（5 分鐘） | `https://www.mardep.gov.hk/e_files/hk/opendata/arrival_tc.csv` | 🟢 ok | 5 minutes | none | CSV ~57 rows, cols: 抵達時間|出發地|營運公司|碼頭|泊位|現況 |
 | 海事處 船隻抵港／離港（20 分鐘） | `https://www.mardep.gov.hk/e_files/en/opendata/RN0010.XML` | 🟢 ok | 15 minutes | none | XML, 0 <item> entries, root tags: RN0010, G_SQL1, VESSEL_NAME, SHIP_TYPE_DESC, LIC_MD_REF |
+| Latest tidal information | `https://tide1.hydro.gov.hk/hotide/OpenData/All_tc.csv` | 🟢 ok | 10 minutes | none | 196B of text/csv |
+| Vessel arrivals and departures | `https://www.mardep.gov.hk/e_files/en/opendata/RP05005i.XML` | 🟢 ok | Every 20 minutes | none | XML, 0 <item> entries, root tags: RP05005IXML, G_SQL1, CALL_SIGN, VESSEL_NAME, SHIP_TYPE |
 
 - **AISStream 船隻 AIS（WebSocket）** — THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope. Fallback if that measurement says NO-GO: a free-tier keyed REST AIS provider (VesselAPI and similar) is the next step, but do not add one to this catalogue until a real endpoint has been requested and returns data — vendor marketing pages are not sources.
 - **海事處 跨境渡輪到港／離港（5 分鐘）** — Cross-boundary ferry arrivals and departures, 5-minute cadence. Together with the ImmD queue time this completes the 'cross the border by any mode' picture.
 - **海事處 船隻抵港／離港（20 分鐘）** — Ocean and river vessel arrivals/departures. Also declared missing earlier and found by the full scan — the lesson repeats: a keyword search is not evidence of absence.
+- **Latest tidal information** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Marine Department · hk-md-hydro-10mintues-latest-tidal-information
+- **Vessel arrivals and departures** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Marine Department · hk-md-mardep-vessel-arrivals-and-departures
 
 ## civic
 
@@ -180,6 +256,19 @@
 | 水務署 臨時停水通知（5 分鐘） | `https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv` | 🟢 ok | 5 minutes | none | CSV ~190 rows, cols: SUSPENSION_ID|WATER_TYPE_DESCRIPTION|WATER_TYPE_DESCRIPTION_ZHT|DISTRICT_ENG|DISTRICT_ZHT|NATURE_DESCRIPTION|NATURE_DESCRIPTION_ZHT|SUSPENSION_DATE_TIME|ACTUAL_RESUMPTION_DATE_TIME|LONG_ADDRESS|LONG_ADDRESS_ZHT|CAUSE|CAUSE_ZHT|STATUS|STATUS_ZHT |
 | 康文署 即時可訂場節數（羽毛球／籃球／網球／草地足球／排球） | `https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/badminton/file` | 🟢 ok | 5 minutes | none | large json response, truncated at the 4MB probe cap — reachable, payload not parsed |
 | 消防處 自動體外心臟去顫器（AED）位置（實時） | `https://es.hkfsd.gov.hk/aed_api/export_aed.php?lang=TC` | 🟢 ok | real-time | none | CSV ~4624 rows, cols: AED Name, AED Address, Detailed location of the AED installed, Location Google Map coordinate: latitude, Location Google Map coordinate: longitude, Whether the AED can be used by anyone |
+| Highlights of the Chief Executive’s Policy Address | `https://www.ceo.gov.hk/public/open-data/tc/policy_address/2019_pa_highlights_chi.json` | 🟢 ok | Annually, on the delivery day of the Policy Address | none | JSON array, 57 items |
+| Events happening in Hong Kong Science Park | `https://opendata.hkstp.org/corporate/info/v1/upcomingevent` | 🟢 ok | Real-time | none | JSON object, keys: value |
+| HKSTP Carpark availability – Space (EV) available | `https://opendata.hkstp.org/carpark/v1/ev-vacancy` | 🟢 ok | Real-time | none | JSON object, keys: value |
+| HKSTP Carpark availability – Space available | `https://opendata.hkstp.org/carpark/v1/vacancy` | 🟢 ok | Real-time | none | JSON object, keys: value |
+| Real-time “Next Bus”
+arrival time and related data of Citybus. | `https://rt.data.gov.hk/v1/transport/citybus-nwfb/company/ctb` | 🟢 ok | Estimated Time of Arrival (ETA) data updated every 1 minute. 
+
+Other data set update upon there is any adjustment. | none | JSON object, keys: type, version, generated_timestamp , data |
+| Press Release Search | `https://api.data.gov.hk/v1/pressrelease/search -> HTTP 400` | 🔴 fail | every 15 minutes | none | — |
+| Availability of Computer Facilities at Hong Kong Public Libraries | `https://sls.hkpl.gov.hk/api/cfm-admin-service/open-api/library/selectLibraryPageInfoFor…` | 🟢 ok | Every 10 Minutes | none | JSON array, 30 items |
+| Available Session of Turf Soccer Pitches by Venue | `https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/turf-soccer-…` | 🟢 ok | Every 5 Minutes | none | JSON array, 4728 items |
+| Car Park Information of West Kowloon Cultural District Authoirty | `https://openapi.westkowloon.hk/datagovhk/carpark` | 🟢 ok | Car Park vacancy information updated every 5 minutes | none | JSON object, keys: carParks |
+| Air Quality Health Index (City Dashboard Version) | `https://static.data.gov.hk/opendata/dataset/aqhi/aqhi.csv` | 🟢 ok | AQHI: Hourly / Forecast: 00:30, 10:30 and 16:30 everyday and as required | none | 172B of text/csv |
 
 - **康文署 康體活動節目（未來約 1.5 個月）** — This is the 'what's on soon' feed. Note the http (not https) scheme. Try the https variant too and prefer it if it works.
 - **康文署 康體設施使用率（年度）** — Annual statistics only — NOT live booking availability. Do not present as real-time.
@@ -209,6 +298,17 @@
 - **水務署 臨時停水通知（5 分鐘）** — Temporary water suspension notices, every 5 minutes. Directly answers 'why is my water off' — pair with a map of the affected address. Reaches us only after relaxing the TLS cipher security level — if a future client gets a handshake failure here, that is the cause, not the dataset.
 - **康文署 即時可訂場節數（羽毛球／籃球／網球／草地足球／排球）** — !! I PREVIOUSLY DECLARED THIS DID NOT EXIST, AND I WAS WRONG. LCSD publishes the live availability of bookable sessions per venue every 5 minutes, keyless, for badminton / basketball / tennis / turf soccer / volleyball. So the honest answer to 'can we show 訂場情況' is yes — with real vacancy, not a workaround. Every court type is the same path with a different sport segment.
 - **消防處 自動體外心臟去顫器（AED）位置（實時）** — Every public AED location with coordinates, keyless. A map layer that could genuinely save a life, and a good example of a layer that earns its place on a dashboard. Verified: 4,624 AED records with latitude/longitude and a usable-by-anyone flag.
+- **Highlights of the Chief Executive’s Policy Address** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Chief Executive's Office · hk-ceo-opendata-policy-address-highlights-by-ce
+- **Events happening in Hong Kong Science Park** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-corporate-info-upcoming-event
+- **HKSTP Carpark availability – Space (EV) available** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-carpark-ev-vacancy
+- **HKSTP Carpark availability – Space available** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-carpark-vacancy
+- **Real-time “Next Bus”
+arrival time and related data of Citybus.** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Citybus Limited · ctb-eta-transport-realtime-eta
+- **Press Release Search** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Digital Policy Office · hk-dpo-datagovhk1-pressrelease-search · Probed 400 'REQUEST ERROR: official parameter missing'. The parameter name is undocumented — q / query / lang / offset / limit all still 400. Needs one more discovery pass. Nothing depends on it: the news layer runs on the gov press-release RSS feeds, which work.
+- **Availability of Computer Facilities at Hong Kong Public Libraries** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Leisure and Cultural Services Department · hk-lcsd-lib-lib-computers
+- **Available Session of Turf Soccer Pitches by Venue** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Leisure and Cultural Services Department · hk-lcsd-facility-facility-tsp
+- **Car Park Information of West Kowloon Cultural District Authoirty** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · West Kowloon Cultural District Authority · wkcda-wkcarpark-wkcarpark
+- **Air Quality Health Index (City Dashboard Version)** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Digital Policy Office · hk-dpo-datagovhk2-city-dashboard-aqhi
 
 ## prices
 
@@ -306,3 +406,6 @@
 - `hko_stations_network` — 天文台 氣象站網絡（含座標，CSDI） → JSON object, keys: type, features
 - `sunferry_eta` — 新渡輪 下一班船 ETA（1 分鐘） → 422 — endpoint exists, needs POST body/parameters
 - `tdas_traffic` — 運輸署 交通數據分析系統（5 分鐘） → https://tdas-api.hkemobility.gov.hk/tdas/api/route -> HTTP 403
+- `ck_nlb_bus_nlb_bus_service_v1` — Bus service of New Lantao Bus Company (1973) Limited (First generation) → JSON object, keys: routes
+- `ck_nlb_bus_nlb_bus_service_v2` — Bus service of New Lantao Bus Company (1973) Limited (Second generation) → JSON object, keys: routes
+- `ck_hk_dpo_datagovhk1_pressrelease_search` — Press Release Search → https://api.data.gov.hk/v1/pressrelease/search -> HTTP 400

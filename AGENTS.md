@@ -126,3 +126,22 @@ npm run preview          # then check the real page
 
 Reply with: what you changed (file list), the real numbers you observed, what is still broken,
 and any constraint above you could not satisfy. No summaries of intent.
+
+### Pitfall 8 — a keyword search is not evidence of absence
+data.gov.hk's `package_search` indexes only **539 of its 3,820 datasets**. Searching and finding
+nothing does *not* mean the data does not exist. This cost us three wrong "it doesn't exist"
+conclusions in one session (LCSD live court availability, Marine Department vessel arrivals,
+Immigration's control-point queue times — all three exist). To answer "does this exist", use
+`package_list` or actually fetch it. Reserve `package_search` for finding the URL of a dataset you
+already know is there.
+
+### Pitfall 9 — the four ways a probe says "not ok", and what each really means
+- `422 needs-params` — the endpoint **exists**; it wants an id or a POST body. Normal for two-step
+  APIs (list routes → then ask for an ETA). Not a dead source.
+- `400 official parameter missing` — the parameter is real but undocumented. Budget one discovery
+  pass, then record it as unknown rather than guessing.
+- `403` — keyed or IP-gated. Confirm by retrying with `Referer` and `Origin` before writing it off:
+  this was exactly how TDAS was shown to be gated rather than broken.
+- `SSL handshake failure` — suspect **your own client first**. Older HK government TLS stacks only
+  negotiate at `SECLEVEL=1` (see `set_ciphers("DEFAULT@SECLEVEL=1")` in `probe_sources.py`).
+  Water Supplies went from red to green with no change to the source.

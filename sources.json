@@ -1073,6 +1073,28 @@
       "cadence": "10 minutes",
       "todo": false,
       "notes": "街頭級氣象站（智慧燈柱），比天文台站密得多。位置表 + device type 表各一個 JSON。做微尺度城市氣候／跑步路線熱壓力嘅原材料。"
+    },
+    {
+      "id": "hko_tc_track",
+      "group": "weather",
+      "name": "天文台 熱帶氣旋路徑資訊（現行）",
+      "type": "xml",
+      "url": "https://www.weather.gov.hk/wxinfo/currwx/tc_list.xml",
+      "auth": "none",
+      "cadence": "as issued",
+      "todo": false,
+      "notes": "Live tropical cyclone list and track — the data behind the HKO TC track pages. Feeds the 颱風模式 vertical. Note the host is www.weather.gov.hk (not data.weather.gov.hk)."
+    },
+    {
+      "id": "hko_tc_besttrack",
+      "group": "weather",
+      "name": "天文台 熱帶氣旋最佳路徑（事後分析，逐年）",
+      "type": "csv",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/tc/HKO2024BST.csv",
+      "auth": "none",
+      "cadence": "annual",
+      "todo": false,
+      "notes": "Full post-analysed track of every cyclone in a year — the honest basis for 'this storm looks like the one in 2023' comparisons, because it is the quality-controlled record rather than the forecast. Build the year into the URL and step back a year when the current one 404s."
     }
   ]
 }

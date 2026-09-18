@@ -134,6 +134,13 @@ thirty features and none finished. Build the primitives, then one vertical, then
 - No metered API key ever, and no scraper in v0.2
 - No secret in the repo, ever — the repo is public and a committed secret is a leaked secret
 
+## Unattended overnight runs
+
+If you are working this project in a long unattended session (or were dispatched by an overnight
+runner), read **`KIMI_BRIEF.md`** as well. It adds tonight's scope, the working discipline, the
+hard stop rules (no deploying, no pushing to `master`, no secrets, no VPS hostname in any file) and
+the round-log format. This file remains the authority on *what* to build.
+
 ## Who builds this, and where
 
 **Front end: OpenCode + Kimi on Cyrus's home PC** (decided 2026-09-18). Hermes writes the specs,

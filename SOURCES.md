@@ -3,7 +3,7 @@
 > **本檔案由 `scripts/probe_sources.py` 自動生成，唔好手改。**
 > 改源 → 改 `sources.json` → 跑 `python3 scripts/probe_sources.py`。
 
-最後實測：`2026-09-18 19:45 CST`　·　**69 / 76 個源成功**
+最後實測：`2026-09-18 19:49 CST`　·　**81 / 88 個源成功**
 
 每個 URL 都真係發過 HTTP 請求。🟢 = 200 而且回傳真數據　🟡 = 未解決／要 key　🔴 = 失敗。
 
@@ -12,8 +12,8 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | 運輸署 交通快拍攝影機位置 | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | irregular | none | CSV ~1013 rows, cols: key, region, district, description, easting, northing |
-| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 31356B |
-| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 588775B |
+| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 33171B |
+| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 592044B |
 | 天文台 天氣攝影機目錄頁 | `https://www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm` | 🟢 ok | static | none | HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko |
 
 - **運輸署 交通快拍攝影機位置** — UTF-16LE with a DOUBLE BOM (\xff\xfe\xff\xfe) and tab-delimited. Columns: key, region, district, description, easting, northing, latitude, longitude, url. Python's utf-16 codec leaves a stray \ufeff on the first field name — strip it or every row reads empty.
@@ -38,6 +38,9 @@
 | 環保署 空氣質素健康指數（各監測站，RSS） | `https://www.aqhi.gov.hk/epd/ddata/html/out/aqhi_ind_rss_Eng.xml` | 🟢 ok | hourly | none | XML, 18 <item> entries, root tags: rss, channel, title, link, image |
 | 環保署 AQHI 過去 24 小時逐站讀數 | `https://www.aqhi.gov.hk/js/data/past_24_pollutant.js` | 🟢 ok | hourly | none | JavaScript data file, `station_24_data` = (strip the prefix, then JSON) |
 | 環保署 AQHI 預報／健康風險級別 | `https://www.aqhi.gov.hk/js/data/forecast_aqhi.js` | 🟢 ok | daily | none | JavaScript data file, `aqhi_report` = (strip the prefix, then JSON) |
+| 天文台 暑熱指數 WBGT（每 10 分鐘） | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/recent10_60min_wbgt.csv` | 🟢 ok | 10 minutes | none | CSV ~100 rows, cols: Date time, Automatic Weather Station, 60-minute mean Wet Bulb Globe Temperature (WBGT) |
+| 天文台 格網降雨臨近預報（每 12 分鐘） | `https://data.weather.gov.hk/weatherAPI/hko_data/F3/Gridded_rainfall_nowcast.csv` | 🟢 ok | hourly | none | CSV ~58564 rows, cols: Updated Date and Time (in Hong Kong Time), Ending Date and Time (in Hong Kong Time), Latitude (degree), Longitude (degree), Half-hourly Nowcast Accumulated Rainfall (mm) |
+| 天文台 智慧燈柱氣象數據（微尺度） | `https://www.hko.gov.hk/common/hko_data/smart-lamppost/files/smart_lamppost_met_device_l…` | 🟢 ok | 10 minutes | none | JSON array, 71 items |
 
 - **天文台 天氣警告一覽** — CORS allow-origin * so the browser can fetch directly. Returns {} when no warning is in force. Otherwise keyed by warning code with name, code, actionCode, issueTime, updateTime, expireTime.
 - **天文台 詳細天氣警告資訊** — Full warning text, useful for a detail drawer.
@@ -51,6 +54,9 @@
 - **環保署 空氣質素健康指數（各監測站，RSS）** — FOUND — the official EPD feed (data.gov.hk dataset hk-epd-airteam-current-aqhi-of-individual-air-quality-monitoring-stations). Each item's title is the station name and the description carries '<station> - <type>: <AQHI> <risk>'. ChT/ChS variants alongside. Host is www.aqhi.gov.hk — the bare aqhi.gov.hk does not resolve.
 - **環保署 AQHI 過去 24 小時逐站讀數** — The file the aqhi.gov.hk page itself loads. It is JavaScript, not JSON: 'var station_24_data = [...]'. Strip the 'var ... = ' prefix then parse. Per-station hourly rows with StationID, DateTime, StationNameEN/CT/CS, aqhi and NO2/O3/SO2/CO/PM10/PM25 — i.e. the full pollutant breakdown, ~226KB.
 - **環保署 AQHI 預報／健康風險級別** — 'var aqhi_report = [...]' with DateTime, StationTypeEN, AQHIRiskEN, AQHIRange. Strip the var prefix.
+- **天文台 暑熱指數 WBGT（每 10 分鐘）** — 濕球黑球溫度 — 戶外工作與運動嘅真正熱壓力指標，比氣溫誠實得多。對露營、賽事、地盤、跑步都直接有用。
+- **天文台 格網降雨臨近預報（每 12 分鐘）** — 格網狀未來降雨預報 —— 可以砌落雨動畫／時間軸，係整個天氣層最有動感嘅一個。另有 _tc 中文版。
+- **天文台 智慧燈柱氣象數據（微尺度）** — 街頭級氣象站（智慧燈柱），比天文台站密得多。位置表 + device type 表各一個 JSON。做微尺度城市氣候／跑步路線熱壓力嘅原材料。
 
 ## transport
 
@@ -144,6 +150,10 @@
 | 康文署 渡假營（CSDI） | `https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1629267205214_83172/Fea…` | 🟢 ok | snapshot | none | JSON object, keys: type, features |
 | 康文署 燒烤場（CSDI） | `https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1634540957025_61259/Fea…` | 🟢 ok | snapshot | none | JSON object, keys: type, features |
 | 漁護署 郊野公園封閉設施 | `https://portal.csdi.gov.hk/server/rest/services/common/afcd_rcd_1728897009646_22480/Fea…` | 🟢 ok | live | none | JSON object, keys: type, features |
+| 統計處 人口增長（表 110-01003，半年更新） | `https://www.censtatd.gov.hk/tc/web_table.html?id=110-01003&full_series=1&download_excel=1` | 🟢 ok | half-yearly | none | HTML page — title: 統計表 |
+| 2021 人口普查（最新已公佈） | `https://www.censtatd.gov.hk/tc/scode500.html` | 🟡 ok | decennial | none | HTML page — title: 住戶 |
+| 天文台 公曆↔農曆對照（通勝／擇日基礎） | `https://data.weather.gov.hk/weatherAPI/opendata/lunardate.php?date=2026-02-17` | 🟢 ok | yearly | none | JSON object, keys: LunarYear, LunarDate |
+| 天文台 日出／日中／日落時間 | `https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=SRS&year=2026&rfo…` | 🟢 ok | yearly | none | CSV ~365 rows, cols: YYYY-MM-DD, RISE, TRAN., SET |
 
 - **康文署 康體活動節目（未來約 1.5 個月）** — This is the 'what's on soon' feed. Note the http (not https) scheme. Try the https variant too and prefer it if it works.
 - **康文署 康體設施使用率（年度）** — Annual statistics only — NOT live booking availability. Do not present as real-time.
@@ -165,6 +175,10 @@
 - **康文署 渡假營（CSDI）** — Layer 'HC'. Dataset id lcsd_rcd_1629267205214_83172.
 - **康文署 燒烤場（CSDI）** — Layer 'LCSD_BBQ'. Dataset id lcsd_rcd_1634540957025_61259.
 - **漁護署 郊野公園封閉設施** — Live closure layer. FAC_ID, FACILITY_TYPE_EN/TC, LOCATION_EN/TC, STATUS_EN/TC, EFFECTIVE_DATE (epoch ms), EXPECTED_EXPIRY_DATE.
+- **統計處 人口增長（表 110-01003，半年更新）** — Any 統計處 table downloads as XLSX through this query-string form — swap the id. Half-yearly for population. Related ids worth wiring: 110-01001 (population by sex and age), 130-06102 (domestic households).
+- **2021 人口普查（最新已公佈）** — IMPORTANT for expectations: the 2021 census is the newest published census. The 2026 POPULATION CENSUS is being collected during calendar 2026 (by order published in the Gazette on 2025-02-14, one in ten households sampled), so its results are NOT available yet — plan the census layer around 2021 plus the rolling half-yearly statistics tables, and add 2026 when it lands. Dataset subject pages host the tables as XLSX.
+- **天文台 公曆↔農曆對照（通勝／擇日基礎）** — 喂 date=YYYY-MM-DD，回農曆日期（年月日、干支、生肖）。年度 CSV 全表：hko_data/calendar/nongli_calendar_2023.csv。呢個就係所有農曆功能嘅官方地基 —— 農曆新年、清明、中秋、初一十五、擇日，全部由佢計，唔使自己寫曆法。
+- **天文台 日出／日中／日落時間** — 全年逐日日出日落。三種人會用：影相嘅（黃金時間）、跑山嘅（幾點天黑）、風水／座向參考。同一個 opendata.php 仲有月出月落。
 
 ## prices
 
@@ -175,12 +189,18 @@
 | 消委會 嬰幼兒奶粉價格調查 | `https://www.consumer.org.hk/tc/price-comparison-tools/infant-formula-price-survey` | 🟡 ok | monthly | none | HTML page — title: 嬰幼兒配方奶粉價格調查 | 消費者委員會 |
 | 消委會 投訴統計 | `https://data.gov.hk/tc-data/dataset/cc-complaints-complaints-statistics` | 🟡 ok | monthly | none | CSV ~1811 rows, cols:  |
 | 運輸署 公共交通路線及收費（巴士/小巴/渡輪/電車） | `https://static.data.gov.hk/td/routes-and-fares/FARE_BUS.csv` | 🟡 ok | daily | none | CSV ~42 rows, cols: ROUTE_ID, ROUTE_SEQ, CHANGE |
+| 差餉物業估價署 物業市場統計（官方樓價／租金指數） | `https://www.rvd.gov.hk/datagovhk/1.1A(86-98).csv` | 🟢 ok | monthly | none | CSV ~14 rows, cols: PRIVATE  DOMESTIC  -  AVERAGE  RENTS  BY  CLASS [ANNUAL[86-98]], , , , ,  |
+| 土地註冊處 每月註冊契約統計（實際成交量） | `https://www.landreg.gov.hk/datagovhk/202101_data.json` | 🟢 ok | monthly | none | JSON array, 44 items |
+| 中原城市指數 CCL／CRI（私人，冇公開 API） | `https://hk.centanet.com/info/property-news/` | 🟡 ok | weekly | none | HTML page — title: 地產新聞資訊 | 中原地產 |
 
 - **消委會 油價資訊通（車用燃油價格）** — Every oil company's retail price AND after-discount price per station, plus weekly offers. NO official API — it is a server-rendered Typo3 site (plain GET, stable paths such as /tc/price, /tc/station, /tc/today-discount), so it is scrapeable without a browser, but it is still scraping. A third party (talklivelihood.hk) already republishes it. BEST MOVE: ask the Consumer Council for a feed — a public body publishing a consumer tool should be able to publish data. No price data on data.gov.hk (only complaints statistics).
 - **消委會 網上價格一覽通（超市格價）** — Supermarket prices across the major chains (惠康, 百佳, Market Place, AEON, 大昌, city'super...) for hundreds of product categories. Hierarchical server-rendered URLs (/opw/list/{cat}/{sub}/{subsub}) but the product pages carry NO prices in the HTML — prices arrive via an AJAX call that still needs reversing. Higher effort and higher fragility than the fuel tool. Prefer asking for a feed.
 - **消委會 嬰幼兒奶粉價格調查** — Part of the Consumer Council price-comparison toolkit. Check whether the survey is published as a table or a PDF.
 - **消委會 投訴統計** — The ONLY Consumer Council dataset on data.gov.hk. Resolve the real CSV resource URL via the CKAN API.
 - **運輸署 公共交通路線及收費（巴士/小巴/渡輪/電車）** — GOTCHA: the CSVs are DAILY CHANGE LOGS only (ROUTE_ID, ROUTE_SEQ, CHANGE = ADD/DELETE/UPDATE) — they contain NO fares. The real fare tables are MS Access files, e.g. FARE_BUS.mdb at 32.9 MB. Full family available: ROUTE_/RSTOP_/STOP_/FARE_ x BUS, GMB (minibus), FERRY, TRAM, PTRAM. To use it: convert the .mdb to SQLite/Parquet once with mdbtools, then apply the daily deltas. A one-off converter is a genuinely useful open-source contribution and the only free source of complete HK public-transport fares.
+- **差餉物業估價署 物業市場統計（官方樓價／租金指數）** — The OFFICIAL property price and rental index series — the public-sector counterpart to 中原 CCL/CRI. Monthly for the headline series; completions, stock, vacancy and take-up are annual. Filenames are historical table numbers, e.g. 1.1A(86-98).csv, 1.1Q(82-98).csv — list the directory rather than guessing a filename.
+- **土地註冊處 每月註冊契約統計（實際成交量）** — Actual transaction volume by instrument type — the ground truth behind any price index. A JSON twin exists for every month (YYYYMM_data.json / .xls), so build the URL from the current month and fall back one month. Monthly.
+- **中原城市指數 CCL／CRI（私人，冇公開 API）** — Be clear about what this is: 中原 CCL/CRI is a PRIVATE product of 中原地產, not open data. It is published as weekly (CCL) and monthly (CRI) press releases and republished by third parties. No public API exists and the licence is theirs. Options, in order of preference: (1) use the official 差餉物業估價署 index instead — it is free, monthly and unambiguous; (2) if the CCL number matters for narrative, cite it with a link and never present it as our own data; (3) only consider scraping the research page if the citation route proves insufficient.
 
 ## news
 
@@ -189,10 +209,12 @@
 | 政府新聞公報 RSS（全部） | `https://www.info.gov.hk/gia/rss/general_zh.xml` | 🟢 ok | as issued | none | XML, 100 <item> entries, root tags: rss, channel, title, link, image |
 | 消防處 新聞公報 | `https://www.hkfsd.gov.hk/chi/fsd_info/publications/pressrelease/` | 🟡 ok | as issued | none | HTML page — title: 新聞公報 | 香港消防處 |
 | 政府新聞網 治安（法治）分類 feed | `https://www.news.gov.hk/tc/categories/law_order/html/articlelist.rss.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, image |
+| 政府統計處 新聞稿 RSS | `https://www.censtatd.gov.hk/data/tc/press_release/rss.xml` | 🟢 ok | continuous | none | XML, 10 <item> entries, root tags: rss, channel, title, image, url |
 
 - **政府新聞公報 RSS（全部）** — VERIFIED valid RSS 2.0, ~478KB, ~100 items. NOTE: general.xml (no suffix) is 404. Publish TITLE + LINK ONLY — never republish article bodies.
 - **消防處 新聞公報** — Find an RSS/JSON form of this list if one exists.
 - **政府新聞網 治安（法治）分類 feed** — The 治安 topic feed. Other topics follow the same pattern: admin, finance, environment, health, infrastructure, school_work, city_life. Title + link only in our UI.
+- **政府統計處 新聞稿 RSS** — The '統計處資料 update 一下' problem, solved: every statistical release lands here first, with the publication calendar behind it.
 
 ## market
 
@@ -212,11 +234,13 @@
 | CSDI 空間數據共享平台 API | `https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=lcsd_rcd_1634540558875_7743…` | 🟢 ok | varies | none | JSON object, keys: type, name, features |
 | 地政總署 地址搜尋（ALS / Location Search API） | `https://www.als.gov.hk/lookup?q=30%20Luen%20Wan%20Street` | 🟢 ok | monthly | none | JSON object, keys: RequestAddress, SuggestedAddress |
 | 地政總署 Location Search API（GeoInfo Map） | `https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=cultural%20centre` | 🟢 ok | real-time | none | JSON array, 27 items |
+| 天文台 氣象站網絡（含座標，CSDI） | `https://portal.csdi.gov.hk/server/rest/services/common/hko_rcd_1634995599372_15888/Feat…` | 🟡 ok | snapshot | none | JSON object, keys: type, features |
 
 - **CARTO dark-matter 底圖 style** — Keyless vector basemap style for MapLibre. 93 layers, CJK-capable font stacks (HanWangHeiLight / NanumBarunGothic), glyph server at tiles.basemaps.cartocdn.com/fonts/{fontstack}/{range}.pbf. MUST be referenced as a style URL — passing it as an inline style object to MapLibre 4.7.x silently fails.
 - **CSDI 空間數據共享平台 API** — VERIFIED — this is the reusable CSDI access pattern, two forms: (a) whole-dataset GeoJSON via /csdi-webpage/file-api?dataset_id=<id>&format=geojson&layer_name=<layer>; (b) ArcGIS FeatureServer at /server/rest/services/common/<dataset_id>/FeatureServer/0/query?where=1=1&outFields=*&f=geojson which ECHOES the Origin header, so it is CORS-open and usable straight from the browser. WFS GetFeature also works (typeNames=csdi:<layer>, outputFormat=geojson — use 'geojson' not 'json').
 - **地政總署 地址搜尋（ALS / Location Search API）** — VERIFIED and this is the geocoder the app needs. REAL HOST IS www.als.gov.hk (the older als.ogcio.gov.hk / geodata.gov.hk guesses were wrong). Send Accept: application/json (defaults to XML). CORS is '*' so the browser can call it directly. Returns SuggestedAddress[] with GeospatialInformation{Latitude,Longitude,Easting,Northing} and a GeoAddress code. Whole address dataset: https://www.als.gov.hk/data/ALS-GeoJSON.zip. Use this to geocode news/event text — never let an LLM invent coordinates.
 - **地政總署 Location Search API（GeoInfo Map）** — VERIFIED on the NEW hostname www.map.gov.hk (migrated from geodata.gov.hk around 2026-05-04). CORS '*'. Returns name/address/district in ZH+EN plus HK1980 grid x/y. Use ALS for addresses and this for place names.
+- **天文台 氣象站網絡（含座標，CSDI）** — 氣象站位置圖層 —— 分區氣溫／風速要落圖就靠佢。用 CSDI FeatureServer 通用路徑，未實測（dataset id 來自 CSDI portal）。
 
 ## global
 
@@ -248,3 +272,6 @@
 - `lwb_eta` — 龍運巴士 ETA → 422 — endpoint exists, needs POST body/parameters
 - `airplanes_live` — airplanes.live（403，唔用） → https://api.airplanes.live/v2/point/22.32/114.17/100 -> HTTP 403
 - `vesselapi` — VesselAPI 船隻位置（免費層，要 key） → 200 but the body is not parseable as declared
+- `censtatd_2021_census` — 2021 人口普查（最新已公佈） → HTML page — title: 住戶
+- `centaline_ccl` — 中原城市指數 CCL／CRI（私人，冇公開 API） → HTML page — title: 地產新聞資訊 | 中原地產
+- `hko_stations_network` — 天文台 氣象站網絡（含座標，CSDI） → JSON object, keys: type, features

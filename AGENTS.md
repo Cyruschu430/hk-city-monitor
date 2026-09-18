@@ -70,9 +70,9 @@ thirty features and none finished. Build the primitives, then one vertical, then
 
 ---
 
-- **Run 0 — prerequisites (Cyrus, not the agent).** Home PC reachable from the VPS and OpenCode
-  with a working Kimi model configured and authenticated. Note: the VPS hostname must never be
-  written into this repo — it is public. Verify with a trivial prompt through OpenCode first.
+- **Run 0 — prerequisites.** A coding agent with a working model configured, pointed at a local
+  clone. Note: this machine's hostname and any private address must never be written into this repo
+  — it is public. Verify with a trivial prompt first.
 
 - **Run 1 — the Worker.** `worker/` — a Cloudflare Worker that is the project's only server-side
   piece. It must:
@@ -83,10 +83,9 @@ thirty features and none finished. Build the primitives, then one vertical, then
      and getting blocked is the one real outage risk (see `COST.md`)
   4. inject the 3D tileset URL server-side, the way HomeCheck does with `~/.tiles3d_url` — never
      hardcode it in the front end, even though keyless currently works
-  **Acceptance — test the handler IN-PROCESS. Do not start a web server.** `wrangler dev` is a
-  server that never exits, and a shell tool waits on it forever, so a round that starts one hangs
-  permanently. That is not a theory: it cost three hang-and-kill cycles on 2026-09-18 and nearly the
-  whole night. Instead import the handler and call it directly — same code path, nothing to await:
+  **Acceptance — test the handler IN-PROCESS. Do not start a web server.** `wrangler dev` never
+  exits and a shell tool waits on it forever, so anything that starts one hangs. Import the handler
+  and call it directly instead — same code path, nothing to await:
 
   ```js
   // test/handler.test.mjs — `node test/handler.test.mjs`, exits on its own
@@ -152,18 +151,11 @@ thirty features and none finished. Build the primitives, then one vertical, then
 - No metered API key ever, and no scraper in v0.2
 - No secret in the repo, ever — the repo is public and a committed secret is a leaked secret
 
-## Unattended overnight runs
-
-If you are working this project in a long unattended session (or were dispatched by an overnight
-runner), read **`KIMI_BRIEF.md`** as well. It adds tonight's scope, the working discipline, the
-hard stop rules (no deploying, no pushing to `master`, no secrets, no VPS hostname in any file) and
-the round-log format. This file remains the authority on *what* to build.
-
 ## Who builds this, and where
 
-**Front end: OpenCode + Kimi on Cyrus's home PC** (decided 2026-09-18). Hermes writes the specs,
-the source registry, the validators and the data pipeline; the coding agent builds the app.
-The PC reaches the VPS over a reverse SSH tunnel, so the working copy may be on either machine.
+**Local development on Cyrus's home PC**, driven by a coding harness working on a local clone.
+Hermes (on the VPS) wrote the specs, the source registry, the validators and the data pipeline; the
+coding agent builds the app. The clone stands on its own — nothing here needs the VPS to be up.
 
 **Public repo: `github.com/Cyruschu430/hk-city-monitor`** — public, and hosting is Cloudflare
 (`git push` deploys).
@@ -174,18 +166,18 @@ config, the primitives are wrong and you must fix them before adding a second ve
 
 ## Never start a web server
 
-**Hard rule.** A server does not exit, and the shell tool waits for output that never comes, so the
-round hangs forever and has to be killed by hand. That happened three times on 2026-09-18.
+**Hard rule.** A server does not exit, and an agent's shell tool waits for output that never comes,
+so the session hangs until it is killed by hand. Don't start one.
 
 - **Test in-process instead** — import the handler and call it. See Run 1's acceptance.
 - **Never** `wrangler dev`, `npm run dev`, `vite`, `python -m http.server`, or anything else that
   keeps running, in order to verify something.
-- If a server seems genuinely required, **stop and mark the step UNVERIFIED** in the log. A round
-  that ends honestly blocked is worth more than a round that hangs.
+- If a server seems genuinely required, **stop and mark the step UNVERIFIED**. An honest blocker
+  is worth more than a hang.
 
 ## Long-running processes
 
-Any command that never exits hangs the round, because the shell tool waits for output that never
+Any command that never exits hangs the session, because the shell tool waits for output that never
 arrives. See **Never start a web server** above — the answer is almost always to test in-process.
 Only if a genuinely long-running command is unavoidable, **redirect its output to a file and detach
 it**, then check it in a separate step:

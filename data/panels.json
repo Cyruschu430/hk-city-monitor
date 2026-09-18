@@ -1,0 +1,254 @@
+{
+ "_comment": "Panel registry. source must exist in sources.json; render must be one of the 8 closed types in PRIMITIVES.md. title carries BOTH official languages (tc = 繁體中文, en = English).",
+ "_renders": [
+  "big_number",
+  "list",
+  "table",
+  "image_single",
+  "image_wall",
+  "raster_map",
+  "gauge_grid",
+  "status_grid"
+ ],
+ "panels": [
+  {
+   "id": "tc_track_image",
+   "source": "hko_tc_track",
+   "render": "image_single",
+   "title": {
+    "tc": "熱帶氣旋路徑",
+    "en": "Tropical Cyclone Track"
+   },
+   "params": {
+    "fallback_source": "hko_tc_besttrack"
+   },
+   "cadence_note": {
+    "tc": "有更新即出",
+    "en": "As issued"
+   }
+  },
+  {
+   "id": "radar_image",
+   "source": "hko_radar",
+   "render": "image_single",
+   "title": {
+    "tc": "天氣雷達（256 公里）",
+    "en": "Weather Radar (256 km)"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每 6 分鐘",
+    "en": "Every 6 minutes"
+   }
+  },
+  {
+   "id": "satellite_image",
+   "source": "hko_satellite",
+   "render": "image_single",
+   "title": {
+    "tc": "衛星雲圖",
+    "en": "Satellite Imagery"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每 30 分鐘",
+    "en": "Every 30 minutes"
+   }
+  },
+  {
+   "id": "rain_nowcast_map",
+   "source": "hko_rain_nowcast",
+   "render": "raster_map",
+   "title": {
+    "tc": "格網降雨臨近預報",
+    "en": "Gridded Rainfall Nowcast"
+   },
+   "params": {
+    "bbox": [
+     22.15,
+     113.83,
+     22.56,
+     114.44
+    ],
+    "opacity": 0.6
+   },
+   "cadence_note": {
+    "tc": "每 12 分鐘",
+    "en": "Every 12 minutes"
+   }
+  },
+  {
+   "id": "warnings_list",
+   "source": "hko_warnsum",
+   "render": "list",
+   "title": {
+    "tc": "天氣警告",
+    "en": "Weather Warnings"
+   },
+   "params": {
+    "expand": "hko_warninginfo"
+   },
+   "cadence_note": {
+    "tc": "即時",
+    "en": "Real-time"
+   }
+  },
+  {
+   "id": "special_traffic_list",
+   "source": "td_specialtrafficnews",
+   "render": "list",
+   "title": {
+    "tc": "特別交通消息",
+    "en": "Special Traffic News"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "即時",
+    "en": "Real-time"
+   }
+  },
+  {
+   "id": "flight_table",
+   "source": "hkia_flights",
+   "render": "table",
+   "title": {
+    "tc": "機場航班",
+    "en": "Airport Flights"
+   },
+   "params": {
+    "max_rows": 40,
+    "fields": [
+     "time",
+     "flight",
+     "origin",
+     "status"
+    ]
+   },
+   "cadence_note": {
+    "tc": "即時",
+    "en": "Real-time"
+   }
+  },
+  {
+   "id": "cameras_wall",
+   "source": "td_snapshot",
+   "render": "image_wall",
+   "title": {
+    "tc": "交通快拍",
+    "en": "Traffic Snapshots"
+   },
+   "params": {
+    "list_source": "td_camera_list",
+    "prefer_grid": [
+     "sea",
+     "low-lying",
+     "tunnel"
+    ]
+   },
+   "cadence_note": {
+    "tc": "每 2 分鐘",
+    "en": "Every 2 minutes"
+   }
+  },
+  {
+   "id": "hko_cameras_wall",
+   "source": "hko_webcam",
+   "render": "image_wall",
+   "title": {
+    "tc": "天氣攝影機",
+    "en": "Weather Cameras"
+   },
+   "params": {
+    "list_source": "hko_webcam_index",
+    "max": 34
+   },
+   "cadence_note": {
+    "tc": "每 5 分鐘",
+    "en": "Every 5 minutes"
+   }
+  },
+  {
+   "id": "tp_queue_grid",
+   "source": "immd_cp_queue",
+   "render": "status_grid",
+   "title": {
+    "tc": "管制站輪候時間",
+    "en": "Control Point Queue Times"
+   },
+   "params": {
+    "stations": [
+     "HYW",
+     "HZM",
+     "LMC",
+     "LSC",
+     "LWS",
+     "MKT"
+    ]
+   },
+   "cadence_note": {
+    "tc": "每 15 分鐘",
+    "en": "Every 15 minutes"
+   }
+  },
+  {
+   "id": "crossboundary_ferry_table",
+   "source": "mardep_crossboundary_ferry",
+   "render": "table",
+   "title": {
+    "tc": "跨境渡輪班次",
+    "en": "Cross-boundary Ferry Services"
+   },
+   "params": {
+    "max_rows": 20
+   },
+   "cadence_note": {
+    "tc": "每 5 分鐘",
+    "en": "Every 5 minutes"
+   }
+  },
+  {
+   "id": "water_suspension_list",
+   "source": "wsd_water_suspension",
+   "render": "list",
+   "title": {
+    "tc": "臨時停水通知",
+    "en": "Temporary Water Suspension Notices"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每 5 分鐘",
+    "en": "Every 5 minutes"
+   }
+  },
+  {
+   "id": "ae_waiting_grid",
+   "source": "ha_ae_waiting",
+   "render": "gauge_grid",
+   "title": {
+    "tc": "急症室輪候時間",
+    "en": "A&E Waiting Times"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每 15 分鐘",
+    "en": "Every 15 minutes"
+   }
+  },
+  {
+   "id": "holiday_leave_table",
+   "source": "hk_public_holidays",
+   "render": "table",
+   "title": {
+    "tc": "請假攻略",
+    "en": "Leave Planner"
+   },
+   "params": {
+    "computed_by": "scripts/build_leave_plan.py"
+   },
+   "cadence_note": {
+    "tc": "跟官方年曆更新",
+    "en": "Follows the official calendar"
+   }
+  }
+ ]
+}

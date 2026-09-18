@@ -3,7 +3,7 @@
 > **本檔案由 `scripts/probe_sources.py` 自動生成，唔好手改。**
 > 改源 → 改 `sources.json` → 跑 `python3 scripts/probe_sources.py`。
 
-最後實測：`2026-09-18 20:38 CST`　·　**144 / 153 個源成功**
+最後實測：`2026-09-18 20:44 CST`　·　**155 / 164 個源成功**
 
 每個 URL 都真係發過 HTTP 請求。🟢 = 200 而且回傳真數據　🟡 = 未解決／要 key　🔴 = 失敗。
 
@@ -12,8 +12,8 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | 運輸署 交通快拍攝影機位置 | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | irregular | none | CSV ~1013 rows, cols: key, region, district, description, easting, northing |
-| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 31596B |
-| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 578746B |
+| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 30286B |
+| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 582530B |
 | 天文台 天氣攝影機目錄頁 | `https://www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm` | 🟢 ok | static | none | HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko |
 
 - **運輸署 交通快拍攝影機位置** — UTF-16LE with a DOUBLE BOM (\xff\xfe\xff\xfe) and tab-delimited. Columns: key, region, district, description, easting, northing, latitude, longitude, url. Python's utf-16 codec leaves a stray \ufeff on the first field name — strip it or every row reads empty.
@@ -215,7 +215,7 @@
 | AISStream 船隻 AIS（WebSocket） | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | real-time | free-key | — |
 | 海事處 跨境渡輪到港／離港（5 分鐘） | `https://www.mardep.gov.hk/e_files/hk/opendata/arrival_tc.csv` | 🟢 ok | 5 minutes | none | CSV ~57 rows, cols: 抵達時間|出發地|營運公司|碼頭|泊位|現況 |
 | 海事處 船隻抵港／離港（20 分鐘） | `https://www.mardep.gov.hk/e_files/en/opendata/RN0010.XML` | 🟢 ok | 15 minutes | none | XML, 0 <item> entries, root tags: RN0010, G_SQL1, VESSEL_NAME, SHIP_TYPE_DESC, LIC_MD_REF |
-| Latest tidal information | `https://tide1.hydro.gov.hk/hotide/OpenData/All_tc.csv` | 🟢 ok | 10 minutes | none | 197B of text/csv |
+| Latest tidal information | `https://tide1.hydro.gov.hk/hotide/OpenData/All_tc.csv` | 🟢 ok | 10 minutes | none | 196B of text/csv |
 | Vessel arrivals and departures | `https://www.mardep.gov.hk/e_files/en/opendata/RP05005i.XML` | 🟢 ok | Every 20 minutes | none | XML, 0 <item> entries, root tags: RP05005IXML, G_SQL1, CALL_SIGN, VESSEL_NAME, SHIP_TYPE |
 
 - **AISStream 船隻 AIS（WebSocket）** — THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope. Fallback if that measurement says NO-GO: a free-tier keyed REST AIS provider (VesselAPI and similar) is the next step, but do not add one to this catalogue until a real endpoint has been requested and returns data — vendor marketing pages are not sources.
@@ -344,11 +344,33 @@ arrival time and related data of Citybus.** — Auto-imported from the CKAN full
 | 消防處 新聞公報 | `https://www.hkfsd.gov.hk/chi/fsd_info/publications/pressrelease/` | 🟡 ok | as issued | none | HTML page — title: 新聞公報 | 香港消防處 |
 | 政府新聞網 治安（法治）分類 feed | `https://www.news.gov.hk/tc/categories/law_order/html/articlelist.rss.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, image |
 | 政府統計處 新聞稿 RSS | `https://www.censtatd.gov.hk/data/tc/press_release/rss.xml` | 🟢 ok | continuous | none | XML, 10 <item> entries, root tags: rss, channel, title, image, url |
+| 港台 本地新聞 / RTHK Local News | `https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_clocal.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, description |
+| 港台 國際新聞 / RTHK International News | `https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_cinternational.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, description |
+| 港台 財經新聞 / RTHK Finance News | `https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_cfinance.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, description |
+| 港台 體育新聞 / RTHK Sport News | `https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_csport.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, description |
+| 港台 兩岸新聞 / RTHK Greater China News | `https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_greaterchina.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, description |
+| 政府新聞公報 · 行政 | `https://www.news.gov.hk/tc/categories/admin/html/articlelist.rss.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, image |
+| 政府新聞公報 · 財經 | `https://www.news.gov.hk/tc/categories/finance/html/articlelist.rss.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, image |
+| 政府新聞公報 · 環境 | `https://www.news.gov.hk/tc/categories/environment/html/articlelist.rss.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, image |
+| 政府新聞公報 · 衞生 | `https://www.news.gov.hk/tc/categories/health/html/articlelist.rss.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, image |
+| 政府新聞公報 · 基建 | `https://www.news.gov.hk/tc/categories/infrastructure/html/articlelist.rss.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, image |
+| 政府新聞公報 · 教育 | `https://www.news.gov.hk/tc/categories/school_work/html/articlelist.rss.xml` | 🟢 ok | continuous | none | XML, 20 <item> entries, root tags: rss, channel, title, link, image |
 
 - **政府新聞公報 RSS（全部）** — VERIFIED valid RSS 2.0, ~478KB, ~100 items. NOTE: general.xml (no suffix) is 404. Publish TITLE + LINK ONLY — never republish article bodies.
 - **消防處 新聞公報** — Find an RSS/JSON form of this list if one exists.
 - **政府新聞網 治安（法治）分類 feed** — The 治安 topic feed. Other topics follow the same pattern: admin, finance, environment, health, infrastructure, school_work, city_life. Title + link only in our UI.
 - **政府統計處 新聞稿 RSS** — The '統計處資料 update 一下' problem, solved: every statistical release lands here first, with the publication calendar behind it.
+- **港台 本地新聞 / RTHK Local News** — RTHK RTHK Local News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.
+- **港台 國際新聞 / RTHK International News** — RTHK RTHK International News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.
+- **港台 財經新聞 / RTHK Finance News** — RTHK RTHK Finance News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.
+- **港台 體育新聞 / RTHK Sport News** — RTHK RTHK Sport News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.
+- **港台 兩岸新聞 / RTHK Greater China News** — RTHK RTHK Greater China News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.
+- **政府新聞公報 · 行政** — news.gov.hk admin category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.
+- **政府新聞公報 · 財經** — news.gov.hk finance category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.
+- **政府新聞公報 · 環境** — news.gov.hk environment category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.
+- **政府新聞公報 · 衞生** — news.gov.hk health category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.
+- **政府新聞公報 · 基建** — news.gov.hk infrastructure category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.
+- **政府新聞公報 · 教育** — news.gov.hk school_work category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.
 
 ## market
 

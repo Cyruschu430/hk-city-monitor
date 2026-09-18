@@ -99,6 +99,19 @@ Build `web/`, then it deploys by copying `web/dist/*` over the root later. Until
 7. **Write in Traditional Chinese (Cantonese register) for all user-facing copy, English for code,
    comments and commit messages.**
 
+## Cost constraints (free public project — see COST.md)
+
+- **Never add a metered API key.** If usage growth increases the bill, it does not go in.
+  Google Maps was ruled out for this reason. The validator fails the build on a metered source.
+- **No LLM in the runtime path.** Every collector is a plain HTTP fetch. The trigger engine is
+  rule-based. Geocoding uses the gazetteer + ALS, never an LLM (it invents coordinates).
+  If a future feature wants an LLM, it must be low-frequency (daily/weekly) with a small context,
+  and the frequency + context size get reported before it is added.
+- Free-tier overage must FAIL, not BILL. Workers Free caps at 100k req/day and stops, with no
+  card on file — that property is why the stack is Cloudflare.
+- The Worker needs a target-URL whitelist, a rate limit and edge caching. That is a cost control,
+  not an optimisation: without caching, a popular day gets *us* blocked by LandsD.
+
 ## Verification — required before you report done
 
 ```bash

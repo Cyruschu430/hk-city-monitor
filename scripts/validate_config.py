@@ -33,6 +33,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 RENDERS = {"big_number", "list", "table", "image_single", "image_wall",
            "raster_map", "gauge_grid", "status_grid"}
+
+# Anything that bills by usage is banned outright: this is a free public project, so a
+# metered key is not a budget problem, it is a "the site's popularity costs money" problem.
+# Google Maps was ruled out for exactly this. The check is mechanical because the rule is.
+METERED_HOSTS = re.compile(r"googleapis\.com/maps|maps\.google|bingmaps|mapbox\.com|"
+                           r"api\.openai\.com|anthropic\.com/v1|azure\.com|aws\.amazon", re.I)
 GEOMS = {"point", "polygon", "line", "raster", "none"}
 OPS = {"exists", ">=", "<=", "==", "in"}
 WINDOWS = {"now", "today", "7d", "season", "year"}
@@ -83,6 +89,14 @@ def main() -> int:
         return 1
 
     src_ids = {s["id"] for s in sources["sources"]}
+
+    # ---- cost gate: nothing that can generate a bill ----
+    for s in sources["sources"]:
+        if str(s.get("cost", "free")).lower() not in ("free", "none"):
+            errors.append(f"source {s['id']}: cost={s.get('cost')!r} — metered sources are banned, "
+                          f"a free project must not carry a key whose price scales with popularity")
+        if METERED_HOSTS.search(s.get("url", "") or ""):
+            errors.append(f"source {s['id']}: URL looks like a metered provider — banned (see COST.md)")
     flagged = {s["id"] for s in sources["sources"]
                if s.get("todo") or s.get("status") == "fail"}
 
@@ -166,7 +180,7 @@ def main() -> int:
 
     # ---- report ----
     if not quiet:
-        print(f"sources {len(src_ids)} · panels {len(seen)} · layers {len(seen_l)} · verticals {len(seen_v)}")
+        print(f"sources {len(src_ids)} (cost=free) · panels {len(seen)} · layers {len(seen_l)} · verticals {len(seen_v)}")
         for w in warnings:
             print(f"  ⚠️  {w}")
         for v in verticals["verticals"]:

@@ -154,6 +154,18 @@ The PC reaches the VPS over a reverse SSH tunnel, so the working copy may be on 
 one source. It exists to falsify the primitive design cheaply. If it needs a code change beyond
 config, the primitives are wrong and you must fix them before adding a second vertical.
 
+## Long-running processes
+
+A command that never exits will hang your round forever, because the shell tool waits for it.
+**Redirect its output to a file and detach it**, then test it in a separate step:
+
+```powershell
+Start-Process -FilePath cmd -ArgumentList '/c','wrangler dev > C:\path\dev.log 2>&1' -WindowStyle Hidden
+```
+
+Paid for twice on 2026-09-18 (`wrangler dev`), including once where `Start-Process` alone was not
+enough because the child still inherited the pipe.
+
 ## Hard constraints
 
 **Hosting（Cyrus 2026-09-18 定）**：Cloudflare，git push 即出街。**公開 repo。**

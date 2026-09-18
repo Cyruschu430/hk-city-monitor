@@ -120,6 +120,26 @@ Run**. Do not fake a result, do not stub and call it done, and do not quietly sk
 "`node --check worker/src/index.js` exits 0, here is the output" is a result. Never mark something
 verified that you did not run.
 
+## 4.5 Long-running processes: the mistake that will hang your round
+
+**Measured twice on 2026-09-18:** the round ran `wrangler dev`, which is a server that never exits.
+The shell tool waited for it, so the round produced nothing for 13 minutes and then forever. Killing
+it and relaunching with `Start-Process` **did not help** — because without a redirect the child
+inherits the tool's pipe and the wait never ends.
+
+**Any command that does not exit must have its output redirected to a file AND be fully detached:**
+
+```powershell
+Start-Process -FilePath cmd -ArgumentList '/c','wrangler dev --port 8787 > C:\hk-city-monitor\dev.log 2>&1' -WindowStyle Hidden
+```
+
+The rule in one line: **if a command does not return, redirect its output and detach it — otherwise
+the tool waits forever.** Start the server in one step, then in a *separate* step `curl` it and read
+`dev.log`. Never start it and wait in the same call.
+
+If you already have a dev server running from an earlier round, do not start a second one — check
+first (`netstat -ano | findstr :8787`).
+
 ## 5. Work in rounds, not one long sprint
 
 Cap yourself at a fixed number of rounds and stop. For each round, append to

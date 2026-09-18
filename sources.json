@@ -23,7 +23,9 @@
       "auth": "none",
       "cadence": "irregular",
       "notes": "UTF-16LE with a DOUBLE BOM (\\xff\\xfe\\xff\\xfe) and tab-delimited. Columns: key, region, district, description, easting, northing, latitude, longitude, url. Python's utf-16 codec leaves a stray \\ufeff on the first field name — strip it or every row reads empty.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "td_snapshot",
@@ -37,7 +39,9 @@
       "auth": "none",
       "cadence": "2 minutes",
       "notes": "1013 cameras. 320x240 JPEG ~30KB. May answer 301/302 — follow redirects. Key list from td_camera_list. Timestamp is burned into the image by TD.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_webcam",
@@ -51,7 +55,9 @@
       "auth": "none",
       "cadence": "5 minutes",
       "notes": "34 stations verified 200. URL pattern: wxinfo/aws/hko_mica/{lower}/{latest_HD_|latest_}{UPPER}.jpg. Station codes come from www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm. HD is ~462KB, the non-HD variant ~88KB.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_webcam_index",
@@ -62,7 +68,9 @@
       "auth": "none",
       "cadence": "static",
       "notes": "Source of the 34 station codes. Not machine-readable — parse once, hardcode the list.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_warnsum",
@@ -73,7 +81,9 @@
       "auth": "none",
       "cadence": "as issued",
       "notes": "CORS allow-origin * so the browser can fetch directly. Returns {} when no warning is in force. Otherwise keyed by warning code with name, code, actionCode, issueTime, updateTime, expireTime.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_warninginfo",
@@ -84,7 +94,9 @@
       "auth": "none",
       "cadence": "as issued",
       "notes": "Full warning text, useful for a detail drawer.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_rhrread",
@@ -95,7 +107,9 @@
       "auth": "none",
       "cadence": "10 minutes",
       "notes": "temperature.data[] per place, humidity, rainfall.data[] per 18 districts, uvindex, icon. recordTime/updateTime fields carry the observation time.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_fnd",
@@ -106,7 +120,9 @@
       "auth": "none",
       "cadence": "twice daily",
       "notes": "",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_swt",
@@ -117,7 +133,9 @@
       "auth": "none",
       "cadence": "as issued",
       "notes": "Returns a nearly-empty body when nothing is active.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_tide",
@@ -132,7 +150,9 @@
       "candidates": [
         "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=QUB&year=2024&rformat=json"
       ],
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_radiation",
@@ -148,7 +168,9 @@
       "cadence": "hourly",
       "todo": false,
       "notes": "SOLVED: ambient gamma dose rate is dataType=RYES (Weather and Radiation Level Report) on opendata.php. Needs station + date (YYYYMMDD, up to yesterday). The earlier guesses rmn/radiation were wrong.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_earthquake",
@@ -163,7 +185,9 @@
       "cadence": "as issued",
       "todo": false,
       "notes": "SOLVED: earthquakes live on a SEPARATE endpoint, earthquake.php — not weather.php. qem = worldwide M6+ quick report (lat/lon/mag/region/ptime); feltearthquake = locally felt tremors (returns {} when none, which is a valid empty result, not an error).",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_radar",
@@ -179,7 +203,9 @@
       "cadence": "6 minutes",
       "todo": true,
       "notes": "FOUND. URL is TIMESTAMPED: .../rad_256_png/2d256nradar_{YYYYMMDDHHMM}.jpg (~88KB). Images refresh every ~6 minutes, so the app must build the current timestamp (try now, then step back 6/12 minutes until a 200). The sample above was live when probed; the fixed sample will eventually 404 — that is expected, not a broken source.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_satellite",
@@ -191,7 +217,9 @@
       "cadence": "hourly",
       "todo": true,
       "notes": "FOUND. Also a TIMESTAMPED path under /wxinfo/intersat/satellite/image/asia/ — the filename carries a date plus an offset token, so the exact naming rule still needs pinning. ~216KB.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "td_speedmap",
@@ -204,7 +232,9 @@
       "notes": "REAL PATHS NOT FOUND: resource.data.one.gov.hk/td/speedmap.xml returns 404 (the 404 body is a decoy PHP index that lists paths which do not exist). Use td_traffic_speed_city (JSON) instead; for XML find the current TIS path on data.gov.hk.",
       "candidates": [],
       "todo": true,
-      "kind": "api"
+      "kind": "api",
+      "fetch": "n/a",
+      "cors_note": "URL 唔可直接開（模板或非 HTTP）"
     },
     {
       "id": "td_journeytime",
@@ -217,7 +247,9 @@
       "notes": "REAL PATH NOT FOUND: resource.data.one.gov.hk/td/journeytime.xml returns 404. See the City Dashboard journey-time dataset on data.gov.hk.",
       "candidates": [],
       "todo": true,
-      "kind": "api"
+      "kind": "api",
+      "fetch": "n/a",
+      "cors_note": "URL 唔可直接開（模板或非 HTTP）"
     },
     {
       "id": "td_specialtrafficnews",
@@ -228,7 +260,9 @@
       "auth": "none",
       "cadence": "as issued",
       "notes": "Also available in en and sc. Good event-feed source for the map.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "td_traffic_speed_city",
@@ -239,7 +273,9 @@
       "auth": "none",
       "cadence": "2 minutes",
       "notes": "JSON twin of the TIS XML — much easier for a static front end.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "td_carpark_vacancy",
@@ -253,7 +289,9 @@
       "auth": "none",
       "cadence": "real-time",
       "notes": "Real-time vacancy counts. The JSON body starts with a UTF-8 BOM — decode as utf-8-sig or json.loads throws. Key: car_park[].",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ogcio_carpark_vacancy",
@@ -264,7 +302,9 @@
       "auth": "none",
       "cadence": "real-time",
       "notes": "Merges TD and Kai Tak (start-up Kowloon East) car park feeds.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "bus_eta_citybus_nlb",
@@ -279,7 +319,9 @@
       "cadence": "1 minute",
       "notes": "Batch endpoint — a GET returns 422, it needs a POST body of stop ids. Also has per-route ETA endpoints under rt.data.gov.hk. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.",
       "kind": "api",
-      "todo": true
+      "todo": true,
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "sb_bwt_status",
@@ -291,7 +333,9 @@
       "cadence": "15 minutes",
       "todo": false,
       "notes": "The human page. The machine-readable data is sb_bwt_json (/bwt/json/overview_tc.json) — use that; do not parse this HTML.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hkemobility_control_point",
@@ -303,7 +347,9 @@
       "cadence": "15 minutes",
       "todo": true,
       "notes": "Page is a ~3.5KB JS app. Find its data endpoint. Covers passenger and private-car channels.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "immd_control_points",
@@ -314,7 +360,9 @@
       "auth": "none",
       "cadence": "static",
       "notes": "Static list of 13 control points with opening hours. Hardcode once — lets the UI show 現正開放／已關閉 without any live source.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "adsb_lol_hk",
@@ -326,7 +374,9 @@
       "cadence": "~10 seconds",
       "hk_filter": true,
       "notes": "NO KEY, NO REGISTRATION, and the best of the free ADS-B mirrors: verified 52 aircraft on the HK 100nm circle. Path is /v2/point/{lat}/{lon}/{radius_nm}. Use this as the primary flights layer.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "opensky_hk",
@@ -339,7 +389,9 @@
       "hk_filter": true,
       "notes": "Verified 26 aircraft in the HK bbox anonymously. Rate-limited without an account, so it is the fallback mirror rather than the primary. Free account raises the limit.",
       "todo": false,
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://opensky-network.org"
     },
     {
       "id": "aisstream",
@@ -351,7 +403,9 @@
       "cadence": "real-time",
       "hk_filter": true,
       "notes": "THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope. Fallback if that measurement says NO-GO: a free-tier keyed REST AIS provider (VesselAPI and similar) is the next step, but do not add one to this catalogue until a real endpoint has been requested and returns data — vendor marketing pages are not sources.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "n/a",
+      "cors_note": "URL 唔可直接開（模板或非 HTTP）"
     },
     {
       "id": "lcsd_leisure_prog",
@@ -362,7 +416,9 @@
       "auth": "none",
       "cadence": "daily",
       "notes": "This is the 'what's on soon' feed. Note the http (not https) scheme. Try the https variant too and prefer it if it works.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg"
     },
     {
       "id": "lcsd_facility_usage",
@@ -373,7 +429,9 @@
       "auth": "none",
       "cadence": "annual",
       "notes": "Annual statistics only — NOT live booking availability. Do not present as real-time.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg"
     },
     {
       "id": "afcd_closed_trails",
@@ -388,7 +446,9 @@
       "candidates": [
         "https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=afcd_rcd_1742550096880_1424&format=geojson&layer_name=CPISDBOCLOSED_TRAIL_IN_CP_GDB"
       ],
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "hk_public_holidays",
@@ -404,7 +464,9 @@
         "https://www.1823.gov.hk/common/ical/en.ics",
         "https://www.1823.gov.hk/common/ical/tc.json"
       ],
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "gov_press_rss",
@@ -420,7 +482,9 @@
       "cadence": "as issued",
       "todo": false,
       "notes": "VERIFIED valid RSS 2.0, ~478KB, ~100 items. NOTE: general.xml (no suffix) is 404. Publish TITLE + LINK ONLY — never republish article bodies.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "fsd_press",
@@ -432,7 +496,9 @@
       "cadence": "as issued",
       "todo": true,
       "notes": "Find an RSS/JSON form of this list if one exists.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "yahoo_hsi",
@@ -443,7 +509,9 @@
       "auth": "none",
       "cadence": "delayed",
       "notes": "NO CORS header — must be proxied server side (nginx proxy_pass, 3 lines). Verified working: ^HSI 24750.78 HKD, ^HSCE, 0700.HK, 9988.HK, 3690.HK, 1810.HK, 0005.HK, 0388.HK, 1299.HK, 0939.HK also work. DELAYED — must be labelled 延遲報價 in the UI.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "coingecko",
@@ -454,7 +522,9 @@
       "auth": "none",
       "cadence": "1 minute",
       "notes": "Free tier is rate-limited but keyless.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "carto_dark_style",
@@ -465,7 +535,9 @@
       "auth": "none",
       "cadence": "static",
       "notes": "Keyless vector basemap style for MapLibre. 93 layers, CJK-capable font stacks (HanWangHeiLight / NanumBarunGothic), glyph server at tiles.basemaps.cartocdn.com/fonts/{fontstack}/{range}.pbf. MUST be referenced as a style URL — passing it as an inline style object to MapLibre 4.7.x silently fails.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "csdi_portal_api",
@@ -480,7 +552,9 @@
       "candidates": [
         "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1634540558875_77434/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson"
       ],
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "als_address_lookup",
@@ -495,7 +569,9 @@
       "cadence": "monthly",
       "todo": false,
       "notes": "VERIFIED and this is the geocoder the app needs. REAL HOST IS www.als.gov.hk (the older als.ogcio.gov.hk / geodata.gov.hk guesses were wrong). Send Accept: application/json (defaults to XML). CORS is '*' so the browser can call it directly. Returns SuggestedAddress[] with GeospatialInformation{Latitude,Longitude,Easting,Northing} and a GeoAddress code. Whole address dataset: https://www.als.gov.hk/data/ALS-GeoJSON.zip. Use this to geocode news/event text — never let an LLM invent coordinates.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "usgs_earthquakes",
@@ -507,7 +583,9 @@
       "cadence": "minutes",
       "hk_filter": true,
       "notes": "Keyless. Empty result near HK is expected and correct — widen the bbox for a regional view.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "nasa_eonet",
@@ -519,7 +597,9 @@
       "cadence": "hourly",
       "hk_filter": true,
       "notes": "Storms, wildfires, floods. Keyless. Large responses — filter client side by bounding box if the bbox param is unsupported.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "open_meteo",
@@ -531,7 +611,9 @@
       "cadence": "15 minutes",
       "hk_filter": true,
       "notes": "Keyless, CORS-friendly. Useful as a gridded cross-check against HKO station readings.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "cc_fuel_price",
@@ -546,7 +628,9 @@
       "cadence": "daily",
       "todo": true,
       "notes": "Every oil company's retail price AND after-discount price per station, plus weekly offers. NO official API — it is a server-rendered Typo3 site (plain GET, stable paths such as /tc/price, /tc/station, /tc/today-discount), so it is scrapeable without a browser, but it is still scraping. A third party (talklivelihood.hk) already republishes it. BEST MOVE: ask the Consumer Council for a feed — a public body publishing a consumer tool should be able to publish data. No price data on data.gov.hk (only complaints statistics).",
-      "kind": "document"
+      "kind": "document",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "cc_online_price_watch",
@@ -561,7 +645,9 @@
       "cadence": "weekly",
       "todo": true,
       "notes": "Supermarket prices across the major chains (惠康, 百佳, Market Place, AEON, 大昌, city'super...) for hundreds of product categories. Hierarchical server-rendered URLs (/opw/list/{cat}/{sub}/{subsub}) but the product pages carry NO prices in the HTML — prices arrive via an AJAX call that still needs reversing. Higher effort and higher fragility than the fuel tool. Prefer asking for a feed.",
-      "kind": "document"
+      "kind": "document",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "cc_infant_formula_survey",
@@ -573,7 +659,9 @@
       "cadence": "monthly",
       "todo": true,
       "notes": "Part of the Consumer Council price-comparison toolkit. Check whether the survey is published as a table or a PDF.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "cc_complaints_stats",
@@ -585,7 +673,9 @@
       "cadence": "monthly",
       "todo": true,
       "notes": "The ONLY Consumer Council dataset on data.gov.hk. Resolve the real CSV resource URL via the CKAN API.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "td_routes_and_fares",
@@ -600,7 +690,9 @@
       "cadence": "daily",
       "todo": true,
       "notes": "GOTCHA: the CSVs are DAILY CHANGE LOGS only (ROUTE_ID, ROUTE_SEQ, CHANGE = ADD/DELETE/UPDATE) — they contain NO fares. The real fare tables are MS Access files, e.g. FARE_BUS.mdb at 32.9 MB. Full family available: ROUTE_/RSTOP_/STOP_/FARE_ x BUS, GMB (minibus), FERRY, TRAM, PTRAM. To use it: convert the .mdb to SQLite/Parquet once with mdbtools, then apply the daily deltas. A one-off converter is a genuinely useful open-source contribution and the only free source of complete HK public-transport fares.",
-      "kind": "document"
+      "kind": "document",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "lcsd_smartplay_prog",
@@ -611,7 +703,9 @@
       "auth": "none",
       "cadence": "continuous",
       "notes": "THE current 'what's on soon' feed — ~8,700 records with ~7,200 upcoming. ~17MB, so fetch it on a schedule from the VPS and slim it to a static JSON; never ship 17MB to the browser. Fields include ACTIVITY_NO, EN_PGM_NAME, PGM_START/END_DATE, EN_VENUE, FEE, QUOTA, PLACES_LEFT. This supersedes lcsd_leisure_prog, which is frozen and stale.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "lcsd_events_xml",
@@ -622,7 +716,9 @@
       "auth": "none",
       "cadence": "continuous",
       "notes": "Current cultural programme listings, ~1.9MB. <events> with id, titlec/titlee, cat1/cat2, predateC.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg"
     },
     {
       "id": "lcsd_eventdates_xml",
@@ -633,7 +729,9 @@
       "auth": "none",
       "cadence": "continuous",
       "notes": "Maps event id to performance dates (<indate>). Join with events.xml and venues.xml.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg"
     },
     {
       "id": "lcsd_venues_xml",
@@ -644,7 +742,9 @@
       "auth": "none",
       "cadence": "continuous",
       "notes": "Venue id, name, latitude/longitude — enough to put cultural events on the map.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg"
     },
     {
       "id": "lcsd_venue_master",
@@ -655,7 +755,9 @@
       "auth": "none",
       "cadence": "periodic",
       "notes": "629 venues across 15 categories. Has OpeningHour_en/cn AND ClosedOn_en/cn AND PublicHolidayOpeningHour — this is how the UI answers '邊個場今日開唔開' without any live source. A temporary-closure feed does NOT exist (checked); holiday.xml returns an empty <holiday/>.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg"
     },
     {
       "id": "urbtix_event_batch",
@@ -666,7 +768,9 @@
       "auth": "none",
       "cadence": "daily",
       "notes": "The URL embeds the publish date as YYYYMMDD — substitute today's date (a future date 404s). ~550KB, <BATCH><TOTAL><EVENTS> with ST_DATE/ED_DATE, EVENT_CODE, name, REFERENCE_LINK, CATEGORY.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "csdi_lcsd_sports_centres",
@@ -677,7 +781,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "notes": "Layer 'SC'. Dataset id lcsd_rcd_1629267205215_31341.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "csdi_lcsd_tennis",
@@ -688,7 +794,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "notes": "Layer 'geotagging'. Dataset id lcsd_rcd_1629267205215_84141.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "csdi_lcsd_badminton",
@@ -699,7 +807,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "notes": "Layer 'geodatastore'. Dataset id lcsd_rcd_1629267205214_38344.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "csdi_lcsd_basketball",
@@ -710,7 +820,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "notes": "Layer 'geodatastore'. Dataset id lcsd_rcd_1629267205215_38105.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "csdi_lcsd_libraries",
@@ -721,7 +833,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "notes": "Layer 'LIBRARY'. Dataset id lcsd_rcd_1629267205214_44807.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "csdi_lcsd_museums",
@@ -732,7 +846,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "notes": "Layer 'MUSEUM'. Dataset id lcsd_rcd_1629267205214_78787.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "csdi_lcsd_parks",
@@ -743,7 +859,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "notes": "Layer 'PARKS'. Dataset id lcsd_rcd_1629267205215_19292.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "csdi_lcsd_holiday_camps",
@@ -754,7 +872,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "notes": "Layer 'HC'. Dataset id lcsd_rcd_1629267205214_83172.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "csdi_lcsd_bbq",
@@ -765,7 +885,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "notes": "Layer 'LCSD_BBQ'. Dataset id lcsd_rcd_1634540957025_61259.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "afcd_closed_facilities",
@@ -776,7 +898,9 @@
       "auth": "none",
       "cadence": "live",
       "notes": "Live closure layer. FAC_ID, FACILITY_TYPE_EN/TC, LOCATION_EN/TC, STATUS_EN/TC, EFFECTIVE_DATE (epoch ms), EXPECTED_EXPIRY_DATE.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "gov_news_law_order",
@@ -787,7 +911,9 @@
       "auth": "none",
       "cadence": "continuous",
       "notes": "The 治安 topic feed. Other topics follow the same pattern: admin, finance, environment, health, infrastructure, school_work, city_life. Title + link only in our UI.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk"
     },
     {
       "id": "location_search",
@@ -798,7 +924,9 @@
       "auth": "none",
       "cadence": "real-time",
       "notes": "VERIFIED on the NEW hostname www.map.gov.hk (migrated from geodata.gov.hk around 2026-05-04). CORS '*'. Returns name/address/district in ZH+EN plus HK1980 grid x/y. Use ALS for addresses and this for place names.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "epd_aqhi_rss",
@@ -810,7 +938,9 @@
       "cadence": "hourly",
       "todo": false,
       "notes": "FOUND — the official EPD feed (data.gov.hk dataset hk-epd-airteam-current-aqhi-of-individual-air-quality-monitoring-stations). Each item's title is the station name and the description carries '<station> - <type>: <AQHI> <risk>'. ChT/ChS variants alongside. Host is www.aqhi.gov.hk — the bare aqhi.gov.hk does not resolve.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk"
     },
     {
       "id": "epd_aqhi_24h",
@@ -822,7 +952,9 @@
       "cadence": "hourly",
       "todo": false,
       "notes": "The file the aqhi.gov.hk page itself loads. It is JavaScript, not JSON: 'var station_24_data = [...]'. Strip the 'var ... = ' prefix then parse. Per-station hourly rows with StationID, DateTime, StationNameEN/CT/CS, aqhi and NO2/O3/SO2/CO/PM10/PM25 — i.e. the full pollutant breakdown, ~226KB.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk"
     },
     {
       "id": "epd_aqhi_forecast",
@@ -834,7 +966,9 @@
       "cadence": "daily",
       "todo": false,
       "notes": "'var aqhi_report = [...]' with DateTime, StationTypeEN, AQHIRiskEN, AQHIRange. Strip the var prefix.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk"
     },
     {
       "id": "sb_bwt_json",
@@ -846,7 +980,9 @@
       "cadence": "15 minutes",
       "todo": false,
       "notes": "SOLVED — this is the JSON behind 口岸通, and it is the highest-value source in the project. updateDate + cpInfoList[]; each control point has code, cpName, openFrom/openTo and arrival/departure, each broken down into resident / visitor / car / cross-border shuttle, with status 1/2/3 for the green-yellow-red level. Keyless. NOTE: there is no Chinese in the path — /bwt/json/overview_tc.json sits directly under www.sb.gov.hk.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "kmb_eta",
@@ -862,7 +998,9 @@
       "cadence": "1 minute",
       "todo": false,
       "notes": "NO KEY NEEDED — data.etabus.gov.hk is KMB's own open data portal. Verified: /route/ lists all routes (~349KB); /route-stop/{route}/{direction}/{service_type} for the stop sequence; /eta/{stop_id}/{route}/{service_type} for arrivals. GOTCHA: direction must be the literal 'outbound' or 'inbound' — O/I/1/2 all return 422 'Invalid direction'.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "mtr_next_train",
@@ -874,7 +1012,9 @@
       "cadence": "real-time",
       "todo": false,
       "notes": "Keyless mirror on rt.data.gov.hk — the official opendata.mtr.com.hk Next Train API instead wants a free registration. line=ISL / sta=ADM returns UP and DOWN trains with platform and ttnt.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hkia_flights",
@@ -886,7 +1026,9 @@
       "cadence": "real-time",
       "todo": false,
       "notes": "The public keyless feed hongkongairport.com itself uses (the official AAHK Data Services API wants a free developer account). Add arrival=true&cargo=false to filter. /rest/flights/past also works; /rest/flights/search is 404. ~210KB per request — fetch it server-side and slim it, not per client.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "lwb_eta",
@@ -898,7 +1040,9 @@
       "cadence": "1 minute",
       "todo": true,
       "notes": "Service is live (it answers structured 422 JSON) but the parameter format differs from KMB and is unconfirmed. Cheap to finish — try the KMB path shapes with the lwb prefix. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "adsb_fi_hk",
@@ -911,7 +1055,9 @@
       "hk_filter": true,
       "todo": false,
       "notes": "VERIFIED — 42 aircraft, keyless. Note the path shape differs from adsb.lol: /v2/lat/{lat}/lon/{lon}/dist/{nm}. Having two independent keyless mirrors means the flights layer survives one of them going down; interleave them rather than picking one.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "adsbdb",
@@ -923,7 +1069,9 @@
       "cadence": "static",
       "todo": false,
       "notes": "VERIFIED keyless enrichment: callsign to airline/route, and /v0/aircraft/{hex} for registration, type, owner and photo. Cheap way to turn a bare hex+callsign on the map into something a reader understands. Cache it — this data barely changes.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "airplanes_live",
@@ -935,7 +1083,9 @@
       "cadence": "~10 seconds",
       "todo": true,
       "notes": "Returns 403 without credentials. Listed so nobody re-tries it; adsb.lol and adsb.fi cover the need.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "rvd_property_market",
@@ -947,7 +1097,9 @@
       "cadence": "monthly",
       "todo": false,
       "notes": "The OFFICIAL property price and rental index series — the public-sector counterpart to 中原 CCL/CRI. Monthly for the headline series; completions, stock, vacancy and take-up are annual. Filenames are historical table numbers, e.g. 1.1A(86-98).csv, 1.1Q(82-98).csv — list the directory rather than guessing a filename.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "landreg_monthly",
@@ -959,7 +1111,9 @@
       "cadence": "monthly",
       "todo": false,
       "notes": "Actual transaction volume by instrument type — the ground truth behind any price index. A JSON twin exists for every month (YYYYMM_data.json / .xls), so build the URL from the current month and fall back one month. Monthly.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "censtatd_press_rss",
@@ -971,7 +1125,9 @@
       "cadence": "continuous",
       "todo": false,
       "notes": "The '統計處資料 update 一下' problem, solved: every statistical release lands here first, with the publication calendar behind it.",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "censtatd_table_110_01003",
@@ -983,7 +1139,9 @@
       "cadence": "half-yearly",
       "todo": false,
       "notes": "Any 統計處 table downloads as XLSX through this query-string form — swap the id. Half-yearly for population. Related ids worth wiring: 110-01001 (population by sex and age), 130-06102 (domestic households).",
-      "kind": "api"
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "censtatd_2021_census",
@@ -995,7 +1153,9 @@
       "cadence": "decennial",
       "todo": true,
       "notes": "IMPORTANT for expectations: the 2021 census is the newest published census. The 2026 POPULATION CENSUS is being collected during calendar 2026 (by order published in the Gazette on 2025-02-14, one in ten households sampled), so its results are NOT available yet — plan the census layer around 2021 plus the rolling half-yearly statistics tables, and add 2026 when it lands. Dataset subject pages host the tables as XLSX.",
-      "kind": "document"
+      "kind": "document",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "centaline_ccl",
@@ -1007,7 +1167,9 @@
       "cadence": "weekly",
       "todo": true,
       "notes": "Be clear about what this is: 中原 CCL/CRI is a PRIVATE product of 中原地產, not open data. It is published as weekly (CCL) and monthly (CRI) press releases and republished by third parties. No public API exists and the licence is theirs. Options, in order of preference: (1) use the official 差餉物業估價署 index instead — it is free, monthly and unambiguous; (2) if the CCL number matters for narrative, cite it with a link and never present it as our own data; (3) only consider scraping the research page if the citation route proves insufficient.",
-      "kind": "document"
+      "kind": "document",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_lunardate",
@@ -1018,7 +1180,9 @@
       "auth": "none",
       "cadence": "yearly",
       "todo": false,
-      "notes": "喂 date=YYYY-MM-DD，回農曆日期（年月日、干支、生肖）。年度 CSV 全表：hko_data/calendar/nongli_calendar_2023.csv。呢個就係所有農曆功能嘅官方地基 —— 農曆新年、清明、中秋、初一十五、擇日，全部由佢計，唔使自己寫曆法。"
+      "notes": "喂 date=YYYY-MM-DD，回農曆日期（年月日、干支、生肖）。年度 CSV 全表：hko_data/calendar/nongli_calendar_2023.csv。呢個就係所有農曆功能嘅官方地基 —— 農曆新年、清明、中秋、初一十五、擇日，全部由佢計，唔使自己寫曆法。",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_sunrise_sunset",
@@ -1029,7 +1193,9 @@
       "auth": "none",
       "cadence": "yearly",
       "todo": false,
-      "notes": "全年逐日日出日落。三種人會用：影相嘅（黃金時間）、跑山嘅（幾點天黑）、風水／座向參考。同一個 opendata.php 仲有月出月落。"
+      "notes": "全年逐日日出日落。三種人會用：影相嘅（黃金時間）、跑山嘅（幾點天黑）、風水／座向參考。同一個 opendata.php 仲有月出月落。",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_wbgt",
@@ -1040,7 +1206,9 @@
       "auth": "none",
       "cadence": "10 minutes",
       "todo": false,
-      "notes": "濕球黑球溫度 — 戶外工作與運動嘅真正熱壓力指標，比氣溫誠實得多。對露營、賽事、地盤、跑步都直接有用。"
+      "notes": "濕球黑球溫度 — 戶外工作與運動嘅真正熱壓力指標，比氣溫誠實得多。對露營、賽事、地盤、跑步都直接有用。",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_rain_nowcast",
@@ -1051,7 +1219,9 @@
       "auth": "none",
       "cadence": "hourly",
       "todo": false,
-      "notes": "格網狀未來降雨預報 —— 可以砌落雨動畫／時間軸，係整個天氣層最有動感嘅一個。另有 _tc 中文版。"
+      "notes": "格網狀未來降雨預報 —— 可以砌落雨動畫／時間軸，係整個天氣層最有動感嘅一個。另有 _tc 中文版。",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_stations_network",
@@ -1062,7 +1232,9 @@
       "auth": "none",
       "cadence": "snapshot",
       "todo": true,
-      "notes": "氣象站位置圖層 —— 分區氣溫／風速要落圖就靠佢。用 CSDI FeatureServer 通用路徑，未實測（dataset id 來自 CSDI portal）。"
+      "notes": "氣象站位置圖層 —— 分區氣溫／風速要落圖就靠佢。用 CSDI FeatureServer 通用路徑，未實測（dataset id 來自 CSDI portal）。",
+      "fetch": "browser",
+      "cors_note": "ACAO=https://hk-city-monitor.pages.dev"
     },
     {
       "id": "hko_smart_lamppost",
@@ -1073,7 +1245,9 @@
       "auth": "none",
       "cadence": "10 minutes",
       "todo": false,
-      "notes": "街頭級氣象站（智慧燈柱），比天文台站密得多。位置表 + device type 表各一個 JSON。做微尺度城市氣候／跑步路線熱壓力嘅原材料。"
+      "notes": "街頭級氣象站（智慧燈柱），比天文台站密得多。位置表 + device type 表各一個 JSON。做微尺度城市氣候／跑步路線熱壓力嘅原材料。",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_tc_track",
@@ -1084,7 +1258,9 @@
       "auth": "none",
       "cadence": "as issued",
       "todo": false,
-      "notes": "Live tropical cyclone list and track — the data behind the HKO TC track pages. Feeds the 颱風模式 vertical. Note the host is www.weather.gov.hk (not data.weather.gov.hk)."
+      "notes": "Live tropical cyclone list and track — the data behind the HKO TC track pages. Feeds the 颱風模式 vertical. Note the host is www.weather.gov.hk (not data.weather.gov.hk).",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_tc_besttrack",
@@ -1095,7 +1271,9 @@
       "auth": "none",
       "cadence": "annual",
       "todo": false,
-      "notes": "Full post-analysed track of every cyclone in a year — the honest basis for 'this storm looks like the one in 2023' comparisons, because it is the quality-controlled record rather than the forecast. Build the year into the URL and step back a year when the current one 404s."
+      "notes": "Full post-analysed track of every cyclone in a year — the honest basis for 'this storm looks like the one in 2023' comparisons, because it is the quality-controlled record rather than the forecast. Build the year into the URL and step back a year when the current one 404s.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "immd_cp_queue",
@@ -1109,7 +1287,9 @@
       "auth": "none",
       "cadence": "15 minutes",
       "todo": false,
-      "notes": "THE OFFICIAL control-point waiting time feed from Immigration — 15-minute cadence, no key. This is better than reading 口岸通's page: 口岸通 gives a green/yellow/red band, this gives the actual queue time. Keep 口岸通 too — it adds the incident notices and the cross-boundary shuttle waits. Found only by the full CKAN scan; a keyword search misses it. Verified response keys are the control-point codes themselves: HYW, HZM, LMC, LSC, LWS, MKT."
+      "notes": "THE OFFICIAL control-point waiting time feed from Immigration — 15-minute cadence, no key. This is better than reading 口岸通's page: 口岸通 gives a green/yellow/red band, this gives the actual queue time. Keep 口岸通 too — it adds the incident notices and the cross-boundary shuttle waits. Found only by the full CKAN scan; a keyword search misses it. Verified response keys are the control-point codes themselves: HYW, HZM, LMC, LSC, LWS, MKT.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ha_ae_waiting",
@@ -1120,7 +1300,9 @@
       "auth": "none",
       "cadence": "15 minutes",
       "todo": false,
-      "notes": "Accident & Emergency waiting time per public hospital, updated every 15 minutes, keyless. Genuinely useful to a resident and rarely seen in dashboards — this is the kind of source that makes a monitor worth opening."
+      "notes": "Accident & Emergency waiting time per public hospital, updated every 15 minutes, keyless. Genuinely useful to a resident and rarely seen in dashboards — this is the kind of source that makes a monitor worth opening.",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "wsd_water_suspension",
@@ -1131,7 +1313,9 @@
       "auth": "none",
       "cadence": "5 minutes",
       "todo": false,
-      "notes": "Temporary water suspension notices, every 5 minutes. Directly answers 'why is my water off' — pair with a map of the affected address. Reaches us only after relaxing the TLS cipher security level — if a future client gets a handshake failure here, that is the cause, not the dataset."
+      "notes": "Temporary water suspension notices, every 5 minutes. Directly answers 'why is my water off' — pair with a map of the affected address. Reaches us only after relaxing the TLS cipher security level — if a future client gets a handshake failure here, that is the cause, not the dataset.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "lcsd_court_booking",
@@ -1147,7 +1331,9 @@
       "auth": "none",
       "cadence": "5 minutes",
       "todo": false,
-      "notes": "!! I PREVIOUSLY DECLARED THIS DID NOT EXIST, AND I WAS WRONG. LCSD publishes the live availability of bookable sessions per venue every 5 minutes, keyless, for badminton / basketball / tennis / turf soccer / volleyball. So the honest answer to 'can we show 訂場情況' is yes — with real vacancy, not a workaround. Every court type is the same path with a different sport segment."
+      "notes": "!! I PREVIOUSLY DECLARED THIS DID NOT EXIST, AND I WAS WRONG. LCSD publishes the live availability of bookable sessions per venue every 5 minutes, keyless, for badminton / basketball / tennis / turf soccer / volleyball. So the honest answer to 'can we show 訂場情況' is yes — with real vacancy, not a workaround. Every court type is the same path with a different sport segment.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "mardep_crossboundary_ferry",
@@ -1161,7 +1347,9 @@
       "auth": "none",
       "cadence": "5 minutes",
       "todo": false,
-      "notes": "Cross-boundary ferry arrivals and departures, 5-minute cadence. Together with the ImmD queue time this completes the 'cross the border by any mode' picture."
+      "notes": "Cross-boundary ferry arrivals and departures, 5-minute cadence. Together with the ImmD queue time this completes the 'cross the border by any mode' picture.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "mardep_vessel_arrivals",
@@ -1175,7 +1363,9 @@
       "auth": "none",
       "cadence": "15 minutes",
       "todo": false,
-      "notes": "Ocean and river vessel arrivals/departures. Also declared missing earlier and found by the full scan — the lesson repeats: a keyword search is not evidence of absence."
+      "notes": "Ocean and river vessel arrivals/departures. Also declared missing earlier and found by the full scan — the lesson repeats: a keyword search is not evidence of absence.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "gmb_eta",
@@ -1189,7 +1379,9 @@
       "auth": "none",
       "cadence": "1 minute",
       "todo": false,
-      "notes": "Green minibus real-time arrivals, keyless. Paths use region codes and the dataset lists the full set of templates (/route/{region}, /route-stop/{route_id}/{route_seq}, /stop-route/{stop_id}, /eta/route-stop/{route_id}/{route_seq}/{stop_seq})."
+      "notes": "Green minibus real-time arrivals, keyless. Paths use region codes and the dataset lists the full set of templates (/route/{region}, /route-stop/{route_id}/{route_seq}, /stop-route/{stop_id}, /eta/route-stop/{route_id}/{route_seq}/{stop_seq}).",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "sunferry_eta",
@@ -1200,7 +1392,9 @@
       "auth": "none",
       "cadence": "1 minute",
       "todo": true,
-      "notes": "Sun Ferry estimated arrivals, refreshed every minute. The route code goes in the query string — confirm the valid codes from their site before wiring it. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source."
+      "notes": "Sun Ferry estimated arrivals, refreshed every minute. The route code goes in the query string — confirm the valid codes from their site before wiring it. · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hkkf_eta",
@@ -1215,7 +1409,9 @@
       "auth": "none",
       "cadence": "1 minute",
       "todo": false,
-      "notes": "Hong Kong & Kowloon Ferry open data: piers, routes, timetables, fares and ETA. One operator quietly publishing a clean JSON API — worth supporting by using it."
+      "notes": "Hong Kong & Kowloon Ferry open data: piers, routes, timetables, fares and ETA. One operator quietly publishing a clean JSON API — worth supporting by using it.",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "tdas_traffic",
@@ -1227,7 +1423,9 @@
       "cadence": "5 minutes",
       "todo": true,
       "notes": "403 on every attempt — including with Referer and Origin headers set to hk eMobility, so it is not a simple hotlink guard: the endpoint is likely keyed or IP-restricted. Left in the catalogue as a known-gated source rather than deleted, because it is the live road-speed API behind 香港出行易. We already have TD's speed map and journey time feeds, so nothing is blocked by this.",
-      "candidates": []
+      "candidates": [],
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "fsd_aed",
@@ -1238,7 +1436,9 @@
       "auth": "none",
       "cadence": "real-time",
       "todo": false,
-      "notes": "Every public AED location with coordinates, keyless. A map layer that could genuinely save a life, and a good example of a layer that earns its place on a dashboard. Verified: 4,624 AED records with latitude/longitude and a usable-by-anyone flag."
+      "notes": "Every public AED location with coordinates, keyless. A map layer that could genuinely save a life, and a good example of a layer that earns its place on a dashboard. Verified: 4,624 AED records with latitude/longitude and a usable-by-anyone flag.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "aqhi_city_dashboard",
@@ -1252,7 +1452,9 @@
       "auth": "none",
       "cadence": "hourly",
       "todo": false,
-      "notes": "Cleaner than the RSS for machine use, and gives per-station current AQHI as real JSON. Hourly, plus a forecast published three times a day."
+      "notes": "Cleaner than the RSS for machine use, and gives per-station current AQHI as real JSON. Hourly, plus a forecast published three times a day.",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "hko_heat_index",
@@ -1263,7 +1465,9 @@
       "auth": "none",
       "cadence": "10 minutes",
       "todo": false,
-      "notes": "The HK Heat Index (a local apparent-temperature measure) every 10 minutes — complements WBGT. Relevant to outdoor work, sport and elderly care."
+      "notes": "The HK Heat Index (a local apparent-temperature measure) every 10 minutes — complements WBGT. Relevant to outdoor work, sport and elderly care.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "hko_1min_temperature",
@@ -1274,7 +1478,9 @@
       "auth": "none",
       "cadence": "10 minutes",
       "todo": false,
-      "notes": "One-minute-mean temperature by station — the finest temperature resolution HKO publishes. Sibling files cover humidity, grass temperature, sea-level pressure and 10-minute wind."
+      "notes": "One-minute-mean temperature by station — the finest temperature resolution HKO publishes. Sibling files cover humidity, grass temperature, sea-level pressure and 10-minute wind.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_ceo_opendata_policy_address_highlights_by_ce",
@@ -1291,7 +1497,9 @@
       "cadence": "Annually, on the delivery day of the Policy Address",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Chief Executive's Office · hk-ceo-opendata-policy-address-highlights-by-ce"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Chief Executive's Office · hk-ceo-opendata-policy-address-highlights-by-ce",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hkstp_hkstp_hkstp_corporate_info_upcoming_event",
@@ -1304,7 +1512,9 @@
       "cadence": "Real-time",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-corporate-info-upcoming-event"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-corporate-info-upcoming-event",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hkstp_hkstp_hkstp_carpark_ev_vacancy",
@@ -1317,7 +1527,9 @@
       "cadence": "Real-time",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-carpark-ev-vacancy"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-carpark-ev-vacancy",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hkstp_hkstp_hkstp_carpark_vacancy",
@@ -1330,7 +1542,9 @@
       "cadence": "Real-time",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-carpark-vacancy"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Science and Technology Parks Corporation · hkstp-hkstp-hkstp-carpark-vacancy",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_nlb_bus_nlb_bus_service_v1",
@@ -1346,7 +1560,9 @@
       "cadence": "Real-time",
       "todo": true,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · New Lantao Bus Company (1973) Limited · nlb-bus-nlb-bus-service-v1 · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source."
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · New Lantao Bus Company (1973) Limited · nlb-bus-nlb-bus-service-v1 · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_nlb_bus_nlb_bus_service_v2",
@@ -1362,7 +1578,9 @@
       "cadence": "Real-time",
       "todo": true,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · New Lantao Bus Company (1973) Limited · nlb-bus-nlb-bus-service-v2 · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source."
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · New Lantao Bus Company (1973) Limited · nlb-bus-nlb-bus-service-v2 · Probed 422, which for these means 'endpoint exists, needs an id'. These are two-step APIs by design: fetch the collection route, then request the ETA for a returned routeId/stopId. A 422 on a bare collection URL is the expected answer, not a broken source.",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_tis_1_special_traffic_news",
@@ -1377,7 +1595,9 @@
       "cadence": "real-time",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_1-special-traffic-news"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_1-special-traffic-news",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_tis_19_special_traffic_news_v2",
@@ -1393,7 +1613,9 @@
       "cadence": "real-time",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_19-special-traffic-news-v2"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_19-special-traffic-news-v2",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_ctb_eta_transport_realtime_eta",
@@ -1410,7 +1632,9 @@
       "cadence": "Estimated Time of Arrival (ETA) data updated every 1 minute. \n\nOther data set update upon there is any adjustment.",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Citybus Limited · ctb-eta-transport-realtime-eta"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Citybus Limited · ctb-eta-transport-realtime-eta",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_dpo_datagovhk1_pressrelease_search",
@@ -1423,7 +1647,9 @@
       "cadence": "every 15 minutes",
       "todo": true,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Digital Policy Office · hk-dpo-datagovhk1-pressrelease-search · Probed 400 'REQUEST ERROR: official parameter missing'. The parameter name is undocumented — q / query / lang / offset / limit all still 400. Needs one more discovery pass. Nothing depends on it: the news layer runs on the gov press-release RSS feeds, which work."
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Digital Policy Office · hk-dpo-datagovhk1-pressrelease-search · Probed 400 'REQUEST ERROR: official parameter missing'. The parameter name is undocumented — q / query / lang / offset / limit all still 400. Needs one more discovery pass. Nothing depends on it: the news layer runs on the gov press-release RSS feeds, which work.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_gridded_rainfall_nowcast_in_hong_kong",
@@ -1439,7 +1665,9 @@
       "cadence": "Every 12 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-gridded-rainfall-nowcast-in-hong-kong"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-gridded-rainfall-nowcast-in-hong-kong",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_latest_fifteen_minute_mean_uv_index",
@@ -1455,7 +1683,9 @@
       "cadence": "Every 15 minutes from 7:00 a.m. to 6:00 p.m. Hong Kong time",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-fifteen-minute-mean-uv-index"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-fifteen-minute-mean-uv-index",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_latest_tidal_info",
@@ -1471,7 +1701,9 @@
       "cadence": "Every 5 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-tidal-info"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-tidal-info",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_rainfall_in_the_past_hour",
@@ -1487,7 +1719,9 @@
       "cadence": "Every 15 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-rainfall-in-the-past-hour"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-rainfall-in-the-past-hour",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_hko_rss_regional_weather_past_24_hour_tempera",
@@ -1503,7 +1737,9 @@
       "cadence": "Every 10 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-regional-weather-past-24-hour-temperature-difference"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-regional-weather-past-24-hour-temperature-difference",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_latest_one_minute_solar_radiation_inf",
@@ -1519,7 +1755,9 @@
       "cadence": "Every 10 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-solar-radiation-info"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-solar-radiation-info",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_latest_one_minute_mean_grass_temp",
@@ -1535,7 +1773,9 @@
       "cadence": "Every 10 minutes from 5:00 p.m. to 8:00 a.m. the following date Hong Kong time",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-grass-temp"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-grass-temp",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_latest_one_minute_mean_rh",
@@ -1551,7 +1791,9 @@
       "cadence": "Every 10 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-rh"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-rh",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_latest_one_minute_mean_sea_level_pres",
@@ -1567,7 +1809,9 @@
       "cadence": "Every 10 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-sea-level-pressure"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-one-minute-mean-sea-level-pressure",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_regional_weather_latest_10_min_mean_v",
@@ -1583,7 +1827,9 @@
       "cadence": "Every 10 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-regional-weather-latest-10-min-mean-visibility"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-regional-weather-latest-10-min-mean-visibility",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_latest_ten_minute_wind_info",
@@ -1599,7 +1845,9 @@
       "cadence": "Every 10 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-ten-minute-wind-info"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-latest-ten-minute-wind-info",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_max_and_min_air_temp_since_midnight",
@@ -1615,7 +1863,9 @@
       "cadence": "Every 10 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-max-and-min-air-temp-since-midnight"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-max-and-min-air-temp-since-midnight",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_immd_set5_statistics_passenger_traffic_festiv",
@@ -1631,7 +1881,9 @@
       "cadence": "Daily during the specified festive periods [The dates of each festive periods are to be determined on each festivals (e.g. Lunar New Year, Easter, Ching Ming, Labour Day, National Day).]",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Immigration Department · hk-immd-set5-statistics-passenger-traffic-festive-period"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Immigration Department · hk-immd-set5-statistics-passenger-traffic-festive-period",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_lcsd_lib_lib_computers",
@@ -1647,7 +1899,9 @@
       "cadence": "Every 10 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Leisure and Cultural Services Department · hk-lcsd-lib-lib-computers"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Leisure and Cultural Services Department · hk-lcsd-lib-lib-computers",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=0"
     },
     {
       "id": "ck_hk_lcsd_facility_facility_tsp",
@@ -1660,7 +1914,9 @@
       "cadence": "Every 5 Minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Leisure and Cultural Services Department · hk-lcsd-facility-facility-tsp"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Leisure and Cultural Services Department · hk-lcsd-facility-facility-tsp",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_md_hydro_10mintues_latest_tidal_information",
@@ -1676,7 +1932,9 @@
       "cadence": "10 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Marine Department · hk-md-hydro-10mintues-latest-tidal-information"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Marine Department · hk-md-hydro-10mintues-latest-tidal-information",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_md_mardep_vessel_arrivals_and_departures",
@@ -1693,7 +1951,9 @@
       "cadence": "Every 20 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Marine Department · hk-md-mardep-vessel-arrivals-and-departures"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Marine Department · hk-md-mardep-vessel-arrivals-and-departures",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_td_msd_1_metered_parking_spaces_data",
@@ -1708,7 +1968,9 @@
       "cadence": "FROM EVERY MINUTE TO DAILY",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-msd_1-metered-parking-spaces-data"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-msd_1-metered-parking-spaces-data",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_sm_2_journey_time_indicators",
@@ -1721,7 +1983,9 @@
       "cadence": "Every 2 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_2-journey-time-indicators"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_2-journey-time-indicators",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_sm_8_journey_time_indicators_v2",
@@ -1734,7 +1998,9 @@
       "cadence": "Every 2 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_8-journey-time-indicators-v2"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_8-journey-time-indicators-v2",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_msd_2_non_metered_parking_spaces_data",
@@ -1749,7 +2015,9 @@
       "cadence": "FROM EVERY MINUTE TO DAILY",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-msd_2-non-metered-parking-spaces-data"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-msd_2-non-metered-parking-spaces-data",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_td_sm_7_real_time_arrival_data_of_gmb",
@@ -1765,7 +2033,9 @@
       "cadence": "Estimated Time of Arrival (ETA) data: every minute. Other data: when necessary.",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_7-real-time-arrival-data-of-gmb"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_7-real-time-arrival-data-of-gmb",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_sm_3_speed_map_panels",
@@ -1778,7 +2048,9 @@
       "cadence": "Every 2 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_3-speed-map-panels"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_3-speed-map-panels",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_sm_9_speed_map_panels_v2",
@@ -1794,7 +2066,9 @@
       "cadence": "Every 2 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_9-speed-map-panels-v2"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_9-speed-map-panels-v2",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_tis_33_traffic_data_traffic_detectors_inst",
@@ -1809,7 +2083,9 @@
       "cadence": "Every 1 minute",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_33-traffic-data-traffic-detectors-installed-at-smart-lampposts"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_33-traffic-data-traffic-detectors-installed-at-smart-lampposts",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_sm_4_traffic_data_strategic_major_roads",
@@ -1826,7 +2102,9 @@
       "cadence": "Every 1 minute (Raw Data). Every 2 minutes (Processed Data)",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_4-traffic-data-strategic-major-roads"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_4-traffic-data-strategic-major-roads",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_tis_2_traffic_snapshot_images",
@@ -1843,7 +2121,9 @@
       "cadence": "Every 2 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_2-traffic-snapshot-images"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-tis_2-traffic-snapshot-images",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_td_sm_1_traffic_speed_map",
@@ -1856,7 +2136,9 @@
       "cadence": "Every 5 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_1-traffic-speed-map"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Transport Department · hk-td-sm_1-traffic-speed-map",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_wkcda_wkcarpark_wkcarpark",
@@ -1869,7 +2151,9 @@
       "cadence": "Car Park vacancy information updated every 5 minutes",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · West Kowloon Cultural District Authority · wkcda-wkcarpark-wkcarpark"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · West Kowloon Cultural District Authority · wkcda-wkcarpark-wkcarpark",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_dpo_datagovhk2_city_dashboard_aqhi",
@@ -1886,7 +2170,9 @@
       "cadence": "AQHI: Hourly / Forecast: 00:30, 10:30 and 16:30 everyday and as required",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Digital Policy Office · hk-dpo-datagovhk2-city-dashboard-aqhi"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Digital Policy Office · hk-dpo-datagovhk2-city-dashboard-aqhi",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_epd_airteam_past24hr_aqhi_of_individual_air_q",
@@ -1902,7 +2188,9 @@
       "cadence": "Hourly",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past24hr-aqhi-of-individual-air-quality-monitoring-stations"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past24hr-aqhi-of-individual-air-quality-monitoring-stations",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk"
     },
     {
       "id": "ck_hk_epd_airteam_past24hr_pc_of_individual_air_qua",
@@ -1918,7 +2206,9 @@
       "cadence": "Hourly",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past24hr-pc-of-individual-air-quality-monitoring-stations"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past24hr-pc-of-individual-air-quality-monitoring-stations",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk"
     },
     {
       "id": "ck_hk_epd_airteam_past_record_of_air_pollution_inde",
@@ -1935,7 +2225,9 @@
       "cadence": "Only the hourly Air Pollution Index (API) of the period from July 1999 to December 2013 is available",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past-record-of-air-pollution-index-en"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past-record-of-air-pollution-index-en",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk"
     },
     {
       "id": "ck_hk_epd_airteam_past_record_of_air_pollution_inde_2",
@@ -1952,7 +2244,9 @@
       "cadence": "Only the hourly Air Pollution Index (API) of the period from July 1999 to December 2013 is available",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past-record-of-air-pollution-index-tc"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Environmental Protection Department · hk-epd-airteam-past-record-of-air-pollution-index-tc",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk"
     },
     {
       "id": "ck_hk_hko_rss_hourly_ambient_gamma_radiation_level_",
@@ -1968,7 +2262,9 @@
       "cadence": "Hourly",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-hourly-ambient-gamma-radiation-level-in-hong-kong"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-hourly-ambient-gamma-radiation-level-in-hong-kong",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_cloud_ground_lightning_count_past_hou",
@@ -1984,7 +2280,9 @@
       "cadence": "Hourly",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-cloud-ground-lightning-count-past-hour"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-cloud-ground-lightning-count-past-hour",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "ck_hk_hko_rss_local_weather_forecast",
@@ -2000,7 +2298,9 @@
       "cadence": "Hourly and when there is update",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-local-weather-forecast"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Hong Kong Observatory · hk-hko-rss-local-weather-forecast",
+      "fetch": "browser",
+      "cors_note": "ACAO=*"
     },
     {
       "id": "ck_hk_immd_set2_address_and_working_hours_of_office",
@@ -2016,7 +2316,9 @@
       "cadence": "As and when there is a change to the address or working hours of Immigration offices",
       "todo": false,
       "auto": true,
-      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Immigration Department · hk-immd-set2-address-and-working-hours-of-offices"
+      "notes": "Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Immigration Department · hk-immd-set2-address-and-working-hours-of-offices",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "epd_beach_grading",
@@ -2030,7 +2332,9 @@
       "auth": "none",
       "cadence": "daily",
       "todo": false,
-      "notes": "Beach water quality grading per gazetted beach — the RSS is the live one (grades are posted within 48 hours of sampling, so it is 'recent' rather than real-time, and the panel must say so rather than implying a live reading). The CSDI dataset carries the geometry: epd_rcd_1631501467099_56497. The yearly historical CSVs are reference material, not a layer."
+      "notes": "Beach water quality grading per gazetted beach — the RSS is the live one (grades are posted within 48 hours of sampling, so it is 'recent' rather than real-time, and the panel must say so rather than implying a live reading). The CSDI dataset carries the geometry: epd_rcd_1631501467099_56497. The yearly historical CSVs are reference material, not a layer.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "afcd_red_tide",
@@ -2044,7 +2348,9 @@
       "auth": "none",
       "cadence": "weekly",
       "todo": false,
-      "notes": "Red tide (algal bloom) observations — a genuinely Hong Kong-specific hazard: it closes beaches and kills farmed fish. Weekly, keyless, and almost nobody surfaces it. Pairs with the beach water quality grading."
+      "notes": "Red tide (algal bloom) observations — a genuinely Hong Kong-specific hazard: it closes beaches and kills farmed fish. Weekly, keyless, and almost nobody surfaces it. Pairs with the beach water quality grading.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "rthk_local",
@@ -2055,7 +2361,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "RTHK RTHK Local News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+      "notes": "RTHK RTHK Local News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "rthk_world",
@@ -2066,7 +2374,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "RTHK RTHK International News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+      "notes": "RTHK RTHK International News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "rthk_finance",
@@ -2077,7 +2387,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "RTHK RTHK Finance News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+      "notes": "RTHK RTHK Finance News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "rthk_sport",
@@ -2088,7 +2400,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "RTHK RTHK Sport News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+      "notes": "RTHK RTHK Sport News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "rthk_china",
@@ -2099,7 +2413,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "RTHK RTHK Greater China News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing."
+      "notes": "RTHK RTHK Greater China News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+      "fetch": "proxy",
+      "cors_note": "冇 ACAO → 頁面 fetch 唔到"
     },
     {
       "id": "gov_news_admin",
@@ -2110,7 +2426,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "news.gov.hk admin category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+      "notes": "news.gov.hk admin category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk"
     },
     {
       "id": "gov_news_finance",
@@ -2121,7 +2439,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "news.gov.hk finance category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+      "notes": "news.gov.hk finance category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk"
     },
     {
       "id": "gov_news_environment",
@@ -2132,7 +2452,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "news.gov.hk environment category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+      "notes": "news.gov.hk environment category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk"
     },
     {
       "id": "gov_news_health",
@@ -2143,7 +2465,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "news.gov.hk health category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+      "notes": "news.gov.hk health category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk"
     },
     {
       "id": "gov_news_infrastructure",
@@ -2154,7 +2478,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "news.gov.hk infrastructure category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+      "notes": "news.gov.hk infrastructure category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk"
     },
     {
       "id": "gov_news_school_work",
@@ -2165,7 +2491,9 @@
       "auth": "none",
       "cadence": "continuous",
       "todo": false,
-      "notes": "news.gov.hk school_work category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set."
+      "notes": "news.gov.hk school_work category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.",
+      "fetch": "proxy",
+      "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk"
     }
   ]
 }

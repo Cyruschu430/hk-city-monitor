@@ -77,6 +77,13 @@ Build `web/`, then it deploys by copying `web/dist/*` over the root later. Until
 
 ## Hard constraints
 
+**Hosting（Cyrus 2026-09-18 定）**：Cloudflare，git push 即出街。**公開 repo。**
+- 60% 嘅源 CORS 封閉 → 需要一個 **Cloudflare Worker** 做代理（順便藏 key、藏 origin IP）
+- Worker 必須有**目標 URL 白名單** ＋ rate limit，**唔准做開放 proxy**（會俾人當跳板）
+- 前端永遠冇 secret；key 只可以喺 Worker env（`wrangler secret put`）
+- **唔准喺公開 repo 出現 VPS IP 或 duckdns hostname**
+- 交貨前跑 `SECURITY.md` §6 檢查清單
+
 1. **Every claim on screen is traceable.** Each panel shows its source name, a link to the
    source, and the observation timestamp. No invented numbers, no placeholder content, ever.
 2. **Never present stale data as live.** Past its freshness threshold a camera or panel must

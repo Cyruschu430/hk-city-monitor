@@ -45,6 +45,45 @@ So a hardcoded channel embed is a black rectangle most of the time, and the pane
    「現時無直播」 when none does. **An honest empty state beats a black rectangle pretending to be
    a feed** — the same rule as §6.
 
+## 0.5 The reference grammar — I looked at their actual UI (2026-09-18)
+
+I had only read World Monitor's and God's Eye View's **docs**, never their screens. That was the
+gap: designing a visual thing from prose. Screenshots of both now reviewed. What they actually do:
+
+**World Monitor dashboard**
+- **One hero that owns the screen**: a full-width map across the top ~half. It is not a tile among
+  tiles.
+- **A left rail of controls**: time range (1h / 6h / 24h / 48h / 7d / All) then a checkbox list of
+  layers. The drill-down lives here, not in a top strip.
+- **Three functional panels along the bottom**: Live News (per-channel tabs + a breaking-news
+  ticker), Live Webcams (a **dense grid of small feeds inside one panel**), AI Insights (text
+  brief + status). This is the real camera-wall grammar — many small frames in one panel.
+- Dark near-black surfaces, thin separations, **no drop shadows and no heavy borders**. Accent
+  colour is functional only: neon green = live/active, red = critical, orange = elevated.
+
+**God's Eye View**
+- The 3D globe fills **80–90%** of the screen.
+- **Boxed HUD labels tethered by thin leader lines** to the points they describe, with a compact
+  readout inside each box.
+- **A bottom sensor-mode bar** with circular icons (NORMAL / CCTV / NVG / FLIR / NOIR) — the mode
+  switcher is a first-class control.
+- Teal/cyan identity, white data on dark, thermal palette for the imagery. That is where the
+  "cinematic" feel comes from: FLIR imagery, leader-line labels, a sensor bar, constant readouts.
+
+**The shared grammar, which is NOT what my first two mocks did:**
+> **hero visual + HUD over it + a rail of filters + dense functional sub-panels + a ticker.**
+> Not a wall of equal tiles. Hierarchy, not equality.
+
+### Two basemap decisions, measured rather than guessed
+
+1. **LandsD aerial imagery at night is unusable as a basemap** — at 21:52 the frames are nearly
+   black and the map stops reading as a map. The official **topographic** map is the better base.
+2. **Darken the topographic tiles; do NOT desaturate them, and never invert them.**
+   Compared three treatments and reviewed them: the desaturated version loses the roads entirely,
+   and `invert` + `hue-rotate` is banned outright (it turns a map into a heatmap blob).
+   `Brightness(0.52)` + `Contrast(1.12)` keeps roads, coastline, urban blocks and hills legible on
+   a dark UI. The label layer is light text on transparency, so it needs no treatment at all.
+
 ## 1. The feeling, in one line
 
 A **control-room instrument**, not a website. Dense, calm, precise, dark — closer to a wall of

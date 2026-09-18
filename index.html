@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HK City Monitor · 香港城市監察</title>
+<meta name="description" content="香港本土實時態勢儀表板 — 官方交通快拍、天文台天氣攝影機、天氣警告、市場數據。全開源。">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<style>
+  :root{
+    --bg:#050a12; --panel:rgba(15,25,40,.62); --line:rgba(120,180,255,.16);
+    --txt:#e8f1ff; --dim:#8aa2c0; --cyan:#22d3ee; --violet:#c084fc;
+    --up:#ff5d6c; --down:#2ee6a8;            /* 港股慣例：紅升綠跌 */
+    --glass:blur(14px) saturate(140%);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);
+    font:14px/1.5 -apple-system,"PingFang HK","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif}
+  body{display:flex;flex-direction:column;overflow:hidden}
+
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:9px 14px;border-bottom:1px solid var(--line);background:rgba(8,14,24,.86);
+    backdrop-filter:var(--glass);z-index:20;flex:0 0 auto}
+  .brand{display:flex;align-items:baseline;gap:9px;min-width:0}
+  .brand h1{margin:0;font-size:15px;letter-spacing:.14em;font-weight:650;
+    background:linear-gradient(92deg,#7dd3fc,#c084fc 70%);-webkit-background-clip:text;
+    background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+  .brand .sub{font-size:11px;color:var(--dim);letter-spacing:.24em;white-space:nowrap}
+  .meta{display:flex;align-items:center;gap:14px;font-size:11px;color:var(--dim);
+    letter-spacing:.06em;white-space:nowrap}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);flex:0 0 auto;
+    box-shadow:0 0 0 0 rgba(34,211,238,.7);animation:pulse 2.4s infinite}
+  @keyframes pulse{70%{box-shadow:0 0 0 9px rgba(34,211,238,0)}100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}}
+  #clock{font-variant-numeric:tabular-nums;color:var(--txt)}
+
+  /* ---------- layout ---------- */
+  main{flex:1 1 auto;display:grid;grid-template-columns:1fr 348px;min-height:0}
+  #mapWrap{position:relative;min-height:0}
+  #map{position:absolute;inset:0;background:#050a12}
+
+  /* ---------- layer toggles ---------- */
+  .layerbar{position:absolute;left:12px;bottom:22px;display:flex;flex-wrap:wrap;gap:7px;
+    max-width:calc(100% - 24px);z-index:5}
+  .toggle{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;
+    border:1px solid var(--line);background:rgba(10,18,30,.74);backdrop-filter:var(--glass);
+    color:var(--dim);font:inherit;font-size:11.5px;cursor:pointer;letter-spacing:.04em;
+    transition:.18s}
+  .toggle .swatch{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+  .toggle[aria-pressed="true"]{color:var(--txt);border-color:rgba(120,180,255,.45);
+    box-shadow:0 0 18px -6px rgba(34,211,238,.55)}
+  .toggle[aria-pressed="false"]{opacity:.5}
+  .toggle .n{color:var(--dim);font-variant-numeric:tabular-nums}
+
+  /* ---------- panels ---------- */
+  aside{overflow-y:auto;overscroll-behavior:contain;border-left:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(9,15,26,.9),rgba(6,10,18,.94));padding:12px;
+    display:flex;flex-direction:column;gap:11px;min-height:0}
+  aside::-webkit-scrollbar{width:8px}
+  aside::-webkit-scrollbar-thumb{background:rgba(120,180,255,.2);border-radius:8px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:11px 12px;
+    background:var(--panel);backdrop-filter:var(--glass);
+    box-shadow:0 10px 34px -22px rgba(0,0,0,.95)}
+  .card h2{margin:0 0 9px;font-size:11px;letter-spacing:.2em;color:var(--dim);
+    font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    text-transform:uppercase}
+  .tag{font-size:9.5px;letter-spacing:.12em;padding:2px 7px;border-radius:999px;
+    border:1px solid var(--line);color:var(--dim);font-weight:500}
+  .tag.live{color:var(--cyan);border-color:rgba(34,211,238,.4)}
+  .tag.warn{color:#fbbf24;border-color:rgba(251,191,36,.42)}
+
+  /* weather */
+  .wx-big{display:flex;align-items:baseline;gap:9px;margin-bottom:8px}
+  .wx-big b{font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1}
+  .wx-big span{font-size:11px;color:var(--dim)}
+  .rows{display:flex;flex-direction:column;gap:5px}
+  .row{display:flex;justify-content:space-between;gap:10px;font-size:12px}
+  .row i{color:var(--dim);font-style:normal}
+  .row b{font-weight:500;font-variant-numeric:tabular-nums}
+  .warnlist{display:flex;flex-direction:column;gap:7px}
+  .warnitem{border-left:2px solid #fbbf24;padding:2px 0 2px 9px;font-size:12.5px}
+  .warnitem small{display:block;color:var(--dim);font-size:10.5px;margin-top:2px}
+  .ok{color:var(--dim);font-size:12.5px}
+
+  /* market */
+  .mkt{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:12px;
+    font-variant-numeric:tabular-nums}
+  .mkt .nm{color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mkt .px{text-align:right}
+  .mkt .dl{grid-column:1/-1;font-size:10.5px;color:var(--dim);margin:-1px 0 3px}
+  .up{color:var(--up)} .down{color:var(--down)}
+
+  /* camera wall */
+  .wall{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .cam{position:relative;border-radius:9px;overflow:hidden;border:1px solid var(--line);
+    background:#0a1220;aspect-ratio:4/3;cursor:pointer}
+  .cam img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.95)}
+  .cam .lab{position:absolute;left:0;right:0;bottom:0;padding:4px 6px;font-size:10px;
+    background:linear-gradient(0deg,rgba(3,7,14,.94),transparent);color:#dbeafe;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cam .x{position:absolute;top:4px;right:4px;width:17px;height:17px;border-radius:50%;
+    border:1px solid var(--line);background:rgba(3,7,14,.8);color:var(--dim);font-size:11px;
+    line-height:15px;text-align:center;cursor:pointer}
+  .cam.dead::after{content:"暫時未能提供";position:absolute;inset:0;display:grid;
+    place-items:center;color:var(--dim);font-size:10.5px;background:rgba(3,7,14,.86)}
+
+  /* live */
+  .lives{display:flex;flex-direction:column;gap:8px}
+  .live-frame{position:relative;aspect-ratio:16/9;border-radius:9px;overflow:hidden;
+    border:1px solid var(--line);background:#0a1220}
+  .live-frame iframe{width:100%;height:100%;border:0;display:block}
+  .live-frame .lab{position:absolute;top:0;left:0;padding:3px 7px;font-size:10px;
+    background:rgba(3,7,14,.78);color:#dbeafe;border-bottom-right-radius:8px;pointer-events:none}
+
+  /* sources */
+  .srcs{display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--dim)}
+  .srcs a{color:var(--dim);text-decoration:none;border-bottom:1px dotted rgba(120,180,255,.35)}
+  .srcs a:hover{color:var(--cyan)}
+  footer{padding:2px 0 6px;font-size:10.5px;color:var(--dim);line-height:1.6}
+
+  /* popup */
+  .maplibregl-popup-content{background:rgba(9,15,26,.95)!important;border:1px solid var(--line);
+    border-radius:12px!important;padding:9px!important;backdrop-filter:var(--glass);
+    box-shadow:0 18px 44px -20px #000!important;color:var(--txt)}
+  .maplibregl-popup-tip{border-top-color:rgba(9,15,26,.95)!important;
+    border-bottom-color:rgba(9,15,26,.95)!important}
+  .maplibregl-popup-close-button{color:var(--dim)!important;font-size:17px;padding:2px 6px}
+  .p-title{font-size:12.5px;font-weight:600;margin:0 26px 6px 2px;line-height:1.4}
+  .p-img{width:100%;max-width:320px;border-radius:8px;display:block;background:#0a1220}
+  .p-meta{font-size:10.5px;color:var(--dim);margin:6px 2px 0;display:flex;
+    justify-content:space-between;gap:8px}
+  .p-btns{display:flex;gap:6px;margin-top:8px}
+  .p-btns button{flex:1;padding:5px 9px;border-radius:8px;border:1px solid var(--line);
+    background:rgba(20,34,54,.72);color:var(--txt);font:inherit;font-size:11px;cursor:pointer}
+  .p-btns button:hover{border-color:rgba(120,180,255,.5)}
+  .maplibregl-ctrl-attrib{background:rgba(5,10,18,.6)!important;font-size:10px!important}
+  .maplibregl-ctrl-attrib a{color:var(--dim)!important}
+
+  @media (max-width:880px){
+    body{overflow:auto}
+    main{grid-template-columns:1fr;grid-template-rows:58vh auto}
+    aside{border-left:0;border-top:1px solid var(--line)}
+    .wall{grid-template-columns:1fr 1fr 1fr}
+  }
+  @media (max-width:520px){
+    .brand .sub{display:none}
+    .meta{gap:9px}
+    .wall{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="dot"></span><h1>HK CITY MONITOR</h1><span class="sub">香港城市監察</span></div>
+  <div class="meta">
+    <span id="stat">載入中…</span>
+    <span id="clock">--:--:--</span>
+  </div>
+</header>
+
+<main>
+  <div id="mapWrap"><div id="map"></div><div class="layerbar" id="layerbar"></div></div>
+  <aside>
+    <section class="card">
+      <h2>天氣警告 <span class="tag warn" id="warnTag">檢查中</span></h2>
+      <div id="warnBody"><p class="ok">載入中…</p></div>
+    </section>
+    <section class="card">
+      <h2>本港現況 <span class="tag" id="nowTag">—</span></h2>
+      <div id="nowBody"><p class="ok">載入中…</p></div>
+    </section>
+    <section class="card">
+      <h2>市場 <span class="tag">延遲報價</span></h2>
+      <div id="mktBody" class="mkt"><span class="nm">載入中…</span></div>
+    </section>
+    <section class="card">
+      <h2>相機牆 <span class="tag">撳地圖相機 → 釘住</span></h2>
+      <div id="wallBody" class="wall"></div>
+    </section>
+    <section class="card">
+      <h2>直播 <span class="tag live">YouTube</span></h2>
+      <div id="liveBody" class="lives"></div>
+    </section>
+    <footer>
+      <div class="srcs">
+        <span>資料來源（全部香港官方公開數據，免 API key）：</span>
+        <a href="https://data.gov.hk/tc-data/dataset/hk-td-tis_2-traffic-snapshot-images" target="_blank" rel="noopener">運輸署 交通快拍圖像（2 分鐘更新）</a>
+        <a href="https://www.hko.gov.hk/tc/wxinfo/ts/index_webcam.htm" target="_blank" rel="noopener">香港天文台 天氣攝影機（5 分鐘更新）</a>
+        <a href="https://data.weather.gov.hk/weatherAPI/doc/HKO_Open_Data_API_Documentation_tc.pdf" target="_blank" rel="noopener">香港天文台 開放數據 API</a>
+        <a href="https://finance.yahoo.com" target="_blank" rel="noopener">Yahoo Finance（延遲報價，非即時）</a>
+        <span style="margin-top:5px">地圖底圖 © OpenStreetMap contributors · © CARTO</span>
+        <span>HK City Monitor v0.1 — 開源原型（AGPL-3.0）。本頁唔係政府系統，天氣警告一律以香港天文台公佈為準。</span>
+      </div>
+    </footer>
+  </aside>
+</main>
+
+<script>
+"use strict";
+
+// QA hooks: surface anything that blows up, and hand out the map instance
+// (<div id="map"> already owns the global name `map`).
+window.__errs = [];
+addEventListener("error", (e) => window.__errs.push("error: " + e.message));
+addEventListener("unhandledrejection", (e) =>
+  window.__errs.push("rejection: " + ((e.reason && e.reason.message) || e.reason)));
+
+/* ------------------------------------------------------------------ config */
+const BASE = new URL(".", location.href).href;         // e.g. /hkmonitor/
+const HKO_API = "https://data.weather.gov.hk/weatherAPI/opendata/weather.php";
+const TD_REFRESH = 120000;                             // 運輸署快拍：2 分鐘
+const HKO_REFRESH = 300000;                            // 天文台攝影機：5 分鐘
+
+const SYMBOLS = [
+  ["^HSI", "恒生指數"], ["^HSCE", "恒生國企指數"],
+  ["0700.HK", "騰訊控股"], ["9988.HK", "阿里巴巴"], ["3690.HK", "美團"],
+  ["1810.HK", "小米集團"], ["0005.HK", "滙豐控股"], ["0388.HK", "香港交易所"],
+  ["1299.HK", "友邦保險"], ["0939.HK", "建設銀行"],
+  ["BTC-USD", "比特幣"], ["GC=F", "黃金"],
+];
+
+const LIVE = [
+  ["RTHK 香港電台", "UC6of7UYhctnYmqABjUqzuxw"],
+  ["香港01", "UCTxyBu9VWUq5LXezXwy_SGg"],
+  ["獨立媒體", "UCZpf3t79EhVe83Z76FZipCw"],
+];
+
+// 相機牆預設：一個香港島、九龍、新界、離島嘅橫切面（key 全部嚟自運輸署官方清單）
+const DEFAULT_WALL = [
+  {src:"hko", id:"HKO"},
+  {src:"td",  id:"H109F"},   // 皇后大道中近花園道
+  {src:"td",  id:"H207F"},   // 海底隧道香港入口
+  {src:"td",  id:"K205F"},   // 彌敦道近荔枝角道
+  {src:"td",  id:"K809F2"},  // 觀塘道近九龍灣港鐵站
+  {src:"td",  id:"TW102F"},  // 葵涌道近貨櫃碼頭
+];
+
+const $ = (id) => document.getElementById(id);
+const TD_BUCKET = () => Math.floor(Date.now() / TD_REFRESH);
+const HKO_BUCKET = () => Math.floor(Date.now() / HKO_REFRESH);
+const bust = (url, bucket) => url + (url.includes("?") ? "&" : "?") + "_=" + bucket;
+
+/* ------------------------------------------------------------------ state */
+let CAMS = { td: [], hko: [] };
+const byId = { td: {}, hko: {} };
+let pinned = load();
+let current = null;                                    // 開緊 popup 嘅相機
+let popup, map;
+
+function load() {
+  try {
+    const raw = JSON.parse(localStorage.getItem("hkcm-pinned") || "null");
+    if (Array.isArray(raw) && raw.length) return raw;
+  } catch (e) { /* ignore */ }
+  return DEFAULT_WALL.slice();
+}
+const save = () => localStorage.setItem("hkcm-pinned", JSON.stringify(pinned));
+
+/* ------------------------------------------------------------------ map */
+function initMap() {
+  map = new maplibregl.Map({
+    container: "map",
+    // A style *URL*, not an inline style object: maplibre-gl 4.7.1 silently fails
+    // to apply an inline style here (style._loaded stays false, getStyle() undefined,
+    // 'load' never fires) while the same style fetched by URL loads fine.
+    // CARTO dark-matter = free, keyless, CSS-free attribution, CJK-capable fonts.
+    style: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+    center: [114.16, 22.33],
+    zoom: 10.4,
+    minZoom: 9.4,
+    maxZoom: 17,                       // 底圖只到 20；相機層止於 17 已夠用
+    maxBounds: [[113.75, 22.10], [114.50, 22.60]],
+    attributionControl: { compact: true },
+  });
+  map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+  map.on("error", (e) => window.__errs.push("map: " + ((e && e.error && e.error.message) || e)));
+  // Attach on whichever fires first — a broken glyph/tile request can stall `load`.
+  const attach = () => { if (!map.getSource("td")) { try { addCameras(); } catch (err) { window.__errs.push("addCameras: " + err.message); } } };
+  if (map.isStyleLoaded()) attach();
+  else { map.once("load", attach); map.on("styledata", attach); setTimeout(attach, 4000); }
+  window.__map = map;              // dev/QA hook: `map` is otherwise shadowed by <div id="map">
+}
+
+function fc(list, src) {
+  return {
+    type: "FeatureCollection",
+    features: list.map((c) => ({
+      type: "Feature", properties: { ...c, src },
+      geometry: { type: "Point", coordinates: [c.lon, c.lat] },
+    })),
+  };
+}
+
+function addCameras() {
+  const defs = [
+    { key: "td",  color: "#22d3ee", radius: 4.5, label: "運輸署交通快拍" },
+    { key: "hko", color: "#c084fc", radius: 6,   label: "天文台天氣攝影機" },
+  ];
+  defs.forEach((d) => {
+    map.addSource(d.key, {
+      type: "geojson", data: fc(CAMS[d.key], d.key),
+      cluster: true, clusterRadius: 46, clusterMaxZoom: 12,
+    });
+    map.addLayer({
+      id: d.key + "-cluster", type: "circle", source: d.key,
+      filter: ["has", "point_count"],
+      paint: {
+        "circle-color": d.color, "circle-opacity": .18,
+        "circle-radius": ["step", ["get", "point_count"], 15, 40, 21, 150, 27, 400, 33],
+        "circle-stroke-color": d.color, "circle-stroke-opacity": .85, "circle-stroke-width": 1.4,
+      },
+    });
+    map.addLayer({
+      id: d.key + "-count", type: "symbol", source: d.key,
+      filter: ["has", "point_count"],
+      layout: {
+        "text-field": ["get", "point_count_abbreviated"], "text-size": 11,
+        // must match a stack the basemap's glyph server actually serves
+        "text-font": ["Montserrat Medium", "Open Sans Bold", "Noto Sans Regular"],
+      },
+      paint: { "text-color": "#e8f1ff" },
+    });
+    map.addLayer({
+      id: d.key + "-pt", type: "circle", source: d.key,
+      filter: ["!", ["has", "point_count"]],
+      paint: {
+        "circle-radius": d.radius, "circle-color": d.color, "circle-opacity": .92,
+        "circle-stroke-color": "#050a12", "circle-stroke-width": 1.2,
+      },
+    });
+    map.on("click", d.key + "-cluster", (e) => {
+      const f = map.queryRenderedFeatures(e.point, { layers: [d.key + "-cluster"] })[0];
+      map.getSource(d.key).getClusterExpansionZoom(f.properties.cluster_id, (err, z) => {
+        if (!err) map.easeTo({ center: f.geometry.coordinates, zoom: z, duration: 420 });
+      });
+    });
+    map.on("mouseenter", d.key + "-pt", () => (map.getCanvas().style.cursor = "pointer"));
+    map.on("mouseleave", d.key + "-pt", () => (map.getCanvas().style.cursor = ""));
+    map.on("click", d.key + "-pt", (e) => openCam(e.features[0].properties));
+  });
+  renderLayerBar();
+}
+
+/* ------------------------------------------------------------------ popup */
+function camOf(p) { return byId[p.src] ? byId[p.src][p.id] : null; }
+
+function openCam(p) {
+  const cam = camOf(p);
+  if (!cam) return;
+  current = { src: p.src, id: p.id };
+  const bucket = p.src === "td" ? TD_BUCKET() : HKO_BUCKET();
+  const isPinned = pinned.some((x) => x.src === p.src && x.id === p.id);
+
+  popup = new maplibregl.Popup({ maxWidth: "340px", offset: 12 })
+    .setLngLat([cam.lon, cam.lat])
+    .setHTML(`
+      <p class="p-title">${esc(cam.name)}</p>
+      <img class="p-img" id="pImg" src="${bust(cam.img, bucket)}" alt="${esc(cam.name)}"
+           onerror="this.closest('.maplibregl-popup-content').classList.add('p-dead')">
+      <div class="p-meta">
+        <span id="pMeta">${p.src === "td" ? "運輸署 · 2 分鐘更新" : "天文台 · 5 分鐘更新"}</span>
+        <span>${esc(cam.district || cam.name_en || "")}</span>
+      </div>
+      <div class="p-btns"><button id="pPin">${isPinned ? "✓ 已釘住 · 取消" : "＋ 釘住相機牆"}</button></div>
+    `)
+    .addTo(map);
+
+  $("pPin").onclick = () => {
+    const i = pinned.findIndex((x) => x.src === p.src && x.id === p.id);
+    if (i >= 0) pinned.splice(i, 1); else pinned.unshift({ src: p.src, id: p.id });
+    save(); renderWall();
+    openCam({ src: p.src, id: p.id });
+  };
+  popup.on("close", () => { current = null; });
+}
+
+function refreshOpenPopup() {
+  if (!current) return;
+  const cam = byId[current.src][current.id];
+  const el = $("pImg");
+  if (el) {
+    const bucket = current.src === "td" ? TD_BUCKET() : HKO_BUCKET();
+    el.src = bust(cam.img, bucket);
+    const m = $("pMeta");
+    if (m) m.textContent = (current.src === "td" ? "運輸署 · 2 分鐘更新" : "天文台 · 5 分鐘更新")
+      + " · " + hhmmss();
+  }
+}
+
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const hhmmss = () => new Date().toLocaleTimeString("zh-HK", { hour12: false });
+
+/* ------------------------------------------------------------------ panes */
+function renderLayerBar() {
+  const bar = $("layerbar");
+  bar.innerHTML = "";
+  [["td", "運輸署交通快拍", "#22d3ee"], ["hko", "天文台攝影機", "#c084fc"]].forEach(([k, label, color]) => {
+    const b = document.createElement("button");
+    b.className = "toggle";
+    b.setAttribute("aria-pressed", "true");
+    b.innerHTML = `<span class="swatch" style="background:${color}"></span>${label}
+      <span class="n">${CAMS[k].length}</span>`;
+    b.onclick = () => {
+      const on = b.getAttribute("aria-pressed") === "true";
+      b.setAttribute("aria-pressed", on ? "false" : "true");
+      [k + "-cluster", k + "-count", k + "-pt"].forEach((id) => {
+        if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "none" : "visible");
+      });
+    };
+    bar.appendChild(b);
+  });
+}
+
+function renderWall() {
+  const wrap = $("wallBody");
+  wrap.innerHTML = "";
+  if (!pinned.length) { wrap.innerHTML = '<p class="ok">撳地圖上任何一粒相機 → 釘住。</p>'; return; }
+  pinned.forEach((pin) => {
+    const cam = byId[pin.src] && byId[pin.src][pin.id];
+    if (!cam) return;
+    const bucket = pin.src === "td" ? TD_BUCKET() : HKO_BUCKET();
+    const d = document.createElement("div");
+    d.className = "cam";
+    d.innerHTML = `<img loading="lazy" src="${bust(cam.img, bucket)}" alt="${esc(cam.name)}">
+                   <span class="lab">${esc(cam.name)}</span><span class="x" title="移除">×</span>`;
+    d.querySelector("img").onerror = () => d.classList.add("dead");
+    d.querySelector(".x").onclick = (e) => {
+      e.stopPropagation();
+      pinned = pinned.filter((x) => !(x.src === pin.src && x.id === pin.id));
+      save(); renderWall();
+    };
+    d.dataset.pin = pin.src + ":" + pin.id;
+    d.onclick = () => {
+      map.easeTo({ center: [cam.lon, cam.lat], zoom: 14.5, duration: 500 });
+      openCam(pin);
+    };
+    wrap.appendChild(d);
+  });
+}
+
+function refreshWall() {
+  document.querySelectorAll("#wallBody .cam").forEach((el) => {
+    const [src, id] = (el.dataset.pin || "").split(":");
+    const cam = byId[src] && byId[src][id];
+    if (!cam) return;
+    el.classList.remove("dead");
+    el.querySelector("img").src = bust(cam.img, src === "td" ? TD_BUCKET() : HKO_BUCKET());
+  });
+}
+
+function renderLive() {
+  $("liveBody").innerHTML = LIVE.map(([name, ch]) => `
+    <div class="live-frame"><span class="lab">${esc(name)}</span>
+      <iframe loading="lazy" allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen title="${esc(name)}"
+        src="https://www.youtube.com/embed/live_stream?channel=${ch}"></iframe>
+    </div>`).join("");
+}
+
+/* --------------------------------------------------------------- weather */
+async function loadWarnings() {
+  try {
+    const r = await fetch(`${HKO_API}?dataType=warnsum&lang=tc`, { cache: "no-store" });
+    const d = await r.json();
+    const list = Object.values(d || {});
+    $("warnTag").textContent = list.length ? `${list.length} 項生效` : "無生效警告";
+    $("warnTag").className = "tag" + (list.length ? " warn" : "");
+    $("warnBody").innerHTML = list.length
+      ? `<div class="warnlist">${list.map((w) => `
+          <div class="warnitem">${esc(w.name)}
+            <small>發出：${esc(fmtHKT(w.issueTime))}${w.expireTime ? " · 屆滿：" + esc(fmtHKT(w.expireTime)) : ""}</small>
+          </div>`).join("")}</div>`
+      : '<p class="ok">現時沒有天氣警告生效。</p>';
+  } catch (e) {
+    $("warnBody").innerHTML = '<p class="ok">警告資料暫時取不到。</p>';
+  }
+}
+
+async function loadNow() {
+  try {
+    const r = await fetch(`${HKO_API}?dataType=rhrread&lang=tc`, { cache: "no-store" });
+    const d = await r.json();
+    const pick = (arr, name) => (arr || []).find((x) => x.place === name) || (arr || [])[0] || {};
+    const t = pick(d.temperature && d.temperature.data, "香港天文台");
+    const h = pick(d.humidity && d.humidity.data, "香港天文台");
+    const u = pick(d.uvindex && d.uvindex.data, "京士柏");
+    const rain = (d.rainfall && d.rainfall.data) || [];
+    const wet = rain.filter((x) => Number(x.max) > 0).sort((a, b) => b.max - a.max).slice(0, 4);
+    $("nowTag").textContent = "更新 " + fmtHKT(d.updateTime).slice(11);
+    $("nowBody").innerHTML = `
+      <div class="wx-big"><b>${t.value ?? "–"}°C</b><span>天文台總部 · 濕度 ${h.value ?? "–"}%</span></div>
+      <div class="rows">
+        <div class="row"><i>紫外線指數</i><b>${u.value ?? "–"}${u.desc ? " " + esc(u.desc) : ""}</b></div>
+        <div class="row"><i>過去一小時有雨地區</i><b>${wet.length ? wet.map((x) => esc(x.place) + " " + x.max + "mm").join("、") : "無"}</b></div>
+      </div>`;
+  } catch (e) {
+    $("nowBody").innerHTML = '<p class="ok">現況資料暫時取不到。</p>';
+  }
+}
+
+const fmtHKT = (iso) => {
+  if (!iso) return "";
+  const s = String(iso).replace("T", " ").replace(/\+08:00$/, "");
+  return s.length >= 16 ? s.slice(0, 16) : s;
+};
+
+/* ---------------------------------------------------------------- market */
+async function loadMarket() {
+  const rows = await Promise.all(SYMBOLS.map(async ([sym, name]) => {
+    try {
+      const u = `${BASE}api/yahoo/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`;
+      const r = await fetch(u, { cache: "no-store" });
+      const j = await r.json();
+      const m = j.chart && j.chart.result && j.chart.result[0] && j.chart.result[0].meta;
+      if (!m) return null;
+      const px = m.regularMarketPrice;
+      const prev = m.previousClose ?? m.chartPreviousClose;
+      const pct = prev ? ((px - prev) / prev) * 100 : null;
+      return { name, sym, px, pct, cur: m.currency || "" };
+    } catch (e) { return null; }
+  }));
+  const got = rows.filter(Boolean);
+  if (!got.length) {
+    $("mktBody").innerHTML = '<span class="nm">市場資料暫時取不到。</span>';
+    return;
+  }
+  const num = (v, cur) => (cur === "HKD" || cur === "USD" ? v.toLocaleString("en-HK", { maximumFractionDigits: 2 }) : String(v));
+  $("mktBody").innerHTML = got.map((r) => `
+    <span class="nm">${esc(r.name)}</span>
+    <span class="px">${num(r.px, r.cur)}</span>
+    <span class="dl ${r.pct > 0 ? "up" : r.pct < 0 ? "down" : ""}">
+      ${r.pct == null ? "" : (r.pct > 0 ? "▲ +" : r.pct < 0 ? "▼ " : "") + r.pct.toFixed(2) + "%"}</span>
+  `).join("");
+}
+
+/* ------------------------------------------------------------------ boot */
+function tick() { $("clock").textContent = hhmmss(); }
+
+async function boot() {
+  tick(); setInterval(tick, 1000);
+  renderLive();
+
+  let td = [], hko = [];
+  try {
+    [td, hko] = await Promise.all([
+      fetch(BASE + "data/cameras_td.json").then((r) => r.json()),
+      fetch(BASE + "data/cameras_hko.json").then((r) => r.json()),
+    ]);
+  } catch (e) { /* handled by the empty-state below */ }
+
+  CAMS = { td, hko };
+  td.forEach((c) => (byId.td[c.id] = c));
+  hko.forEach((c) => (byId.hko[c.id] = c));
+  $("stat").textContent = `${td.length + hko.length} 部相機 · 免 key 官方源`;
+
+  initMap();
+  renderWall();
+  loadWarnings(); loadNow(); loadMarket();
+  setInterval(loadWarnings, 60000);
+  setInterval(loadNow, 60000);
+  setInterval(loadMarket, 60000);
+  setInterval(() => { refreshOpenPopup(); refreshWall(); }, TD_REFRESH);
+}
+boot();
+</script>
+</body>
+</html>

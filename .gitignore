@@ -1,0 +1,20 @@
+# dependencies / build output
+node_modules/
+web/dist/
+web/node_modules/
+web/.vite/
+dist/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# local secrets — never commit keys
+.env
+.env.*
+!.env.example

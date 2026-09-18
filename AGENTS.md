@@ -60,22 +60,79 @@ Build `web/`, then it deploys by copying `web/dist/*` over the root later. Until
 
 ## Run sequence — do these in order, one dispatch each
 
-**Do not attempt all of this in one run.** Work through these in order and stop after each.
+**Do not attempt all of this in one run.** Each run is one dispatch and ends with a report.
+The order is deliberate: **the primitives come before any vertical.** A vertical built first is
+how every later one needs reworking, which is the whole thing this architecture exists to avoid.
 
-- **Run 1 — shell + design system + map.** Vite/TS scaffold, `src/styles/tokens.css` from
-  DESIGN_BRIEF §2, full-bleed map, `map/` with the TD + HKO camera layers copied faithfully from
-  `legacy/index.html`, layer toggles, top status bar. Acceptance: page loads, 1047 cameras render
-  as clusters, clicking a camera opens a focus drawer with the live image.
-- **Run 2 — panels + states.** 天氣警告 / 本港現況 / 市場 / 相機牆 / 直播 / 資料來源, plus the
-  four required states (loading skeleton, empty, stale, error) and the staleness chip.
-  Acceptance: every panel shows real data and a real 更新時間; killing the network turns each
-  panel into its stale/error state instead of blank.
-- **Run 3 — polish.** Focus drawer transitions, camera-wall drag reorder, market sparklines,
-  keyboard shortcuts (`?` help, `1–9` layer toggles, `Esc` close drawer), reduced-motion,
-  mobile layout at 390px.
-- **Run 4 — event layer skeleton.** `events.json` rendered as a map layer + feed panel. Use
-  `public/data/events.sample.json` as the contract; the real collector comes later.
-  **Do not write any scraper in v0.2.**
+**Do not treat `VERTICALS.md` as a task list.** It is a map of ~30 possible scenarios so the
+shared parts could be found. Handing all of them to a coding agent produces scaffolding for
+thirty features and none finished. Build the primitives, then one vertical, then two more by config.
+
+---
+
+- **Run 0 — prerequisites (Cyrus, not the agent).** Home PC reachable from the VPS and OpenCode
+  with a working Kimi model configured and authenticated. Note: the VPS hostname must never be
+  written into this repo — it is public. Verify with a trivial prompt through OpenCode first.
+
+- **Run 1 — the Worker.** `worker/` — a Cloudflare Worker that is the project's only server-side
+  piece. It must:
+  1. serve as the CORS proxy for every `sources.json` entry whose `fetch` is `"proxy"` (99 of 171)
+  2. **whitelist target hosts from `sources.json`** — it must refuse any URL not in the registry;
+     an open proxy gets used as a free relay, which is worse than the CORS problem it solves
+  3. apply a rate limit and **edge-cache tiles**, because the LandsD terms forbid request bursts
+     and getting blocked is the one real outage risk (see `COST.md`)
+  4. inject the 3D tileset URL server-side, the way HomeCheck does with `~/.tiles3d_url` — never
+     hardcode it in the front end, even though keyless currently works
+  **Acceptance**: `curl` the Worker from a terminal for an `immd_cp_queue` payload and get real
+  data; then fetch the same through a browser page and get it without a CORS error. A request for
+  a host not in `sources.json` must be refused. Paste both results.
+
+- **Run 2 — the renderer.** Vite/TS scaffold, `src/styles/tokens.css` from `DESIGN_BRIEF.md`, plus
+  `render.mjs` and `context.mjs` per `PRIMITIVES.md` §6 and §5. One renderer handles **all eight**
+  render types — `big_number`, `list`, `table`, `image_single`, `image_wall`, `raster_map`,
+  `gauge_grid`, `status_grid`. Adding a ninth is a spec change, not a coding decision.
+  **Acceptance**: driven only by `data/panels.json`, all eight render types draw from fixtures, and
+  the four honesty states (loading / live / stale / error) are each visible. Default language is
+  Traditional Chinese with an English switch; every panel also shows its 更新時間.
+
+- **Run 3 — trigger and context.** `lib/trigger.mjs` and `lib/context.mjs` as **pure functions**
+  per `PRIMITIVES.md` §4 and §5, plus the two assert-based tests listed in `PRIMITIVES.md` §9.
+  **No LLM on this path** — hoisting signals and rainstorm warnings are life-safety information and
+  must be auditable, testable and explainable.
+  **Acceptance**: `python3 scripts/validate_config.py` exits 0, and both test files run and print
+  real assertions passing. Report the actual output.
+
+- **Run 4 — 停水模式, end to end. ⚠️ This is the gate, not a feature.** The smallest vertical:
+  one panel, one layer, one source (`wsd_water_suspension`). Wire it from config alone.
+  **Acceptance is not "it looks right"** — it is: (a) the vertical renders live WSD notice data,
+  and (b) **a written answer to "did this need any code change outside the config?"** If yes, the
+  primitives are wrong, and you fix the primitives before Run 5. That answer is the entire point
+  of doing the smallest vertical first.
+
+- **Run 5 — 颱風模式 and 口岸模式, config only.** Adding these two must touch `verticals.json` and
+  nothing else. If either needs a new render type or a code path, stop and report — that is the
+  design failing, and it is cheap to find out here.
+  **Acceptance**: both verticals render from config, and `git diff` for the run shows changes in
+  `data/verticals.json` (and `panels.json` at most) and no logic files.
+
+- **Run 6 — the basemap.** LandsD XYZ tiles: topographic basemap plus the **Traditional Chinese
+  label overlay**, with the Esri World Imagery fallback. Mind that LandsD uses `{z}/{x}/{y}` and
+  Esri uses `{z}/{y}/{x}`. The **LandsD logo and copyright notice are mandatory on the map face**.
+  Add the Open3Dhk 3D Tiles layer as a **lazy-loaded** extra, off by default — 12.2M triangles must
+  never be on first paint.
+  **Acceptance**: the map shows Hong Kong place names in Traditional Chinese, attribution is
+  visible, and disabling network turns the 3D layer into its error state rather than a blank scene.
+
+---
+
+## What NOT to build
+
+- No plugin system, registry class, event bus, state-management library or DI container — the
+  registries are JSON and the renderer is a function (`PRIMITIVES.md` §8)
+- No per-vertical renderer, and no per-vertical code path at all
+- No LLM anywhere in the runtime path
+- No metered API key ever, and no scraper in v0.2
+- No secret in the repo, ever — the repo is public and a committed secret is a leaked secret
 
 ## Who builds this, and where
 

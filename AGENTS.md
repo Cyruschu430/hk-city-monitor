@@ -83,27 +83,25 @@ thirty features and none finished. Build the primitives, then one vertical, then
      and getting blocked is the one real outage risk (see `COST.md`)
   4. inject the 3D tileset URL server-side, the way HomeCheck does with `~/.tiles3d_url` — never
      hardcode it in the front end, even though keyless currently works
-  **Acceptance — test the handler IN-PROCESS. Do not start a web server.** `wrangler dev` never
-  exits and a shell tool waits on it forever, so anything that starts one hangs. Import the handler
-  and call it directly instead — same code path, nothing to await:
+  **Acceptance — `@cloudflare/vitest-pool-workers`, which runs in `workerd` and exits.** Cloudflare's
+  Vitest integration executes tests inside the real runtime with the real bindings. Use it, and note
+  why the two obvious alternatives are wrong:
 
-  ```js
-  // test/handler.test.mjs — `node test/handler.test.mjs`, exits on its own
-  import worker from '../src/index.js';
-  const env = { /* the vars wrangler.toml declares */ };
-  const res = await worker.fetch(
-    new Request('http://localhost/proxy?url=' + encodeURIComponent(URL_OF_IMMD_CP_QUEUE)), env);
-  const body = await res.json();
-  if (res.status !== 200 || !('HYW' in body)) { console.error('FAIL', res.status, body); process.exit(1); }
-  console.log('PASS', res.status, Object.keys(body).length, 'crossings');
-  ```
+  - **A plain `node` import of the handler does not test these criteria.** `caches.default` and the
+    rate-limiter binding do not exist outside `workerd`, so an in-process call cannot honestly
+    verify edge caching or the rate limit — it would pass while testing nothing.
+  - **`wrangler dev` blocks forever in a non-interactive shell** (see below), so it is not an
+    acceptance mechanism for an agent. Run it in your own terminal when you want to poke the Worker
+    by hand; that is a debugging tool, not the test.
 
-  This must cover: a real payload for `immd_cp_queue`, a **non-registry host refused** (403), and a
-  **tile cache MISS then HIT** (call twice, assert the cache headers differ). Print the actual values;
-  a claim about a payload without the payload in the output is not a result.
+  `vitest run` is a test runner, so it terminates on its own — no server, nothing to hang.
 
-  **If an in-process test is genuinely impossible, mark the acceptance UNVERIFIED in the log and move
-  on.** Starting a server to work around it is the one thing that will cost you the round.
+  Docs: <https://developers.cloudflare.com/workers/testing/vitest-integration>
+
+  Must cover: a real `immd_cp_queue` payload; a **non-registry host refused** (403); the **tile cache
+  MISS then HIT** (assert the cache header changes between two calls); the **rate limit** tripping.
+  Print the actual values — a claim about a payload, without the payload in the output, is not a
+  result.
 - **Run 2 — the renderer.** Vite/TS scaffold, `src/styles/tokens.css` from `DESIGN_BRIEF.md`, plus
   `render.mjs` and `context.mjs` per `PRIMITIVES.md` §6 and §5. One renderer handles **all eight**
   render types — `big_number`, `list`, `table`, `image_single`, `image_wall`, `raster_map`,
@@ -164,30 +162,29 @@ coding agent builds the app. The clone stands on its own — nothing here needs 
 one source. It exists to falsify the primitive design cheaply. If it needs a code change beyond
 config, the primitives are wrong and you must fix them before adding a second vertical.
 
-## Never start a web server
+## Servers, and commands that never exit
 
-**Hard rule.** A server does not exit, and an agent's shell tool waits for output that never comes,
-so the session hangs until it is killed by hand. Don't start one.
+A dev server does not exit. In a **non-interactive** shell (a one-shot agent, a script, CI) the tool
+waits for the command's output to reach EOF before it returns — so `wrangler dev` there hangs the
+session permanently, with no Ctrl-C to escape. That is a property of the harness, not of servers:
+in your own terminal, `wrangler dev` in one window and `curl` in another is the normal way to work.
 
-- **Test in-process instead** — import the handler and call it. See Run 1's acceptance.
-- **Never** `wrangler dev`, `npm run dev`, `vite`, `python -m http.server`, or anything else that
-  keeps running, in order to verify something.
-- If a server seems genuinely required, **stop and mark the step UNVERIFIED**. An honest blocker
-  is worth more than a hang.
+So the rule is narrow, and it is about the *session*, not the server:
 
-## Long-running processes
+- **In an unattended or one-shot agent session, run only commands that exit.** Verify with a test
+  runner (`@cloudflare/vitest-pool-workers` for the Worker — see Run 1), not by starting a server.
+- **A human in a terminal is not restricted by this.** Start `vite`, `wrangler dev`, whatever you
+  like. It is your shell and you can interrupt it.
+- If a long-running command is genuinely unavoidable in a non-interactive session, **redirect its
+  output to a file and detach it**, then check the file in a separate step:
 
-Any command that never exits hangs the session, because the shell tool waits for output that never
-arrives. See **Never start a web server** above — the answer is almost always to test in-process.
-Only if a genuinely long-running command is unavoidable, **redirect its output to a file and detach
-it**, then check it in a separate step:
+  ```powershell
+  Start-Process -FilePath cmd -ArgumentList '/c','<command> > C:\path\out.log 2>&1' -WindowStyle Hidden
+  ```
 
-```powershell
-Start-Process -FilePath cmd -ArgumentList '/c','<command> > C:\path\out.log 2>&1' -WindowStyle Hidden
-```
-
-Paid for three times on 2026-09-18; `Start-Process` alone was not enough once, because a child
-without a redirect still inherits the tool's pipe.
+  A detached child without a redirect still inherits the tool's pipe and hangs anyway.
+- If there is no way to verify something without a server, **mark the step UNVERIFIED rather than
+  inventing a weaker check that appears to pass.**
 
 ## Hard constraints
 

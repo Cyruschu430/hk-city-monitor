@@ -48,7 +48,9 @@ cd web && npm install && npm run dev
 
 - 運輸署 交通快拍圖像（[DATA.GOV.HK](https://data.gov.hk/tc-data/dataset/hk-td-tis_2-traffic-snapshot-images)）
 - 香港天文台 天氣攝影機及[開放數據 API](https://data.weather.gov.hk/weatherAPI/doc/HKO_Open_Data_API_Documentation_tc.pdf)
-- 地圖底圖 © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors · © [CARTO](https://carto.com/attributions)
+- 地形圖底圖及地名標籤：**地圖來自地政總署**（Lands Department）· 航拍影像：地政總署
+- 三維數碼地圖：地政總署 · 全球影像底圖（備選）：Esri World Imagery
+- 其他底圖備選 © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors · © [CARTO](https://carto.com/attributions)
 
 ## 授權
 

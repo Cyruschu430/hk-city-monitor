@@ -3,7 +3,7 @@
 > **本檔案由 `scripts/probe_sources.py` 自動生成，唔好手改。**
 > 改源 → 改 `sources.json` → 跑 `python3 scripts/probe_sources.py`。
 
-最後實測：`2026-09-18 21:11 CST`　·　**158 / 167 個源成功**
+最後實測：`2026-09-18 21:19 CST`　·　**162 / 171 個源成功**
 
 每個 URL 都真係發過 HTTP 請求。🟢 = 200 而且回傳真數據　🟡 = 未解決／要 key　🔴 = 失敗。
 
@@ -12,8 +12,8 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | 運輸署 交通快拍攝影機位置 | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | irregular | none | CSV ~1013 rows, cols: key, region, district, description, easting, northing |
-| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 31307B |
-| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 580176B |
+| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 30212B |
+| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 585637B |
 | 天文台 天氣攝影機目錄頁 | `https://www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm` | 🟢 ok | static | none | HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko |
 
 - **運輸署 交通快拍攝影機位置** — UTF-16LE with a DOUBLE BOM (\xff\xfe\xff\xfe) and tab-delimited. Columns: key, region, district, description, easting, northing, latitude, longitude, url. Python's utf-16 codec leaves a stray \ufeff on the first field name — strip it or every row reads empty.
@@ -50,13 +50,13 @@
 | Latest 15-minute mean UV index from 7:00 a.m. to 6:00 p.m. Hong Kong time | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_15min_uvindex.csv` | 🟢 ok | Every 15 minutes from 7:00 a.m. to 6:00 p.m. Hong Kong time | none | 56B of application/octet-stream |
 | Latest tidal information | `https://data.weather.gov.hk/weatherAPI/hko_data/tide/ALL_tc.csv` | 🟢 ok | Every 5 Minutes | none | 256B of application/octet-stream |
 | Rainfall in the past hour from Automatic Weather Station | `https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=tc` | 🟢 ok | Every 15 minutes | none | JSON object, keys: obsTime, hourlyRainfall |
-| Regional weather in Hong Kong - past 24-hour temperature difference | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_past24_temperat…` | 🟢 ok | Every 10 Minutes | none | 1276B of application/octet-stream |
+| Regional weather in Hong Kong - past 24-hour temperature difference | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_past24_temperat…` | 🟢 ok | Every 10 Minutes | none | 1274B of application/octet-stream |
 | Regional weather in Hong Kong – the latest 1-minute global solar radiation and direct solar radiation and diffuse radiat | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_solar.csv` | 🟢 ok | Every 10 Minutes | none | 232B of application/octet-stream |
 | Regional weather in Hong Kong – the latest 1-minute mean grass temperature from 5:00 p.m. to 8:00 a.m. the following dat | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_grass.csv` | 🟢 ok | Every 10 minutes from 5:00 p.m. to 8:00 a.m. the following date Hong Kong time | none | 160B of application/octet-stream |
 | Regional weather in Hong Kong – the latest 1-minute mean relative humidity | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv` | 🟢 ok | Every 10 Minutes | none | 792B of application/octet-stream |
 | Regional weather in Hong Kong – the latest 1-minute mean sea level pressure | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_pressure.csv` | 🟢 ok | Every 10 Minutes | none | 444B of application/octet-stream |
 | Regional weather in Hong Kong – the latest 10-minute mean visibility | `https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LTMV&lang=tc&rfor…` | 🟢 ok | Every 10 Minutes | none | 197B of text/csv |
-| Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv` | 🟢 ok | Every 10 Minutes | none | 1273B of application/octet-stream |
+| Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv` | 🟢 ok | Every 10 Minutes | none | 1283B of application/octet-stream |
 | Regional weather in Hong Kong – the maximum and minimum air temperature from 1-minute mean temperatures since midnight | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_since_midnight_…` | 🟢 ok | Every 10 Minutes | none | 1530B of application/octet-stream |
 | Past 24-hour Air Quality Health Index of individual Air Quality Monitoring stations | `https://www.aqhi.gov.hk/epd/ddata/html/out/24aqhi_Eng.xml` | 🟢 ok | Hourly | none | XML, 432 <item> entries, root tags: AQHI24HrReport, title, link, description, language |
 | Past 24-hour Pollutant Concentration of individual Air Quality Monitoring stations | `https://www.aqhi.gov.hk/epd/ddata/html/out/24pc_Eng.xml` | 🟢 ok | Hourly | none | XML, 0 <item> entries, root tags: AQHI24HrPollutantConcentration, title, link, description, language |
@@ -394,6 +394,10 @@ arrival time and related data of Citybus.** — Auto-imported from the CKAN full
 | 地政總署 三維數碼地圖 · 建築物（3D Tiles） | `https://data.map.gov.hk/api/3d-data/3dsd/WGS84/building/tileset.json` | 🟢 ok | as issued | free-key | JSON object, keys: asset, geometricError, root |
 | 地政總署 三維數碼地圖 · 基建（3D Tiles） | `https://data.map.gov.hk/api/3d-data/3dsd/WGS84/infrastructure/tileset.json` | 🟢 ok | as issued | free-key | JSON object, keys: asset, geometricError, root |
 | 地政總署 可視化三維地圖 · 方格模型（3D Tiles 1.1） | `https://data.map.gov.hk/api/3d-data/3dtiles/f2/tileset.json` | 🟢 ok | as issued | free-key | JSON object, keys: asset, geometricError, root |
+| 地政總署 地形圖 XYZ tile（底圖） | `https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/WGS84/14/13387/7151.png` | 🟢 ok | as issued | none | 30360B of image/png |
+| 地政總署 地名標籤 XYZ tile（繁中／英／簡） | `https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/hk/tc/WGS84/14/13387/7151.png` | 🟢 ok | as issued | none | 4521B of image/png |
+| 地政總署 影像圖 XYZ tile（航拍／衛星） | `https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/imagery/WGS84/14/13387/7151.png` | 🟢 ok | as issued | none | 183355B of image/png |
+| Esri World Imagery XYZ tile（免 key，免費） | `https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/14/…` | 🟢 ok | continuous | none | 15597B of image/jpeg |
 
 - **CARTO dark-matter 底圖 style** — Keyless vector basemap style for MapLibre. 93 layers, CJK-capable font stacks (HanWangHeiLight / NanumBarunGothic), glyph server at tiles.basemaps.cartocdn.com/fonts/{fontstack}/{range}.pbf. MUST be referenced as a style URL — passing it as an inline style object to MapLibre 4.7.x silently fails.
 - **CSDI 空間數據共享平台 API** — VERIFIED — this is the reusable CSDI access pattern, two forms: (a) whole-dataset GeoJSON via /csdi-webpage/file-api?dataset_id=<id>&format=geojson&layer_name=<layer>; (b) ArcGIS FeatureServer at /server/rest/services/common/<dataset_id>/FeatureServer/0/query?where=1=1&outFields=*&f=geojson which ECHOES the Origin header, so it is CORS-open and usable straight from the browser. WFS GetFeature also works (typeNames=csdi:<layer>, outputFormat=geojson — use 'geojson' not 'json').
@@ -403,6 +407,10 @@ arrival time and related data of Citybus.** — Auto-imported from the CKAN full
 - **地政總署 三維數碼地圖 · 建築物（3D Tiles）** — VERIFIED 200, a valid 3D Tiles 1.2.3 tileset: gltfUpAxis Y, 218,927 components, 12,199,184 triangles, 36,557,692 vertices — the whole HK territory of buildings. WGS84, Cesium 3D Tiles open format, free for commercial and non-commercial use with attribution to the Government. Get a free key by emailing 3dmap@landsd.gov.hk (Lands Department, GIS Projects Section). LIMITS: 100 concurrent users, 5GB/s — so do not build a demo that hammers it. NOTE: the docs publish a sample key and the endpoint currently answers without one; do NOT rely on that, and never commit a key to this repo — it belongs in the Cloudflare Worker secret. 12M triangles means this loads on demand, never on first paint.
 - **地政總署 三維數碼地圖 · 基建（3D Tiles）** — VERIFIED 200, valid tileset: 1,826 components, 7,602,740 triangles, 22,797,304 vertices. Same key, licence and limits as the building tileset.
 - **地政總署 可視化三維地圖 · 方格模型（3D Tiles 1.1）** — VERIFIED 200: 3D Tiles 1.1, geometricError 271850.84. The mesh-model (方格形式) visualisation map built from oblique aerial imagery, covering the whole territory — heavier but more faithful than the individualised building models.
+- **地政總署 地形圖 XYZ tile（底圖）** — VERIFIED 200, image/png, 256×256, 30,360 bytes, ACAO=* — keyless, CORS-open, no key. URL: /xyz/basemap/{WGS84|HK80}/{z}/{x}/{y}.png, z10-20. The official HK topographic basemap, so the map is Hong Kong rather than a generic world basemap. MANDATORY attribution: Lands Department logo on the map face plus 'Map from Lands Department'. Courtesy limit: do not invoke with large numbers of requests in a short period — cache tiles in the Worker.
+- **地政總署 地名標籤 XYZ tile（繁中／英／簡）** — VERIFIED 200, 256×256, 4,521 bytes, only 2.4% non-transparent pixels — the signature of a real transparent label overlay with actual text, not a blank tile. URL: /xyz/label/hk/{tc|en|sc}/{WGS84|HK80}/{z}/{x}/{y}.png. This is the source of the Hong Kong feel Cyrus asked for: official Hong Kong place names in Traditional Chinese, as a separate overlay layer on the basemap. Works on top of any basemap including the imagery tiles.
+- **地政總署 影像圖 XYZ tile（航拍／衛星）** — VERIFIED 200, 256×256, 183,355 bytes, ACAO=* — a real aerial image tile, keyless. URL: /xyz/imagery/{sr}/{z}/{x}/{y}.png, z0-20 WGS84. LandsD's own aerial photo and satellite imagery, so a keyless satellite basemap exists without Esri — though Esri World_Imagery (also keyless, verified) remains a good alternative or blend. Copyright covers Digital Aerial Photo and Digital Orthophoto.
+- **Esri World Imagery XYZ tile（免 key，免費）** — VERIFIED 200, image/jpeg, ACAO=* — Esri's World Imagery tile service is publicly readable with no key and no billing, which is why projects like gods-eye-view boot keyless on it. NOTE the tile order is {z}/{y}/{x}, not {z}/{x}/{y} — the opposite of the LandsD tiles, and the classic source of a blank or wrong-place map. Immediate source of a global satellite basemap around Hong Kong's edges, where LandsD coverage stops.
 
 ## global
 

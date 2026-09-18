@@ -359,52 +359,48 @@
       "notes": "Annual statistics only — NOT live booking availability. Do not present as real-time."
     },
     {
-      "id": "lcsd_csdi_facilities",
-      "group": "civic",
-      "name": "康文署 設施地理數據（約 30 類，CSDI）",
-      "type": "json",
-      "url": "",
-      "auth": "none",
-      "cadence": "quarterly",
-      "todo": true,
-      "notes": "One CSDI dataset per facility type (swimming pools, sports centres, tennis courts, badminton courts, basketball courts, libraries, museums, parks and zoos, holiday camps, barbecue areas, ...). Need the reusable WFS / ArcGIS REST FeatureServer access path. Example dataset id: lcsd_rcd_1634540558875_77434 (swimming pools)."
-    },
-    {
       "id": "afcd_closed_trails",
       "group": "civic",
       "name": "漁護署 郊野公園封閉山徑",
       "type": "json",
-      "url": "",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/afcd_rcd_1742550096880_1424/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
       "auth": "none",
       "cadence": "on update",
-      "todo": true,
-      "notes": "CSDI dataset afcd_rcd_1742550096880_1424. Also see the closed-facilities dataset (cpclosedfacilitiescsdi)."
+      "todo": false,
+      "notes": "Live closure layer (7 features, all 'Temporary closed'). Fields TRAIL_ID, TRAIL_NAME_EN/TC, LOCATION_EN/TC, STATUS_EN/TC, EFFECTIVE_DATE, EXPECTED_EXPIRY_DATE. Good hiking-safety layer; also reachable via the CSDI file-api form.",
+      "candidates": [
+        "https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=afcd_rcd_1742550096880_1424&format=geojson&layer_name=CPISDBOCLOSED_TRAIL_IN_CP_GDB"
+      ]
     },
     {
       "id": "hk_public_holidays",
       "group": "civic",
       "name": "香港公眾假期",
       "type": "json",
-      "url": "",
+      "url": "https://www.1823.gov.hk/common/ical/en.json",
       "auth": "none",
       "cadence": "annual",
-      "todo": true,
-      "notes": "Find a machine-readable JSON/CSV/ICS source (data.gov.hk or gov.hk)."
+      "todo": false,
+      "notes": "VERIFIED. Covers 2025-01 to 2027-12, 17 general holidays in 2026. The JSON body has a UTF-8 BOM — decode utf-8-sig. Also a valid RFC5545 .ics. This is 1823 (the government contact centre) publishing the official holiday calendar.",
+      "candidates": [
+        "https://www.1823.gov.hk/common/ical/en.ics",
+        "https://www.1823.gov.hk/common/ical/tc.json"
+      ]
     },
     {
       "id": "gov_press_rss",
       "group": "news",
       "name": "政府新聞公報 RSS（全部）",
       "type": "rss",
-      "url": "https://www.info.gov.hk/gia/rss/general_tc.xml",
+      "url": "https://www.info.gov.hk/gia/rss/general_zh.xml",
       "candidates": [
-        "https://www.info.gov.hk/gia/rss/general_zh.xml",
-        "https://www.news.gov.hk/tc/common/html/rss.xml"
+        "https://www.info.gov.hk/gia/rss/general_tc.xml",
+        "https://www.info.gov.hk/gia/rss/general_en.xml"
       ],
       "auth": "none",
       "cadence": "as issued",
-      "todo": true,
-      "notes": "VERIFIED: 100 items. Publish TITLE + LINK ONLY — never republish article bodies. Still want the 治安 (law and order) topic feed; the full feed list is on gov.hk/tc/about/rss.htm."
+      "todo": false,
+      "notes": "VERIFIED valid RSS 2.0, ~478KB, ~100 items. NOTE: general.xml (no suffix) is 404. Publish TITLE + LINK ONLY — never republish article bodies."
     },
     {
       "id": "fsd_press",
@@ -452,26 +448,28 @@
       "group": "geospatial",
       "name": "CSDI 空間數據共享平台 API",
       "type": "json",
-      "url": "https://portal.csdi.gov.hk/geoportal/",
+      "url": "https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=lcsd_rcd_1634540558875_77434&format=geojson&layer_name=SP",
       "auth": "none",
       "cadence": "varies",
-      "todo": true,
-      "notes": "Need the real WFS / ArcGIS REST base and one demonstrated GetFeature returning GeoJSON."
+      "todo": false,
+      "notes": "VERIFIED — this is the reusable CSDI access pattern, two forms: (a) whole-dataset GeoJSON via /csdi-webpage/file-api?dataset_id=<id>&format=geojson&layer_name=<layer>; (b) ArcGIS FeatureServer at /server/rest/services/common/<dataset_id>/FeatureServer/0/query?where=1=1&outFields=*&f=geojson which ECHOES the Origin header, so it is CORS-open and usable straight from the browser. WFS GetFeature also works (typeNames=csdi:<layer>, outputFormat=geojson — use 'geojson' not 'json').",
+      "candidates": [
+        "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1634540558875_77434/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson"
+      ]
     },
     {
       "id": "als_address_lookup",
       "group": "geospatial",
       "name": "地政總署 地址搜尋（ALS / Location Search API）",
       "type": "json",
-      "url": "",
+      "url": "https://www.als.gov.hk/lookup?q=30%20Luen%20Wan%20Street",
       "candidates": [
-        "https://www.map.gov.hk/",
-        "https://www.als.ogcio.gov.hk/lookup?q=test"
+        "https://www.als.gov.hk/lookup?q=%E6%97%BA%E8%A7%92"
       ],
       "auth": "none",
       "cadence": "monthly",
-      "todo": true,
-      "notes": "Hostname moved from geodata.gov.hk to www.map.gov.hk effective 2026-05-04. Need the working address-to-coordinates query. Used for geocoding news/event text — do NOT let an LLM invent coordinates."
+      "todo": false,
+      "notes": "VERIFIED and this is the geocoder the app needs. REAL HOST IS www.als.gov.hk (the older als.ogcio.gov.hk / geodata.gov.hk guesses were wrong). Send Accept: application/json (defaults to XML). CORS is '*' so the browser can call it directly. Returns SuggestedAddress[] with GeospatialInformation{Latitude,Longitude,Easting,Northing} and a GeoAddress code. Whole address dataset: https://www.als.gov.hk/data/ALS-GeoJSON.zip. Use this to geocode news/event text — never let an LLM invent coordinates."
     },
     {
       "id": "usgs_earthquakes",
@@ -569,6 +567,186 @@
       "cadence": "daily",
       "todo": true,
       "notes": "GOTCHA: the CSVs are DAILY CHANGE LOGS only (ROUTE_ID, ROUTE_SEQ, CHANGE = ADD/DELETE/UPDATE) — they contain NO fares. The real fare tables are MS Access files, e.g. FARE_BUS.mdb at 32.9 MB. Full family available: ROUTE_/RSTOP_/STOP_/FARE_ x BUS, GMB (minibus), FERRY, TRAM, PTRAM. To use it: convert the .mdb to SQLite/Parquet once with mdbtools, then apply the daily deltas. A one-off converter is a genuinely useful open-source contribution and the only free source of complete HK public-transport fares."
+    },
+    {
+      "id": "lcsd_smartplay_prog",
+      "group": "civic",
+      "name": "康文署 SmartPLAY 康體活動（現行，取代舊 leisure_prog）",
+      "type": "json",
+      "url": "https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/activity-prog/file",
+      "auth": "none",
+      "cadence": "continuous",
+      "notes": "THE current 'what's on soon' feed — ~8,700 records with ~7,200 upcoming. ~17MB, so fetch it on a schedule from the VPS and slim it to a static JSON; never ship 17MB to the browser. Fields include ACTIVITY_NO, EN_PGM_NAME, PGM_START/END_DATE, EN_VENUE, FEE, QUOTA, PLACES_LEFT. This supersedes lcsd_leisure_prog, which is frozen and stale."
+    },
+    {
+      "id": "lcsd_events_xml",
+      "group": "civic",
+      "name": "康文署 文化／演藝節目",
+      "type": "xml",
+      "url": "https://www.lcsd.gov.hk/datagovhk/event/events.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "notes": "Current cultural programme listings, ~1.9MB. <events> with id, titlec/titlee, cat1/cat2, predateC."
+    },
+    {
+      "id": "lcsd_eventdates_xml",
+      "group": "civic",
+      "name": "康文署 節目日期",
+      "type": "xml",
+      "url": "https://www.lcsd.gov.hk/datagovhk/event/eventDates.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "notes": "Maps event id to performance dates (<indate>). Join with events.xml and venues.xml."
+    },
+    {
+      "id": "lcsd_venues_xml",
+      "group": "civic",
+      "name": "康文署 節目場地（含經緯度）",
+      "type": "xml",
+      "url": "https://www.lcsd.gov.hk/datagovhk/event/venues.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "notes": "Venue id, name, latitude/longitude — enough to put cultural events on the map."
+    },
+    {
+      "id": "lcsd_venue_master",
+      "group": "civic",
+      "name": "康文署 場地總表（開放時間、休息日、地址）",
+      "type": "json",
+      "url": "https://www.lcsd.gov.hk/datagovhk/venue/venue.json",
+      "auth": "none",
+      "cadence": "periodic",
+      "notes": "629 venues across 15 categories. Has OpeningHour_en/cn AND ClosedOn_en/cn AND PublicHolidayOpeningHour — this is how the UI answers '邊個場今日開唔開' without any live source. A temporary-closure feed does NOT exist (checked); holiday.xml returns an empty <holiday/>."
+    },
+    {
+      "id": "urbtix_event_batch",
+      "group": "civic",
+      "name": "URBTIX 售票節目（每日批次）",
+      "type": "xml",
+      "url": "https://fs-open-1304240968.cos.ap-hongkong.myqcloud.com/prod/gprd/URBTIX_eventBatch_20260918.xml",
+      "auth": "none",
+      "cadence": "daily",
+      "notes": "The URL embeds the publish date as YYYYMMDD — substitute today's date (a future date 404s). ~550KB, <BATCH><TOTAL><EVENTS> with ST_DATE/ED_DATE, EVENT_CODE, name, REFERENCE_LINK, CATEGORY."
+    },
+    {
+      "id": "csdi_lcsd_sports_centres",
+      "group": "civic",
+      "name": "康文署 體育館（CSDI）",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1629267205215_31341/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "snapshot",
+      "notes": "Layer 'SC'. Dataset id lcsd_rcd_1629267205215_31341."
+    },
+    {
+      "id": "csdi_lcsd_tennis",
+      "group": "civic",
+      "name": "康文署 網球場（CSDI）",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1629267205215_84141/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "snapshot",
+      "notes": "Layer 'geotagging'. Dataset id lcsd_rcd_1629267205215_84141."
+    },
+    {
+      "id": "csdi_lcsd_badminton",
+      "group": "civic",
+      "name": "康文署 羽毛球場（CSDI）",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1629267205214_38344/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "snapshot",
+      "notes": "Layer 'geodatastore'. Dataset id lcsd_rcd_1629267205214_38344."
+    },
+    {
+      "id": "csdi_lcsd_basketball",
+      "group": "civic",
+      "name": "康文署 籃球場（CSDI）",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1629267205215_38105/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "snapshot",
+      "notes": "Layer 'geodatastore'. Dataset id lcsd_rcd_1629267205215_38105."
+    },
+    {
+      "id": "csdi_lcsd_libraries",
+      "group": "civic",
+      "name": "康文署 圖書館（CSDI）",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1629267205214_44807/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "snapshot",
+      "notes": "Layer 'LIBRARY'. Dataset id lcsd_rcd_1629267205214_44807."
+    },
+    {
+      "id": "csdi_lcsd_museums",
+      "group": "civic",
+      "name": "康文署 博物館（CSDI）",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1629267205214_78787/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "snapshot",
+      "notes": "Layer 'MUSEUM'. Dataset id lcsd_rcd_1629267205214_78787."
+    },
+    {
+      "id": "csdi_lcsd_parks",
+      "group": "civic",
+      "name": "康文署 公園、動物園及花園（CSDI）",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1629267205215_19292/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "snapshot",
+      "notes": "Layer 'PARKS'. Dataset id lcsd_rcd_1629267205215_19292."
+    },
+    {
+      "id": "csdi_lcsd_holiday_camps",
+      "group": "civic",
+      "name": "康文署 渡假營（CSDI）",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1629267205214_83172/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "snapshot",
+      "notes": "Layer 'HC'. Dataset id lcsd_rcd_1629267205214_83172."
+    },
+    {
+      "id": "csdi_lcsd_bbq",
+      "group": "civic",
+      "name": "康文署 燒烤場（CSDI）",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/lcsd_rcd_1634540957025_61259/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "snapshot",
+      "notes": "Layer 'LCSD_BBQ'. Dataset id lcsd_rcd_1634540957025_61259."
+    },
+    {
+      "id": "afcd_closed_facilities",
+      "group": "civic",
+      "name": "漁護署 郊野公園封閉設施",
+      "type": "json",
+      "url": "https://portal.csdi.gov.hk/server/rest/services/common/afcd_rcd_1728897009646_22480/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "auth": "none",
+      "cadence": "live",
+      "notes": "Live closure layer. FAC_ID, FACILITY_TYPE_EN/TC, LOCATION_EN/TC, STATUS_EN/TC, EFFECTIVE_DATE (epoch ms), EXPECTED_EXPIRY_DATE."
+    },
+    {
+      "id": "gov_news_law_order",
+      "group": "news",
+      "name": "政府新聞網 治安（法治）分類 feed",
+      "type": "rss",
+      "url": "https://www.news.gov.hk/tc/categories/law_order/html/articlelist.rss.xml",
+      "auth": "none",
+      "cadence": "continuous",
+      "notes": "The 治安 topic feed. Other topics follow the same pattern: admin, finance, environment, health, infrastructure, school_work, city_life. Title + link only in our UI."
+    },
+    {
+      "id": "location_search",
+      "group": "geospatial",
+      "name": "地政總署 Location Search API（GeoInfo Map）",
+      "type": "json",
+      "url": "https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=cultural%20centre",
+      "auth": "none",
+      "cadence": "real-time",
+      "notes": "VERIFIED on the NEW hostname www.map.gov.hk (migrated from geodata.gov.hk around 2026-05-04). CORS '*'. Returns name/address/district in ZH+EN plus HK1980 grid x/y. Use ALS for addresses and this for place names."
     }
   ]
 }

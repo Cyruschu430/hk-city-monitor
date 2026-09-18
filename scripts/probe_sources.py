@@ -53,7 +53,7 @@ ICONS = {"ok": OK, "fail": BAD, "unprobeable": WARN,
 
 def fetch(url: str) -> dict:
     started = time.time()
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json, text/xml, text/csv, image/*, */*"})
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT, context=CTX) as r:
             body = r.read(MAX_BYTES)
@@ -86,6 +86,7 @@ def shape(kind: str, body: bytes, ctype: str) -> str:
             continue
     if text is None:
         return f"binary {len(body)}B"
+    text = text.lstrip("\ufeff")            # gov sites ship BOMs; json.loads chokes on them
 
     if kind == "json" or "json" in ctype:
         try:
@@ -159,8 +160,10 @@ def probe(src: dict) -> dict:
     for u in probeable:
         r = fetch(u)
         if r["ok"]:
-            sh = shape(out["type"], r["body"], r["content_type"])
-            good, why = classify(out["type"], r["content_type"], sh)
+            truncated = r["bytes"] >= MAX_BYTES
+            sh = (f"large {out['type']} response, truncated at the {MAX_BYTES // 1024 // 1024}MB probe cap "
+                  f"— reachable, payload not parsed") if truncated else shape(out["type"], r["body"], r["content_type"])
+            good, why = (True, "") if truncated else classify(out["type"], r["content_type"], sh)
             out.update(status="ok" if good else "wrong-payload",
                        working_url=r["final_url"], http_status=r["status"],
                        content_type=r["content_type"], bytes=r["bytes"], ms=r["ms"], shape=sh)

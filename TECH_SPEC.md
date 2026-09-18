@@ -96,8 +96,9 @@
 ### 3.7 政務／新聞 📰（全部免 key）
 | 源 | 狀態 |
 |---|---|
-| 政府新聞公報 RSS（全部＋**「治安」分類**） | 🟢 `gov.hk/tc/about/rss.htm` 列出全部 feed URL |
-| 消防處新聞公報 | 🟢 有待 pin RSS/HTML |
+| 政府新聞公報 RSS（全部） | 🟢 實測 `info.gov.hk/gia/rss/general_zh.xml`（~478KB、~100 條、valid RSS 2.0）。⚠️ `general.xml`（無後綴）係 404 |
+| **政府新聞網「治安」分類 feed** | 🟢 實測 `news.gov.hk/tc/categories/law_order/html/articlelist.rss.xml`（20 條）。同一 pattern：`admin / finance / environment / health / infrastructure / school_work / city_life` —— **呢個就係「突發／治安」事件層嘅官方 backbone** |
+| 消防處新聞公報 | 🟡 頁面實測 200，未搵到 RSS |
 | 立法會／區議會公開資料 | 🟡 |
 | 1823 | 🔴 無公開 API |
 
@@ -125,7 +126,12 @@ data.gov.hk 有 **~180 個康文署／公民設施 dataset**。已查證幾項�
 
 | 源 | Endpoint | 更新 | 狀態 |
 |---|---|---|---|
-| **康體活動節目**（未來約 1.5 個月活動） | `http://www.lcsd.gov.hk/datagovhk/event/leisure_prog.json` | 每日（每月 15 號上載） | 🟢 直接 JSON。**呢個就係「嚟緊有咩活動」** |
+| **康體活動（SmartPLAY，現行）** | `https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/activity-prog/file` | 持續 | 🟢 **實測 ~17MB、約 8,700 個活動、7,200 個未過期**。有 `FEE`、`QUOTA`、**`PLACES_LEFT`**（剩餘名額！）、場地、年齡限制。⚠️ 17MB 唔可以出前端 —— 要 VPS 定期拉，瘦身成靜態 JSON |
+| ~~康體活動（舊 leisure_prog.json）~~ | `lcsd.gov.hk/datagovhk/event/leisure_prog.json` | **已凍結** | 🔴 629 條但日期 2023-10～2024-03，**零個未過期**。只留作格式參考 |
+| **場地總表（開放時間、休息日、地址）** | `https://www.lcsd.gov.hk/datagovhk/venue/venue.json` | 定期 | 🟢 實測 629 個場地、15 類。**有 `OpeningHour`、`ClosedOn`、`PublicHolidayOpeningHour`** → 唔使任何 live 源都答到「今日開唔開」 |
+| 文化／演藝節目 | `lcsd.gov.hk/datagovhk/event/events.xml` + `eventDates.xml` + `venues.xml` | 持續 | 🟢 實測。`venues.xml` 有**經緯度** → 文化活動可以直接落圖 |
+| URBTIX 售票節目（每日批次） | `fs-open-1304240968.cos.ap-hongkong.myqcloud.com/prod/gprd/URBTIX_eventBatch_{YYYYMMDD}.xml` | 每日 | 🟢 實測 200（URL 內嵌日期，要換做當日；未來日期會 404）。~225 個節目 |
+| 香港公眾假期 | `https://www.1823.gov.hk/common/ical/en.json`（tc.json／.ics 同樣得） | 年度 | 🟢 實測，覆蓋 2025-01～2027-12、2026 年 17 日。⚠️ **JSON 有 BOM，要 `utf-8-sig`** |
 | **實時停車場空位** | `https://resource.data.one.gov.hk/td/carpark/basic_info_all.json` + `vacancy_all.json` | **即時** | 🟢 免 key |
 | 康文署設施地理數據（~30 類：羽毛球場、籃球場、泳池、運動場、草地／硬地足球場、壁球場、乒乓球檯、網球場、健身室、單車場、燒烤場、渡假營、圖書館、博物館、公園動物園、表演場地…） | CSDI dataset | 季度／不定期 | 🟢 **逐類一個 CSDI dataset → 直接做圖層**。例：泳池 `lcsd_rcd_1634540558875_77434` |
 | 泳池／泳灘入場人次 | `hk-lcsd-csdi-swimming-pools-attendance`、`hk-lcsd-stats-beaches-attd` | 月 | 🟢 做「幾多人」背景數字 |
@@ -163,11 +169,11 @@ data.gov.hk **冇**任何消費者格價數據（消委會只有投訴統計）�
 ### 3.13 空間基底 🗺
 | 源 | 更新 | 狀態 |
 |---|---|---|
-| CSDI WFS / WMS / ArcGIS REST | — | 🟢 |
+| **CSDI 存取模式（可重用）** | `portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id={id}&format=geojson&layer_name={layer}`（整份 GeoJSON）／`portal.csdi.gov.hk/server/rest/services/common/{id}/FeatureServer/0/query?where=1=1&outFields=*&f=geojson`（**會 echo Origin，即係 CORS 開，瀏覽器直接 fetch 得**） | — | 🟢 **實測 11 個 LCSD／AFCD dataset 全部行**（泳池、體育館、網球、羽毛球、籃球、圖書館、博物館、公園、渡假營、燒烤場、郊野公園封閉山徑／設施）。WFS GetFeature 亦得（`typeNames=csdi:{layer}`、`outputFormat=geojson`，記住唔係 `json`） |
 | CSDI 3D 建築物（LoD2）／3D Visualisation Map（2025-09 新增非貼圖模型） | 季度 | 🟢 |
 | CSDI DEM / 高程 | — | 🟢 |
-| 地址搜尋（ALS / Location Search API） | — | 🟡 **hostname 2026-05-04 由 `geodata.gov.hk` 轉去 `www.map.gov.hk`**，落地前要 pin 實真 endpoint |
-| 地政總署 GeoAddress | — | 🟡 |
+| **地址搜尋 ALS（地址 → 座標）** | `https://www.als.gov.hk/lookup?q=30%20Luen%20Wan%20Street` | 實時 | 🟢 **實測真 host 係 `www.als.gov.hk`**（之前估 `als.ogcio.gov.hk` 係錯）。要 `Accept: application/json`（預設回 XML）。**CORS `*`**。回 `SuggestedAddress[]` 內有 `Latitude/Longitude` + GeoAddress code。全份地址數據：`als.gov.hk/data/ALS-GeoJSON.zip` |
+| Location Search API（地名 → 座標） | `https://www.map.gov.hk/gs/api/v1.0.0/locationSearch?q=...` | 實時 | 🟢 實測 27 條結果、CORS `*`、回中英名＋地址＋HK1980 grid。hostname 2026-05-04 已由 `geodata.gov.hk` 轉去 `www.map.gov.hk`（已確認） |
 | 底圖：CARTO dark-matter GL style | — | 🟢 免 key，`https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json` |
 | data.gov.hk 全站目錄 | — | 🟢 CKAN API：**3,820 個 dataset**（`/api/3/action/package_list`）|
 
@@ -237,13 +243,14 @@ data.gov.hk **冇**任何消費者格價數據（消委會只有投訴統計）�
 4. **環保署 AQHI** — 估嘅路徑全 404，要抽 aqhi.gov.hk 前端真正嘅 XHR
 5. **保安局「口岸通」JSON** — 頁面真、數據係 JS 載入，要捉 endpoint（**最高價值嘅未解決項**）
 6. **香港出行易 管制站 API** — 同上
-7. **CSDI WFS / ArcGIS REST base** — 要一個真嘅 GetFeature 示範
-8. **地址搜尋 ALS**（`www.map.gov.hk`）— 同上，新聞／事件 geocode 靠佢
-9. **康文署 ~30 類設施 CSDI dataset** — 要可重用嘅下載／WFS 路徑
-10. **漁護署封閉山徑／設施** — 同上
-11. **香港公眾假期** — 未有 machine-readable 源
+7. ~~CSDI 存取模式~~ ✅ **已解**：file-api + FeatureServer（CORS 開）+ WFS 三個途徑都實測過
+8. ~~地址搜尋 ALS~~ ✅ **已解**：`www.als.gov.hk/lookup`，CORS `*`
+9. ~~康文署設施 dataset~~ ✅ **已解**：11 個 CSDI dataset 全部實測 🟢
+10. ~~漁護署封閉山徑／設施~~ ✅ **已解**
+11. ~~香港公眾假期~~ ✅ **已解**：1823 iCal（JSON/ICS）
 12. **AIS 船隻** — 要免費 key，而且要 VPS 常駐連線
 13. **九巴／港鐵／機管局／渡輪 API** — 待驗（有啲要免費註冊）
 14. **消委會兩個格價工具** — 冇 API；先考慮正式去信要 feed
 15. **公共交通收費 `.mdb` → SQLite/Parquet converter** — 未寫
 16. Repo 上唔上 GitHub（公開）／改咩名
+17. **SmartPLAY 17MB feed 瘦身 script** — 未寫（要 VPS 定期跑）

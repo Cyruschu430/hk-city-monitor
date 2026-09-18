@@ -1095,6 +1095,185 @@
       "cadence": "annual",
       "todo": false,
       "notes": "Full post-analysed track of every cyclone in a year — the honest basis for 'this storm looks like the one in 2023' comparisons, because it is the quality-controlled record rather than the forecast. Build the year into the URL and step back a year when the current one 404s."
+    },
+    {
+      "id": "immd_cp_queue",
+      "group": "border",
+      "name": "入境處 陸路管制站輪候時間（官方 15 分鐘）",
+      "type": "json",
+      "url": "https://secure1.info.gov.hk/immd/mobileapps/2bb9ae17/data/CPQueueTimeR.json",
+      "candidates": [
+        "https://secure1.info.gov.hk/immd/mobileapps/2bb9ae17/data/CPQueueTimeV.json"
+      ],
+      "auth": "none",
+      "cadence": "15 minutes",
+      "todo": false,
+      "notes": "THE OFFICIAL control-point waiting time feed from Immigration — 15-minute cadence, no key. This is better than reading 口岸通's page: 口岸通 gives a green/yellow/red band, this gives the actual queue time. Keep 口岸通 too — it adds the incident notices and the cross-boundary shuttle waits. Found only by the full CKAN scan; a keyword search misses it. Verified response keys are the control-point codes themselves: HYW, HZM, LMC, LSC, LWS, MKT."
+    },
+    {
+      "id": "ha_ae_waiting",
+      "group": "civic",
+      "name": "醫管局 急症室輪候時間（15 分鐘）",
+      "type": "json",
+      "url": "https://www.ha.org.hk/opendata/aed/aedwtdata2-tc.json",
+      "auth": "none",
+      "cadence": "15 minutes",
+      "todo": false,
+      "notes": "Accident & Emergency waiting time per public hospital, updated every 15 minutes, keyless. Genuinely useful to a resident and rarely seen in dashboards — this is the kind of source that makes a monitor worth opening."
+    },
+    {
+      "id": "wsd_water_suspension",
+      "group": "civic",
+      "name": "水務署 臨時停水通知（5 分鐘）",
+      "type": "csv",
+      "url": "https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv",
+      "auth": "none",
+      "cadence": "5 minutes",
+      "todo": false,
+      "notes": "Temporary water suspension notices, every 5 minutes. Directly answers 'why is my water off' — pair with a map of the affected address. Reaches us only after relaxing the TLS cipher security level — if a future client gets a handshake failure here, that is the cause, not the dataset."
+    },
+    {
+      "id": "lcsd_court_booking",
+      "group": "civic",
+      "name": "康文署 即時可訂場節數（羽毛球／籃球／網球／草地足球／排球）",
+      "type": "json",
+      "url": "https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/badminton/file",
+      "candidates": [
+        "https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/basketball/file",
+        "https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/tennis/file",
+        "https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/volleyball/file"
+      ],
+      "auth": "none",
+      "cadence": "5 minutes",
+      "todo": false,
+      "notes": "!! I PREVIOUSLY DECLARED THIS DID NOT EXIST, AND I WAS WRONG. LCSD publishes the live availability of bookable sessions per venue every 5 minutes, keyless, for badminton / basketball / tennis / turf soccer / volleyball. So the honest answer to 'can we show 訂場情況' is yes — with real vacancy, not a workaround. Every court type is the same path with a different sport segment."
+    },
+    {
+      "id": "mardep_crossboundary_ferry",
+      "group": "marine",
+      "name": "海事處 跨境渡輪到港／離港（5 分鐘）",
+      "type": "csv",
+      "url": "https://www.mardep.gov.hk/e_files/hk/opendata/arrival_tc.csv",
+      "candidates": [
+        "https://www.mardep.gov.hk/e_files/hk/opendata/depart_tc.csv"
+      ],
+      "auth": "none",
+      "cadence": "5 minutes",
+      "todo": false,
+      "notes": "Cross-boundary ferry arrivals and departures, 5-minute cadence. Together with the ImmD queue time this completes the 'cross the border by any mode' picture."
+    },
+    {
+      "id": "mardep_vessel_arrivals",
+      "group": "marine",
+      "name": "海事處 船隻抵港／離港（20 分鐘）",
+      "type": "xml",
+      "url": "https://www.mardep.gov.hk/e_files/en/opendata/RN0010.XML",
+      "candidates": [
+        "https://www.mardep.gov.hk/e_files/en/opendata/RN0020.XML"
+      ],
+      "auth": "none",
+      "cadence": "15 minutes",
+      "todo": false,
+      "notes": "Ocean and river vessel arrivals/departures. Also declared missing earlier and found by the full scan — the lesson repeats: a keyword search is not evidence of absence."
+    },
+    {
+      "id": "gmb_eta",
+      "group": "transport",
+      "name": "綠色專線小巴 ETA（1 分鐘）",
+      "type": "json",
+      "url": "https://data.etagmb.gov.hk/route/HKI",
+      "candidates": [
+        "https://data.etagmb.gov.hk/route-stop/2004112/1"
+      ],
+      "auth": "none",
+      "cadence": "1 minute",
+      "todo": false,
+      "notes": "Green minibus real-time arrivals, keyless. Paths use region codes and the dataset lists the full set of templates (/route/{region}, /route-stop/{route_id}/{route_seq}, /stop-route/{stop_id}, /eta/route-stop/{route_id}/{route_seq}/{stop_seq})."
+    },
+    {
+      "id": "sunferry_eta",
+      "group": "transport",
+      "name": "新渡輪 下一班船 ETA（1 分鐘）",
+      "type": "json",
+      "url": "https://www.sunferry.com.hk/eta/?route=CW",
+      "auth": "none",
+      "cadence": "1 minute",
+      "todo": true,
+      "notes": "Sun Ferry estimated arrivals, refreshed every minute. The route code goes in the query string — confirm the valid codes from their site before wiring it."
+    },
+    {
+      "id": "hkkf_eta",
+      "group": "transport",
+      "name": "港九小輪 ETA／時間表／票價",
+      "type": "json",
+      "url": "https://www.hkkfeta.com/opendata/route",
+      "candidates": [
+        "https://www.hkkfeta.com/opendata/pier",
+        "https://www.hkkfeta.com/opendata/eta/"
+      ],
+      "auth": "none",
+      "cadence": "1 minute",
+      "todo": false,
+      "notes": "Hong Kong & Kowloon Ferry open data: piers, routes, timetables, fares and ETA. One operator quietly publishing a clean JSON API — worth supporting by using it."
+    },
+    {
+      "id": "tdas_traffic",
+      "group": "transport",
+      "name": "運輸署 交通數據分析系統（5 分鐘）",
+      "type": "json",
+      "url": "https://tdas-api.hkemobility.gov.hk/tdas/api/route",
+      "auth": "none",
+      "cadence": "5 minutes",
+      "todo": true,
+      "notes": "403 on every attempt — including with Referer and Origin headers set to hk eMobility, so it is not a simple hotlink guard: the endpoint is likely keyed or IP-restricted. Left in the catalogue as a known-gated source rather than deleted, because it is the live road-speed API behind 香港出行易. We already have TD's speed map and journey time feeds, so nothing is blocked by this.",
+      "candidates": []
+    },
+    {
+      "id": "fsd_aed",
+      "group": "civic",
+      "name": "消防處 自動體外心臟去顫器（AED）位置（實時）",
+      "type": "csv",
+      "url": "https://es.hkfsd.gov.hk/aed_api/export_aed.php?lang=TC",
+      "auth": "none",
+      "cadence": "real-time",
+      "todo": false,
+      "notes": "Every public AED location with coordinates, keyless. A map layer that could genuinely save a life, and a good example of a layer that earns its place on a dashboard. Verified: 4,624 AED records with latitude/longitude and a usable-by-anyone flag."
+    },
+    {
+      "id": "aqhi_city_dashboard",
+      "group": "weather",
+      "name": "環保署 AQHI（City Dashboard 版，JSON/CSV/XML）",
+      "type": "json",
+      "url": "https://dashboard.data.gov.hk/api/aqhi-individual?format=json",
+      "candidates": [
+        "https://static.data.gov.hk/opendata/dataset/aqhi/aqhi.json"
+      ],
+      "auth": "none",
+      "cadence": "hourly",
+      "todo": false,
+      "notes": "Cleaner than the RSS for machine use, and gives per-station current AQHI as real JSON. Hourly, plus a forecast published three times a day."
+    },
+    {
+      "id": "hko_heat_index",
+      "group": "weather",
+      "name": "天文台 香港暑熱指數（10 分鐘）",
+      "type": "csv",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/recent10_10min_hkhi.csv",
+      "auth": "none",
+      "cadence": "10 minutes",
+      "todo": false,
+      "notes": "The HK Heat Index (a local apparent-temperature measure) every 10 minutes — complements WBGT. Relevant to outdoor work, sport and elderly care."
+    },
+    {
+      "id": "hko_1min_temperature",
+      "group": "weather",
+      "name": "天文台 1 分鐘平均氣溫（分區）",
+      "type": "csv",
+      "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature.csv",
+      "auth": "none",
+      "cadence": "10 minutes",
+      "todo": false,
+      "notes": "One-minute-mean temperature by station — the finest temperature resolution HKO publishes. Sibling files cover humidity, grass temperature, sea-level pressure and 10-minute wind."
     }
   ]
 }

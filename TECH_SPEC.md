@@ -84,7 +84,7 @@
 |---|---|---|
 | **AISStream.io（唯一真正免費嘅 live AIS）** | 實時 | 🟡 免費 key、WebSocket + bbox 訂閱。**但三點要老實講**：① 係**陸基**接收，離岸 ~40nm 就消失；② 廠方自己講覆蓋最強喺歐洲／大西洋、**最弱喺亞洲** —— 香港正正喺弱區，所以**覆蓋係未證實，唔係假定**；③ 一定要 VPS 常駐連線，純靜態做唔到 |
 | VesselAPI（免費層，要 key） | 次分鐘 | 🟡 若 AISStream 覆蓋唔夠嘅 fallback，未驗證 |
-| 海事處 抵港／離港船隻 | 15 分鐘 | 🔴 **更正**：data.gov.hk CKAN 搜 `vessel`／`船隻`／`marine traffic` **全部 count 0** —— 呢個 dataset 唔存在。之前我寫「待驗」係太樂觀 |
+| **海事處 船隻抵港／離港** | `mardep.gov.hk/e_files/en/opendata/RN00{10,20,30,40,50}.XML` | 20 分鐘 | 🟢 **又錯一次：我話「dataset 唔存在」係錯嘅。** 真係有。仲有跨境渡輪到離（`arrival_tc.csv`／`depart_tc.csv`，5 分鐘） |
 | 香港水流預測 | 每日 | 🟢 data.gov.hk |
 
 > ⚠️ **未量度之前唔准起呢個圖層。** 陸基 AIS 喺香港可能只得幾隻船 —— 噉畫出嚟就會**將「冇船」同「冇覆蓋」混淆**，係最嚴重嘅一種講大話。
@@ -164,7 +164,7 @@ data.gov.hk 有 **~180 個康文署／公民設施 dataset**。已查證幾項�
 | 郊野公園**封閉設施** | CSDI `cpclosedfacilitiescsdi` | 有更新時 | 🟢 |
 | 文化／演藝節目、URBTIX 節目 | `hk-lcsd-event-event-cultural`、`hk-lcsd-event-urbtix-event` | 每日 | 🟢 |
 | 康文署設施使用率 | `hk-lcsd-facility-usage-facilities` | **每年** | 🟡 只係年度統計，唔係即時 |
-| **即時訂場情況（book 場）** | — | — | 🔴 **唔存在公開 API**。康體通／Leisure Link 要登入，自動化查詢＝違反 ToS。誠實做法：出**設施地圖＋訂場窗口日曆＋開放時間表＋實時停車場空位**，唔好扮有 live vacancy |
+| **即時可訂場節數（羽毛球／籃球／網球／草地足球／排球）** | `data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/{sport}/file` | **5 分鐘** | 🟢 **我錯過一次：我之前寫「唔存在公開 API」係錯嘅。** 康文署原來逐個場、逐節咁公開**即時可訂狀況**，免 key、5 分鐘更新。即係「book 場情況」可以直接出真數據，唔使做 workaround |
 
 **未查（TODO）**：康文署場地暫停開放公告、公眾泳池季節性開放時間表、圖書館臨時閉館、公眾假期表。
 
@@ -202,13 +202,28 @@ data.gov.hk **冇**任何消費者格價數據（消委會只有投訴統計）�
 | 底圖：CARTO dark-matter GL style | — | 🟢 免 key，`https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json` |
 | data.gov.hk 全站目錄 | — | 🟢 CKAN API：**3,820 個 dataset**（`/api/3/action/package_list`）|
 
+### 3.14 ⚠️ 方法論教訓：唔可以用搜尋當「有冇」嘅證據
+
+全掃 3,820 個 dataset 之後，發現 **`package_search` 只索引 539 個（14%）**。
+即係話用關鍵字搜尋答「有冇呢個數據」—— **會答錯，而且答錯得理直氣壯**。
+
+今次因此錯咗三次（全部已改正）：
+1. 康文署即時訂場 → 結論「唔存在」→ **其實有**，5 分鐘更新
+2. 海事處船隻抵港離港 → 結論「唔存在」→ **其實有**，20 分鐘更新
+3. 入境處口岸輪候時間 → 走去 scrape 口岸通 → **官方自己出 JSON**，15 分鐘更新
+
+**新規則**：判斷「有冇」只可以用 `package_list`（3,820 個）或者落 §6 嘅 probe；
+`package_search` 只可以用嚟「搵一個已知存在嘅 dataset 嘅 URL」。
+
 ## 4. 圖層／面板路線圖
 
 **已 live（v0.1）**：TD 快拍、HKO 天氣攝影機、天氣警告、本港現況、市場、相機牆、YouTube 直播、資料來源
 
 **v0.2**：設計系統重寫（見 `DESIGN_BRIEF.md`）、全屏地圖 + 浮動面板、focus drawer、staleness 狀態系統、cluster 展開、鍵盤操作
 
-**v0.3（全球源）**：飛機（adsb.lol）、地震（USGS）、EONET、行車速度、特別交通消息、停車場空位、巴士 ETA、AQHI、雷達／衛星圖
+**v0.3（全球源）**：飛機（adsb.lol）、地震（USGS）、EONET、行車速度、特別交通消息、停車場空位、巴士／小巴／渡輪 ETA、AQHI、雷達／衛星圖
+
+**v0.3.5（市民服務層，全掃新發現）**：口岸輪候（入境處官方）、**急症室輪候**（醫管局）、**臨時停水通知**（水務署）、**即時可訂場節**（康文署）、**AED 位置 4,624 個**（消防處）、跨境渡輪到離（海事處）
 
 **v0.4（需要常駐連線，放 VPS）**：船隻 AIS（WebSocket）、口岸通輪候時間（捉 API）、事件 NLP 層
 

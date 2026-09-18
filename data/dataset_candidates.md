@@ -1,0 +1,2578 @@
+# data.gov.hk — 定期更新 × 機讀 dataset 候選清單
+
+掃描 **3820** 個 dataset（目錄共 3820 個）；符合「有機讀資源 ＋ 有定期更新」＝ **1262** 個。
+
+> 由 `scripts/mine_datasets.py` 生成，唔好手改。
+
+## 全目錄更新頻率分佈
+
+- realtime: 14
+- minutely: 54
+- hourly: 16
+- daily: 49
+- weekly: 52
+- monthly: 505
+- quarterly: 658
+- annual: 1017
+- irregular: 1086
+- unknown: 369
+
+## 候選
+
+
+### realtime
+
+- **Highlights of the Chief Executive’s Policy Address** — `hk-ceo-opendata-policy-address-highlights-by-ce` · Chief Executive's Office · JSON · Annually, on the delivery day of the Policy Address
+  - https://www.ceo.gov.hk/public/open-data/en/policy_address/2019_pa_highlights_eng.json
+- **Real-time Parking Vacancy Data in Kowloon East (i.e. Kwun Tong, Kowloon Bay and San Po Kong Business Areas, and Kai Tak Development Area)** — `hk-devb-sps-sps` · Development Bureau · JSON · Real-time
+  - https://sps-opendata.pilotsmartke.gov.hk/rest/getCarparkInfos
+- **Parking Vacancy Data (One-Stop Version)** — `hk-dpo-datagovhk1-carpark-info-vacancy` · Digital Policy Office · JSON · Real-Time
+  - https://api.data.gov.hk/v1/carpark-info-vacancy
+- **Location of Automated External Defibrillator (AED)** — `hk-fsd-fsd1-fsdaedapi` · Fire Services Department · CSV · REAL-TIME
+  - https://es.hkfsd.gov.hk/aed_api/export_aed.php?lang=EN
+- **Events happening in Hong Kong Science Park** — `hkstp-hkstp-hkstp-corporate-info-upcoming-event` · Hong Kong Science and Technology Parks Corporation · JSON · Real-time
+  - https://opendata.hkstp.org/corporate/info/v1/upcomingevent
+- **HKSTP Carpark availability – Space (EV) available** — `hkstp-hkstp-hkstp-carpark-ev-vacancy` · Hong Kong Science and Technology Parks Corporation · JSON · Real-time
+  - https://opendata.hkstp.org/carpark/v1/ev-vacancy
+- **HKSTP Carpark availability – Space available** — `hkstp-hkstp-hkstp-carpark-vacancy` · Hong Kong Science and Technology Parks Corporation · JSON · Real-time
+  - https://opendata.hkstp.org/carpark/v1/vacancy
+- **HKSTPC Company Directory** — `hkstp-hkstp-hkstp-company-directory` · Hong Kong Science and Technology Parks Corporation · JSON · Real-time
+  - https://opendata.hkstp.org/corporate/companydirectory/v1/
+- **Talent Pool and Recruitment** — `hkstp-hkstp-hkstp-hksp-job-post` · Hong Kong Science and Technology Parks Corporation · JSON · Real-time
+  - https://opendata.hkstp.org/corporate/recruitment/v1/
+- **Bus service of New Lantao Bus Company (1973) Limited (First generation)** — `nlb-bus-nlb-bus-service-v1` · New Lantao Bus Company (1973) Limited · JSON · Real-time
+  - https://rt.data.gov.hk/v1/transport/nlb/route.php?action=list
+- **Bus service of New Lantao Bus Company (1973) Limited (Second generation)** — `nlb-bus-nlb-bus-service-v2` · New Lantao Bus Company (1973) Limited · JSON · Real-time
+  - https://rt.data.gov.hk/v2/transport/nlb/route.php?action=list
+- **Parking vacancy data** — `hk-td-tis_5-real-time-parking-vacancy-data` · Transport Department · JSON · FROM HOURLY TO REAL-TIME
+  - https://resource.data.one.gov.hk/td/carpark/basic_info_all.json
+- **Special Traffic News** — `hk-td-tis_1-special-traffic-news` · Transport Department · XML · real-time
+  - http://resource.data.one.gov.hk/td/en/specialtrafficnews.xml
+- **Special Traffic News (2nd Generation)** — `hk-td-tis_19-special-traffic-news-v2` · Transport Department · XML · real-time
+  - https://www.td.gov.hk/en/special_news/trafficnews.xml
+
+### minutely
+
+- **Real-time “Next Bus”
+arrival time and related data of Citybus.** — `ctb-eta-transport-realtime-eta` · Citybus Limited · JSON · Estimated Time of Arrival (ETA) data updated every 1 minute. 
+
+Other data set update upon there is any adjustment.
+  - https://rt.data.gov.hk/v1/transport/citybus-nwfb/company/ctb
+- **Estimated arrival time of a specific bus stop for Citybus and New Lantao Bus** — `hk-dpo-datagovhk1-transport-bus-route-list-and-eta-spcific-bus-stop` · Digital Policy Office · JSON · ETA within 1 minute. Other data is updated daily or as necessary
+  - https://rt.data.gov.hk/v1.1/transport/batch/stop-route
+- **Press Release Search** — `hk-dpo-datagovhk1-pressrelease-search` · Digital Policy Office · JSON · every 15 minutes
+  - https://api.data.gov.hk/v1/pressrelease/search
+- **Ferry Service Timetables, Faretables and Estimated Time of Arrival Data of Hong Kong & Kowloon Ferry** — `hkkf-hkkfdata-hkkf-eta-data` · Hong Kong & Kowloon Ferry Limited · CSV, JSON · Estimated time of arrival (ETA) data updates every 1 minute. Other dataset update upon there is any adjustment.
+  - https://www.hkkfeta.com/opendata/pier
+- **Gridded rainfall nowcast in Hong Kong** — `hk-hko-rss-gridded-rainfall-nowcast-in-hong-kong` · Hong Kong Observatory · CSV · Every 12 Minutes
+  - https://data.weather.gov.hk/weatherAPI/hko_data/F3/Gridded_rainfall_nowcast.csv
+- **Hong Kong Heat Index** — `hk-hko-rss-hong-kong-heat-index` · Hong Kong Observatory · CSV · every 10 minute
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/recent10_10min_hkhi.csv
+- **Latest 15-minute mean UV index from 7:00 a.m. to 6:00 p.m. Hong Kong time** — `hk-hko-rss-latest-fifteen-minute-mean-uv-index` · Hong Kong Observatory · CSV · Every 15 minutes from 7:00 a.m. to 6:00 p.m. Hong Kong time
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_15min_uvindex.csv
+- **Latest tidal information** — `hk-hko-rss-latest-tidal-info` · Hong Kong Observatory · CSV · Every 5 Minutes
+  - https://data.weather.gov.hk/weatherAPI/hko_data/tide/ALL_en.csv
+- **Rainfall in the past hour from Automatic Weather Station** — `hk-hko-rss-rainfall-in-the-past-hour` · Hong Kong Observatory · JSON · Every 15 minutes
+  - https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=en
+- **Regional weather in Hong Kong - past 24-hour temperature difference** — `hk-hko-rss-regional-weather-past-24-hour-temperature-difference` · Hong Kong Observatory · CSV · Every 10 Minutes
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_past24_temperature_diff.csv
+- **Regional weather in Hong Kong – the latest 1-minute global solar radiation and direct solar radiation and diffuse radiation** — `hk-hko-rss-latest-one-minute-solar-radiation-info` · Hong Kong Observatory · CSV · Every 10 Minutes
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_solar.csv
+- **Regional weather in Hong Kong – the latest 1-minute mean air temperature** — `hk-hko-rss-latest-one-minute-mean-air-temp` · Hong Kong Observatory · CSV · Every 10 Minutes
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature.csv
+- **Regional weather in Hong Kong – the latest 1-minute mean grass temperature from 5:00 p.m. to 8:00 a.m. the following date Hong Kong time** — `hk-hko-rss-latest-one-minute-mean-grass-temp` · Hong Kong Observatory · CSV · Every 10 minutes from 5:00 p.m. to 8:00 a.m. the following date Hong Kong time
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_grass.csv
+- **Regional weather in Hong Kong – the latest 1-minute mean relative humidity** — `hk-hko-rss-latest-one-minute-mean-rh` · Hong Kong Observatory · CSV · Every 10 Minutes
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_humidity.csv
+- **Regional weather in Hong Kong – the latest 1-minute mean sea level pressure** — `hk-hko-rss-latest-one-minute-mean-sea-level-pressure` · Hong Kong Observatory · CSV · Every 10 Minutes
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_pressure.csv
+- **Regional weather in Hong Kong – the latest 10-minute mean visibility** — `hk-hko-rss-regional-weather-latest-10-min-mean-visibility` · Hong Kong Observatory · CSV · Every 10 Minutes
+  - https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LTMV&lang=en&rformat=csv
+- **Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust** — `hk-hko-rss-latest-ten-minute-wind-info` · Hong Kong Observatory · CSV · Every 10 Minutes
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv
+- **Regional weather in Hong Kong – the maximum and minimum air temperature from 1-minute mean temperatures since midnight** — `hk-hko-rss-max-and-min-air-temp-since-midnight` · Hong Kong Observatory · CSV · Every 10 Minutes
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_since_midnight_maxmin.csv
+- **Smart lampposts real-time experimental meteorological data (Post quality checks)** — `hk-hko-rss-smart-lamppost-weather-data` · Hong Kong Observatory · JSON · Every 10 Minutes
+  - https://www.hko.gov.hk/common/hko_data/smart-lamppost/files/smart_lamppost_met_device_location.json
+- **Wet Bulb Globe Temperature** — `hk-hko-rss-wet-bulb-globe-temperature` · Hong Kong Observatory · CSV · every 10 minute
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/recent10_60min_wbgt.csv
+- **Accident and Emergency Waiting Time** — `hospital-hadata-ae-waiting-time` · Hospital Authority · JSON, XLSX · Every 15 minutes
+  - https://www.ha.org.hk/opendata/aed/aedwtdata2-en.json
+- **Land Boundary Control Points Waiting Time** — `hk-immd-set28-land-boundary-control-points-waiting-time` · Immigration Department · JSON · Every 15 minutes
+  - https://secure1.info.gov.hk/immd/mobileapps/2bb9ae17/data/CPQueueTimeR.json
+- **Statistics on Passenger Traffic for Festive Periods** — `hk-immd-set5-statistics-passenger-traffic-festive-period` · Immigration Department · CSV · Daily during the specified festive periods [The dates of each festive periods are to be determined on each festivals (e.g. Lunar New Year, Easter, Ching Ming, Labour Day, National Day).]
+  - https://www.immd.gov.hk/opendata/eng/transport/immigration_clearance/statistics_passenger_traffic_festival_periods.csv
+- **Availability of Computer Facilities at Hong Kong Public Libraries** — `hk-lcsd-lib-lib-computers` · Leisure and Cultural Services Department · JSON · Every 10 Minutes
+  - https://sls.hkpl.gov.hk/api/cfm-admin-service/open-api/library/selectLibraryPageInfoForPSI?language=en-US
+- **Available Session of Badminton Courts by Venue** — `hk-lcsd-facility-facility-bmtcvenue` · Leisure and Cultural Services Department · JSON · Every 5 Minutes
+  - https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/badminton/file
+- **Available Session of Basketball Courts by Venue** — `hk-lcsd-facility-facility-bkbcvenue` · Leisure and Cultural Services Department · JSON · Every 5 Minutes
+  - https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/basketball/file
+- **Available Session of Tennis Courts by Venue** — `hk-lcsd-facility-facility-tcvenue` · Leisure and Cultural Services Department · JSON · Every 5 Minutes
+  - https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/tennis/file
+- **Available Session of Turf Soccer Pitches by Venue** — `hk-lcsd-facility-facility-tsp` · Leisure and Cultural Services Department · JSON · Every 5 Minutes
+  - https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/turf-soccer-pitch/file
+- **Available Session of Volleyball Courts by Venue** — `hk-lcsd-facility-facility-vbcvenue` · Leisure and Cultural Services Department · JSON · Every 5 Minutes
+  - https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/volleyball/file
+- **Community Recreation and Sports Programmes (from 15 May 2026)** — `hk-lcsd-prog-smartplay-prog` · Leisure and Cultural Services Department · JSON · Every 10 Minutes
+  - https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/activity-prog/file
+- **Arrival Information for Cross Boundary Ferry Service** — `hk-md-mardep-crossboundaryferryservices-arrive` · Marine Department · CSV · Every 5 minutes
+  - https://www.mardep.gov.hk/e_files/en/opendata/arrival_en.csv
+- **Departure Information for Cross Boundary Ferry Service** — `hk-md-mardep-crossboundaryferryservices-depart` · Marine Department · CSV · Every 5 minutes
+  - https://www.mardep.gov.hk/e_files/en/opendata/depart_en.csv
+- **Latest tidal information** — `hk-md-hydro-10mintues-latest-tidal-information` · Marine Department · CSV · 10 minutes
+  - https://tide1.hydro.gov.hk/hotide/OpenData/All_en.csv
+- **Non-Convention Vessel arrivals and departures** — `hk-md-mardep-non-convention-vessel-arrivals-and-departures` · Marine Department · XML · Every 20 minutes
+  - https://www.mardep.gov.hk/e_files/en/opendata/RN0010.XML
+- **Seafarers’ Examination Schedule** — `hk-md-mardep-seafarers-examination-schedules` · Marine Department · XML · Every 60 minutes during office hours
+  - https://www.mardep.gov.hk/e_files/en/pub_services/npvo1.xml
+- **Vessel arrivals and departures** — `hk-md-mardep-vessel-arrivals-and-departures` · Marine Department · XML · Every 20 minutes
+  - https://www.mardep.gov.hk/e_files/en/opendata/RP05005i.XML
+- **Next ferry trip estimated time of arrivals of Sun Ferry** — `sunferry-eta-eta` · Sun Ferry Services Company Limited · JSON · Estimated time of arrivals of next ferry trip updated every 1 mintue.
+  - https://www.sunferry.com.hk/eta/?route=<routecode>
+- **Distribution of Metered Parking Spaces and Occupancy of those Installed with New Parking Meters** — `hk-td-msd_1-metered-parking-spaces-data` · Transport Department · CSV · FROM EVERY MINUTE TO DAILY
+  - https://resource.data.one.gov.hk/td/psiparkingspaces/spaceinfo/parkingspaces.csv
+- **Journey time indicators** — `hk-td-sm_2-journey-time-indicators` · Transport Department · CSV · Every 2 minutes
+  - https://static.data.gov.hk/td/journey-time-indicators/notification.csv
+- **Journey time indicators (2nd Generation)** — `hk-td-sm_8-journey-time-indicators-v2` · Transport Department · XML · Every 2 minutes
+  - https://resource.data.one.gov.hk/td/jss/Journeytimev2.xml
+- **Location and occupancy status of non-metered on-street parking spaces installed with sensors** — `hk-td-msd_2-non-metered-parking-spaces-data` · Transport Department · CSV · FROM EVERY MINUTE TO DAILY
+  - https://data.nmospiot.gov.hk/api/pvds/Download/parkingspace
+- **Real time Arrival Data of Kowloon Motor Bus and Long Win Bus Services** — `hk-td-tis_21-etakmb` · Transport Department · JSON · Estimated Time of Arrival (ETA) data updated every 1 minute.  Other data updated daily.
+  - https://data.etabus.gov.hk/v1/transport/kmb/route/
+- **Real-time arrival data of green minibuses (GMBs)** — `hk-td-sm_7-real-time-arrival-data-of-gmb` · Transport Department · JSON · Estimated Time of Arrival (ETA) data: every minute. Other data: when necessary.
+  - https://data.etagmb.gov.hk/route/{region}
+- **Speed map panels** — `hk-td-sm_3-speed-map-panels` · Transport Department · CSV · Every 2 minutes
+  - https://static.data.gov.hk/td/speed-map-panels/notification.csv
+- **Speed map panels (2nd Generation)** — `hk-td-sm_9-speed-map-panels-v2` · Transport Department · CSV · Every 2 minutes
+  - https://static.data.gov.hk/td/speed-map-panels-v2/info/Speed_Map_Panel_Locations_en.csv
+- **Traffic Data collected by Traffic Detectors Installed at Smart Lampposts** — `hk-td-tis_33-traffic-data-traffic-detectors-installed-at-smart-lampposts` · Transport Department · CSV, XML · Every 1 minute
+  - https://static.data.gov.hk/td/traffic-data-slp/info/traffic_speed_volume_occ_info-slp.csv
+- **Traffic Data of Strategic / Major Roads** — `hk-td-sm_4-traffic-data-strategic-major-roads` · Transport Department · CSV, XML · Every 1 minute (Raw Data). Every 2 minutes (Processed Data)
+  - https://static.data.gov.hk/td/traffic-data-strategic-major-roads/info/traffic_speed_volume_occ_info.csv
+- **Traffic data from Traffic Data Analytics System** — `hk-td-tis_28-traffic-data-tdas` · Transport Department · JSON · EVERY 5 MINUTES.
+  - https://tdas-api.hkemobility.gov.hk/tdas/api/route
+- **Traffic snapshot images** — `hk-td-tis_2-traffic-snapshot-images` · Transport Department · CSV, XML · Every 2 minutes
+  - https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_En.xml
+- **Traffic speed map** — `hk-td-sm_1-traffic-speed-map` · Transport Department · CSV · Every 5 minutes
+  - https://static.data.gov.hk/td/traffic-speed-map/notification.csv
+- **Temporary Water
+Suspension Notices** — `hk-wsd-wsd9-temporary-water-suspension-notices` · Water Supplies Department · CSV · Every 5 minutes
+  - https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv
+- **Car Park Information of West Kowloon Cultural District Authoirty** — `wkcda-wkcarpark-wkcarpark` · West Kowloon Cultural District Authority · JSON · Car Park vacancy information updated every 5 minutes
+  - https://openapi.westkowloon.hk/datagovhk/carpark
+
+### hourly
+
+- **Data on Recruitment Advertisements for Government Vacancies (i.e. Online Government Vacancies Enquiry System)** — `hk-csb-csb-gov-vacancies` · Civil Service Bureau · JSON · Hourly
+  - https://www.csb.gov.hk/datagovhk/gov-vacancies/gov-job-vacancies-en.json
+- **Air Quality Health Index (City Dashboard Version)** — `hk-dpo-datagovhk2-city-dashboard-aqhi` · Digital Policy Office · CSV, JSON, XML · AQHI: Hourly / Forecast: 00:30, 10:30 and 16:30 everyday and as required
+  - https://static.data.gov.hk/opendata/dataset/aqhi/aqhi.csv
+- **Past 24-hour Air Quality Health Index of individual Air Quality Monitoring stations** — `hk-epd-airteam-past24hr-aqhi-of-individual-air-quality-monitoring-stations` · Environmental Protection Department · XML · Hourly
+  - https://www.aqhi.gov.hk/epd/ddata/html/out/24aqhi_Eng.xml
+- **Past 24-hour Pollutant Concentration of individual Air Quality Monitoring stations** — `hk-epd-airteam-past24hr-pc-of-individual-air-quality-monitoring-stations` · Environmental Protection Department · XML · Hourly
+  - https://www.aqhi.gov.hk/epd/ddata/html/out/24pc_Eng.xml
+- **Past Record of Air Pollution Index (English Version)** — `hk-epd-airteam-past-record-of-air-pollution-index-en` · Environmental Protection Department · CSV · Only the hourly Air Pollution Index (API) of the period from July 1999 to December 2013 is available
+  - http://www.aqhi.gov.hk/api_history/download/hourly/eng/hr071999.csv
+- **Past Record of Air Pollution Index (Traditional Chinese Version)** — `hk-epd-airteam-past-record-of-air-pollution-index-tc` · Environmental Protection Department · CSV · Only the hourly Air Pollution Index (API) of the period from July 1999 to December 2013 is available
+  - http://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr071999c.csv
+- **Current weather report** — `hk-hko-rss-current-weather-report` · Hong Kong Observatory · JSON · Hourly and when there is update
+  - https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en
+- **Hourly ambient gamma radiation level in Hong Kong** — `hk-hko-rss-hourly-ambient-gamma-radiation-level-in-hong-kong` · Hong Kong Observatory · CSV · Hourly
+  - https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_hourly_rmn.csv
+- **Lightning count over Hong Kong territory in the past hour** — `hk-hko-rss-cloud-ground-lightning-count-past-hour` · Hong Kong Observatory · CSV · Hourly
+  - https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=LHL&lang=en&rformat=csv
+- **Local weather forecast** — `hk-hko-rss-local-weather-forecast` · Hong Kong Observatory · JSON · Hourly and when there is update
+  - https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=en
+- **Address and Working Hours of Offices** — `hk-immd-set2-address-and-working-hours-of-offices` · Immigration Department · CSV · As and when there is a change to the address or working hours of Immigration offices
+  - https://www.immd.gov.hk/opendata/eng/law-and-security/office_address_working_hours/office_address_and_working_hours.csv
+
+### daily
+
+- **Flight Information** — `aahk-team1-flight-info` · Airport Authority Hong Kong · JSON · Daily (updated to previous calendar day)
+  - https://www.hongkongairport.com/flightinfo-rest/rest/flights/past?date=<date>&lang=en&cargo=false&arrival=false
+- **Online Price Watch** — `cc-pricewatch-pricewatch` · Consumer Council · CSV, JSON · Daily
+  - https://online-price-watch.consumer.org.hk/opw/opendata/pricewatch.json
+- **List of Licensed Money Service Operators** — `hk-customs-ced_stat-msos` · Customs and Excise Department · CSV · Daily
+  - https://eservices.customs.gov.hk/MSOS/wsrh/003s1?request_locale=en&format=csv
+- **Approved fund-raising activities** — `hk-dpo-fundraise-approved-fund-raising-activities` · Digital Policy Office · JSON, XML · Social Welfare Department:  as necessary; 
+Food and Environmental Hygiene Department: twice daily; 
+Home Affairs Department: as necessary; 
+Home and Youth Affairs Bureau: as necessary.
+  - https://fundraising.one.gov.hk/fundraise_query/webservice/psi/json
+- **School Registration Information** — `hk-edb-schinfo-registration-info` · Education Bureau · XML · Daily (Basic Registration Information, Information on Registered Premises and Information on Classroom / Boarding Room Permitted Accommodation).  Yearly (School Registration Information on CSDI).
+  - http://applications.edb.gov.hk/datagovhk/data/SchoolBasicInfo.xml
+- **Registered Electrical Contractors** — `hk-emsd-emsd1-registered-electrical-contractors` · Electrical and Mechanical Services Department · JSON, XLSX · Daily
+  - https://www.emsd.gov.hk/filemanager/en/content_458/dataset/registered_electrical_contractor.xlsx
+- **Registered Electrical Workers** — `hk-emsd-emsd1-registered-electrical-workers` · Electrical and Mechanical Services Department · JSON, XLSX · Daily
+  - https://www.emsd.gov.hk/filemanager/en/content_458/dataset/registered_electrical_worker.xlsx
+- **Registered Escalator Engineers** — `hk-emsd-emsd1-registered-escalator-engineers` · Electrical and Mechanical Services Department · JSON, XLSX · Daily
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/registered_escalator_engineer.xlsx
+- **Registered Escalator Workers** — `hk-emsd-emsd1-registered-escalator-workers` · Electrical and Mechanical Services Department · JSON, XLSX · Daily
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/registered_escalator_worker.xlsx
+- **Registered Lift Engineers** — `hk-emsd-emsd1-registered-lift-engineers` · Electrical and Mechanical Services Department · JSON, XLSX · Daily
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/registered_lift_engineer.xlsx
+- **Registered Lift Workers** — `hk-emsd-emsd1-registered-lift-workers` · Electrical and Mechanical Services Department · JSON, XLSX · Daily
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/registered_lift_worker.xlsx
+- **Issued Construction Noise Permit** — `hk-epd-rngteam-issued-construction-noise-permit` · Environmental Protection Department · GML · Daily
+  - https://portal.csdi.gov.hk/geoportal/?lang=en&datasetId=epd_rcd_1664940858993_72368
+- **Average daily supply and auction prices of live pigs in the past 12 months** — `hk-fehd-fehdsh-monthly-average-supply-auction` · Food and Environmental Hygiene Department · XML · Daily at 6:00pm
+  - https://www.fehd.gov.hk/tc_chi/sh/data/monthly_avg_supply_auction.xml
+- **Distribution of the number of live pigs sold at different auction prices on the day** — `hk-fehd-fehdsh-daily-auction-distribution` · Food and Environmental Hygiene Department · CSV · Daily at 6:00pm
+  - https://www.fehd.gov.hk/english/sh/data/livepig_auction_en.csv
+- **Food licences (except restaurant licences)** — `hk-fehd-fehdlmis-food-licences` · Food and Environmental Hygiene Department · XML · Daily at 9:00am
+  - https://www.fehd.gov.hk/english/licensing/license/text/LP_OtherFood_EN.XML
+- **Restaurant licences** — `hk-fehd-fehdlmis-restaurant-licences` · Food and Environmental Hygiene Department · XML · Daily at 9:00am
+  - https://www.fehd.gov.hk/english/licensing/license/text/LP_Restaurants_EN.XML
+- **Sale of restricted food permits** — `hk-fehd-fehdlmis-sale-of-restricted-food-permits` · Food and Environmental Hygiene Department · XML · Daily at 9:00am
+  - https://www.fehd.gov.hk/english/licensing/license/text/LP_Permits_EN.XML
+- **Today's Live Pig Supply and Auction Prices / Tomorrow's Live Pig Supply Forecast** — `hk-fehd-fehdsh-daily-supply-auction` · Food and Environmental Hygiene Department · XML · Daily at 6:00pm
+  - https://www.fehd.gov.hk/tc_chi/sh/data/daily_supply_auction.xml
+- **Trade licences for places of public entertainment, commercial bathhouses, swimming pools, slaughterhouses, offensive trades, funeral parlours and undertakers** — `hk-fehd-fehdlmis-trade-licences` · Food and Environmental Hygiene Department · XML · Daily at 9:00am
+  - https://www.fehd.gov.hk/english/licensing/license/text/LP_NonFood_EN.XML
+- **Open Tenders issued via e-Tender Box (ETB) of Government Logistics Department (GLD)** — `hk-gld-gldetb-gldetb-tendernotice` · Government Logistics Department · XML · Daily at 12:05am, 12:05pm, 2:00pm and as necessary
+  - https://pcms2.gld.gov.hk/iportal/TenderNotice.xml
+- **Daily figures of Interbank Liquidity** — `hk-hkma-dms-daily-figures-interbank-liquidity` · Hong Kong Monetary Authority · JSON · Daily
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/daily-monetary-statistics/daily-figures-interbank-liquidity
+- **Daily figures of Monetary Base** — `hk-hkma-dms-daily-figures-monetary-base` · Hong Kong Monetary Authority · JSON · Daily
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/daily-monetary-statistics/daily-figures-monetary-base
+- **Exchange Fund Bills and Notes Closing Reference** — `hk-hkma-dms-efbn-closing` · Hong Kong Monetary Authority · JSON · Daily
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/daily-monetary-statistics/efbn-closing?segment=Bills
+- **Exchange Fund Bills and Notes Indicative Pricings** — `hk-hkma-dms-efbn-indicative-price` · Hong Kong Monetary Authority · JSON · Daily
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/daily-monetary-statistics/efbn-indicative-price?segment=IndicativePrice
+- **Usage of Renminbi Liquidity Facility** — `hk-hkma-dms-usage-rmb-liquidity-fac` · Hong Kong Monetary Authority · JSON · Daily
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/daily-monetary-statistics/usage-rmb-liquidity-fac
+- **9-day weather forecast** — `hk-hko-rss-9-day-weather-forecast` · Hong Kong Observatory · JSON · Twice daily and when there is update
+  - https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=en
+- **South China Coastal Waters bulletin** — `hk-hko-rss-south-china-coastal-waters-bulletin` · Hong Kong Observatory · JSON · 7 times daily and when there is update
+  - https://data.weather.gov.hk/openData/json/sccw_json_datagov.json
+- **Weather and radiation level report** — `hk-hko-rss-weather-and-radiation-level-report` · Hong Kong Observatory · JSON · Daily
+  - https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=RYES&lang=en&date=[YYYYMMDD]
+- **HKSTP Carpark space utilization** — `hkstp-hkstp-hkstp-carpark-utilization` · Hong Kong Science and Technology Parks Corporation · JSON · Daily
+  - https://opendata.hkstp.org/carpark/v1/utilization
+- **Key Statistics during Service Demand Surge** — `hospital-hadata-key-statistics-during-surge` · Hospital Authority · JSON, XLSX · Daily (during surge period)
+  - https://www.ha.org.hk/opendata/pas_report/Daily_Services_Statistics/Daily_Services_Statistics_EN.json
+- **Statistics on Daily Passenger Traffic** — `hk-immd-set5-statistics-daily-passenger-traffic` · Immigration Department · CSV · Daily
+  - https://www.immd.gov.hk/opendata/eng/transport/immigration_clearance/statistics_on_daily_passenger_traffic.csv
+- **List of Upcoming Events** — `hk-investhk-opendata-investhk-upcoming-events` · Invest Hong Kong · JSON · Daily
+  - https://www1.investhk.gov.hk/api/upcoming-events
+- **Community Recreation and Sports Programmes (Before 2024)** — `hk-lcsd-event-event-leisure` · Leisure and Cultural Services Department · JSON · Daily
+  - http://www.lcsd.gov.hk/datagovhk/event/leisure_prog.json
+- **Cultural Programmes** — `hk-lcsd-event-event-cultural` · Leisure and Cultural Services Department · XML · Daily
+  - https://www.lcsd.gov.hk/datagovhk/event/events.xml
+- **Events on Sale through URBTIX** — `hk-lcsd-event-urbtix-event` · Leisure and Cultural Services Department · XML · Daily
+  - https://fs-open-1304240968.cos.ap-hongkong.myqcloud.com/prod/gprd/URBTIX_eventBatch_YYYYMMDD.xml
+- **Licensed Liquor Premises** — `llb-llbllp-liquor-licences` · Liquor Licensing Board · XML · Daily at 9:00am
+  - https://www.fehd.gov.hk/english/licensing/license/text/edatabase_liquor.xml
+- **Hong Kong Tidal Stream Prediction** — `hk-md-hydro-hong-kong-tidal-stream-prediction` · Marine Department · CSV · Daily
+  - https://current.hydro.gov.hk/main/download.php?lang=en
+- **List of vessels with operating licence endorsed to be let for hire or reward** — `hk-md-mardep-list-of-vessels-with-operating-license-endorsed` · Marine Department · CSV · Daily
+  - https://www.mardep.gov.hk/e_files/en/pub_services/LIST_CLASS_IV_LET_FOR_HIRE.csv
+- **Vessel Traffic Management System Report** — `hk-md-mardep-vessel-traffic-management-system-report` · Marine Department · XML · Daily
+  - https://www.mardep.gov.hk/e_files/en/pub_services/RP04005.XML
+- **Basic Information and Service Quality Information of Residential Care Homes for Persons with Disabilities** — `hk-swd-lrb-list-of-residential-care-homes-for-persons-with-disabilities` · Social Welfare Department · XML · Daily
+  - https://rchdinfo.swd.gov.hk/sites/rchd-swd/files/rchd_rsp_list.xml
+- **Basic Information and Service Quality Information of Residential Care Homes for the Elderly** — `hk-swd-elderly-list-of-residential-care-homes-for-the-elderly` · Social Welfare Department · XML · Daily
+  - https://elderlyinfo.swd.gov.hk/sites/ltc-swd/files/rche_rsp_list.xml
+- **Vacancy Enquiry System for Emergency Placement for the Elderly** — `hk-swd-elderly-list-of-ep` · Social Welfare Department · XML · Daily
+  - https://www.ves.swd.gov.hk/sites/rrpvs-swd/files/ep_list.xml
+- **Vacancy Enquiry System for Residential Respite Service for Persons with Disabilities** — `hk-swd-rm-list-of-rrspwd` · Social Welfare Department · XML · Daily
+  - https://www.ves.swd.gov.hk/sites/rrpvs-swd/files/rrspwd_list.xml
+- **Vacancy Enquiry System for Residential Respite Service for the Elderly** — `hk-swd-elderly-list-of-rrse` · Social Welfare Department · XML · Daily
+  - https://www.ves.swd.gov.hk/sites/rrpvs-swd/files/rrse_list.xml
+- **Annual Traffic Census Survey Data** — `hk-td-sm_5-annual-traffic-census-survey-data` · Transport Department · CSV, XML · Daily
+  - https://static.data.gov.hk/td/traffic-atc-veh-class/info/traffic_prop_vehicle_class_info.csv
+- **Traffic notices** — `hk-td-tis_22-traffic-notices` · Transport Department · XML · Daily and as necessary
+  - https://www.td.gov.hk/datagovhk_tis/traffic-notices/Notices_on_Prohibited_Zone.xml
+
+### weekly
+
+- **Update of Red Tide Situation** — `hk-afcd-afcdlist-red-tide-location` · Agriculture, Fisheries and Conservation Department · CSV, JSON · Every Week
+  - https://redtide.afcd.gov.hk/data/RTMS_ob_RTLE.csv
+- **List of Newly Incorporated / Registered / Re-domiciled Companies and Companies which have changed Names (2024.12.30 - Current)** — `hk-cr-crdata-list-newly-registered-companies-2526` · Companies Registry · CSV, XLS · Weekly
+  - https://www.cr.gov.hk/docs/wrpt/RNC063/RNC063L_20241230.xls
+- **List of Newly Incorporated / Registered Companies and Companies which have changed Names (2017.01.02 - 2018.12.30)** — `hk-cr-crdata-list-newly-registered-companies-1718` · Companies Registry · XLS · Weekly
+  - https://www.cr.gov.hk/docs/wrpt/RNC063/wk_new&changednamecoys_20170102.xls
+- **List of Newly Incorporated / Registered Companies and Companies which have changed Names (2018.12.31 - 2020.12.27)** — `hk-cr-crdata-list-newly-registered-companies-1920` · Companies Registry · CSV, XLS · Weekly
+  - https://www.cr.gov.hk/docs/wrpt/RNC063/wk_new&changednamecoys_20181231.xls
+- **List of Newly Incorporated / Registered Companies and Companies which have changed Names (2020.12.28 - 2022.12.25)** — `hk-cr-crdata-list-newly-registered-companies-2122` · Companies Registry · CSV, XLS · Weekly
+  - https://www.cr.gov.hk/docs/wrpt/RNC063/wk_new&changednamecoys_20201228.xls
+- **List of Newly Incorporated / Registered Companies and Companies which have changed Names (2022.12.26 - 2024.12.29)** — `hk-cr-crdata-list-newly-registered-companies-2324` · Companies Registry · CSV, XLS · Weekly
+  - https://www.cr.gov.hk/docs/wrpt/RNC063/RNC063L_20221226.xls
+- **Accident & Emergency Departments Communicable Diseases Syndromic Surveillance** — `hk-dh-chpsebcdde-aed-cdis-syndromic` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/aed_weekly.csv
+- **Covid-19 Express's figures data** — `hk-dh-chpsebcddr-covid-express` · Department of Health · CSV · Weekly
+  - https://www.chp.gov.hk/files/misc/covidx_data.csv
+- **EV Scan's figures data** — `hk-dh-chpsebcdde-ev-scan` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/evscan_data.csv
+- **Flu Express's figures data** — `hk-dh-chpsebcddr-flu-express` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/flux_data.csv
+- **Sentinel surveillance  acute conjunctivitis data in Family Medicine Clinics / General Practitioners Sentinel Surveillance weekly report** — `hk-dh-chpsebcdde-pmp-gopc-acj-weekly-cdis-sentinel` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/acjweekly2010.csv
+- **Sentinel surveillance  acute diarrhoeal diseases data in Family Medicine Clinics / General Practitioners Sentinel Surveillance weekly report** — `hk-dh-chpsebcdde-pmp-gopc-add-weekly-cdis-sentinel` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/addweekly2010.csv
+- **Sentinel surveillance  hand, foot and mouth disease data in Family Medicine Clinics / General Practitioners Sentinel Surveillance weekly report** — `hk-dh-chpsebcdde-pmp-gopc-hfmd-weekly-cdis-sentinel` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/hfmweekly2010.csv
+- **Sentinel surveillance  influenza-like illness data in Family Medicine Clinics / General Practitioners Sentinel Surveillance weekly report** — `hk-dh-chpsebcdde-pmp-gopc-ili-weekly-cdis-sentinel` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/iliweekly2010.csv
+- **Sentinel surveillance infectious diseases data in Child Care Centres/Kindergarten (CCC/KG) weekly report** — `hk-dh-chpsebcdde-ccckg-cdis-sentinel` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/ccckgweekly.csv
+- **Sentinel surveillance infectious diseases data in Chinese Medicine Practitioner (CMP) weekly report** — `hk-dh-chpsebcdde-cmp-cdis-sentinel` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/cmpweekly.csv
+- **Sentinel surveillance infectious diseases data in Residential Care Homes for the Elderly (RCHE) weekly report** — `hk-dh-chpsebcdde-rche-cdis-sentinel` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/rcheweekly.csv
+- **Weekly number of hospital admission episodes of hand, foot and mouth disease (HFMD) reported by Hospital Authority** — `hk-dh-chpsebcdde-ha-hfm` · Department of Health · CSV · Weekly
+  - http://www.chp.gov.hk/files/misc/ha_hfm_2010.csv
+- **List of Hong Kong Legislation (Current version)** — `hk-doj-hkel-list-of-legislation-current` · Department of Justice · JSON, XML · Weekly
+  - https://resource.data.one.gov.hk/doj/data/hkel_list_c_all_en.xml
+- **List of Hong Kong Legislation (Past version)** — `hk-doj-hkel-list-of-legislation-past` · Department of Justice · JSON, XML · Weekly
+  - https://resource.data.one.gov.hk/doj/data/hkel_list_p_all_en.xml
+- **Approval Status on the Use Permit of Escalators under New Installation or Major Alteration Works** — `hk-emsd-emsd1-approval-status-use-permit-escalator` · Electrical and Mechanical Services Department · JSON · Weekly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/approval_status_use_permit_escalator.json
+- **Approval Status on the Use Permit of Lifts under New Installation or Major Alteration Works** — `hk-emsd-emsd1-approval-status-use-permit-lift` · Electrical and Mechanical Services Department · JSON · Weekly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/approval_status_use_permit_lift.json
+- **Product Models under Mandatory Energy Efficiency Labelling Scheme (MEELS)** — `hk-emsd-emsd1-meels-listed-models` · Electrical and Mechanical Services Department · CSV · Weekly
+  - https://www.emsd.gov.hk/energylabel/files/meels_rac.csv
+- **Product Models with Reference Numbers Removed under Mandatory Energy Efficiency Labelling Scheme (MEELS)** — `hk-emsd-emsd1-meels-listed-models-removed` · Electrical and Mechanical Services Department · CSV · Weekly
+  - https://www.emsd.gov.hk/energylabel/files/meels_rac_deregister.csv
+- **Product Models without Updated Energy Efficiency Grade under Mandatory Energy Efficiency Labelling Scheme (MEELS)** — `hk-emsd-emsd1-meels-listed-models-without-updated` · Electrical and Mechanical Services Department · CSV · Weekly
+  - https://www.emsd.gov.hk/energylabel/files/meels_rac_archive(25Nov2015).csv
+- **Daily count of vaccination by age groups** — `hk-hhb-hhbcovid19-vaccination-rates-over-time-by-age` · Health Bureau · CSV · Weekly
+  - https://www.healthbureau.gov.hk/download/opendata/COVID19/vaccination-rates-over-time-by-age.csv
+- **HKTR Data Disclosure – Foreign Exchange Derivatives** — `hk-hkma-tr-hktr-data-disclose-fx` · Hong Kong Monetary Authority · JSON · Weekly
+  - https://api.hkma.gov.hk/public/financial-market-infra/trade-repository/hktr-data-disclose-fx?segment=positions
+- **HKTR Data Disclosure – Interest Rate Derivatives** — `hk-hkma-tr-hktr-data-disclose-ir` · Hong Kong Monetary Authority · JSON · Weekly
+  - https://api.hkma.gov.hk/public/financial-market-infra/trade-repository/hktr-data-disclose-ir?segment=positions
+- **Family Medicine Clinic Quota** — `hospital-hadata-fmc-quota` · Hospital Authority · JSON, XLSX · Weekly (every Monday)
+  - https://www.ha.org.hk/pas_gopc/pas_gopc_avg_quota_pdf/g0_9uo7a_p-en.json
+- **Digital Land Boundary Map iC1000** — `hk-landsd-openmap-development-hkms-digital-c1k` · Lands Department · GML · Bi-weekly
+  - https://www.hkmapservice.gov.hk/OneStopSystem/map-search?product=OSSCatB&series=iC1000
+- **Digital Topographic Map iB1000** — `hk-landsd-openmap-development-hkms-digital-b1k` · Lands Department · GML · Bi-weekly
+  - https://www.hkmapservice.gov.hk/OneStopSystem/map-search?product=OSSCatB&series=iB1000
+- **Digital Topographic Map iB5000** — `hk-landsd-openmap-development-hkms-digital-b5k` · Lands Department · GML · Bi-weekly
+  - https://www.hkmapservice.gov.hk/OneStopSystem/map-search?product=OSSCatB&series=iB5000
+- **Geo-Reference Database iG1000** — `hk-landsd-openmap-development-hkms-digital-g1k` · Lands Department · GML · Bi-weekly
+  - https://www.hkmapservice.gov.hk/OneStopSystem/map-search?product=OSSCatB&series=iG1000
+- **HP1C (1:1000) Map Sheet Revision Date** — `hk-landsd-openmap-hp1c-1-1000-map-sheet-revision-date` · Lands Department · CSV · Bi-weekly
+  - https://www.landsd.gov.hk/doc/en/mapping/paper-map/revisiondate/HP1C.csv
+- **HP5C / HP5CL (1:5000) Map Sheet Revision Date** — `hk-landsd-openmap-hp5c-hp5cl-1-5000-map-sheet-revision-date` · Lands Department · CSV · Bi-weekly
+  - https://www.landsd.gov.hk/doc/en/mapping/paper-map/revisiondate/HP5C.csv
+- **Revision Date of Digital Land Boundary Maps - iC1000** — `hk-landsd-openmap-revision-date-of-digital-land-boundary-maps-ic1000` · Lands Department · CSV · Bi-weekly
+  - https://www.landsd.gov.hk/doc/en/mapping/digital-map/common/update/ic1_update.csv
+- **Revision Date of Digital Topographic Maps - iB1000** — `hk-landsd-openmap-revision-date-of-digital-topographic-maps-ib1000` · Lands Department · CSV · Bi-weekly
+  - https://www.landsd.gov.hk/doc/en/mapping/digital-map/common/update/ib1_update.csv
+- **Revision Date of Digital Topographic Maps - iB10000** — `hk-landsd-openmap-revision-date-of-digital-topographic-maps-ib10000` · Lands Department · CSV · Bi-weekly
+  - https://www.landsd.gov.hk/doc/en/mapping/digital-map/common/update/ib10_update.csv
+- **Revision Date of Digital Topographic Maps - iB20000** — `hk-landsd-openmap-revision-date-of-digital-topographic-maps-ib20000` · Lands Department · CSV · Bi-weekly
+  - https://www.landsd.gov.hk/doc/en/mapping/digital-map/common/update/ib20_update.csv
+- **Revision Date of Digital Topographic Maps - iB5000** — `hk-landsd-openmap-revision-date-of-digital-topographic-maps-ib5000` · Lands Department · CSV · Bi-weekly
+  - https://www.landsd.gov.hk/doc/en/mapping/digital-map/common/update/ib5_update.csv
+- **Revision Date of Geo-Reference Database - iG1000** — `hk-landsd-openmap-revision-date-of-geo-reference-database-ig1000` · Lands Department · CSV · Bi-weekly
+  - https://www.landsd.gov.hk/doc/en/mapping/digital-map/common/update/ig1_update.csv
+- **Vacancy Position of Designated Places of Day Respite Service for the Elderly Persons** — `hk-swd-elderly-vacancy-position-of-dpdrse` · Social Welfare Department · CSV · Weekly
+  - https://www.swd.gov.hk/datagovhk/elderly/Vacancy-Position-of-DPDRSE.csv
+- **Headway information of public transport services** — `hk-td-tis_11-pt-headway-en` · Transport Department · CSV · Biweekly
+  - https://static.data.gov.hk/td/pt-headway-en/DATA_LAST_UPDATED_DATE.csv
+- **Routes and fares of public transport (GeoJSON)** — `hk-td-tis_23-routes-fares-geojson` · Transport Department · CSV, JSON · Biweekly
+  - https://static.data.gov.hk/td/routes-fares-geojson/JSON_BUS.json
+- **Routes and fares of public transport (KML)** — `hk-td-tis_24-routes-fares-kml` · Transport Department · CSV · Biweekly
+  - https://static.data.gov.hk/td/routes-fares-kml/DATA_LAST_UPDATED_DATE.csv
+- **Storage Position of Impounding Reservoirs** — `hk-wsd-wsd2-storage-position-reservoir-weekly` · Water Supplies Department · CSV · Every week
+  - https://www.wsd.gov.hk/datagovhk/tc-data/storage_position_of_impounding_reservoirs_tc.csv
+
+### monthly
+
+- **Buildings for which Modular Integrated Construction (MiC) had been adopted** — `hk-bd-opendata-mic-adopted-buildings` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1728441651251_2444/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDMIC&outputFormat=CSV
+- **Fire Safety Directions issued under Fire Safety (Industrial Buildings) Ordinance by Buildings Department** — `hk-bd-opendata-fsd-1` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1631168151430_55023/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDFSDN&outputFormat=CSV
+- **Foundation for which consent to commence works had been given** — `hk-bd-opendata-foundation-consent-commenced` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1696922004549_82149/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDMD12FDN&outputFormat=CSV
+- **Monthly Digests of Buildings Department** — `hk-bd-opendata-monthly-digests` · Buildings Department · CSV · Monthly
+  - https://static.data.gov.hk/bd/opendata/monthlydigests/Md11.csv
+- **Site Formation for which consent to commence works had been given** — `hk-bd-opendata-site-formation-consent` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1696922075983_42611/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDMD12SF&outputFormat=CSV
+- **Status of Section 24, Section 27A and Section 28 Orders** — `hk-bd-opendata-status-order` · Buildings Department · CSV · Monthly
+  - https://static.data.gov.hk/bd/opendata/statusorders/ageing_analysis_section27a_en.csv
+- **Statutory Notices complied with/withdrawn/superseded on prescribed inspection/repair for buildings** — `hk-bd-opendata-mbis-s30b-notice-2` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1696920579106_13347/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDMBIS_CWS&outputFormat=CSV
+- **Statutory Notices complied with/withdrawn/superseded on prescribed inspection/repair for windows** — `hk-bd-opendata-mwis-s30c-notice-2` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1696920722705_8117/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDMWIS_CWS&outputFormat=CSV
+- **Statutory Notices issued on prescribed inspection/repair for buildings** — `hk-bd-opendata-mbis-s30b-notice-1` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1631168029910_44937/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDMBIS&outputFormat=CSV
+- **Statutory Notices issued on prescribed inspection/repair for windows** — `hk-bd-opendata-mwis-s30c-notice-1` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1631168094734_86276/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDMWIS&outputFormat=CSV
+- **Statutory Orders complied with/withdrawn/superseded on dangerous buildings** — `hk-bd-opendata-s26-order-2` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1696920940144_71128/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDS26_CWS&outputFormat=CSV
+- **Statutory Orders complied with/withdrawn/superseded on defective drains of the buildings** — `hk-bd-opendata-s28-order-2` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1696921699103_14859/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDS28_CWS&outputFormat=CSV
+- **Statutory Orders complied with/withdrawn/superseded on investigation on building defects of the buildings** — `hk-bd-opendata-s26a-order-2` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1696921786982_81556/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDS26A_CWS&outputFormat=CSV
+- **Statutory Orders complied with/withdrawn/superseded on unauthorised building works of the buildings** — `hk-bd-opendata-s24-order-2` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1696921855975_82997/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDS24_CWS&outputFormat=CSV
+- **Statutory Orders issued on dangerous buildings** — `hk-bd-opendata-s26-order-1` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1631167799285_82457/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDS26&outputFormat=CSV
+- **Statutory Orders issued on defective drains of the buildings** — `hk-bd-opendata-s28-order-1` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1631167940706_97689/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDS28&outputFormat=CSV
+- **Statutory Orders issued on investigation on building defects of the buildings** — `hk-bd-opendata-s26a-order-1` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1631167860731_77754/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDS26A&outputFormat=CSV
+- **Statutory Orders issued on unauthorised building works of the buildings** — `hk-bd-opendata-s24-order-1` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1631167624557_40796/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDS24&outputFormat=CSV
+- **Summary of Gross Floor Area (GFA) Concessions and Related Information of Private Developments** — `hk-bd-opendata-gfa` · Buildings Department · CSV · Monthly
+  - https://portal.csdi.gov.hk/server/services/common/bd_rcd_1629267205229_28432/MapServer/WFSServer?service=wfs&request=GetFeature&typename=BDGFA&outputFormat=CSV
+- **Targets for Clearing Outstanding Section 24 , Section 27A and Section 28 Orders** — `hk-bd-opendata-targets-orders` · Buildings Department · CSV · Monthly
+  - https://static.data.gov.hk/bd/opendata/targetsorders/targets_section24_en.csv
+- **Average Daily Wages of Workers Engaged in Public Sector Construction Projects as Reported by Main Contractors - Table 220-20001 : Average daily wages of workers engaged in public sector construction projects as reported by main contractors (2021 edition of data series)** — `hk-censtatd-tablechart-220-20001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-20001&full_series=1&download_excel=1
+- **Average Daily Wages of Workers Engaged in Public Sector Construction Projects as Reported by Main Contractors - Table 220-20001A : Average daily wages of workers engaged in public sector construction projects as reported by main contractors** — `hk-censtatd-tablechart-220-20001a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-20001A&full_series=1&download_excel=1
+- **Average Wholesale Prices of Selected Building Materials [Report]** — `hk-censtatd-tablechart-b1060005` · Census and Statistics Department · CSV, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/data/stat_report/product/B1060005/att/B10600052026MM05B0100.xlsx
+- **Business Situation of Small and Medium-sized Enterprises - Report on Monthly Survey on the Business Situation of Small and Medium-sized Enterprises [Report]** — `hk-censtatd-tablechart-b1080015` · Census and Statistics Department · CSV, XLSX, XML · Monthly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10800152026MM08&download_excel=1
+- **Business Situation of Small and Medium-sized Enterprises - Table 330-40001 : Diffusion indices on business receipts, new orders and employment for SMEs** — `hk-censtatd-tablechart-330-40001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-40001&full_series=1&download_excel=1
+- **Business Situation of Small and Medium-sized Enterprises - Table 330-40002 : Percentage of SMEs reporting current credit need and access to credit situation** — `hk-censtatd-tablechart-330-40002` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-40002&full_series=1&download_excel=1
+- **Consumer Price Index - Monthly Report on the Consumer Price Index [Report]** — `hk-censtatd-tablechart-b1060001` · Census and Statistics Department · CSV, XLSX, XML · Monthly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10600012026MM07&download_excel=1
+- **Consumer Price Index - Table 510-60001 : Consumer Price Indices (October 2019 – September 2020 = 100)** — `hk-censtatd-tablechart-510-60001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=510-60001&full_series=1&download_excel=1
+- **Consumer Price Index - Table 510-60001A : Consumer Price Indices (October 2019 – September 2020 = 100) at commodity/service section level** — `hk-censtatd-tablechart-510-60001a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=510-60001A&full_series=1&download_excel=1
+- **Consumer Price Index - Table 510-60002 : Underlying Consumer Price Indices (October 2019 – September 2020 = 100)** — `hk-censtatd-tablechart-510-60002` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=510-60002&full_series=1&download_excel=1
+- **Consumer Price Index - Table 510-60002A : Underlying Consumer Price Indices (October 2019 – September 2020 = 100) at commodity/service section level** — `hk-censtatd-tablechart-510-60002a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=510-60002A&full_series=1&download_excel=1
+- **Consumer Price Index - Table 510-60003 : Consumer Price Indices (October 2019 – September 2020 = 100) at COICOP division level** — `hk-censtatd-tablechart-510-60003` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=510-60003&full_series=1&download_excel=1
+- **Consumer Price Index - Table 510-60004 : Seasonally adjusted Consumer Price Indices** — `hk-censtatd-tablechart-510-60004` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=510-60004&full_series=1&download_excel=1
+- **Consumer Price Index - Table E501 : Consumer Price Indices (October 2019 – September 2020 = 100) at commodity/service section and group level** — `hk-censtatd-tablechart-d5600001` · Census and Statistics Department · CSV, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/data/stat_report/product/D5600001/att/D5600001B2026MM07B.xlsx
+- **Culture, Entertainment and Recreation - Table 945-89001 : Usage rates of major cultural venues by location** — `hk-censtatd-tablechart-945-89001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=945-89001&full_series=1&download_excel=1
+- **Effective Exchange Rate Indices for Hong Kong Dollar - Table 340-46002 : Effective exchange rate indices for the Hong Kong dollar(January 2020 = 100)** — `hk-censtatd-tablechart-340-46002` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-46002&full_series=1&download_excel=1
+- **Exchange Rates - Table 340-46001 : Exchange rates** — `hk-censtatd-tablechart-340-46001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-46001&full_series=1&download_excel=1
+- **Financing, Insurance, Professional and Business Services - Table 645-92111 : Number of authorized insurers, licensed insurance brokers and licensed insurance agents** — `hk-censtatd-tablechart-645-92111` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=645-92111&full_series=1&download_excel=1
+- **Hong Kong Energy Statistics - Table 915-91104 : Monthly statistics on quantity of net imports and unit values of imports of selected oil products and coal products** — `hk-censtatd-tablechart-915-91104` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=915-91104&full_series=1&download_excel=1
+- **Hong Kong Energy Statistics - Table 915-91201 : Monthly statistics on consumption of electricity and gas by type of users** — `hk-censtatd-tablechart-915-91201` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=915-91201&full_series=1&download_excel=1
+- **Hong Kong Population - Table 115-01012A : Monthly number of live births by sex** — `hk-censtatd-tablechart-115-01012a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=115-01012A&full_series=1&download_excel=1
+- **Hong Kong Population - Table 115-01015A : Monthly number of marriages** — `hk-censtatd-tablechart-115-01015a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=115-01015A&full_series=1&download_excel=1
+- **Hong Kong Population - Table 115-01022A : Monthly number of deaths by sex** — `hk-censtatd-tablechart-115-01022a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=115-01022A&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55111A : Seaborne Cargo Throughput by Month** — `hk-censtatd-tablechart-410-55111a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55111A&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55112A : River Cargo Throughput by Month** — `hk-censtatd-tablechart-410-55112a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55112A&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55294 : Port Container Throughput by Main Cargo Handling Location** — `hk-censtatd-tablechart-410-55294` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55294&full_series=1&download_excel=1
+- **Index Numbers of the Costs of Labour and Materials used in Public Sector Construction Projects - Table 615-21001 : Index numbers of the costs of labour and materials used in public sector construction projects ( April 2021 = 100 ) - Costs of Labour Index** — `hk-censtatd-tablechart-615-21001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-21001&full_series=1&download_excel=1
+- **Index Numbers of the Costs of Labour and Materials used in Public Sector Construction Projects - Table 615-21001A : Index numbers of the costs of labour and materials used in public sector construction projects ( April 2003 = 100 ) - Costs of Labour Index** — `hk-censtatd-tablechart-615-21001a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-21001A&full_series=1&download_excel=1
+- **Index Numbers of the Costs of Labour and Materials used in Public Sector Construction Projects - Table 615-21002 : Index numbers of the costs of labour and materials used in public sector construction projects ( April 2021 = 100 ) - Costs of Materials Index** — `hk-censtatd-tablechart-615-21002` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-21002&full_series=1&download_excel=1
+- **Index Numbers of the Costs of Labour and Materials used in Public Sector Construction Projects - Table 615-21002A : Index numbers of the costs of labour and materials used in public sector construction projects ( April 2003 = 100 ) - Costs of Materials Index** — `hk-censtatd-tablechart-615-21002a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-21002A&full_series=1&download_excel=1
+- **Interactive Data Dissemination Service for Trade Statistics** — `hk-censtatd-trade-idds-trade` · Census and Statistics Department · JSON, XLS · Monthly
+  - https://tradeidds.censtatd.gov.hk
+- **Merchandise Trade - Table 410-92012 : Road cargo throughput** — `hk-censtatd-tablechart-410-92012` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-92012&full_series=1&download_excel=1
+- **Merchandise Trade Index Numbers - Hong Kong Merchandise Trade Index Numbers [Report]** — `hk-censtatd-tablechart-b1020006` · Census and Statistics Department · CSV, XLSX, XML · Monthly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10200062026MM07&download_excel=1
+- **Merchandise Trade Index Numbers - Table 410-51001 : Merchandise trade index numbers - imports** — `hk-censtatd-tablechart-410-51001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-51001&full_series=1&download_excel=1
+- **Merchandise Trade Index Numbers - Table 410-51002 : Merchandise trade index numbers - total exports** — `hk-censtatd-tablechart-410-51002` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-51002&full_series=1&download_excel=1
+- **Merchandise Trade Index Numbers - Table 410-51003 : Merchandise trade index numbers - terms of trade** — `hk-censtatd-tablechart-410-51003` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-51003&full_series=1&download_excel=1
+- **Merchandise Trade Index Numbers - Table 410-51011 : Seasonally adjusted merchandise trade index numbers - imports** — `hk-censtatd-tablechart-410-51011` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-51011&full_series=1&download_excel=1
+- **Merchandise Trade Index Numbers - Table 410-51012 : Seasonally adjusted merchandise trade index numbers - total exports** — `hk-censtatd-tablechart-410-51012` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-51012&full_series=1&download_excel=1
+- **Merchandise Trade Index Numbers - Table 410-51021 : Trade index numbers by main supplier - imports** — `hk-censtatd-tablechart-410-51021` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-51021&full_series=1&download_excel=1
+- **Merchandise Trade Index Numbers - Table 410-51022 : Trade index numbers by main destination - total exports** — `hk-censtatd-tablechart-410-51022` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-51022&full_series=1&download_excel=1
+- **Merchandise Trade Index Numbers - Table 410-51031 : Trade index numbers by end-use category - imports** — `hk-censtatd-tablechart-410-51031` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-51031&full_series=1&download_excel=1
+- **Merchandise Trade Index Numbers - Table 410-51032 : Trade index numbers by end-use category - total exports** — `hk-censtatd-tablechart-410-51032` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-51032&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Hong Kong External Merchandise Trade [Report]** — `hk-censtatd-tablechart-b1020005` · Census and Statistics Department · CSV, XLSX, XML · Monthly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10200052026MM07&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50001 : External merchandise trade aggregate figures** — `hk-censtatd-tablechart-410-50001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50001&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50001A : External merchandise trade aggregate figures (year-to-month)** — `hk-censtatd-tablechart-410-50001a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50001A&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50001B : External merchandise trade aggregate figures (12 months to date)** — `hk-censtatd-tablechart-410-50001b` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50001B&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50002 : Seasonally adjusted series of external merchandise trade values** — `hk-censtatd-tablechart-410-50002` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50002&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50011 : External merchandise trade statistics - total trade with ten main countries/territories** — `hk-censtatd-tablechart-410-50011` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50011&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50012 : External merchandise trade Statistics - imports from ten main suppliers** — `hk-censtatd-tablechart-410-50012` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50012&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50013 : External merchandise trade statistics - total exports to ten main destinations** — `hk-censtatd-tablechart-410-50013` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50013&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50021 : External merchandise trade statistics by mode of transport - imports** — `hk-censtatd-tablechart-410-50021` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50021&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50022 : External merchandise trade statistics by mode of transport - total exports** — `hk-censtatd-tablechart-410-50022` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50022&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50031 : External merchandise trade statistics by ten principal commodity divisions - imports** — `hk-censtatd-tablechart-410-50031` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50031&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-50032 : External merchandise trade statistics by ten principal commodity divisions - total exports** — `hk-censtatd-tablechart-410-50032` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-50032&full_series=1&download_excel=1
+- **Others - Table 990-92077 : Average wholesale prices of selected food items** — `hk-censtatd-tablechart-990-92077` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-92077&full_series=1&download_excel=1
+- **Others - Table 990-92201 : Municipal services licences and permits in force by type** — `hk-censtatd-tablechart-990-92201` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-92201&full_series=1&download_excel=1
+- **Public Finance, Money and Market - Table E701 : Daily silver trading prices** — `hk-censtatd-tablechart-d7000001` · Census and Statistics Department · CSV, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/data/stat_report/product/D7000001/att/D7000001.xlsx
+- **Retail Sales - Report on Monthly Survey of Retail Sales [Report]** — `hk-censtatd-tablechart-b1080003` · Census and Statistics Department · CSV, XLSX, XML · Monthly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10800032026MM07&download_excel=1
+- **Retail Sales - Table 620-67001 : Total retail sales** — `hk-censtatd-tablechart-620-67001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=620-67001&full_series=1&download_excel=1
+- **Retail Sales - Table 620-67002 : Value and value index of retail sales by type of retail outlet** — `hk-censtatd-tablechart-620-67002` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=620-67002&full_series=1&download_excel=1
+- **Retail Sales - Table 620-67003 : Volume index of retail sales by type of retail outlet** — `hk-censtatd-tablechart-620-67003` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=620-67003&full_series=1&download_excel=1
+- **Retail Sales - Table 620-67011 : Value of retail sales in supermarkets by broad product category** — `hk-censtatd-tablechart-620-67011` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=620-67011&full_series=1&download_excel=1
+- **Retail Sales - Table 620-67012 : Value of retail sales in department stores by broad product category** — `hk-censtatd-tablechart-620-67012` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=620-67012&full_series=1&download_excel=1
+- **Retail Sales - Table 620-67021 : Seasonally adjusted series of retail sales (average index from October 2019 – September 2020 = 100)** — `hk-censtatd-tablechart-620-67021` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=620-67021&full_series=1&download_excel=1
+- **Retail Sales - Table 620-67031 : Value of online retail sales by selected type of retail outlet** — `hk-censtatd-tablechart-620-67031` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=620-67031&full_series=1&download_excel=1
+- **Social Welfare - Table 935-88001 : Social Security Scheme** — `hk-censtatd-tablechart-935-88001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=935-88001&full_series=1&download_excel=1
+- **Social Welfare - Table 935-88002 : Social Security Allowance Scheme** — `hk-censtatd-tablechart-935-88002` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=935-88002&full_series=1&download_excel=1
+- **Social Welfare - Table 935-88003 : Integrated Family Service Centres** — `hk-censtatd-tablechart-935-88003` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=935-88003&full_series=1&download_excel=1
+- **Social Welfare - Table 935-88004 : Services for the elderly - residential care** — `hk-censtatd-tablechart-935-88004` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=935-88004&full_series=1&download_excel=1
+- **Social Welfare - Table 935-88005 : Community support services for the elderly** — `hk-censtatd-tablechart-935-88005` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=935-88005&full_series=1&download_excel=1
+- **Social Welfare - Table 935-88006 : Community care services for the elderly** — `hk-censtatd-tablechart-935-88006` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=935-88006&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06102 : Statistics on domestic households** — `hk-censtatd-tablechart-130-06102` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06102&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06607 : Domestic households by type of household and monthly household income** — `hk-censtatd-tablechart-130-06607` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06607&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06610 : Median monthly household income by type of housing** — `hk-censtatd-tablechart-130-06610` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06610&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06302A : Median age of employed persons by sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06302a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06302A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06305A : Employed persons by detailed industry of main employment and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06305a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06305A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06307A : Employed persons by occupation of main employment, age and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06307a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06307A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06311A : Median hours of work of employed persons by industry of main employment and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06311a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06311A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06314A : Median monthly employment earnings of employed persons by age and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06314a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06314A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06316A : Median monthly employment earnings of employed persons by industry of main employment and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06316a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06316A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06317A : Median monthly employment earnings of employed persons by occupation of main employment and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06317a` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06317A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06101 : Statistics on labour force, employment, unemployment and underemployment** — `hk-censtatd-tablechart-210-06101` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06101&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06103 : Unemployment rate and underemployment rate by age and sex** — `hk-censtatd-tablechart-210-06103` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06103&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06201 : Labour force and labour force participation rate by age and sex** — `hk-censtatd-tablechart-210-06201` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06201&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06301 : Employed persons by age and sex** — `hk-censtatd-tablechart-210-06301` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06301&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06302 : Median age of employed persons by sex** — `hk-censtatd-tablechart-210-06302` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06302&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06305 : Employed persons by detailed industry of main employment and sex** — `hk-censtatd-tablechart-210-06305` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06305&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06307 : Employed persons by occupation of main employment, age and sex** — `hk-censtatd-tablechart-210-06307` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06307&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06309 : Employed persons by hours of work of all employment and sex** — `hk-censtatd-tablechart-210-06309` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06309&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06311 : Median hours of work of employed persons by industry of main employment and sex** — `hk-censtatd-tablechart-210-06311` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06311&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06313 : Employed persons by monthly employment earnings and sex** — `hk-censtatd-tablechart-210-06313` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06313&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06314 : Median monthly employment earnings of employed persons by age and sex** — `hk-censtatd-tablechart-210-06314` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06314&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06316 : Median monthly employment earnings of employed persons by industry of main employment and sex** — `hk-censtatd-tablechart-210-06316` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06316&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06317 : Median monthly employment earnings of employed persons by occupation of main employment and sex** — `hk-censtatd-tablechart-210-06317` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06317&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06401 : Unemployed persons and unemployment rate by age and sex** — `hk-censtatd-tablechart-210-06401` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06401&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06402 : Unemployed persons and unemployment rate by educational attainment and sex** — `hk-censtatd-tablechart-210-06402` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06402&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06405 : Unemployed persons with a previous job and unemployment rate by detailed previous industry** — `hk-censtatd-tablechart-210-06405` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06405&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06406 : Unemployed persons with a previous job and unemployment rate by previous industry, age and sex** — `hk-censtatd-tablechart-210-06406` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06406&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06407 : Unemployed persons with a previous job and unemployment rate by previous occupation, age and sex** — `hk-censtatd-tablechart-210-06407` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06407&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06501 : Underemployed persons and underemployment rate by age and sex** — `hk-censtatd-tablechart-210-06501` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06501&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06502 : Underemployed persons and underemployment rate by educational attainment and sex** — `hk-censtatd-tablechart-210-06502` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06502&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06503 : Underemployed persons and underemployment rate by detailed industry of main employment** — `hk-censtatd-tablechart-210-06503` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06503&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06504 : Underemployed persons and underemployment rate by industry of main employment, age and sex** — `hk-censtatd-tablechart-210-06504` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06504&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06505 : Underemployed persons and underemployment rate by occupation of main employment, age and sex** — `hk-censtatd-tablechart-210-06505` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06505&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06508 : Underemployed persons by monthly employment earnings and sex** — `hk-censtatd-tablechart-210-06508` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06508&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06509 : Median monthly employment earnings of underemployed persons by sex** — `hk-censtatd-tablechart-210-06509` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06509&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-45021 : Hong Kong Dollar interest rates** — `hk-censtatd-tablechart-340-45021` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-45021&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-92002 : Silver trading prices** — `hk-censtatd-tablechart-340-92002` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-92002&full_series=1&download_excel=1
+- **Transportation, Storage and Courier Services - Table E705 : Inward and outward movements of aircraft, vessels, motor vehicles and trains** — `hk-censtatd-tablechart-d7000005` · Census and Statistics Department · CSV, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/data/stat_report/product/D7000005/att/D7000005.xlsx
+- **Visitor statistics - Table 650-80001 : Visitor arrivals by nationality/region** — `hk-censtatd-tablechart-650-80001` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=650-80001&full_series=1&download_excel=1
+- **Visitor statistics - Table 650-80006 : Hong Kong resident departures by control point** — `hk-censtatd-tablechart-650-80006` · Census and Statistics Department · CSV, JSON, XLSX · Monthly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=650-80006&full_series=1&download_excel=1
+- **No. of NOTAM processed** — `hk-cad-cadpsi1-notam-data` · Civil Aviation Department · CSV · Monthly
+  - https://www.cad.gov.hk/datagovhk/PSI_NOTAM_Data.csv
+- **No. of Telecom messages relayed by the AFTN** — `hk-cad-cadpsi1-aftn-data` · Civil Aviation Department · CSV · Monthly
+  - https://www.cad.gov.hk/datagovhk/PSI_AFTN_Data.csv
+- **No. of Total Flights handled** — `hk-cad-cadpsi1-aircraft-data` · Civil Aviation Department · CSV · Monthly
+  - https://www.cad.gov.hk/datagovhk/PSI_Aircraft_Data.csv
+- **The Quantity of Natural Sand from Mainland used in Construction Industry** — `hk-cedd-fmd-rmshk-data` · Civil Engineering and Development Department · CSV, XLSX · Monthly
+  - https://www.cedd.gov.hk/filemanager/eng/content_644/2026_imported_sand_usage.xlsx
+- **Hong Kong wine trade statistics** — `hk-cedb-cedb_wine-hk-wine-trade-statistics` · Commerce and Economic Development Bureau · CSV · Monthly
+  - https://www.wine.gov.hk/datagovhk/hkwinetradestats/total_impexp_en.csv
+- **Hong Kong wine trade statistics (by categories)** — `hk-cedb-cedb_wine-hk-wine-trade-statistics-by-category` · Commerce and Economic Development Bureau · CSV · Monthly
+  - https://www.wine.gov.hk/datagovhk/hkwinetradestats_by_cat/hkwinetradestats_by_cat_en.csv
+- **SME Financing Guarantee Scheme** — `hk-cedb-cedb_hq-sme-financing` · Commerce and Economic Development Bureau · CSV · Monthly
+  - https://www.cedb.gov.hk/datagovhk/sme_financing/sfgs_stats_en.csv
+- **Licensing of Money Lenders** — `hk-cr-crdata-list-ml-licensees` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/ml_licensees.xls
+- **List of Non-Compliance with Directions to Change Name / Replacement of Company Names by Company Registration Numbers** — `hk-cr-crdata-list-non-compliance-with-directions-to-change-name` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/stat_name.xls
+- **List of Trust or Company Service Provider Licensees** — `hk-cr-crtcspdata-list-tcsp-licensees` · Companies Registry · CSV, XLSX · Monthly
+  - https://www.tcsp.cr.gov.hk/open-data/licensees.xlsx
+- **Statistical Data on Charges / Memorandum of Discharge Delivered for Registration** — `hk-cr-crdata-stat-charges` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/statistics_07.xls
+- **Statistical Data on Dissolution** — `hk-cr-crdata-stat-dissolution` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/statistics_04.xls
+- **Statistical Data on Documents Delivered for Registration** — `hk-cr-crdata-stat-documents-delivered-registration` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/statistics_06.xls
+- **Statistical Data on Limited Partnership Funds** — `hk-cr-crdata-stat-limited-partnership-funds` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/LPF_registered.xls
+- **Statistical Data on Liquidations** — `hk-cr-crdata-stat-liquidations` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/statistics_05.xls
+- **Statistical Data on Local Companies / Re-domiciled Companies that have Remained Registered on the Companies Register** — `hk-cr-crdata-stat-local-companies` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/statistics_01.xls
+- **Statistical Data on Local Companies Incorporated / Re-domiciled Companies Registered** — `hk-cr-crdata-stat-local-companies-incorporated` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/statistics_02.xls
+- **Statistical Data on Money Lenders** — `hk-cr-crdata-stat-ml-fsd` · Companies Registry · CSV, XLS · Monthly
+  - https://www.cr.gov.hk/datagovhk/psi/ML_statistics_01.xls
+- **Statistical Data on Prosecution** — `hk-cr-crdata-stat-prosecution` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/statistics_09.xls
+- **Statistical Data on Registered Non-Hong Kong Companies** — `hk-cr-crdata-stat-non-hk-companies` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/statistics_03.xls
+- **Statistical Data on Searches on Image Records of Documents** — `hk-cr-crdata-stat-company-searches` · Companies Registry · CSV, XLS · Monthly
+  - http://www.cr.gov.hk/datagovhk/psi/statistics_08.xls
+- **Complaints Statistics** — `cc-complaints-complaints-statistics` · Consumer Council · JSON · Monthly
+  - https://www.consumer.org.hk/node/32290/export-complaints/json?lang=en
+- **Average achieved hotel room rate by category** — `hk-cstb-cstb_tc-tc-average-achieved-hotel-room-rate-by-category` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotelroomrate/average_achieved_hotel_room_rate_by_category_en.csv
+- **Average achieved hotel room rate in Hong Kong** — `hk-cstb-cstb_tc-tc-average-achieved-hotel-room-rate` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotelroomrate/average_achieved_hotel_room_rate_en.csv
+- **Hotel room occupancy rate** — `hk-cstb-cstb_tc-tc-hotel-room-occupancy-rate` · Culture, Sports and Tourism Bureau · CSV · Monthly and annually
+  - https://www.tourism.gov.hk/datagovhk/hotelroomoccupancy/hotel_room_occupancy_rate_monthly_en.csv
+- **Hotel room occupancy rate by category** — `hk-cstb-cstb_tc-tc-hotel-room-occupancy-rate-by-category` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotelroomoccupancy/hotel_room_occupancy_rate_monthly_by_cat_en.csv
+- **Hotel room occupancy rate by district** — `hk-cstb-cstb_tc-tc-hotel-room-occupancy-rate-by-district` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotelroomoccupancy/hotel_room_occupancy_rate_monthly_by_district_en.csv
+- **Number of hotel rooms by district** — `hk-cstb-cstb_tc-tc-number-of-hotel-rooms-by-district` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotelrooms/Number_of_hotel_rooms_in_Hong_Kong_by_district_en.csv
+- **Number of hotel rooms by hotel category** — `hk-cstb-cstb_tc-tc-number-of-hotel-rooms-by-category` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotelrooms/Number_of_hotel_rooms_in_Hong_Kong_by_hotel_category_en.csv
+- **Number of hotel rooms in Hong Kong** — `hk-cstb-cstb_tc-tc-number-of-hotel-rooms` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotelrooms/number_of_hotel_rooms_en.csv
+- **Number of hotels** — `hk-cstb-cstb_tc-tc-number-of-hotels` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotels/Number_of_hotels_en.csv
+- **Number of hotels by category** — `hk-cstb-cstb_tc-tc-number-of-hotels-by-category` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotels/Number_of_hotels_by_hotel_category_en.csv
+- **Number of hotels by district** — `hk-cstb-cstb_tc-tc-number-of-hotels-by-district` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.tourism.gov.hk/datagovhk/hotels/Number_of_hotels_by_district_en.csv
+- **Schedule of performances or activities subvented by the Cantonese Opera Development Fund (CODF)** — `hk-cstb-cstbdiv003-schedule-of-performances-or-activities-codf` · Culture, Sports and Tourism Bureau · CSV · Monthly
+  - https://www.cstb.gov.hk/datagovhk/cstbdiv003/resource-tc.csv
+- **The number of licensed travel agents, licensed tourist guides and licensed tour escorts** — `hk-cstb-cstb_tar-tialicno` · Culture, Sports and Tourism Bureau · XLSX · Monthly
+  - https://www.tia.org.hk/sites/default/files/datagovhk/dataset/The_number_of_licensed_TA_TG_TE.xlsx
+- **Customs Statistics on Revenue Collection (Monthly)** — `hk-customs-ced_stat-mon-dc` · Customs and Excise Department · CSV · Monthly
+  - https://www.customs.gov.hk/filemanager/common/csv/odca/mon_dc_en.csv
+- **Confirmed Cases of Food Poisoning due to Clenbuterol & Pesticides** — `hk-dh-chpsebcdde-food-poisoning-clenbuterol-pesticides` · Department of Health · CSV · Monthly
+  - http://www.chp.gov.hk/files/misc/focp2001.csv
+- **Data on Invasive Pneumococcal Disease** — `hk-dh-chpsebcddv-ipd-monthly` · Department of Health · CSV · Monthly
+  - https://www.chp.gov.hk/files/misc/ipd_data.csv
+- **No. of vaccines administered under Government Vaccination Programme (GVP)** — `hk-dh-dh_pmpdb-pmvd-gvp` · Department of Health · CSV · Monthly
+  - https://www.chp.gov.hk/files/misc/statistics-gvp.csv
+- **No. of vaccines administered under Seasonal Influenza Vaccination School Outreach (Free of Charge) Programme (SIVSOP)** — `hk-dh-dh_pmpdb-pmvd-sivop` · Department of Health · CSV · Monthly
+  - https://www.chp.gov.hk/files/misc/statistics-sivop.csv
+- **No. of vaccines administered under Vaccination Subsidy Scheme (VSS)** — `hk-dh-dh_pmpdb-pmvd-vss` · Department of Health · CSV · Monthly
+  - https://www.chp.gov.hk/files/misc/statistics-vss.csv
+- **No. of vaccines administered under the Government COVID-19 Vaccination Programme** — `hk-dh-dh_pmpdb-pmvd-covid` · Department of Health · CSV · Monthly
+  - https://www.chp.gov.hk/files/misc/statistics-covid19vaccination.csv
+- **Number of notifiable infectious diseases by month** — `hk-dh-chpsebcdd-number-of-notifications-for-notifiable-infectious-diseases` · Department of Health · CSV · Monthly
+  - https://www.chp.gov.hk/files/misc/nid1997en.csv
+- **Sentinel surveillance  acute conjunctivitis data in Family Medicine Clinics / General Practitioners Sentinel Surveillance monthly report** — `hk-dh-chpsebcdde-pmp-gopc-acj-monthly-cdis-sentinel` · Department of Health · CSV · Monthly
+  - http://www.chp.gov.hk/files/misc/acjmonthly2010.csv
+- **Sentinel surveillance  acute diarrhoeal diseases data in Family Medicine Clinics / General Practitioners Sentinel Surveillance monthly report** — `hk-dh-chpsebcdde-pmp-gopc-add-monthly-cdis-sentinel` · Department of Health · CSV · Monthly
+  - http://www.chp.gov.hk/files/misc/addmonthly2010.csv
+- **Sentinel surveillance  influenza-like illness data in Family Medicine Clinics / General Practitioners Sentinel Surveillance monthly report** — `hk-dh-chpsebcdde-pmp-gopc-ili-monthly-cdis-sentinel` · Department of Health · CSV · Monthly
+  - http://www.chp.gov.hk/files/misc/ilimonthly2010.csv
+- **Statistics on Chikungunya fever** — `hk-dh-chpsebcdde-chikungunya-fever-cases` · Department of Health · CSV · Monthly
+  - https://www.chp.gov.hk/files/misc/cf2009_en.csv
+- **Statistics on Dengue fever** — `hk-dh-chpsebcdde-dengue-fever-cases` · Department of Health · CSV · Monthly
+  - https://www.chp.gov.hk/files/misc/df2002_en.csv
+- **1823 External Customer Satisfaction Survey Score Data** — `hk-dpo-statistic-survey` · Digital Policy Office · JSON · Monthly
+  - https://www.1823.gov.hk/f/upload/1410/1823_external_survey.json
+- **1823 Service Requests and Performance Data** — `hk-dpo-statistic-statistic` · Digital Policy Office · JSON · Monthly
+  - https://www.1823.gov.hk/datagovhk/statistics/1823_statistic.json
+- **Address Lookup Service** — `hk-dpo-als_01-als` · Digital Policy Office · JSON, XML · Monthly
+  - https://www.als.gov.hk/lookup?q=central%20government%20offices
+- **Awarded service contracts of SOA-QPS** — `hk-dpo-dpo_hp-soa-qps-awarded-service-contracts` · Digital Policy Office · CSV · Monthly
+  - https://www.digitalpolicy.gov.hk/open_data/business_window/soa-qps-awarded-service-contracts.csv
+- **Commonly Asked Questions for 1823** — `hk-dpo-statistic-qa202502` · Digital Policy Office · JSON · Monthly
+  - https://www.1823.gov.hk/f/upload/2037/faq_en.json
+- **Contractor List of Centrally organised IT contracts** — `hk-dpo-dpo_hp-government-it-contracts-contractors` · Digital Policy Office · CSV · Monthly
+  - https://www.digitalpolicy.gov.hk/open_data/business_window/government-it-contracts-contractors-en.csv
+- **Data on Projects Funded under Social Innovation and Entrepreneurship Development Fund** — `hk-dpo-siejson01-sie-dataset-1` · Digital Policy Office · CSV · Monthly
+  - https://www.sie.gov.hk/html/sie/export/sie_projects.csv
+- **Data on the Number of Outbound Calls and Written Contacts to the Public Made by 1823** — `hk-dpo-statistic-outbound` · Digital Policy Office · JSON · Monthly
+  - https://www.1823.gov.hk/f/upload/1535/1823_outbound.json
+- **Statistics of Central Internet Mail Exchange Service** — `hk-dpo-dpo_hp-imx-statistics` · Digital Policy Office · JSON · Monthly
+  - https://www.digitalpolicy.gov.hk/open_data/cis/imx-statistics-en.json
+- **Statistics on central online payment service** — `hk-dpo-dpo_hp-egis-epay-stats` · Digital Policy Office · JSON · Monthly
+  - https://www.digitalpolicy.gov.hk/open_data/egis/egis-epay-stats-en.json
+- **Statistics on information security incidents in the Government** — `hk-dpo-pgc_div_01-information-security-incident` · Digital Policy Office · JSON · Monthly
+  - https://www.govcert.gov.hk/en/incidents.json
+- **Total number of T-contract staff engaged in the Government** — `hk-dpo-dpo_hp-t-contract-no` · Digital Policy Office · CSV · Monthly
+  - https://www.digitalpolicy.gov.hk/open_data/contract_staff_services/t-contract-no-en.csv
+- **Meeting Calendar of District Councils** — `dc-json1-meeting-calendar-of-dc` · District Councils · CSV · Monthly and as necessary
+  - https://www.districtcouncils.gov.hk/datagovhk/psi/Meeting_Calendar_of_DC/Meeting_Calendar_of_DC_2016-19_en.csv
+- **Laboratory Data and Sewage Flow Data** — `hk-dsd-dsd_psi_1-stp-sewage-data` · Drainage Services Department · CSV · Monthly
+  - https://www.dsd.gov.hk/datagovhk/data/shatin_lab_open_data_eng.csv
+- **Non-aided Child Care Centre attached to Kindergarten** — `hk-edb-ccckg-kg-cum-ccc` · Education Bureau · CSV · Monthly
+  - https://www.edb.gov.hk/attachment/datagovhk/Non-aided_CCCs_attached_to_KGs_en.csv
+- **School Location and Information** — `hk-edb-schinfo-school-location-and-information` · Education Bureau · CSV, JSON, XLSX · Monthly
+  - http://www.edb.gov.hk/attachment/en/student-parents/sch-info/sch-search/sch-location-info/SCH_LOC_EDB.xlsx
+- **Approved Competent Persons for Locating Underground Electricity Cables** — `hk-emsd-emsd1-approved-competent-persons-for-locating-underground-electricity-cables` · Electrical and Mechanical Services Department · JSON, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_458/dataset/cpluec.xlsx
+- **Approved List of Disposable LPG Cylinders (LPG cartridges used in cassette cookers)** — `hk-emsd-emsd1-disposable-lpg-cylinders-cassette` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/d_lpg_cylinder_cassette.csv
+- **Approved List of Disposable LPG Cylinders (excluding LPG cartridges used in cassette cookers)** — `hk-emsd-emsd1-disposable-lpg-cylinders-non-cassette` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/d_lpg_cylinder_non_cassette.csv
+- **Approved List of Domestic Gas Appliances (LP Gas)** — `hk-emsd-emsd1-domestic-gas-appliances-lpg` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/dga_lpg.csv
+- **Approved List of Domestic Gas Appliances (Town Gas)** — `hk-emsd-emsd1-domestic-gas-appliances-tg` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/dga_tg.csv
+- **Approved List of Flexible Gas Tubing for Low Pressure Applications** — `hk-emsd-emsd1-flexible-gas-tubing-low-pressure` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/fgt_low_pressure.csv
+- **Auto-LPG Prices** — `hk-emsd-emsd1-auto-lpg-prices` · Electrical and Mechanical Services Department · CSV, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_268/dataset/lpg_pub_price.xlsx
+- **List of Excess Flow Valve for Piped Gas Supply to Domestic Gas Cooking Installations** — `hk-emsd-emsd1-excess-flow-valve` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/excess_flow_valve.csv
+- **List of Flexible Gas Tubing for Commercial Applications** — `hk-emsd-emsd1-flexible-gas-tubing-commerical` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/fgt_commerical.csv
+- **List of Liquefied Petroleum Gas (LPG) Lighter** — `hk-emsd-emsd1-lpg-lighter` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/lpg_lighter.csv
+- **Overall Registered Gas Contractor List: List of Registered Gas Contractors employing Registered Gas Installers of different classes of Gas Installation Work** — `hk-emsd-emsd1-registered-gas-contractors-overall` · Electrical and Mechanical Services Department · CSV, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/overall_rgc.xlsx
+- **Particulars of the Use Permit of Escalators** — `hk-emsd-emsd1-use-permit-escalator` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/use_permit_escalator.csv
+- **Particulars of the Use Permit of Lifts** — `hk-emsd-emsd1-use-permit-lift` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/use_permit_lift.csv
+- **Register of Distributors Approved by Registered Gas Supply Companies for Liquefied Petroleum Gas Cylinder Distribution in Hong Kong** — `hk-emsd-emsd1-lpg-distributors-list` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/lpg_distributors_list.csv
+- **Registered Energy Assessors** — `hk-emsd-emsd1-registered-energy-assessors` · Electrical and Mechanical Services Department · CSV, XLSX · Monthly
+  - https://www.emsd.gov.hk/beeo/en/rea/energy_assessor.xlsx
+- **Registered Escalator Contractors** — `hk-emsd-emsd1-registered-escalator-contractors` · Electrical and Mechanical Services Department · JSON, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/registered_escalator_contractor.xlsx
+- **Registered Gas Contractor List 1: Gas Installation Work In Commercial Kitchens (Town Gas)** — `hk-emsd-emsd1-registered-gas-contractors-1` · Electrical and Mechanical Services Department · CSV, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/rgc_tg.xlsx
+- **Registered Gas Contractor List 2: Gas Installation Work In Commercial Kitchens (LPG)** — `hk-emsd-emsd1-registered-gas-contractors-2` · Electrical and Mechanical Services Department · CSV, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/rgc_lpg.xlsx
+- **Registered Gas Contractor List 3: Dim Sum Trolley Supply and/or Service** — `hk-emsd-emsd1-registered-gas-contractors-3` · Electrical and Mechanical Services Department · CSV, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/rgc_dim_sum.xlsx
+- **Registered Gas Installers** — `hk-emsd-emsd1-registered-gas-installers` · Electrical and Mechanical Services Department · CSV, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_227/dataset/gas_reg_gi.xlsx
+- **Registered Lift Contractors** — `hk-emsd-emsd1-registered-lift-contractors` · Electrical and Mechanical Services Department · JSON, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/registered_lift_contractor.xlsx
+- **Registered Vehicle Mechanics** — `hk-emsd-emsd1-vehicle-mechanics-mechanics` · Electrical and Mechanical Services Department · CSV, XLSX · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_647/dataset/registered_vehicle_mechanics.xlsx
+- **Results of LPG Sample Analysis** — `hk-emsd-emsd1-lpg-sample-analysis` · Electrical and Mechanical Services Department · CSV · Monthly
+  - https://www.emsd.gov.hk/filemanager/en/content_268/dataset/lpg_sample_analysis.csv
+- **Recent Marine Water Quality Data** — `hk-epd-marineteam-marine-water-quality-recent-data` · Environmental Protection Department · CSV · Monthly And Update When Necessary
+  - https://cd.epic.epd.gov.hk/marinepsi/en/marinerecent/marine-recent-en.csv
+- **Ambulance Service Indicators** — `hk-fsd-fsd1-fsdasi` · Fire Services Department · CSV, XLSX · About monthly
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/Ambulance_Service_Indicators_eng.csv
+- **Classification of Fires** — `hk-fsd-fsd1-fsdcfire` · Fire Services Department · CSV · About monthly
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/Classification_of_Fires_eng.csv
+- **Classification of Fires by Causes** — `hk-fsd-fsd1-fsdccauses` · Fire Services Department · CSV · About monthly
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/Classification_of_Causes_eng.csv
+- **Fire Service Indicators (Incident Related)** — `hk-fsd-fsd1-fsdfsi` · Fire Services Department · CSV, XLSX · About monthly
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/Fire_Service_Indicator_eng.csv
+- **Injuries and Fatalities** — `hk-fsd-fsd1-fsdinjurie` · Fire Services Department · CSV · About monthly
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/Injuries_and_Fatalities_eng.csv
+- **Occupancy where major fire occurred (No. 3 Alarm and above)** — `hk-fsd-fsd1-fsdmfire` · Fire Services Department · CSV · About monthly
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/Major_Fire_Occurred_eng.csv
+- **Hawker licence information** — `hk-fehd-fehdhlcs-hawker-information` · Food and Environmental Hygiene Department · XML · Monthly
+  - https://www.fehd.gov.hk/english/pleasant_environment/hawker/hawkerinfo.xml
+- **Public Market Information** — `hk-fehd-fehdmsms-market-information` · Food and Environmental Hygiene Department · XML · Monthly
+  - https://www.fehd.gov.hk/english/pleasant_environment/tidy_market/marketInfo.xml
+- **Tender Award and Forecast** — `hk-hyd-taf-tender-award-forecast` · Highways Department · CSV · Monthly
+  - https://www.hyd.gov.hk/datagovhk/TAF/resource/Award_of_consultancies_en.csv
+- **List of licensed bedspace apartments** — `hk-had-json1-licensed-bedspace-apartments` · Home Affairs Department · CSV · Monthly
+  - https://www.hadla.gov.hk/psi/licensed-bedspace-apartments/licensed_bedspace_apartments.csv
+- **List of licensed club-houses** — `hk-had-json1-licensed-club-houses` · Home Affairs Department · CSV · Monthly
+  - https://www.hadla.gov.hk/psi/licensed-club-houses/licensed_club_houses.csv
+- **List of licensed hotels and guesthouses** — `hk-had-json1-licensed-hotels-and-guesthouses` · Home Affairs Department · CSV · Monthly
+  - https://www.hadla.gov.hk/psi/licensed-hotels-and-guesthouses/licensed_hotels_and_guesthouses.csv
+- **List of licensed karaoke establishments (Note: Permits issued by Food and Environmental and Hygiene 
+Department are not included)** — `hk-had-json1-licensed-karaoke-establishments` · Home Affairs Department · CSV · Monthly
+  - https://www.hadla.gov.hk/psi/licensed-karaoke-establishments/licensed_karaoke_establishments.csv
+- **Statistics on security incidents reports received by HKCERT** — `hkcert-hkcertstat-hkcert-incident-report` · Hong Kong Computer Emergency Response Team Coordination Centre · JSON · Monthly
+  - https://www.hkcert.org/datagovhk/monthly_incident_report_en.json
+- **Cyberport events** — `cyberport-cyberport1-data-on-cyberport-events` · Hong Kong Cyberport Management Company Limited · CSV · Monthly
+  - https://connect.cyberport.hk/opendata/cev/cyberport_event.csv
+- **Data on tenancy situation of Cyberport Smart-Space** — `cyberport-cyberport1-data-on-tenancy-situation-of-cyberport-smart-space` · Hong Kong Cyberport Management Company Limited · CSV · Monthly
+  - https://connect.cyberport.hk/opendata/css/css.csv
+- **Data on tenancy situation of Cyberport office space** — `cyberport-cyberport1-data-on-tenancy-situation-of-cyberport-office-space` · Hong Kong Cyberport Management Company Limited · CSV · Monthly
+  - https://connect.cyberport.hk/opendata/cso/cso.csv
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Balance sheet - Authorized institutions** — `hk-hkma-t03-t030901balance-sheet-ais` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/balance-sheet-ais
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Balance sheet - Deposit-taking companies** — `hk-hkma-t03-t030904balance-sheet-dtc` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/balance-sheet-dtc
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Balance sheet - Licensed banks** — `hk-hkma-t03-t030902balance-sheet-lb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/balance-sheet-lb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Balance sheet - Restricted licensed banks** — `hk-hkma-t03-t030903balance-sheet-rlb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/balance-sheet-rlb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Clearing House Statistics - Clearing House Turnover** — `hk-hkma-t03-t031201ch-statistics-ch-turnover` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/ch-statistics-ch-turnover
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Clearing House Statistics - Faster Payment System Addressing Service Registrations** — `hk-hkma-t03-t031202ch-statistics-fps-reg` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/ch-statistics-fps-reg
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Clearing House Statistics - Turnover of HKD FPS payment (Value)** — `hk-hkma-t03-t031204ch-statistics-turnover-fps-hkd-payment-val` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/ch-statistics-turnover-fps-hkd-payment-val
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Clearing House Statistics - Turnover of HKD FPS payment (Volume)** — `hk-hkma-t03-t031203ch-statistics-turnover-fps-hkd-payment-vol` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/ch-statistics-turnover-fps-hkd-payment-vol
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Clearing House Statistics - Turnover of RMB FPS payment (Value)** — `hk-hkma-t03-t031206ch-statistics-turnover-fps-rmb-payment-val` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/ch-statistics-turnover-fps-rmb-payment-val
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Clearing House Statistics - Turnover of RMB FPS payment (Volume)** — `hk-hkma-t03-t031205ch-statistics-turnover-fps-rmb-payment-vol` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/ch-statistics-turnover-fps-rmb-payment-vol
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Customer deposits by currency** — `hk-hkma-t03-t0302customer-deposits-by-currency` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/customer-deposits-by-currency
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Customer deposits by type - Hong Kong dollar and foreign currency deposits** — `hk-hkma-t03-t030301customer-deposits-by-type-hkd-fc` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/customer-deposits-by-type-hkd-fc
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Customer deposits by type - Renminbi deposits** — `hk-hkma-t03-t030302customer-deposits-by-type-cny` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/customer-deposits-by-type-cny
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - External liabilities and claims - End of period figures** — `hk-hkma-t03-t031101elc-endperiod` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/elc-endperiod
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - External liabilities and claims - Positions vis-a-vis Chinese Mainland** — `hk-hkma-t03-t031103elc-pos-v-mc` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/elc-pos-v-mc?segment=new
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - External liabilities and claims - Positions vis-a-vis Japan** — `hk-hkma-t03-t031104elc-pos-v-jp` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/elc-pos-v-jp?segment=new
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - External liabilities and claims - Positions vis-a-vis Singapore** — `hk-hkma-t03-t031105elc-pos-v-sin` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/elc-pos-v-sin?segment=new
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - External liabilities and claims - Positions vis-a-vis United Kingdom** — `hk-hkma-t03-t031106elc-pos-v-uk` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/elc-pos-v-uk?segment=new
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - External liabilities and claims - Positions vis-a-vis United States** — `hk-hkma-t03-t031107elc-pos-v-us` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/elc-pos-v-us?segment=new
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - External liabilities and claims - Positions vis-a-vis all countries** — `hk-hkma-t03-t031102elc-pos-v-all` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/elc-pos-v-all?segment=new
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Foreign currency position - All foreign currencies** — `hk-hkma-t03-t031001fc-position-all` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/fc-position-all
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Foreign currency position - Canadian dollar** — `hk-hkma-t03-t031007fc-position-cad` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/fc-position-cad
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Foreign currency position - Deutschmark** — `hk-hkma-t03-t031006fc-position-dem` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/fc-position-dem
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Foreign currency position - Euro** — `hk-hkma-t03-t031005fc-position-eur` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/fc-position-eur
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Foreign currency position - Japanese yen** — `hk-hkma-t03-t031004fc-position-jpy` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/fc-position-jpy
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Foreign currency position - Other foreign currencies** — `hk-hkma-t03-t031009fc-position-other` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/fc-position-other
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Foreign currency position - Pound sterling** — `hk-hkma-t03-t031003fc-position-gbp` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/fc-position-gbp
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Foreign currency position - Swiss franc** — `hk-hkma-t03-t031008fc-position-chf` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/fc-position-chf
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Foreign currency position - US dollar** — `hk-hkma-t03-t031002fc-position-usd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/fc-position-usd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Loans and advances by type - Authorized institutions** — `hk-hkma-t03-t030401loans-by-type-ais` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/loans-by-type-ais
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Loans and advances by type - Deposit-taking companies** — `hk-hkma-t03-t030404loans-by-type-dtc` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/loans-by-type-dtc
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Loans and advances by type - Licensed banks** — `hk-hkma-t03-t030402loans-by-type-lb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/loans-by-type-lb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Loans and advances by type - Restricted licence banks** — `hk-hkma-t03-t030403loans-by-type-rlb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/loans-by-type-rlb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Loans and advances for use in Hong Kong by economic sector - Authorized institutions** — `hk-hkma-t03-t030501loans-by-sector-ais` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/loans-by-sector-ais
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Loans and advances for use in Hong Kong by economic sector - Deposit-taking companies** — `hk-hkma-t03-t030504loans-by-sector-dtc` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/loans-by-sector-dtc
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Loans and advances for use in Hong Kong by economic sector - Licensed banks** — `hk-hkma-t03-t030502loans-by-sector-lb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/loans-by-sector-lb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Loans and advances for use in Hong Kong by economic sector - Restricted licensed banks** — `hk-hkma-t03-t030503loans-by-sector-rlb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/loans-by-sector-rlb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Number of authorized institutions and local representative offices** — `hk-hkma-t03-t0301number-of-ais-lros` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/number-of-ais-lros
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Residential mortgage survey results** — `hk-hkma-t03-t0307residential-mortgage-survey` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/residential-mortgage-survey
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Central Moneymarkets Unit (CMU) service** — `hk-hkma-t05-t0505cmu-service` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-service
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Outstanding amount of CMU issues (remaining tenor) - All currencies** — `hk-hkma-t05-t050701cmu-outstanding-remain-tenor-all-currencies` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-outstanding-remain-tenor-all-currencies
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Outstanding amount of CMU issues (remaining tenor) - Hong Kong dollar - denominated** — `hk-hkma-t05-t050702cmu-outstanding-remain-tenor-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-outstanding-remain-tenor-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Outstanding amount of CMU issues (remaining tenor) - Other foreign currency - denominated** — `hk-hkma-t05-t050705cmu-outstanding-remain-tenor-other-fc` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-outstanding-remain-tenor-other-fc
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Outstanding amount of CMU issues (remaining tenor) - Renminbi - denominated** — `hk-hkma-t05-t050703cmu-outstanding-remain-tenor-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-outstanding-remain-tenor-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Outstanding amount of CMU issues (remaining tenor) - US dollar - denominated** — `hk-hkma-t05-t050704cmu-outstanding-remain-tenor-usd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-outstanding-remain-tenor-usd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Outstanding amount of Exchange Fund Bills & Notes - Original maturity** — `hk-hkma-t05-t050201efbn-oustanding-original-maturity` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/efbn-oustanding-original-maturity
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Outstanding amount of Exchange Fund Bills & Notes - Remaining tenor** — `hk-hkma-t05-t050202efbn-outstanding-remaining-tenor` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/efbn-outstanding-remaining-tenor
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Tender results of Exchange Fund Bills and Notes - Exchange Fund Bills** — `hk-hkma-t05-t050401efbn-tender-results-efb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/efbn-tender-results-efb?segment=28day
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Tender results of Exchange Fund Bills and Notes - Exchange Fund Notes** — `hk-hkma-t05-t050402efbn-tender-results-efn` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/efbn-tender-results-efn?segment=2year
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Turnover of CMU issues in the secondary market (remaining tenor) - All currencies** — `hk-hkma-t05-t050601cmu-turnover-sec-mkt-remain-tenor-all-currencies` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-turnover-sec-mkt-remain-tenor-all-currencies
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Turnover of CMU issues in the secondary market (remaining tenor) - Hong Kong dollar - denominated** — `hk-hkma-t05-t050602cmu-turnover-sec-mkt-remain-tenor-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-turnover-sec-mkt-remain-tenor-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Turnover of CMU issues in the secondary market (remaining tenor) - Other foreign currency - denominated** — `hk-hkma-t05-t050605cmu-turnover-sec-mkt-remain-tenor-other-fc` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-turnover-sec-mkt-remain-tenor-other-fc
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Turnover of CMU issues in the secondary market (remaining tenor) - Renminbi - denominated** — `hk-hkma-t05-t050603cmu-turnover-sec-mkt-remain-tenor-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-turnover-sec-mkt-remain-tenor-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Turnover of CMU issues in the secondary market (remaining tenor) - US dollar - denominated** — `hk-hkma-t05-t050604cmu-turnover-sec-mkt-remain-tenor-usd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/cmu-turnover-sec-mkt-remain-tenor-usd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Turnover of Exchange Fund Bills & Notes in the secondary market - Original maturity** — `hk-hkma-t05-t050101efbn-turnover-sec-mkt-original-maturity` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/efbn-turnover-sec-mkt-original-maturity
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Turnover of Exchange Fund Bills & Notes in the secondary market - Remaining tenor** — `hk-hkma-t05-t050102efbn-turnover-sec-mkt-remaining-tenor` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/efbn-turnover-sec-mkt-remaining-tenor
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Yield of Exchange Fund Bills & Notes - Daily figures** — `hk-hkma-t05-t050303efbn-yield-daily` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/efbn-yield-daily
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Yield of Exchange Fund Bills & Notes - End of period figures** — `hk-hkma-t05-t050301efbn-yield-endperiod` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/efbn-yield-endperiod
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund Bills & Notes - Yield of Exchange Fund Bills & Notes - Period average figures** — `hk-hkma-t05-t050302efbn-yield-periodaverage` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/efbn/efbn-yield-periodaverage
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund and Foreign Currency Reserve Assets - Analysis of foreign currency reserve assets** — `hk-hkma-t08-t0805analysis-fc-reserve-assets` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ef-fc-resv-assets/analysis-fc-reserve-assets
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund and Foreign Currency Reserve Assets - Analytical accounts of the Exchange Fund** — `hk-hkma-t08-t0802ef-analyt-acct` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ef-fc-resv-assets/ef-analyt-acct
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund and Foreign Currency Reserve Assets - Currency Board Account** — `hk-hkma-t08-t0803currency-board-account` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ef-fc-resv-assets/currency-board-account
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund and Foreign Currency Reserve Assets - Data template on international reserves and foreign currency liquidity** — `hk-hkma-t08-t0806data-intreserve-fcliquidity` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ef-fc-resv-assets/data-intreserve-fcliquidity
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund and Foreign Currency Reserve Assets - Exchange Fund balance sheet - Abridged balance sheet** — `hk-hkma-t08-t080102ef-bal-sheet-abridged` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ef-fc-resv-assets/ef-bal-sheet-abridged
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund and Foreign Currency Reserve Assets - Exchange Fund balance sheet - Half-yearly Exchange Fund balance sheet** — `hk-hkma-t08-t080101ef-bal-sheet-half-yearly-efbs` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ef-fc-resv-assets/ef-bal-sheet-half-yearly-efbs
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange Fund and Foreign Currency Reserve Assets - Foreign currency reserve assets** — `hk-hkma-t08-t0804fc-resv-assests` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ef-fc-resv-assets/fc-resv-assests
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Composite interest rate** — `hk-hkma-t06-t0605composite-ir` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/composite-ir
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Exchange rates and the effective exchange rate indices - Daily figures** — `hk-hkma-t06-t060103er-eeri-daily` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/er-eeri-daily
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Exchange rates and the effective exchange rate indices - End of period figures** — `hk-hkma-t06-t060101er-eeri-endperiod` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/er-eeri-endperiod
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Exchange rates and the effective exchange rate indices - Period average figures** — `hk-hkma-t06-t060102er-eeri-periodaverage` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/er-eeri-periodaverage
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Hong Kong Interbank Interest Rates - Daily figures** — `hk-hkma-t06-t060303hk-interbank-ir-daily` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/hk-interbank-ir-daily?segment=hibor.fixing
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Hong Kong Interbank Interest Rates - End of period figures** — `hk-hkma-t06-t060301hk-interbank-ir-endperiod` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/hk-interbank-ir-endperiod
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Hong Kong Interbank Interest Rates - Period average figures** — `hk-hkma-t06-t060302hk-interbank-ir-periodaverage` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/hk-interbank-ir-periodaverage
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Hong Kong dollar forward exchange rates - Daily figures** — `hk-hkma-t06-t060203hkd-fer-daily` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/hkd-fer-daily
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Hong Kong dollar forward exchange rates - End of period figures** — `hk-hkma-t06-t060201hkd-fer-endperiod` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/hkd-fer-endperiod
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Hong Kong dollar forward exchange rates - Period average figures** — `hk-hkma-t06-t060202hkd-fer-periodaverage` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/hkd-fer-periodaverage
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Hong Kong dollar interest rates - Period average figures** — `hk-hkma-t06-t060402hkd-ir-periodaverage` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/hkd-ir-periodaverage
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Hong Kong dollar interest rates - Rates as at effective dates** — `hk-hkma-t06-t060401hkd-ir-effdates` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/hkd-ir-effdates
+- **Market Data and Statistics - Monthly Statistical Bulletin - Exchange rates and interest rates - Renminbi deposit rates** — `hk-hkma-t06-t0606renminbi-dr` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/er-ir/renminbi-dr
+- **Market Data and Statistics - Monthly Statistical Bulletin - Financial statistics summary - Banking statistics** — `hk-hkma-t01-t0102banking-statistics` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/financial/banking-statistics
+- **Market Data and Statistics - Monthly Statistical Bulletin - Financial statistics summary - Capital market statistics** — `hk-hkma-t01-t0103capital-market-statistics` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/financial/capital-market-statistics
+- **Market Data and Statistics - Monthly Statistical Bulletin - Financial statistics summary - Economic statistics** — `hk-hkma-t01-t0104economic-statistics` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/financial/economic-statistics
+- **Market Data and Statistics - Monthly Statistical Bulletin - Financial statistics summary - Monetary statistics** — `hk-hkma-t01-t0101monetary-statistics` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/financial/monetary-statistics
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - List of outstanding Government Bonds** — `hk-hkma-t09-t0906list-outstanding-govbonds` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/list-outstanding-govbonds
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - New issuance amount of Government Bonds** — `hk-hkma-t09-t0902new-issuance-amt-gov-bonds` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/new-issuance-amt-gov-bonds
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - Outstanding amount of Government Bonds - Original maturity** — `hk-hkma-t09-t090301out-amt-gov-bonds-original-maturity` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/out-amt-gov-bonds-original-maturity
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - Outstanding amount of Government Bonds - Remaining tenor** — `hk-hkma-t09-t090302out-amt-gov-bonds-remaining-tenor` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/out-amt-gov-bonds-remaining-tenor
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - Prices and yields of Government Bonds issued under the Institutional Bond Issuance Programme - Daily figures** — `hk-hkma-t09-t090403instit-bond-price-yield-daily` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/instit-bond-price-yield-daily?segment=Benchmark
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - Prices and yields of Government Bonds issued under the Institutional Bond Issuance Programme - End of period figures** — `hk-hkma-t09-t090401instit-bond-price-yield-endperiod` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/instit-bond-price-yield-endperiod?segment=Benchmark
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - Prices and yields of Government Bonds issued under the Institutional Bond Issuance Programme - Period average figures** — `hk-hkma-t09-t090402instit-bond-price-yield-periodaverage` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/instit-bond-price-yield-periodaverage?segment=Benchmark
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - Secondary market turnover of Government Bonds issued under the Institutional Bond Issuance Programme - Original maturity** — `hk-hkma-t09-t090101sec-mar-turnover-govbonds-ibip-original-maturity` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/sec-mar-turnover-govbonds-ibip-original-maturity
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - Secondary market turnover of Government Bonds issued under the Institutional Bond Issuance Programme - Remaining tenor** — `hk-hkma-t09-t090102sec-mar-turnover-govbonds-ibip-remain-tenor` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/sec-mar-turnover-govbonds-ibip-remain-tenor
+- **Market Data and Statistics - Monthly Statistical Bulletin - Government Bond Programme - Tender results of Government Bonds issued under the Institutional Bond Issuance Programme** — `hk-hkma-t09-t0905tender-results-gov-bonds-ibip` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/gov-bond/tender-results-gov-bonds-ibip?segment=2year
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - List of outstanding Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme** — `hk-hkma-t10-t1006list-outstanding-govbonds-ibpgsbp` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/list-outstanding-govbonds-ibpgsbp
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - New issuance amount of Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Denominated in other currencies** — `hk-hkma-t10-t100203new-issuance-amt-gov-bonds-ibpgsbp-other-crncy` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/new-issuance-amt-gov-bonds-ibpgsbp-other-crncy
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - New issuance amount of Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Hong Kong dollar-denominated** — `hk-hkma-t10-t100201new-issuance-amt-gov-bonds-ibpgsbp-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/new-issuance-amt-gov-bonds-ibpgsbp-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - New issuance amount of Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Renminbi-denominated** — `hk-hkma-t10-t100202new-issuance-amt-gov-bonds-ibpgsbp-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistical-bulletin/ibpgsbp/new-issuance-amt-gov-bonds-ibpgsbp-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Outstanding amount of Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Original maturity - Denominated in other currencies** — `hk-hkma-t10-t10030103out-amt-gov-bonds-original-maturity-ibpgsbp-other-crncy` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/out-amt-gov-bonds-original-maturity-ibpgsbp-other-crncy
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Outstanding amount of Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Original maturity - Hong Kong dollar-denominated** — `hk-hkma-t10-t10030101out-amt-gov-bonds-original-maturity-ibpgsbp-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/out-amt-gov-bonds-original-maturity-ibpgsbp-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Outstanding amount of Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Original maturity - Renminbi-denominated** — `hk-hkma-t10-t10030102out-amt-gov-bonds-original-maturity-ibpgsbp-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/out-amt-gov-bonds-original-maturity-ibpgsbp-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Outstanding amount of Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Remaining tenor - Denominated in other currencies** — `hk-hkma-t10-t10030203out-amt-gov-bonds-remaining-tenor-ibpgsbp-other-crncy` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/out-amt-gov-bonds-remaining-tenor-ibpgsbp-other-crncy
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Outstanding amount of Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Remaining tenor - Hong Kong dollar-denominated** — `hk-hkma-t10-t10030201out-amt-gov-bonds-remaining-tenor-ibpgsbp-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/out-amt-gov-bonds-remaining-tenor-ibpgsbp-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Outstanding amount of Government Bonds under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Remaining tenor - Renminbi-denominated** — `hk-hkma-t10-t10030202out-amt-gov-bonds-remaining-tenor-ibpgsbp-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/out-amt-gov-bonds-remaining-tenor-ibpgsbp-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Prices and yields of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Daily figures - Hong Kong dollar-denominated** — `hk-hkma-t10-t10040301instit-bond-price-yield-daily-ibpgsbp-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/instit-bond-price-yield-daily-ibpgsbp-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Prices and yields of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Daily figures - Renminbi-denominated** — `hk-hkma-t10-t10040302instit-bond-price-yield-daily-ibpgsbp-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/instit-bond-price-yield-daily-ibpgsbp-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Prices and yields of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - End of period figures - Hong Kong dollar-denominated** — `hk-hkma-t10-t10040101instit-bond-price-yield-endperiod-ibpgsbp-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/instit-bond-price-yield-endperiod-ibpgsbp-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Prices and yields of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - End of period figures - Renminbi-denominated** — `hk-hkma-t10-t10040102instit-bond-price-yield-endperiod-ibpgsbp-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/instit-bond-price-yield-endperiod-ibpgsbp-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Prices and yields of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Period average figures - Hong Kong dollar-denominated** — `hk-hkma-t10-t10040201instit-bond-price-yield-periodaverage-ibpgsbp-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/instit-bond-price-yield-periodaverage-ibpgsbp-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Prices and yields of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Period average figures - Renminbi-denominated** — `hk-hkma-t10-t10040202instit-bond-price-yield-periodaverage-ibpgsbp-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/instit-bond-price-yield-periodaverage-ibpgsbp-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Secondary market turnover of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Original maturity - Hong Kong dollar-denominated** — `hk-hkma-t10-t10010101sec-mar-turnover-govbonds-ibpgsbp-original-maturity-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/sec-mar-turnover-govbonds-ibpgsbp-original-maturity-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Secondary market turnover of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Original maturity - Renminbi-denominated** — `hk-hkma-t10-t10010102sec-mar-turnover-govbonds-ibpgsbp-original-maturity-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/sec-mar-turnover-govbonds-ibpgsbp-original-maturity-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Secondary market turnover of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Remaining tenor - Hong Kong dollar-denominated** — `hk-hkma-t10-t10010201sec-mar-turnover-govbonds-ibpgsbp-remaining-maturity-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/sec-mar-turnover-govbonds-ibpgsbp-remaining-maturity-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Secondary market turnover of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Remaining tenor - Renminbi-denominated** — `hk-hkma-t10-t10010202sec-mar-turnover-govbonds-ibpgsbp-remaining-maturity-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/sec-mar-turnover-govbonds-ibpgsbp-remaining-maturity-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Tender results of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Hong Kong dollar-denominated** — `hk-hkma-t10-t100501tender-results-gov-bonds-ibpgsbp-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/tender-results-gov-bonds-ibpgsbp-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Infrastructure Bond Programme and Government Sustainable Bond Programme - Tender results of institutional Government Bonds issued under the Infrastructure Bond Programme and Government Sustainable Bond Programme - Renminbi-denominated** — `hk-hkma-t10-t100502tender-results-gov-bonds-ibpgsbp-rmb` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/ibpgsbp/tender-results-gov-bonds-ibpgsbp-rmb
+- **Market Data and Statistics - Monthly Statistical Bulletin - Monetary market operation - Discount Window and Liquidity Adjustment Window rates - Daily figures** — `hk-hkma-t07-t070303disc-win-liquid-adj-win-rates-daily` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/monetary-operation/disc-win-liquid-adj-win-rates-daily
+- **Market Data and Statistics - Monthly Statistical Bulletin - Monetary market operation - Discount Window and Liquidity Adjustment Window rates - End of period figures** — `hk-hkma-t07-t070301disc-win-liquid-adj-win-rates-endperiod` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/monetary-operation/disc-win-liquid-adj-win-rates-endperiod
+- **Market Data and Statistics - Monthly Statistical Bulletin - Monetary market operation - Discount Window and Liquidity Adjustment Window rates - Period average figures** — `hk-hkma-t07-t070302disc-win-liquid-adj-win-rates-periodaverage` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/monetary-operation/disc-win-liquid-adj-win-rates-periodaverage
+- **Market Data and Statistics - Monthly Statistical Bulletin - Monetary market operation - Market operation - Daily figures** — `hk-hkma-t07-t070102market-operation-daily` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/monetary-operation/market-operation-daily
+- **Market Data and Statistics - Monthly Statistical Bulletin - Monetary market operation - Market operation - Period average figures** — `hk-hkma-t07-t070101market-operation-periodaverage` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/monetary-operation/market-operation-periodaverage
+- **Market Data and Statistics - Monthly Statistical Bulletin - Monetary market operation - Monetary Base - Daily figures** — `hk-hkma-t07-t070202monetary-base-daily` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/monetary-operation/monetary-base-daily
+- **Market Data and Statistics - Monthly Statistical Bulletin - Monetary market operation - Monetary Base - End of period figures** — `hk-hkma-t07-t070201monetary-base-endperiod` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/monetary-operation/monetary-base-endperiod
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money - Components of money supply - All currencies** — `hk-hkma-t02-t020303supply-components-all` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money/supply-components-all
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money - Components of money supply - Foreign currency (Adjusted to exclude foreign currency swap deposits)** — `hk-hkma-t02-t020302supply-components-fc` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money/supply-components-fc?segment=new
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money - Components of money supply - Hong Kong dollar (Adjusted to include foreign currency swap deposits)** — `hk-hkma-t02-t020301supply-components-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money/supply-components-hkd?segment=new
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money - Components of seasonally adjusted Hong Kong dollar M1** — `hk-hkma-t02-t0204components-seasonally-adjusted-hkd` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money/components-seasonally-adjusted-hkd
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money - Currency in circulation** — `hk-hkma-t02-t0201currency` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money/currency
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money - Money Supply - Adjusted for foreign currency swap deposits** — `hk-hkma-t02-t020201supply-adjusted` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money/supply-adjusted
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money - Money Supply - Unadjusted for foreign currency swap deposits** — `hk-hkma-t02-t020202supply-unadjusted-fc` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money/supply-unadjusted-fc
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money markets and debt instruments - Analysis of NCDs issued in Hong Kong** — `hk-hkma-t04-t0403ncds-issued-in-hk` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money-markets/ncds-issued-in-hk
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money markets and debt instruments - Hong Kong dollar interbank transactions** — `hk-hkma-t04-t0401hkd-interbank-trans` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money-markets/hkd-interbank-trans
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money markets and debt instruments - Liabilities due to other authorized institutions** — `hk-hkma-t04-t0402liab-dt-other-ais` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money-markets/liab-dt-other-ais
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money markets and debt instruments - Turnover of NCDs in the secondary market in Hong Kong by authorized institutions** — `hk-hkma-t04-t0404turnover-ncds-sec-mar-hk-ais` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money-markets/turnover-ncds-sec-mar-hk-ais
+- **Progress in the handling of banking complaints by HKMA** — `hk-hkma-banksvf-bank-complaint-progress` · Hong Kong Monetary Authority · JSON · Monthly
+  - https://api.hkma.gov.hk/public/bank-svf-info/bank-complaint-progress
+- **Daily global solar radiation** — `hk-hko-rss-daily-global-solar-radiation` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/KP/ALL/daily_KP_GSR_ALL.csv
+- **Daily grass minimum temperature** — `hk-hko-rss-daily-grass-min-temp` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/HKO/ALL/daily_HKO_GMT_ALL.csv
+- **Daily maximum and mean Hong Kong Heat Index** — `hk-hko-rss-daily-maximum-mean-heat-index` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/KP/ALL/daily_KP_MEANHKHI_ALL.csv
+- **Daily maximum and mean UV indices** — `hk-hko-rss-daily-maximum-mean-uv-index` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/KP/ALL/daily_KP_UV_ALL.csv
+- **Daily maximum, mean and minimum temperatures** — `hk-hko-rss-daily-temperature-info-hko` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=CLMMAXT&rformat=csv&station=CCH
+- **Daily mean amount of cloud** — `hk-hko-rss-daily-mean-amount-of-cloud` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/HKO/ALL/daily_HKO_CLD_ALL.csv
+- **Daily mean dew point temperature** — `hk-hko-rss-daily-mean-dew-point` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/HKA/ALL/daily_HKA_DEW_ALL.csv
+- **Daily mean pressure** — `hk-hko-rss-daily-mean-pressure` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/HKA/ALL/daily_HKA_MSLP_ALL.csv
+- **Daily mean relative humidity** — `hk-hko-rss-daily-mean-relative-humidity` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/HKA/ALL/daily_HKA_RH_ALL.csv
+- **Daily mean sea temperature** — `hk-hko-rss-daily-mean-sea-temp` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/WGL/ALL/daily_WGL_SST_ALL.csv
+- **Daily mean wet bulb temperature** — `hk-hko-rss-daily-mean-wet-bulb` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/HKA/ALL/daily_HKA_WET_ALL.csv
+- **Daily mean wind speed** — `hk-hko-rss-daily-mean-wind-speed` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/cis/csvfile/SC/ALL/daily_SC_WSPD_ALL.csv
+- **Daily number of hours of reduced visibility** — `hk-hko-rss-daily-number-of-hours-of-reduced-visibility` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/HKA/ALL/daily_HKA_RVIS_ALL.csv
+- **Daily prevailing wind direction** — `hk-hko-rss-daily-prevailing-wind-direction` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/cis/csvfile/SC/ALL/daily_SC_PDIR_ALL.csv
+- **Daily total bright sunshine (hours)** — `hk-hko-rss-daily-total-bright-sunshine` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/KP/ALL/daily_KP_SUN_ALL.csv
+- **Daily total cloud-to-cloud lightning count over Hong Kong territory** — `hk-hko-rss-daily-cloud-to-cloud-lightning-count` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/HK/2026/daily_HK_LGTC_2026.csv
+- **Daily total cloud-to-ground lightning count over Hong Kong territory** — `hk-hko-rss-daily-cloud-to-ground-lightning-count` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/HK/2026/daily_HK_LGTG_2026.csv
+- **Daily total evaporation** — `hk-hko-rss-daily-total-evaporation` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/KP/ALL/daily_KP_EVAP_ALL.csv
+- **Daily total rainfall** — `hk-hko-rss-daily-total-rainfall` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/CCH/ALL/daily_CCH_RF_ALL.csv
+- **Monthly total potential evapotranspiration** — `hk-hko-rss-monthly-total-potential-evapotranspiration` · Hong Kong Observatory · CSV · Monthly
+  - https://data.weather.gov.hk/weatherAPI/cis/csvfile/KP/2026/monthly_KP_EVAPTRAN_2026.csv
+- **Number of Incubation Graduates** — `hkstp-hkstp-hkstp-incubation-graduates` · Hong Kong Science and Technology Parks Corporation · JSON · Monthly
+  - https://opendata.hkstp.org/corporate/figures/incubationgraduates/v1/
+- **Number of Technology Companies** — `hkstp-hkstp-hkstp-technology-companies` · Hong Kong Science and Technology Parks Corporation · JSON · Monthly
+  - https://opendata.hkstp.org/corporate/figures/technologycompanies/v1/
+- **Auto Post Information** — `hk-hkpo-hkpo_ds01-hkpo-auto-post` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/auto-post.json
+- **Counter Service** — `hk-hkpo-hkpo_ds01-hkpo-counter-service` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/officeService-Counter-Services.json
+- **Mobile Post Office Information** — `hk-hkpo-hkpo_ds01-hkpo-mobile-office` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/mobile-office.json
+- **Post Office Box Information** — `hk-hkpo-hkpo_ds01-hkpo-po-box` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/po-box.json
+- **Post Office Information** — `hk-hkpo-hkpo_ds01-hkpo-post-office` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/post-office.json
+- **Postage Information** — `hk-hkpo-hkpo_ds02-hkpo-postage` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/postageRate-local-ORD.json
+- **Self-Service Facility** — `hk-hkpo-hkpo_ds01-hkpo-self-service` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/officeService-Self-Service-Facility.json
+- **Street Posting Box Information** — `hk-hkpo-hkpo_ds01-hkpo-street-box` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/street-box.json
+- **iPostal Kiosk Information** — `hk-hkpo-hkpo_ds01-hkpo-ipostal-kiosk` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/ipostal-kiosk.json
+- **iPostal Station Information** — `hk-hkpo-hkpo_ds01-hkpo-ipostal-station` · Hongkong Post · JSON · Monthly
+  - https://www.hongkongpost.hk/opendata/ipostal-station.json
+- **Hong Kong Accreditation Service (HKAS) – List of Accredited Certification Bodies under Hong Kong Certification Body Accreditation Scheme (HKCAS)** — `hk-itc-hkas-cab-hkcas` · Innovation and Technology Commission · CSV · Monthly
+  - https://www.itc.gov.hk/en/quality/hkas/doc/common/accrorg/cab_hkcas.csv
+- **Hong Kong Accreditation Service (HKAS) – List of Accredited Inspection Bodies under Hong Kong Inspection Body Accreditation Scheme (HKIAS)** — `hk-itc-hkas-cab-hkias` · Innovation and Technology Commission · CSV · Monthly
+  - https://www.itc.gov.hk/en/quality/hkas/doc/common/accrorg/cab_hkias.csv
+- **Hong Kong Accreditation Service (HKAS) – List of Accredited Laboratories under Hong Kong Laboratory Accreditation Scheme (HOKLAS)** — `hk-itc-hkas-cab-hoklas` · Innovation and Technology Commission · CSV · Monthly
+  - https://www.itc.gov.hk/en/quality/hkas/doc/common/accrorg/cab_hoklas.csv
+- **List of local institutions which were designated as "Designated Local Research Institutions" (DLRI) pursuant to section 19(1) of Schedule 45 to the Inland Revenue Ordinance (Cap.112)** — `hk-itc-dlri-list-of-designated-local-research-institutions-iro` · Innovation and Technology Commission · JSON · Monthly
+  - https://www.itc.gov.hk/datagovhk/DLRI/DLRIs_List_20260707_List2.json
+- **Number of Registrations/Grants of Trade Marks, Patents and Designs in force in Hong Kong [with statistics of Standard Patent (Original Grant)]** — `hk-ipd-ipstat-number-registrations-grants-hong-kong` · Intellectual Property Department · CSV · Monthly
+  - https://www.ipd.gov.hk/datagovhk/ipstatistics/en/No_of_registrations_grants_in_force_in_hong_kong.csv
+- **Number of Searches conducted on Trade Marks, Patents and Designs through the Intellectual Property Department’s Online Search System** — `hk-ipd-ipstat-number-of-online-searches` · Intellectual Property Department · CSV · Bi-monthly
+  - https://www.ipd.gov.hk/datagovhk/ipstatistics/en/Number-of-Online-Searches.csv
+- **Statistics of Trade Mark, Design and Patent Applications filed by unrepresented applicants and by agents [with statistics of Standard Patent (Original Grant)]** — `hk-ipd-ipstat-applications-filed-by-agents` · Intellectual Property Department · CSV · Bi-monthly
+  - https://www.ipd.gov.hk/datagovhk/ipstatistics/en/Applications-filed-by-agents.csv
+- **Statistics of Trade Marks, Patents, Designs and Copyright Licensing Bodies - applications and registrations/grants [with statistics of Standard Patent (Original Grant)]** — `hk-ipd-ipstat-statistics-trade-mark-patents-designs-copyright-licensing-bodies` · Intellectual Property Department · CSV · Monthly
+  - https://www.ipd.gov.hk/datagovhk/ipstatistics/en/Statistics_of_Trade_Marks_Patents_Designs_and_Copyright_Licensing_Bodies.csv
+- **Statistics of Trade Marks, Standard Patents, Short-term Patents and Designs – applications received, registrations/grants, processing time and applications pending examination** — `hk-ipd-ipstat-statistics-trade-marks-standard-patents-short-term-patents-designs` · Intellectual Property Department · CSV · Bi-monthly
+  - https://www.ipd.gov.hk/datagovhk/ipstatistics/en/Statistics-of-trade-marks-standard-patents-short-term-patents-designs.csv
+- **Statistics of e-filing services** — `hk-ipd-ipstat-statistics-e-filing-services` · Intellectual Property Department · CSV · Bi-monthly
+  - https://www.ipd.gov.hk/datagovhk/ipstatistics/en/Statistics-of-e-filing-services.csv
+- **Online Magazine of talent.gov.hk** — `hk-lwb-talentgvhk-talentgovhk-explorer` · Labour and Welfare Bureau · JSON, XML · Monthly
+  - https://www.talent.gov.hk/datagovhk/mip_en.json
+- **Index of Owners' Corporations (OC)** — `hk-lr-data9-landreg` · Land Registry · JSON, XLS · Monthly
+  - https://www.landreg.gov.hk/datagovhk/oi_hkkl.json
+- **Monthly statistics on instruments received for registration (2021-2026)** — `hk-lr-data4-landreg` · Land Registry · JSON, XLS · Monthly
+  - https://www.landreg.gov.hk/datagovhk/202101_data.xls
+- **Monthly statistics on the total number of public search of land registers** — `hk-lr-data7-landreg` · Land Registry · JSON, XLS · Monthly
+  - https://www.landreg.gov.hk/datagovhk/Monthly_Public_Search.json
+- **Number of Agreements for Sale and Purchase of residential building units received for registration (by range of consideration)** — `hk-lr-data5-landreg` · Land Registry · JSON, XLS · Monthly
+  - https://www.landreg.gov.hk/datagovhk/consideration_2005.json
+- **Applications for Consent to Assign for Residential / Non-Residential Development Pending Approval (Available in GML)** — `hk-landsd-openmap-lao-ctoap` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637222323531_13490
+- **Applications for Presale Consent for Non-Residential Development Pending Approval (Available in GML)** — `hk-landsd-openmap-lao-pcnrdp` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637222570715_72693
+- **Applications for Presale Consent for Residential Development Pending Approval (Available in GML)** — `hk-landsd-openmap-lao-pcrdp` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637222762687_21369
+- **Issued Consent to Assign for Residential / Non-Residential Development (Available in GML)** — `hk-landsd-openmap-lao-ctoa` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637226940589_55900
+- **Issued Presale Consent for Non-Residential Development (Available in GML)** — `hk-landsd-openmap-lao-pcnrd` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637303223208_26596
+- **Issued Presale Consent for Residential Development (Available in GML)** — `hk-landsd-openmap-lao-pcrd` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637303511514_65978
+- **Issued Presale Consent, Consents to Assign and Approvals of Deeds of Mutual Covenant (Available in GML)** — `hk-landsd-openmap-lao-pcdomc` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637303790533_21736
+- **Lands Department Consent Scheme - Presale Consent cancelled** — `hk-landsd-openmap-lands-department-consent-scheme-presale-consent-cancelled` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637309045440_2878
+- **Rejected / Withdrawn Applications for Consent to Assign for Residential / Non-Residential Development (Available in GML)** — `hk-landsd-openmap-lao-ctoaw` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637305842679_65413
+- **Rejected / Withdrawn Applications for Presale Consent for Non-Residential Development (Available in GML)** — `hk-landsd-openmap-lao-pcnrdw` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637306048970_56661
+- **Rejected / Withdrawn Applications for Presale Consent for Residential Development (Available in GML)** — `hk-landsd-openmap-lao-pcrdw` · Lands Department · GML · Monthly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637306224818_69555
+- **Revision Date of 3D Spatial Data - 3D-BIT00** — `hk-landsd-openmap-revision-date-of-3d-spatial-data-3d-bit00` · Lands Department · CSV · Bi-monthly
+  - https://www.landsd.gov.hk/doc/en/mapping/digital-map/common/update/3d_update.csv
+- **Summary of land transaction applications received and under processing (From January 2022 onwards in CSV format)** — `hk-landsd-openmap-summary-land-transaction-applications` · Lands Department · CSV · Monthly
+  - https://www.landsd.gov.hk/landsd_psi_data/SMO/data/summary-land-transaction-applications/2022-01-Summary-of-Land-Transaction-Received_Eng.csv
+- **MTR routes, fares and barrier-free facilities** — `mtr-data-routes-fares-barrier-free-facilities` · MTR Corporation Limited · CSV · Monthly
+  - https://opendata.mtr.com.hk/data/mtr_lines_and_stations.csv
+- **Number of MPF intermediaries** — `mpfa-mpfa-number-of-mpf-intermediaries` · Mandatory Provident Fund Schemes Authority · CSV, XLSX · Monthly
+  - https://www.mpfa.org.hk/en/-/media/files/information-centre/research-and-statistics/other-reports/statistics/number_of_mpf_intermediaries02_en.csv
+- **Number of MPF trustees, schemes and funds** — `mpfa-mpfa-number-of-mpf-trustees-schemes-and-funds` · Mandatory Provident Fund Schemes Authority · CSV, XLSX · Monthly
+  - https://www.mpfa.org.hk/en/-/media/files/information-centre/research-and-statistics/other-reports/statistics/number_of_mpf_trustees_schemes_and_funds02_en.csv
+- **Key Communications Statistics** — `hk-ofca-ofca-ofca-dataset-10` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/key_com_stat.csv
+- **Key Statistics on Licensing of Private Radio Installations and Related Matters** — `hk-ofca-ofca-ofca-dataset-38` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/licensing_stat.csv
+- **Key Statistics on Public Wi-Fi Service in Hong Kong** — `hk-ofca-ofca-ofca-dataset-26` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/public_wifi_stat.csv
+- **Key Statistics on Wireless Service in Hong Kong** — `hk-ofca-ofca-ofca-dataset-16` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/wireless_stat.csv
+- **Key Statistics on Wireline Service in Hong Kong** — `hk-ofca-ofca-ofca-dataset-25` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/wireline_stat.csv
+- **List of Experimental Station Licensees** — `hk-ofca-ofca-ofca-dataset-1` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/ex_en.csv
+- **List of Internet Service Providers (ISP)** — `hk-ofca-ofca-ofca-dataset-12` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/isp_en.csv
+- **List of Radio Dealer (Unrestricted) Licensees** — `hk-ofca-ofca-ofca-dataset-2` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/xru_en.csv
+- **List of Satellite Master Antenna Television (SMATV) Licensees** — `hk-ofca-ofca-ofca-dataset-35` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/smatv_licensee_en.csv
+- **Statistics on Customer Access via Broadband Networks** — `hk-ofca-ofca-ofca-dataset-6` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/cus_isp_broadband.csv
+- **Statistics on Customer Access via PSTN** — `hk-ofca-ofca-ofca-dataset-7` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/cus_isp_pstn.csv
+- **Statistics on Internet Service Subscriptions in Hong Kong** — `hk-ofca-ofca-ofca-dataset-5` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/line_isp.csv
+- **Statistics on Radio Interference Cases Investigated and Radiation Hazard Measurement** — `hk-ofca-ofca-ofca-dataset-39` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/interference_stat.csv
+- **Statistics on Satellite Master Antenna Television (SMATV)** — `hk-ofca-ofca-ofca-dataset-4` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/Channel_Occupancy_in_SMATV_Systems_6_MHz.csv
+- **The Numbering Plan for Telecommunications Services in Hong Kong** — `hk-ofca-ofca-ofca-dataset-17` · Office of the Communications Authority · CSV · Monthly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/tel_no_en_tc.csv
+- **Property Market Statistics** — `hk-rvd-tsinfo_rvd-property-market-statistics` · Rating and Valuation Department · CSV, XLS · Monthly, except for Completions, Forecast Completions, Stock, Vacancy and Take-up at year-end to be updated annually
+  - http://www.rvd.gov.hk/datagovhk/1.1Q(82-98).csv
+- **Summary of Newly Built Properties Assessed to Rates and/or Government Rent** — `hk-rvd-tsinfo_rvd-summary-of-newly-built-properties-assessed-to-rates-and-or-gov-rent` · Rating and Valuation Department · CSV, XLSX · Monthly
+  - https://www.rvd.gov.hk/doc/en/summary_of_newly_built_properties_assessed.xlsx
+- **Security and Guarding Services Industry Authority - List of licensed security companies** — `hk-sb-sb_sgsia-sb-sgsia-sec-com-list` · Security Bureau · CSV · Monthly
+  - https://www.sb.gov.hk/datagovhk/sgsia/data_tc.csv
+- **Early Education & Training Centre
+Information on Cases Matched for Service through Central Referral System for Rehabilitation Services – Subsystem for Pre-school Children with Disabilities** — `hk-swd-rm-eetc-information-on-cases-matched` · Social Welfare Department · CSV · Monthly
+  - https://www.swd.gov.hk/datagovhk/rm/EETC.csv
+- **Information on Waiting List for Day Service through Central Referral System for Rehabilitation Services – Subsystem for Pre-school Children with Disabilities** — `hk-swd-rm-ps-waiting-list-for-day-service` · Social Welfare Department · CSV · Monthly
+  - https://www.swd.gov.hk/datagovhk/rm/Waiting-list-for-day-service.csv
+- **Integrated Programme in Kindergarten-cum-Child Care Centre
+Information on Cases Matched for Service through Central Referral System for Rehabilitation Services – Subsystem for Pre-school Children with Disabilities** — `hk-swd-rm-ip-information-on-cases-matched` · Social Welfare Department · CSV · Monthly
+  - https://www.swd.gov.hk/datagovhk/rm/IP.csv
+- **Latest application dates of applications without location preference being offered subsidised elderly residential care service placements** — `hk-swd-elderly-statistics-on-turn-for-offer` · Social Welfare Department · CSV · Monthly
+  - https://www.swd.gov.hk/datagovhk/elderly/statistics-on-turn-for-offer.csv
+- **Number of applicants waitlisted for subsidised residential care services for the elderly** — `hk-swd-elderly-statistics-on-waiting-list-rcs` · Social Welfare Department · CSV · Monthly
+  - https://www.swd.gov.hk/datagovhk/elderly/statistics-on-waiting-list-rcs.csv
+- **Special Child Care Centre
+Information on Cases Matched for Service through Central Referral System for Rehabilitation Services – Subsystem for Pre-school Children with Disabilities** — `hk-swd-rm-sccc-information-on-cases-matched` · Social Welfare Department · CSV · Monthly
+  - https://www.swd.gov.hk/datagovhk/rm/SCCC.csv
+- **Statistics and Figures on Social Security** — `hk-swd-ssb-ss-stat-fig` · Social Welfare Department · CSV · Social Welfare Department:  once per month
+  - https://www.swd.gov.hk/datagovhk/ssb/SS-Stat-Fig.csv
+- **Statistics on Standardised Care Need Assessment Mechanism for Elderly Services** — `hk-swd-elderly-statistics-on-scnames` · Social Welfare Department · CSV · Monthly
+  - https://www.swd.gov.hk/datagovhk/elderly/statistics-on-scnames.csv
+- **Statistics on waiting list and waiting time for community care services** — `hk-swd-elderly-statistics-on-waiting-list-and-waiting-time-for-ccs` · Social Welfare Department · CSV · Monthly
+  - https://www.swd.gov.hk/datagovhk/elderly/statistics-on-waiting-list-and-waiting-time-for-ccs.csv
+- **Number of Renewable Energy Power Systems by Districts** — `hkelectric-cs_cbd-number-of-renewable-energy-power-systems-by-districts` · The Hongkong Electric Company, Limited · CSV · Monthly
+  - https://www.hkelectric.com/Documents/en/CustomerServices/SmartPowerServices/Documents/No%20of%20REPS%20by%20District.csv
+- **Number of Renewable Energy Power Systems by Premises Type** — `hkelectric-cs_cbd-number-of-renewable-energy-power-systems-by-premises-type` · The Hongkong Electric Company, Limited · CSV · Monthly
+  - https://www.hkelectric.com/Documents/en/CustomerServices/SmartPowerServices/Documents/No%20of%20REPS%20by%20Premises%20Type.csv
+- **Number of Renewable Energy Power Systems by Renewable Energy Type** — `hkelectric-cs_cbd-number-of-renewable-energy-power-systems-by-renewable-energy-type` · The Hongkong Electric Company, Limited · CSV · Monthly
+  - https://www.hkelectric.com/Documents/en/CustomerServices/SmartPowerServices/Documents/No%20of%20REPS%20by%20RE%20Type.csv
+- **Renewable Energy Generation Amount (kWh) by Districts** — `hkelectric-cs_cbd-renewable-energy-generation-by-districts` · The Hongkong Electric Company, Limited · CSV · Monthly
+  - https://www.hkelectric.com/Documents/en/CustomerServices/SmartPowerServices/Documents/RE%20Generation%20by%20District.csv
+- **Renewable Energy Generation Amount (kWh) by Premises Type** — `hkelectric-cs_cbd-renewable-energy-generation-by-premises-type` · The Hongkong Electric Company, Limited · CSV · Monthly
+  - https://www.hkelectric.com/Documents/en/CustomerServices/SmartPowerServices/Documents/RE%20Generation%20by%20Premises%20Type.csv
+- **Renewable Energy Generation Amount (kWh) by Renewable Energy Type** — `hkelectric-cs_cbd-renewable-energy-generation-by-renewable-energy-type` · The Hongkong Electric Company, Limited · CSV · Monthly
+  - https://www.hkelectric.com/Documents/en/CustomerServices/SmartPowerServices/Documents/RE%20Generation%20by%20RE%20Type.csv
+- **Monthly Traffic and Transport Digest** — `hk-td-tis_10-monthly-traffic-and-transport-digest` · Transport Department · XLS · Monthly
+  - https://www.td.gov.hk/datagovhk_td/mttd/resources/keystat.xls
+- **Monthly Traffic and Transport Digest (CSV)** — `hk-td-tis_17-monthly-traffic-and-transport-digest-csv` · Transport Department · CSV · MONTHLY
+  - https://www.td.gov.hk/datagovhk_tis/mttd-csv/en/DATA_LAST_REVISION_DATE_eng.csv
+- **Particulars of first registered vehicles** — `hk-td-wcms_11-first-reg-vehicle` · Transport Department · CSV, XLSX · Monthly
+  - https://www.td.gov.hk/datagovhk_td/first-reg-vehicle/resources/en/particulars_of_first_registered_vehicle_nov_2019_eng.xlsx
+- **Road Network (2nd Generation)** — `hk-td-tis_15-road-network-v2` · Transport Department · CSV, GML, KML · Monthly
+  - https://static.data.gov.hk/td/road-network-v2/BUS_ONLY_LANE.kmz
+- **Routes and fares of public transport** — `hk-td-tis_3-routes-and-fares-of-public-transport` · Transport Department · CSV · Twice per month
+  - https://static.data.gov.hk/td/routes-and-fares/ROUTE_BUS.csv
+- **Routes and fares of public transport (XML)** — `hk-td-tis_14-routes-fares-xml` · Transport Department · CSV, XML · Twice per month
+  - https://static.data.gov.hk/td/routes-fares-xml/COMPANY_CODE.xml
+- **Traffic Aids Drawings (2nd generation)** — `hk-td-tis_16-traffic-aids-drawings-v2` · Transport Department · CSV, GML, KML · Monthly
+  - https://static.data.gov.hk/td/traffic-aids-drawings-v2/DTAD_CYC_PT.kmz
+- **Container Throughput Statistics** — `hk-tlb-tlb-mpb` · Transport and Logistics Bureau · CSV · Monthly
+  - https://www.hkmpdb.gov.hk/document/HKP_KTCT-stat_csv1(EN).csv
+- **Cross boundary road cargo statistics** — `hk-tlb-tlb_div5_2-mpb` · Transport and Logistics Bureau · CSV · Monthly
+  - https://www.hkmpdb.gov.hk/document/Cross_boundary_road_cargo_statistics_(EN).csv
+- **Total container throughput by mode of transport** — `hk-tlb-tlb_div5_1-mpb` · Transport and Logistics Bureau · CSV · Monthly
+  - https://www.hkmpdb.gov.hk/document/Total_container_throughput_by_mode_of_transport_(EN).csv
+- **Data related to Monthly Financial Results Published in the Press Releases** — `hk-try-trymthfinr-press-release-financial-results` · Treasury · CSV, JSON, XML · Every Month
+  - https://www.try.gov.hk/internet/trymthfinr/press_release_2019-20_e.csv
+- **Staff Establishment** — `hk-wsd-wsd3-staff-establishment` · Water Supplies Department · CSV · Every month
+  - https://www.wsd.gov.hk/datagovhk/tc-data/staff_establishment_tc.csv
+- **Statistics of Diploma of Applied Education/Diploma Yi Jin - Tuition Fee Reimbursement** — `hk-wfsfaa-sfo_01-dyj-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/dyj/DYJ_Statistics_en.xlsx
+- **Statistics of Examination Fee Remission Scheme** — `hk-wfsfaa-sfo_01-efr-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/efr/Examination_Fee_Remission_Statistics_en.xlsx
+- **Statistics of Financial Assistance Scheme for Designated Evening Adult Education Courses (FAEAEC) - Tuition Fee Reimbursement** — `hk-wfsfaa-sfo_01-faeaec-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/faeaec/FAEAEC_Statistics_en.xlsx
+- **Statistics of Financial Assistance Scheme for Post-secondary Students** — `hk-wfsfaa-sfo_01-fasp-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/fasp/FASP_Statistics_en.xlsx
+- **Statistics of Grant for School-related Expenses for Kindergarten Students** — `hk-wfsfaa-sfo_01-grantkg-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/grantkg/Grant_KG_Statistics_en.xlsx
+- **Statistics of Kindergarten and Child Care Centre Fee Remission Scheme** — `hk-wfsfaa-sfo_01-kcfr-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/kcfr/Kindergarten_and_Child_Care_Centre_Fee_Remission_Scheme_Statistics_en.xlsx
+- **Statistics of Non-means-tested Loan Scheme** — `hk-wfsfaa-sfo_01-nls-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/nls/NLS_Statistics_en.xlsx
+- **Statistics of School Textbook Assistance Scheme Scheme** — `hk-wfsfaa-sfo_01-sta-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/sta/School_Textbook_Assistance_Statistics_en.xlsx
+- **Statistics of Student Travel Subsidy Scheme** — `hk-wfsfaa-sfo_01-sts-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/sts/Student_Travel_Subsidy_Statistics_en.xlsx
+- **Statistics of Subsidy Scheme for Internet Access Charges** — `hk-wfsfaa-sfo_01-sia-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/sia/Subsidy_Scheme_for_Internet_Access_Statistics_en.xlsx
+- **Statistics of Tertiary Student Finance Scheme - Publicly-funded Programmes** — `hk-wfsfaa-sfo_01-tsfs-stats` · Working Family and Student Financial Assistance Agency · CSV, XLSX · Monthly
+  - https://www.wfsfaa.gov.hk/sfo/psi/tsfs/TSFS_Statistics_en.xlsx
+
+### quarterly
+
+- **Building Services Tender Price Index (BSTPI)** — `hk-archsd-archsddata-tpi-bs` · Architectural Services Department · JSON · Each Quarter
+  - https://www.archsd.gov.hk/en/psi/tpi-bs-en.json
+- **Building Works Tender Price Index (BWTPI)** — `hk-archsd-archsddata-tpi-bw` · Architectural Services Department · JSON · Each Quarter
+  - https://www.archsd.gov.hk/en/psi/tpi-bw-en.json
+- **Hong Kong Green Building Council (HKGBC) BEAM Plus Assessment Final Grading for Completed Capital Works Projects managed by the Architectural Services Department** — `hk-archsd-archsddata-beampluspl` · Architectural Services Department · JSON · Each Quarter
+  - https://www.archsd.gov.hk/en/psi/beampluspl-en.json
+- **Spending data of Head 25 - Architectural Services Department under General Revenue Account** — `hk-archsd-archsddata-aexph25` · Architectural Services Department · CSV · Each Quarter
+  - https://www.archsd.gov.hk/en/psi/aexph25.csv
+- **Air Transport Statistics - Table 410-92011 : Inward and outward movements of cargo by air** — `hk-censtatd-tablechart-410-92011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-92011&full_series=1&download_excel=1
+- **Air Transport Statistics - Table 650-93021 : Arrival transits passengers via Hong Kong Airport** — `hk-censtatd-tablechart-650-93021` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=650-93021&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37001 : Balance of Payments (BoP)** — `hk-censtatd-tablechart-315-37001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37001&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37002 : BoP as a ratio to Gross Domestic Product (GDP)** — `hk-censtatd-tablechart-315-37002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37002&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37003 : BoP: current account and capital account** — `hk-censtatd-tablechart-315-37003` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37003&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37004 : BoP: financial account** — `hk-censtatd-tablechart-315-37004` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37004&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37005 : Percentage changes of seasonally adjusted current account** — `hk-censtatd-tablechart-315-37005` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37005&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37006 : Net investment flows by sector** — `hk-censtatd-tablechart-315-37006` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37006&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37021 : International Investment Position by standard component (position as at end of period)** — `hk-censtatd-tablechart-315-37021` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37021&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37022 : International Investment Position as a ratio to Gross Domestic Product (GDP)** — `hk-censtatd-tablechart-315-37022` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37022&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37023 : Currency composition of International Investment Position (position as at end of period)** — `hk-censtatd-tablechart-315-37023` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37023&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong - Table 315-37031 : External Debt (position as at end of period)** — `hk-censtatd-tablechart-315-37031` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-37031&full_series=1&download_excel=1
+- **Balance of Payments, International Investment Position and External Debt Statistics of Hong Kong [Report]** — `hk-censtatd-tablechart-b1040001` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10400012026QQ01&download_excel=1
+- **Business Receipts Indices for Service Industries - Quarterly Business Receipts Indices for Service Industries [Report]** — `hk-censtatd-tablechart-b1080006` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10800062026QQ02&download_excel=1
+- **Business Receipts Indices for Service Industries - Table 660-69001 : Business Receipts Indices for Service Industries and Service Domains (Quarterly average of 2015 = 100)** — `hk-censtatd-tablechart-660-69001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=660-69001&full_series=1&download_excel=1
+- **Business Receipts Indices for Service Industries - Table 660-69002 : Year-on-year % Change of Business Receipts Indices for Service Industries and Service Domains** — `hk-censtatd-tablechart-660-69002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=660-69002&full_series=1&download_excel=1
+- **Business Receipts Indices for Service Industries - Table 660-69011 : Seasonally adjusted Business Receipts Indices for Service Industries and Service Domains (Quarterly average of 2015 = 100)** — `hk-censtatd-tablechart-660-69011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=660-69011&full_series=1&download_excel=1
+- **Business Receipts Indices for Service Industries - Table 660-69012 : Quarter-to-quarter % Change of Business Receipts Indices for Service Industries and Service Domains Based on the seasonally adjusted series** — `hk-censtatd-tablechart-660-69012` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=660-69012&full_series=1&download_excel=1
+- **Business Tendency - Report on Quarterly Business Tendency Survey [Report]** — `hk-censtatd-tablechart-b1110008` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B11100082026QQ03&download_excel=1
+- **Business Tendency - Table 330-41001 : Views on expected changes in business situation** — `hk-censtatd-tablechart-330-41001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-41001&full_series=1&download_excel=1
+- **Business Tendency - Table 330-41002 : Views on expected changes in volume of business/output** — `hk-censtatd-tablechart-330-41002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-41002&full_series=1&download_excel=1
+- **Business Tendency - Table 330-41003 : Views on expected changes in number of persons engaged** — `hk-censtatd-tablechart-330-41003` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-41003&full_series=1&download_excel=1
+- **Business Tendency - Table 330-41004 : Views on expected changes in selling price/service charge** — `hk-censtatd-tablechart-330-41004` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-41004&full_series=1&download_excel=1
+- **Business Tendency - Table 330-41011 : Level of orders-on-hand, outstanding contract work and stocks of goods in volume terms** — `hk-censtatd-tablechart-330-41011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-41011&full_series=1&download_excel=1
+- **Business Tendency - Table 330-41021 : Profit situation** — `hk-censtatd-tablechart-330-41021` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-41021&full_series=1&download_excel=1
+- **Business Tendency - Table 330-41022 : Financial situation** — `hk-censtatd-tablechart-330-41022` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-41022&full_series=1&download_excel=1
+- **Business Tendency - Table 330-41023 : Access to credit situation** — `hk-censtatd-tablechart-330-41023` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=330-41023&full_series=1&download_excel=1
+- **Construction Output - Report on the Quarterly Survey of Construction Output [Report]** — `hk-censtatd-tablechart-b1090002` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10900022026QQ02&download_excel=1
+- **Construction Output - Table 615-66001 : Gross value of construction works performed by main contractors** — `hk-censtatd-tablechart-615-66001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-66001&full_series=1&download_excel=1
+- **Construction Output - Table 615-66002 : Seasonally adjusted gross value of construction works performed by main contractors** — `hk-censtatd-tablechart-615-66002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-66002&full_series=1&download_excel=1
+- **Construction Output - Table 615-66011 : Gross value of construction works in nominal terms performed by contractors analysed by broad trade group** — `hk-censtatd-tablechart-615-66011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-66011&full_series=1&download_excel=1
+- **Construction Output - Table 615-66012 : Gross value of construction works in real terms performed by main contractors analysed by broad trade group** — `hk-censtatd-tablechart-615-66012` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-66012&full_series=1&download_excel=1
+- **Construction Output - Table 615-66021 : Gross value of construction works in nominal terms performed by main contractors at construction sites analysed by broad end-use group** — `hk-censtatd-tablechart-615-66021` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-66021&full_series=1&download_excel=1
+- **Construction Output - Table 615-66022 : Gross value of construction works in real terms performed by main contractors at construction sites analysed by broad end-use group** — `hk-censtatd-tablechart-615-66022` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-66022&full_series=1&download_excel=1
+- **Construction Output - Table 615-66023 : Gross value of construction works in nominal terms performed by main contractors at construction sites analysed by detailed end-use group** — `hk-censtatd-tablechart-615-66023` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-66023&full_series=1&download_excel=1
+- **Construction Output - Table 615-66024 : Gross value of construction works in real terms performed by main contractors at construction sites analysed by detailed end-use group** — `hk-censtatd-tablechart-615-66024` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-66024&full_series=1&download_excel=1
+- **Construction Output - Table 615-66031 : Gross value of construction works in nominal terms performed by main contractors at construction sites analysed by nature of construction activity** — `hk-censtatd-tablechart-615-66031` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=615-66031&full_series=1&download_excel=1
+- **Culture, Entertainment and Recreation - Table 945-89002 : Usage rates of recreation facilities by type** — `hk-censtatd-tablechart-945-89002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=945-89002&full_series=1&download_excel=1
+- **Employment and Vacancies - Table 215-94001 : Number of establishments and number of persons engaged of the selected services industries** — `hk-censtatd-tablechart-215-94001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-94001&full_series=1&download_excel=1
+- **Employment and Vacancies - Table 215-94002 : Number of establishments and number of persons engaged in insurance, retail trade, and professional, scientific and technical services industries** — `hk-censtatd-tablechart-215-94002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-94002&full_series=1&download_excel=1
+- **External Direct Investment Statistics of Hong Kong - Table 315-38001 : Direct investment (DI) statistics of Hong Kong** — `hk-censtatd-tablechart-315-38001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=315-38001&full_series=1&download_excel=1
+- **General Household Survey - Quarterly Report on General Household Survey [Report]** — `hk-censtatd-tablechart-b1050001` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10500012026QQ02&download_excel=1
+- **Government Revenue and Expenditure - Table 340-47002 : Government revenue and expenditure under the General Revenue Account analysed by quarter** — `hk-censtatd-tablechart-340-47002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-47002&full_series=1&download_excel=1
+- **Gross Domestic Product (GDP) by economic activity - Gross Domestic Product by Economic Activity [Report]** — `hk-censtatd-tablechart-b1030004` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10300042026QQ01&download_excel=1
+- **Gross Domestic Product (GDP) by economic activity - Table 310-34501 : Gross Domestic Product (GDP) by economic activity in chained dollars** — `hk-censtatd-tablechart-310-34501` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-34501&full_series=1&download_excel=1
+- **Gross Domestic Product - Gross Domestic Product by Expenditure Component [Report]** — `hk-censtatd-tablechart-b1030001` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10300012026QQ02&download_excel=1
+- **Gross Domestic Product - Table 310-30001 : Percentage change of Gross Domestic Product (GDP) and selected major expenditure components in real terms** — `hk-censtatd-tablechart-310-30001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-30001&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-31001 : Gross Domestic Product (GDP), implicit price deflator of GDP and per capita GDP** — `hk-censtatd-tablechart-310-31001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-31001&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-31002 : Gross Domestic Product (GDP) by major expenditure component at current market prices** — `hk-censtatd-tablechart-310-31002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-31002&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-31003 : Gross Domestic Product (GDP) by major expenditure component in chained dollars** — `hk-censtatd-tablechart-310-31003` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-31003&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-31004 : Component contribution to year-on-year percentage change in real terms of Gross Domestic Product (GDP)** — `hk-censtatd-tablechart-310-31004` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-31004&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-31005 : Implicit price deflators (IPD) of Gross Domestic Product (GDP) and its major expenditure components** — `hk-censtatd-tablechart-310-31005` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-31005&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-31007 : Seasonally adjusted Gross Domestic Product (GDP) and its major expenditure components in chained dollars, and implicit price deflator (IPD) of GDP** — `hk-censtatd-tablechart-310-31007` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-31007&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-31011 : Private consumption expenditure (PCE) by component at current market prices** — `hk-censtatd-tablechart-310-31011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-31011&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-31012 : Private consumption expenditure (PCE) by component in chained dollars** — `hk-censtatd-tablechart-310-31012` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-31012&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-32021 : Government consumption expenditure (GCE) by component at current market prices** — `hk-censtatd-tablechart-310-32021` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-32021&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-32022 : Government consumption expenditure (GCE) by component in chained dollars** — `hk-censtatd-tablechart-310-32022` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-32022&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-32031 : Gross domestic fixed capital formation (GDFCF) by component at current market prices** — `hk-censtatd-tablechart-310-32031` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-32031&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-32032 : Gross domestic fixed capital formation (GDFCF) by component in chained dollars** — `hk-censtatd-tablechart-310-32032` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-32032&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-33041 : Exports and imports of services by service component at current market prices** — `hk-censtatd-tablechart-310-33041` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-33041&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-33042 : Exports and imports of services by service component in chained dollars** — `hk-censtatd-tablechart-310-33042` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-33042&full_series=1&download_excel=1
+- **Gross Domestic Product - Table 310-35091 : Real Gross Domestic Income (RGDI) in chained dollars** — `hk-censtatd-tablechart-310-35091` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-35091&full_series=1&download_excel=1
+- **Gross National Income (GNI), real Gross National Income (RGNI) , per capita GNI, per capita RGNI and External primary income flows (EPIF) - Gross National Income and External Primary Income Flows [Report]** — `hk-censtatd-tablechart-b1040005` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10400052026QQ02&download_excel=1
+- **Gross National Income (GNI), real Gross National Income (RGNI) , per capita GNI, per capita RGNI and External primary income flows (EPIF) - Table 310-36201 : Gross National Income (GNI), real Gross National Income (RGNI), per capita GNI and per capita RGNI** — `hk-censtatd-tablechart-310-36201` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-36201&full_series=1&download_excel=1
+- **Gross National Income (GNI), real Gross National Income (RGNI) , per capita GNI, per capita RGNI and External primary income flows (EPIF) - Table 310-36202 : External primary income flows (EPIF) by income component at current market prices** — `hk-censtatd-tablechart-310-36202` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-36202&full_series=1&download_excel=1
+- **Gross National Income (GNI), real Gross National Income (RGNI) , per capita GNI, per capita RGNI and External primary income flows (EPIF) - Table 310-36203 : External primary income flows (EPIF) by selected major source/destination country/territory at current market prices** — `hk-censtatd-tablechart-310-36203` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-36203&full_series=1&download_excel=1
+- **Gross National Income (GNI), real Gross National Income (RGNI) , per capita GNI, per capita RGNI and External primary income flows (EPIF) - Table 310-36204 : External primary income flows (EPIF) in real terms** — `hk-censtatd-tablechart-310-36204` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-36204&full_series=1&download_excel=1
+- **Gross National Income (GNI), real Gross National Income (RGNI) , per capita GNI, per capita RGNI and External primary income flows (EPIF) - Table 310-36205 : Gross National Disposable Income (GNDI) at current market prices** — `hk-censtatd-tablechart-310-36205` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=310-36205&full_series=1&download_excel=1
+- **Health - Table 930-92081A : Number of deaths of notifiable infectious diseases** — `hk-censtatd-tablechart-930-92081a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=930-92081A&full_series=1&download_excel=1
+- **Health - Table 930-92085 : Department of Health - outpatient services** — `hk-censtatd-tablechart-930-92085` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=930-92085&full_series=1&download_excel=1
+- **Health - Table 930-92086 : Hospital Authority - outpatient services** — `hk-censtatd-tablechart-930-92086` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=930-92086&full_series=1&download_excel=1
+- **Health - Table 930-92087 : Hospital Authority - inpatient services** — `hk-censtatd-tablechart-930-92087` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=930-92087&full_series=1&download_excel=1
+- **Health - Table 930-92093 : Hospital Authority - accident and emergency services** — `hk-censtatd-tablechart-930-92093` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=930-92093&full_series=1&download_excel=1
+- **Hong Kong Energy Statistics - Table 915-91101 : Value of net imports of oil products and coal products** — `hk-censtatd-tablechart-915-91101` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=915-91101&full_series=1&download_excel=1
+- **Hong Kong Energy Statistics - Table 915-91102 : Quantity of net imports of oil products and coal products** — `hk-censtatd-tablechart-915-91102` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=915-91102&full_series=1&download_excel=1
+- **Hong Kong Energy Statistics - Table 915-91103 : Unit values of imports of oil products and coal products** — `hk-censtatd-tablechart-915-91103` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=915-91103&full_series=1&download_excel=1
+- **Hong Kong Energy Statistics - Table 915-91105 : Storage capacity and tank stock of oil products** — `hk-censtatd-tablechart-915-91105` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=915-91105&full_series=1&download_excel=1
+- **Hong Kong Energy Statistics - Table 915-91106 : Sales of oil products by type of users** — `hk-censtatd-tablechart-915-91106` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=915-91106&full_series=1&download_excel=1
+- **Hong Kong Energy Statistics - Table 915-91202 : Local consumption of electricity and gas by type of users and sales revenue from locally sold** — `hk-censtatd-tablechart-915-91202` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=915-91202&full_series=1&download_excel=1
+- **Hong Kong Energy Statistics - Table 915-91203 : Electricity production, imports, exports, and consumption** — `hk-censtatd-tablechart-915-91203` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=915-91203&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55110 : Port Cargo Throughput** — `hk-censtatd-tablechart-410-55110` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55110&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55111 : Seaborne Cargo Throughput** — `hk-censtatd-tablechart-410-55111` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55111&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55112 : River Cargo Throughput** — `hk-censtatd-tablechart-410-55112` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55112&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55113 : Quarter-to-quarter Percentage Change of Seasonally Adjusted Series of Port Cargo Throughput** — `hk-censtatd-tablechart-410-55113` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55113&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55114 : Port Cargo Throughput by Greater Bay Area City** — `hk-censtatd-tablechart-410-55114` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55114&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55290 : Container Throughput** — `hk-censtatd-tablechart-410-55290` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55290&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55291 : Laden Container Throughput** — `hk-censtatd-tablechart-410-55291` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55291&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55292 : Quarter-to-quarter Percentage Change of Seasonally Adjusted Series of Laden Container Throughput** — `hk-censtatd-tablechart-410-55292` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55292&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics - Table 410-55293 : Laden Container Throughput by Greater Bay Area City** — `hk-censtatd-tablechart-410-55293` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-55293&full_series=1&download_excel=1
+- **Hong Kong Shipping Statistics [Report]** — `hk-censtatd-tablechart-b1020008` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10200082026QQ02&download_excel=1
+- **Housing and Property - Table E704 : Disposals of government land** — `hk-censtatd-tablechart-d7000004` · Census and Statistics Department · CSV, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/data/stat_report/product/D7000004/att/D7000004.xlsx
+- **Index of Industrial Production for Manufacturing and Waste Management Sectors - Quarterly Index of Industrial Production for Manufacturing and Waste Management Sectors [Report]** — `hk-censtatd-tablechart-b1070002` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10700022026QQ02&download_excel=1
+- **Index of Industrial Production for Manufacturing and Waste Management Sectors - Table 610-65001 : Indices of industrial production for manufacturing and waste management sectors by selected industry grouping (2015 = 100)** — `hk-censtatd-tablechart-610-65001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=610-65001&full_series=1&download_excel=1
+- **Labour Productivity - Table E702 : Occupational injuries analysed by type of accident** — `hk-censtatd-tablechart-d7000002` · Census and Statistics Department · CSV, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/data/stat_report/product/D7000002/att/D7000002.xlsx
+- **Labour Productivity - Table E703 : Industrial accidents analysed by type of accident and industry** — `hk-censtatd-tablechart-d7000003` · Census and Statistics Department · CSV, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/data/stat_report/product/D7000003/att/D7000003.xlsx
+- **Law and Order - Table 940-92031A : Persons arrested for crime by type of offence** — `hk-censtatd-tablechart-940-92031a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=940-92031A&full_series=1&download_excel=1
+- **Law and Order - Table 940-92033 : Cases reported by type of offence** — `hk-censtatd-tablechart-940-92033` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=940-92033&full_series=1&download_excel=1
+- **Merchandise Trade Statistics - Table 410-96001 : Imports and exports of selected equipment / products** — `hk-censtatd-tablechart-410-96001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=410-96001&full_series=1&download_excel=1
+- **Others - Table 990-92061 : Stoppages of work by industry** — `hk-censtatd-tablechart-990-92061` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-92061&full_series=1&download_excel=1
+- **Others - Table 990-92101 : Fire and Ambulance services - fire and special services calls** — `hk-censtatd-tablechart-990-92101` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-92101&full_series=1&download_excel=1
+- **Others - Table 990-92102 : Fire and Ambulance services - fire and special services persons involved** — `hk-censtatd-tablechart-990-92102` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-92102&full_series=1&download_excel=1
+- **Others - Table 990-92103 : Fire and Ambulance services - ambulance calls** — `hk-censtatd-tablechart-990-92103` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-92103&full_series=1&download_excel=1
+- **Others - Table 990-92104 : Fire and Ambulance services - fire inspections** — `hk-censtatd-tablechart-990-92104` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-92104&full_series=1&download_excel=1
+- **Others - Table 990-92105 : Fire and Ambulance services - fire prevention (plans finalised)** — `hk-censtatd-tablechart-990-92105` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-92105&full_series=1&download_excel=1
+- **Others - Table 990-92106 : Fire and Ambulance services - fire prevention (prosecutions undertaken)** — `hk-censtatd-tablechart-990-92106` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-92106&full_series=1&download_excel=1
+- **Producer Price Index for Manufacturing and Waste Management Sectors - Quarterly Producer Price Index for Manufacturing and Waste Management Sectors [Report]** — `hk-censtatd-tablechart-b1070003` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10700032026QQ02&download_excel=1
+- **Producer Price Index for Manufacturing and Waste Management Sectors - Table 520-62001 : Producer price indices for manufacturing and waste management sectors by selected industry grouping (2015 = 100)** — `hk-censtatd-tablechart-520-62001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=520-62001&full_series=1&download_excel=1
+- **Producer Price Indices of Selected Service Industries (2015=100) - Table 520-63001 : Quarterly producer price indices of selected service industries (2015 = 100)** — `hk-censtatd-tablechart-520-63001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=520-63001&full_series=1&download_excel=1
+- **Restaurant Receipts and Purchases - Report on Quarterly Survey of Restaurant Receipts and Purchases [Report]** — `hk-censtatd-tablechart-b1080002` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10800022026QQ02&download_excel=1
+- **Restaurant Receipts and Purchases - Table 625-68001 : Total restaurant receipts and restaurant purchases** — `hk-censtatd-tablechart-625-68001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=625-68001&full_series=1&download_excel=1
+- **Restaurant Receipts and Purchases - Table 625-68002 : Total restaurant receipts and restaurant purchases analysed by month** — `hk-censtatd-tablechart-625-68002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=625-68002&full_series=1&download_excel=1
+- **Restaurant Receipts and Purchases - Table 625-68003 : Restaurant receipts by type of restaurant** — `hk-censtatd-tablechart-625-68003` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=625-68003&full_series=1&download_excel=1
+- **Restaurant Receipts and Purchases - Table 625-68004 : Restaurant receipts by type of restaurant analysed by month** — `hk-censtatd-tablechart-625-68004` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=625-68004&full_series=1&download_excel=1
+- **Restaurant Receipts and Purchases - Table 625-68011 : Seasonally adjusted series of total restaurant receipts (Average index from October 2019 to September 2020 = 100)** — `hk-censtatd-tablechart-625-68011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=625-68011&full_series=1&download_excel=1
+- **Spending data of Head 26 - Census and Statistics Department** — `hk-censtatd-spending-spending-data` · Census and Statistics Department · CSV, JSON, XML · Quarterly
+  - https://www.censtatd.gov.hk/datagovhk/spending-data/spending_data_of_head26_25-26_Q4_en.csv
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06601A : Domestic households by household size (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06601a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06601A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06602A : Average household size by type of housing (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06602a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06602A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06605A : Domestic households by household size and monthly household income (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06605a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06605A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06606A : Median monthly household income by household size (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06606a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06606A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06607A : Domestic households by type of household and monthly household income (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06607a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06607A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06608A : Median monthly household income of economically active households by household size (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06608a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06608A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06609A : Domestic households by monthly household income and type of housing (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06609a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06609A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06610A : Median monthly household income by type of housing (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06610a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06610A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06611A : Domestic households by household size and monthly household income (excluding Chinese New Year bonus/double pay) (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06611a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06611A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06612A : Median monthly household income (excluding Chinese New Year bonus/double pay) by household size (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06612a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06612A&full_series=1&download_excel=1
+- **Statistics on Domestic Households (excluding foreign domestic helpers) - Table 130-06613A : Median monthly household income (excluding Chinese New Year bonus/double pay) by type of housing (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-130-06613a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06613A&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06601 : Domestic households by household size** — `hk-censtatd-tablechart-130-06601` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06601&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06602 : Average household size by type of housing** — `hk-censtatd-tablechart-130-06602` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06602&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06603 : Domestic households by type of housing** — `hk-censtatd-tablechart-130-06603` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06603&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06604 : Domestic households by tenure of accommodation** — `hk-censtatd-tablechart-130-06604` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06604&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06605 : Domestic households by household size and monthly household income** — `hk-censtatd-tablechart-130-06605` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06605&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06606 : Median monthly household income by household size** — `hk-censtatd-tablechart-130-06606` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06606&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06608 : Median monthly household income of economically active households by household size** — `hk-censtatd-tablechart-130-06608` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06608&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06609 : Domestic households by monthly household income and type of housing** — `hk-censtatd-tablechart-130-06609` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06609&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06611 : Domestic households by household size and monthly household income (excluding Chinese New Year bonus/double pay)** — `hk-censtatd-tablechart-130-06611` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06611&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06612 : Median monthly household income (excluding Chinese New Year bonus/double pay) by household size** — `hk-censtatd-tablechart-130-06612` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06612&full_series=1&download_excel=1
+- **Statistics on Domestic Households - Table 130-06613 : Median monthly household income (excluding Chinese New Year bonus/double pay) by type of housing** — `hk-censtatd-tablechart-130-06613` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=130-06613&full_series=1&download_excel=1
+- **Statistics on Employment and Labour - Table 210-15001 : Distribution of Composite Employment Estimates by major industry sector** — `hk-censtatd-tablechart-210-15001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-15001&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06201A : Labour force and labour force participation rate by age and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06201a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06201A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06202A : Labour force and labour force participation rate by marital status, age and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06202a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06202A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06203A : Labour force and labour force participation rate by educational attainment, age and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06203a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06203A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06301A : Employed persons by age and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06301a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06301A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06303A : Employed persons by employment status, age and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06303a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06303A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06304A : Employed persons by educational attainment, age and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06304a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06304A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06306A : Employed persons by industry of main employment, age and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06306a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06306A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06308A : Employed persons by industry and occupation of main employment (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06308a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06308A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06309A : Employed persons by hours of work of all employment and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06309a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06309A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06312A : Median hours of work of employed persons by occupation of main employment and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06312a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06312A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06313A : Employed persons by monthly employment earnings and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06313a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06313A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06315A : Median monthly employment earnings of employed persons by educational attainment and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06315a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06315A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06318A : Employed persons by monthly employment earnings (excluding Chinese New Year bonus/double pay) and sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06318a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06318A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment (excluding foreign domestic helpers) - Table 210-06319A : Median monthly employment earnings (excluding Chinese New Year bonus/double pay) of employed persons by sex (excluding foreign domestic helpers)** — `hk-censtatd-tablechart-210-06319a` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06319A&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06202 : Labour force and labour force participation rate by marital status, age and sex** — `hk-censtatd-tablechart-210-06202` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06202&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06203 : Labour force and labour force participation rate by educational attainment, age and sex** — `hk-censtatd-tablechart-210-06203` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06203&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06303 : Employed persons by employment status, age and sex** — `hk-censtatd-tablechart-210-06303` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06303&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06304 : Employed persons by educational attainment, age and sex** — `hk-censtatd-tablechart-210-06304` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06304&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06306 : Employed persons by industry of main employment, age and sex** — `hk-censtatd-tablechart-210-06306` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06306&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06308 : Employed persons by industry and occupation of main employment** — `hk-censtatd-tablechart-210-06308` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06308&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06310 : Employed persons who worked less than 35 hours by reason for working less than 35 hours during the 7 days before enumeration and sex** — `hk-censtatd-tablechart-210-06310` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06310&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06312 : Median hours of work of employed persons by occupation of main employment and sex** — `hk-censtatd-tablechart-210-06312` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06312&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06315 : Median monthly employment earnings of employed persons by educational attainment and sex** — `hk-censtatd-tablechart-210-06315` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06315&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06318 : Employed persons by monthly employment earnings (excluding Chinese New Year bonus/double pay) and sex** — `hk-censtatd-tablechart-210-06318` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06318&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06319 : Median monthly employment earnings (excluding Chinese New Year bonus/double pay) of employed persons by sex** — `hk-censtatd-tablechart-210-06319` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06319&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06320 : Median monthly employment earnings (excluding Chinese New Year bonus/double pay) of employed persons by industry of main employment and sex** — `hk-censtatd-tablechart-210-06320` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06320&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06321 : Median monthly employment earnings (excluding Chinese New Year bonus/double pay) of employed persons by occupation of main employment and sex** — `hk-censtatd-tablechart-210-06321` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06321&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06403 : Unemployed persons by duration of unemployment, age and sex** — `hk-censtatd-tablechart-210-06403` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06403&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06404 : Median duration of unemployment by sex** — `hk-censtatd-tablechart-210-06404` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06404&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06408 : Unemployed persons with a previous job by previous industry, mode of leaving last job and sex** — `hk-censtatd-tablechart-210-06408` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06408&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06409 : Unemployed persons with a previous job by previous industry, duration of unemployment and sex** — `hk-censtatd-tablechart-210-06409` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06409&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06410 : Median duration of unemployment of unemployed persons with a previous job by previous industry and sex** — `hk-censtatd-tablechart-210-06410` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06410&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06506 : Underemployed persons by hours of work of all employment and sex** — `hk-censtatd-tablechart-210-06506` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06506&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06507 : Median hours of work of all employment of underemployed persons by sex** — `hk-censtatd-tablechart-210-06507` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06507&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06510 : Underemployed persons by monthly employment earnings (excluding Chinese New Year bonus/double pay) and sex** — `hk-censtatd-tablechart-210-06510` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06510&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06511 : Median monthly employment earnings (excluding Chinese New Year bonus/double pay) of underemployed persons by sex** — `hk-censtatd-tablechart-210-06511` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06511&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06701 : Economically inactive persons aged 15 and over by age and sex** — `hk-censtatd-tablechart-210-06701` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06701&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06702 : Economically inactive persons aged 15 and over by marital status, age and sex** — `hk-censtatd-tablechart-210-06702` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06702&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06703 : Economically inactive persons aged 15 and over by educational attainment, age and sex** — `hk-censtatd-tablechart-210-06703` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06703&full_series=1&download_excel=1
+- **Statistics on Labour Force, Unemployment and Underemployment - Table 210-06704 : Economically inactive persons aged 15 and over by reason for being economically inactive and sex** — `hk-censtatd-tablechart-210-06704` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=210-06704&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-45001 : Currency in Circulation** — `hk-censtatd-tablechart-340-45001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-45001&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-45011 : Money Supply (All Currencies)** — `hk-censtatd-tablechart-340-45011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-45011&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-45012 : Money Supply (Hong Kong Dollar and Foreign Currency)** — `hk-censtatd-tablechart-340-45012` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-45012&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-45022 : Hong Kong Dollar Interest Settlement Rates** — `hk-censtatd-tablechart-340-45022` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-45022&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-95001 : Hong Kong interbank market** — `hk-censtatd-tablechart-340-95001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-95001&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-95002 : Average daily turnover of Exchange Fund Bills and Notes issued by the Hong Kong Monetary Authority** — `hk-censtatd-tablechart-340-95002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-95002&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-95003 : Number of listed companies, total market capitalisation, average daily turnover of all listed securities, number of new issues of securities and funds raised from new issues of securities on Hong Kong Exchanges and Clearing Limited** — `hk-censtatd-tablechart-340-95003` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-95003&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-95004 : Average daily volume of futures and options (in terms of contract) in the Hong Kong Exchanges and Clearing Limited derivatives market** — `hk-censtatd-tablechart-340-95004` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-95004&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-95005 : Trading value of Shanghai-Hong Kong / Shenzhen-Hong Kong Stock Connect** — `hk-censtatd-tablechart-340-95005` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-95005&full_series=1&download_excel=1
+- **Statistics on Money and Financial Markets - Table 340-95006 : Average daily turnover of 99 Tael Gold in the Hong Kong Gold Exchange** — `hk-censtatd-tablechart-340-95006` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=340-95006&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Quarterly Report of Manual Workers and Vacancies at Construction Sites [Report]** — `hk-censtatd-tablechart-b1050004` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10500042026QQ01&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Quarterly Report of Persons Engaged and Vacancies Statistics [Report]** — `hk-censtatd-tablechart-b1050003` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10500032026QQ01&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-16001 : Number of establishments, persons engaged, vacancies and vacancy rate (other than those in the civil service) analysed by industry section** — `hk-censtatd-tablechart-215-16001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-16001&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-16002 : Number of establishments and persons engaged (other than those in the civil service) analysed by industry section, District Council district and sex of persons engaged** — `hk-censtatd-tablechart-215-16002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-16002&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-16003 : Number of establishments, persons engaged and vacancies (other than those in the civil service) analysed by industry section / industry division and sex of persons engaged** — `hk-censtatd-tablechart-215-16003` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-16003&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-16004 : Number of establishments, persons engaged and vacancies (other than those in the civil service) in the retail trade analysed by type of retail outlet** — `hk-censtatd-tablechart-215-16004` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-16004&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-16005 : Number of establishments, persons engaged and vacancies (other than those in the civil service) analysed by selected industry group / industry class / industry sub-class** — `hk-censtatd-tablechart-215-16005` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-16005&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-16006 : Number of establishments and persons engaged (other than those in the civil service) analysed by industry section, size of establishment and sex of persons engaged** — `hk-censtatd-tablechart-215-16006` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-16006&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-16007 : Number of vacancies (other than those in the civil service) analysed by industry section and major occupation group** — `hk-censtatd-tablechart-215-16007` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-16007&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-16011 : Number of civil servants and civil service vacancies** — `hk-censtatd-tablechart-215-16011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-16011&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-17001 : Number of construction sites, manual workers engaged, vacancies and job opportunities at public and private sector sites analysed by type of site** — `hk-censtatd-tablechart-215-17001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-17001&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-17002 : Average number of manual workers engaged per site, average number of vacancies per site and vacancy rate at public and private sector sites analysed by type of site** — `hk-censtatd-tablechart-215-17002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-17002&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-17003 : Number of construction sites, manual workers engaged, vacancies and vacancy rate at public and private sector sites analysed by end-use of construction project** — `hk-censtatd-tablechart-215-17003` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-17003&full_series=1&download_excel=1
+- **Statistics on Persons Engaged and Vacancies - Table 215-17004 : Number of construction sites, manual workers engaged, vacancies and vacancy rate at public and private sector sites analysed by size of site** — `hk-censtatd-tablechart-215-17004` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=215-17004&full_series=1&download_excel=1
+- **Telecommunications Services Statistics - Table 640-93011 : Selected statistics of telecommunications services** — `hk-censtatd-tablechart-640-93011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=640-93011&full_series=1&download_excel=1
+- **Transportation, Storage and Courier Services - Table 635-92076 : Postal services** — `hk-censtatd-tablechart-635-92076` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=635-92076&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Quarterly Report of Wage and Payroll Statistics [Report]** — `hk-censtatd-tablechart-b1050009` · Census and Statistics Department · CSV, XLSX, XML · Quarterly
+  - https://www.censtatd.gov.hk/en/wbr.html?ecode=B10500092026QQ01&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19001 : Nominal Wage Indices for employees up to supervisory level by industry section (September 1992 = 100)** — `hk-censtatd-tablechart-220-19001` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19001&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19002 : Real Wage Indices for employees up to supervisory level by industry section (September 1992 = 100)** — `hk-censtatd-tablechart-220-19002` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19002&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19003 : Nominal Wage Indices for employees up to supervisory level by industry section by broad occupational group (September 1992 = 100)** — `hk-censtatd-tablechart-220-19003` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19003&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19004 : Real Wage Indices for employees up to supervisory level by industry section by broad occupational group (September 1992 = 100)** — `hk-censtatd-tablechart-220-19004` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19004&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19005 : Nominal Wage Indices for employees up to supervisory level by occupational group (September 1992 = 100)** — `hk-censtatd-tablechart-220-19005` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19005&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19006 : Real Wage Indices for employees up to supervisory level by occupational group (September 1992 = 100)** — `hk-censtatd-tablechart-220-19006` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19006&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19011 : Average wage rates for employees up to supervisory level by industry section by broad occupational group** — `hk-censtatd-tablechart-220-19011` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19011&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19012 : Average daily wages, average number of normal working hours per day and average number of standard working days per month of craftsmen and operatives by industry section** — `hk-censtatd-tablechart-220-19012` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19012&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19013 : Average monthly salaries, average number of normal working hours per day and average number of standard working days per month of supervisory, technical, clerical, services and miscellaneous non-production workers by industry by occupation by sex** — `hk-censtatd-tablechart-220-19013` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19013&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19021 : Nominal Indices of Payroll per Person Engaged by industry section (Q1 1999 = 100)** — `hk-censtatd-tablechart-220-19021` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19021&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19022 : Real Indices of Payroll per Person Engaged by industry section (Q1 1999 = 100)** — `hk-censtatd-tablechart-220-19022` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19022&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19023 : Nominal Indices of Payroll per Person Engaged by industry division (Q1 1999 = 100)** — `hk-censtatd-tablechart-220-19023` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19023&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19024 : Real Indices of Payroll per Person Engaged by industry division (Q1 1999 = 100)** — `hk-censtatd-tablechart-220-19024` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19024&full_series=1&download_excel=1
+- **Wage and Payroll Statistics - Table 220-19025 : Quarter-to-quarter rates of change in the seasonally adjusted series of Nominal and Real Indices of Payroll per Person Engaged by industry section** — `hk-censtatd-tablechart-220-19025` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=220-19025&full_series=1&download_excel=1
+- **Wholesale of Food Items - Table 990-93031 : Wholesale of food items** — `hk-censtatd-tablechart-990-93031` · Census and Statistics Department · CSV, JSON, XLSX · Quarterly
+  - https://www.censtatd.gov.hk/en/web_table.html?id=990-93031&full_series=1&download_excel=1
+- **The Chief Executive’s duty visits outside Hong Kong** — `hk-ceo-opendata-duty-visits-by-ce` · Chief Executive's Office · JSON · Quarterly
+  - https://www.ceo.gov.hk/public/open-data/en/duty_visit/duty_visit_eng.json
+- **List of Granted Projects of Public Policy Research (PPR) and Strategic Public Policy Research (SPPR) Funding Schemes** — `hk-cepu-prfs-list-of-granted-projects-of-ppr-and-sppr-funding-schemes` · Chief Executive's Policy Unit · XML · Quarterly
+  - https://www.cepu.gov.hk/en/filestore/ppr-granted.xml
+- **Achievement rates of aircraft arriving between midnight and 07:00 hours to land from the southwest (Current Year)** — `hk-cad-cadpsi1-aircraft-arriving-midnight-current-year-data` · Civil Aviation Department · CSV · Quarterly
+  - https://www.cad.gov.hk/datagovhk/Aircraft_Arriving_Midnight_Current_Year_Data_en.csv
+- **Achievement rates of aircraft departing on Runway 07 between 23:00 and 07:00 hours to use the southbound route via the West Lamma Channel (Current Year)** — `hk-cad-cadpsi1-aircraft-departing-midnight-current-year-data` · Civil Aviation Department · CSV · Quarterly
+  - https://www.cad.gov.hk/datagovhk/Aircraft_Departing_Midnight_Current_Year_Data_en.csv
+- **Distribution of aircraft noise levels recorded at various districts in rolling 12 months** — `hk-cad-cadpsi1-aircraft-noise-annual-data` · Civil Aviation Department · CSV · Quarterly
+  - https://www.cad.gov.hk/datagovhk/Aircraft_Noise_Annual_Data_en.csv
+- **Location of Contaminated Mud Disposal Facilities** — `hk-cedd-fmd-csdfhk-data` · Civil Engineering and Development Department · CSV · Quarterly
+  - https://www.cedd.gov.hk/datagovhk/fmd/East%20of%20Sha%20Chau_Facility_1_20230328.csv
+- **Location of Uncontaminated Mud Disposal Facilities** — `hk-cedd-fmd-usdfhk-data` · Civil Engineering and Development Department · CSV · Quarterly
+  - https://www.cedd.gov.hk/datagovhk/fmd/East%20of%20Ninepin_20230328.csv
+- **Establishment Figures of Administrative Officer Grade** — `hk-csb-csb-establishment-ao` · Civil Service Bureau · CSV · Quarterly
+  - https://www.csb.gov.hk/datagovhk/establishment-ao/establishment-ao-en.csv
+- **Establishment Figures of Clerical and Secretarial Grades** — `hk-csb-csb-establishment-cs` · Civil Service Bureau · CSV · Quarterly
+  - https://www.csb.gov.hk/datagovhk/establishment-cs/establishment-cs-en.csv
+- **Establishment Figures of Executive Officer Grade** — `hk-csb-csb-establishment-eo` · Civil Service Bureau · CSV · Quarterly
+  - https://www.csb.gov.hk/datagovhk/establishment-eo/establishment-eo-en.csv
+- **Establishment Figures of Official Languages Officer, Simultaneous Interpreter and Calligraphist Grades** — `hk-csb-csb-establishment-olo-si-cg` · Civil Service Bureau · CSV · Quarterly
+  - https://www.csb.gov.hk/datagovhk/establishment-olo-si-cg/establishment-olo-si-cg-en.csv
+- **Establishment Figures of Training Officer Grade** — `hk-csb-csb-establishment-to` · Civil Service Bureau · CSV · Quarterly
+  - https://www.csb.gov.hk/datagovhk/establishment-to/establishment-to-en.csv
+- **Examination Schedule of Common Recruitment Examination (CRE) and Basic Law and National Security Law Test (BLNST) (Degree / Professional Grades) and Joint Recruitment Examination** — `hk-csb-csb-cre-blnst-jre-schedule` · Civil Service Bureau · CSV · Quarterly
+  - https://www.csb.gov.hk/datagovhk/cre-blnst-jre-schedule/cre-blnst-jre-schedule-en.csv
+- **Quarterly-updated Civil Service Personnel Statistics** — `hk-csb-csb-csps-quarterly` · Civil Service Bureau · CSV · Quarterly
+  - https://www.csb.gov.hk/datagovhk/csps-quarterly/establishment-and-strength/csps-quarter-es-en.csv
+- **Timetable of the Annual Executive Officer Recruitment Exercise** — `hk-csb-csb-eo-recruit-timetable` · Civil Service Bureau · CSV · Quarterly
+  - https://www.csb.gov.hk/datagovhk/eo-recruit-timetable/eo-recruit-timetable-en.csv
+- **Professional Services Advancement Support Scheme** — `hk-cedb-cedb_pass-pass-projects` · Commerce and Economic Development Bureau · XML · Quarterly
+  - https://www.pass.gov.hk/main/datagovhk/funded_projects/pass_project_list_en.xml
+- **Professional Services Advancement Support Scheme-PSP** — `hk-cedb-cedb_pass-psp-projects` · Commerce and Economic Development Bureau · XML · Quarterly
+  - https://www.pass.gov.hk/psp/datagovhk/list_of_activities/psp_activity_list_en.xml
+- **Enquiries or complaints received by the Competition Commission** — `compcomm-compcomm-cc-complaints-and-enquiries` · Competition Commission · CSV · Quarterly
+  - https://www.compcomm.hk/en/datagovhk/files/quarterly_complaints.csv
+- **Statistics of information requests concluded by public agencies and the result of processing** — `hk-cmab-cmabt4-info-requests-concluded-by-bds` · Constitutional and Mainland Affairs Bureau · CSV · quarterly
+  - https://www.access.gov.hk/filemanager/content/datagov/info_requests_concluded_by_BDs_2018Q4_en.csv
+- **Statistics of refusal cases with breakdown by specific exemptions and by the handling public agencies** — `hk-cmab-cmabt4-exemptions-to-withhold-info` · Constitutional and Mainland Affairs Bureau · CSV · quarterly
+  - https://www.access.gov.hk/filemanager/content/datagov/exemptions_to_withhold_info_2018Q4_en.csv
+- **Acts of indiscipline of persons in custody** — `hk-csd-csdpsidata-csdindiscipline` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-8_indiscipline_en.csv
+- **Admission of persons in custody to correctional institutions by category and gender** — `hk-csd-csdpsidata-csdadmission` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-5_NoP_Admission_en.csv
+- **Admission of sentenced persons to correctional institutions by type of offence** — `hk-csd-csdpsidata-csdadmissionsentenced` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-6_Sentenced_admission_en.csv
+- **Average daily number of persons in custody by category and gender** — `hk-csd-csdpsidata-csdavgdailynumber` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-1_ADN_by_Category_en.csv
+- **Joint searching / special searching / night raid operations conducted in the correctional institutions** — `hk-csd-csdpsidata-csdoperations` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-7_operations_en.csv
+- **Number of complaints, requests and enquiries received by Complaint Investigation Unit (CIU) from persons in custody, the public and staff** — `hk-csd-csdpsidata-csdciu` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-13_ciu_en.csv
+- **Number of persons in custody by correctional institution** — `hk-csd-csdpsidata-csdnuminstitutions` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-3_ADN_by_institution_en.csv
+- **Number of persons in custody by local / non-local persons** — `hk-csd-csdpsidata-csdnumlocalnonlocal` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-2_ADN_by_Loal_non_local_en.csv
+- **Number of persons under statutory supervision by gender** — `hk-csd-csdpsidata-csdnumsupervisiongender` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-4_Statutory_Supervision_gender_en.csv
+- **Number of programme matching sessions in risks and needs assessment** — `hk-csd-csdpsidata-csdsessionrisk` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T2-2_sessions_risk_en.csv
+- **Number of psychological counselling and welfare services sessions and visits** — `hk-csd-csdpsidata-csdpsy` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T2-1_Psy_en.csv
+- **Overall passing rate and employment rate of persons in custody** — `hk-csd-csdpsidata-csdpassrate` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T2-3_pass_rate_en.csv
+- **Self-harm incidents of persons in custody** — `hk-csd-csdpsidata-csdselfharm` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-10_self-harm_en.csv
+- **Success rates of reintegration programmes within the supervision period** — `hk-csd-csdpsidata-csdsuccessrate` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T2-4_success_rate_en.csv
+- **Violent cases involving persons in custody** — `hk-csd-csdpsidata-csdviolence` · Correctional Services Department · CSV · Quarterly
+  - https://www.csd.gov.hk/datagovhk/Stat_T1-9_violence_en.csv
+- **Cinemas** — `hk-cstb-cstb_ccida-hkcinemas` · Culture, Sports and Tourism Bureau · CSV · QUARTERLY
+  - https://www.ccidahk.gov.hk/data/hkcinemas.csv
+- **CreateSmart Initiative** — `hk-cstb-cstb_ccida-approved-projects-funded-under-csi` · Culture, Sports and Tourism Bureau · CSV · QUARTERLY
+  - https://www.ccidahk.gov.hk/data/CSI_approved_projects.csv
+- **Cruise passenger throughput and number of ship calls** — `hk-cstb-cstb_tc-tc-overall-cruise-passenger-thruput` · Culture, Sports and Tourism Bureau · CSV · Quarterly
+  - https://www.tourism.gov.hk/datagovhk/cruise_stats/cruise_passenger_thruput_en.csv
+- **Film Development Fund** — `hk-cstb-cstb_ccida-approved-projects-funded-under-fdf` · Culture, Sports and Tourism Bureau · CSV · QUARTERLY
+  - https://www.ccidahk.gov.hk/data/FDF_approved_projects_FPF_FPG.csv
+- **Hong Kong Box Office for the film production projects under Film Development Fund** — `hk-cstb-cstb_ccida-hkboxoffice-for-fdf-projects` · Culture, Sports and Tourism Bureau · CSV · QUARTERLY
+  - https://www.ccidahk.gov.hk/data/hkboxoffice_FDF_projects.csv
+- **Number of hotel rooms by 18 district councils** — `hk-cstb-cstb_tc-tc-number-of-hotel-rooms-by-18-district-councils` · Culture, Sports and Tourism Bureau · CSV · Quarterly
+  - https://www.tourism.gov.hk/datagovhk/hotelrooms/number_of_hotel_rooms_by_18_district_councils_en.csv
+- **Number of hotel rooms for the next three years** — `hk-cstb-cstb_tc-tc-number-of-hotel-rooms-next-three-years` · Culture, Sports and Tourism Bureau · CSV · Quarterly
+  - https://www.tourism.gov.hk/datagovhk/hotelrooms/number_of_hotel_rooms_next_three_years_en.csv
+- **Number of hotel rooms for the next three years by 18 district councils** — `hk-cstb-cstb_tc-tc-number-of-hotel-rooms-next-three-years-by-18-district-councils` · Culture, Sports and Tourism Bureau · CSV · Quarterly
+  - https://www.tourism.gov.hk/datagovhk/hotelrooms/number_of_hotel_rooms_next_three_years_by_18_district_councils_en.csv
+- **Number of hotels by 18 district councils** — `hk-cstb-cstb_tc-tc-number-of-hotels-by-18-district-councils` · Culture, Sports and Tourism Bureau · CSV · Quarterly
+  - https://www.tourism.gov.hk/datagovhk/hotels/number_of_hotels_by_18_district_councils_en.csv
+- **Number of hotels for the next three years** — `hk-cstb-cstb_tc-tc-number-of-hotels-next-three-years` · Culture, Sports and Tourism Bureau · CSV · Quarterly
+  - https://www.tourism.gov.hk/datagovhk/hotels/number_of_hotels_next_three_years_en.csv
+- **Number of hotels for the next three years by 18 district councils** — `hk-cstb-cstb_tc-tc-number-of-hotels-next-three-years-by-18-district-councils` · Culture, Sports and Tourism Bureau · CSV · Quarterly
+  - https://www.tourism.gov.hk/datagovhk/hotels/number_of_hotels_next_three_years_by_18_district_councils_en.csv
+- **Customs Statistics on Land Boundary Control Points Vehicular Throughput** — `hk-customs-ced_stat-vehicle-clearance` · Customs and Excise Department · CSV, XLSX · Quarterly
+  - https://www.customs.gov.hk/filemanager/common/xlsx/statistics/passenger_land_en.xlsx
+- **No. of Applications for Certificates of Non-manipulation under the Free Trade Agreement Transhipment Facilitation Scheme Processed by the Customs and Excise Department** — `hk-customs-ced_stat-ftat` · Customs and Excise Department · CSV · Quarterly
+  - https://www.customs.gov.hk/filemanager/common/csv/fta/ftat_en.csv
+- **Antenatal Screening** — `hk-dh-dh_phlsb-phlsb-antenatal-screening` · Department of Health · CSV · Quarterly
+  - http://www.chp.gov.hk/files/misc/antenatal_screening_rubella_virus_antibody_en.csv
+- **Antimicrobial Susceptibility Testing** — `hk-dh-dh_phlsb-phlsb-antimicrobial-susceptibility-testing` · Department of Health · CSV · Quarterly
+  - http://www.chp.gov.hk/files/misc/antimicrobial_susceptibility_testing_influenza_virus_in_2020_en.csv
+- **Bacterial Pathogen Isolation and Percentage of Antimicrobial Resistance - Out-patient Setting** — `hk-dh-dh_phlsb-phlsb-bac-path-isolation-antimicrobial-resistance` · Department of Health · CSV · Quarterly
+  - http://www.chp.gov.hk/files/misc/bac_path_isolation_and_antimicrobial_resistance_2019_en.csv
+- **Collection for Digital Herbarium for Chinese Medicines (English)** — `hk-dh-dh_gcmti-cmro-collection-for-digital-herbarium-for-cm-en` · Department of Health · JSON · Quarterly
+  - https://www.cmherbarium.gov.hk/api/public/file/downloadByMimeType?mimeType=eng.json
+- **Collection for Digital Herbarium for Chinese Medicines (Simplified Chinese)** — `hk-dh-dh_gcmti-cmro-collection-for-digital-herbarium-for-cm-chs` · Department of Health · JSON · Quarterly
+  - https://www.cmherbarium.gov.hk/api/public/file/downloadByMimeType?mimeType=chs.json
+- **Collection for Digital Herbarium for Chinese Medicines (Traditional Chinese)** — `hk-dh-dh_gcmti-cmro-collection-for-digital-herbarium-for-cm-cht` · Department of Health · JSON · Quarterly
+  - https://www.cmherbarium.gov.hk/api/public/file/downloadByMimeType?mimeType=cht.json
+- **Detection of Gastroenteritis Viruses from Faecal Specimens** — `hk-dh-dh_phlsb-phlsb-gastroenteritis-viruses` · Department of Health · CSV · Quarterly
+  - http://www.chp.gov.hk/files/misc/detection_of_gastroenteritis_viruses_from_faecal_specimens_in_2021_en.csv
+- **Detection of Pathogens from Respiratory Specimens** — `hk-dh-dh_phlsb-phlsb-pathogens-from-respiratory-specimens` · Department of Health · CSV · Quarterly
+  - http://www.chp.gov.hk/files/misc/detection_of_influenza_viruses_in_respiratory_specimens_in_2021_en.csv
+- **Influenza Virus Subtyping** — `hk-dh-dh_phlsb-phlsb-influenza-virus-subtyping` · Department of Health · CSV · Quarterly
+  - http://www.chp.gov.hk/files/misc/influenza_virus_subtyping_in_2021_en.csv
+- **Number of Chinese Medicine Practitioners** — `hk-dh-cmd-cmro-no-of-chinese-medicine-practitioners` · Department of Health · CSV · Quarterly
+  - https://www.cmchk.org.hk/datagovhk/psistore/stat/psi-nsp-num-of-cmp_en.csv
+- **Number of licensed Chinese medicines traders** — `hk-dh-cmd-cmro-no-of-licensed-chinese-medicines-traders` · Department of Health · CSV · Quarterly
+  - https://www.cmchk.org.hk/datagovhk/psistore/stat/psi-nsp-num-of-cmt_en.csv
+- **Summary on causative agents for Food poisoning outbreaks** — `hk-dh-chpsebcdde-food-poisoning-causative-agents` · Department of Health · CSV · Quarterly
+  - http://www.chp.gov.hk/files/misc/foca2000.csv
+- **Typing Results** — `hk-dh-dh_phlsb-phlsb-typing-results` · Department of Health · CSV · Quarterly
+  - http://www.chp.gov.hk/files/misc/typing_results_non_polio_enterovirus_2021_en.csv
+- **Spending data of Head 138 - Government Secretariat: Development Bureau (Planning and Lands Branch)** — `hk-devb-head138-head138` · Development Bureau · CSV · Quarterly
+  - https://www.devb.gov.hk/dataset/head138_230630_en.csv
+- **Spending data of Head 159 - Government Secretariat: Development Bureau (Works Branch)** — `hk-devb-head159-gra-summary-item-spending-data` · Development Bureau · CSV · Quarterly
+  - https://www.devb.gov.hk/dataset/GRA_Summary_Head159_test.csv
+- **"Cross-boundary Public Services" of the HKSAR Government** — `hk-dpo-cbpsjson01-cbps` · Digital Policy Office · CSV · Quarterly
+  - https://www.crossboundaryservices.gov.hk/datagovhk/cbps_en.csv
+- **Approved IT projects funded under Computerisation Block Allocation** — `hk-dpo-dpo_hp-approved-blockvote-projects` · Digital Policy Office · CSV · Quarterly
+  - https://www.digitalpolicy.gov.hk/open_data/business_catalogue/approved-blockvote-projects-en.csv
+- **Awarded service contracts of SOA-WiFi** — `hk-dpo-dpo_hp-soa-wifi-awarded-service-contracts` · Digital Policy Office · CSV · Quarterly
+  - https://www.digitalpolicy.gov.hk/open_data/business_window/soa-wifi-awarded-service-contracts.csv
+- **GovHK usage statistics** — `hk-dpo-govhkstats-govhk-utilisation` · Digital Policy Office · JSON · Quarterly
+  - https://www.gov.hk/datagovhk/govhk-utilisation/govhk_utilisation.json
+- **List of datasets for open data** — `hk-dpo-datagovhk1-open-dataset-list` · Digital Policy Office · JSON, XLSX · Quarterly
+  - https://resource.data.one.gov.hk/opendata/open-data-list/open-data-dataset-list-en.json
+- **List of online learning resources in the "Smart Silver" Elderly IT Learning Portal** — `hk-dpo-dpo_hp-online-learning-resources-in-the-elderly-it-learning-portal` · Digital Policy Office · JSON · Quarterly
+  - https://www.digitalpolicy.gov.hk/open_data/ict_programmes_for_elderly/online-learning-resources-in-the-elderly-it-learning-portal-zh-hant.json
+- **Spending data of Head 47 - Government Secretariat: Digital Policy Office** — `hk-dpo-dpo_hp-spending-data-head-47` · Digital Policy Office · CSV · Quarterly
+  - https://www.digitalpolicy.gov.hk/open_data/estimates/spending-data-head-47.csv
+- **Statistics on government mobile apps** — `hk-dpo-mobileapps-mobileappstat` · Digital Policy Office · JSON · QUARTERLY
+  - http://www.gov.hk/en/about/govdirectory/mobileapps/psi/mobileappstat/MobileAppStat.json
+- **Attendance Record of District Council Members** — `dc-json1-attendance-record-of-dc-members` · District Councils · CSV · Quarterly and as necessary
+  - https://www.districtcouncils.gov.hk/datagovhk/psi/Attendance_record_of_DC_members/Attendance_record_of_DC_members_2019_en.csv
+- **The Number of Public Enquiries and Complaints received by the Drainage Services Department** — `hk-dsd-dsd_psi_1-cases-of-enquiry-or-complaints-received` · Drainage Services Department · JSON · Quarterly
+  - https://www.dsd.gov.hk/datagovhk/data/cases_of_enquiry_or_complaints_received_eng.json
+- **Spending Data of Head 156 - Government Secretariat: Education Bureau** — `hk-edb-finhd156-spending-data` · Education Bureau · CSV · QUARTERLY
+  - https://www.edb.gov.hk/attachment/datagovhk/Spending_data_Head156_EN.csv
+- **LPG Filling Stations in Operation** — `hk-emsd-emsd1-lpg-filling-station` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_268/dataset/lpg_filling_station.csv
+- **LPG Vehicle Fuel System Maintenance Workshops with Blue Identification Signage** — `hk-emsd-emsd1-lpg-vfsmw-blue` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_268/dataset/lpg_vfsmw_blue.csv
+- **LPG Vehicle Fuel System Maintenance Workshops with Red Identification Signage** — `hk-emsd-emsd1-lpg-vfsmw-red` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_268/dataset/lpg_vfsmw_red.csv
+- **Performance Rating of Registered Escalator Contractors** — `hk-emsd-emsd1-performance-rating-of-escalator-contractors` · Electrical and Mechanical Services Department · CSV, XLSX · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/cpr_rec.xlsx
+- **Performance Rating of Registered Lift Contractors** — `hk-emsd-emsd1-performance-rating-of-lift-contractors` · Electrical and Mechanical Services Department · CSV, XLSX · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/cpr_rlc.xlsx
+- **Railway Safety Inspection
+and Investigation Data** — `hk-emsd-emsd1-railways-inspection-investigation` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_1119/dataset/railways_inspection_investigation.csv
+- **Register of Amusement Rides** — `hk-emsd-emsd1-amusement-rides` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_629/dataset/amusement_rides.csv
+- **Register of Buildings issued with Certificate of Compliance Registration (COCR) under the Buildings Energy Efficiency Ordinance (BEEO)** — `hk-emsd-emsd1-buildings-certificate-of-compliance-registration` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/beeo/en/register/cocr.csv
+- **Register of Hong Kong Energy Efficiency Registration Scheme for Buildings (on or after 2018)** — `hk-emsd-emsd1-energy-efficiency-registration-scheme-for-building` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_291/dataset/eersb_en.csv
+- **Register of Kiddie Rides** — `hk-emsd-emsd1-kiddie-rides` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_629/dataset/kiddie_rides.csv
+- **Register of Personnel on Amusement Rides** — `hk-emsd-emsd1-amusement-rides-personnel` · Electrical and Mechanical Services Department · CSV, XLSX · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_629/dataset/ar_surveyors.xlsx
+- **Registered Contractors of Builders' Lifts and Tower Working Platforms** — `hk-emsd-emsd1-builders-lifts-and-tower-working-platforms-contractors` · Electrical and Mechanical Services Department · CSV, XLSX · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_608/dataset/rc_bltwp_en.xlsx
+- **Registered Examiners of Builders' Lifts and Tower Working Platforms** — `hk-emsd-emsd1-builders-lifts-and-tower-working-platforms-examiners` · Electrical and Mechanical Services Department · CSV, XLSX · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_608/dataset/re_bltwp_en.xlsx
+- **Registered Technicians Handling Mildly Flammable Refrigerant of Household Air-conditioners** — `hk-emsd-emsd1-rthmfr-hac` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_1188/dataset/rthmfr-hac.csv
+- **Registered Vehicle Maintenance Workshops** — `hk-emsd-emsd1-registered-vehicle-maintenance-workshops` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_650/dataset/registered_vehicle_maintenance_workshops.csv
+- **Reported Escalator Incident Records** — `hk-emsd-emsd1-reported-escalator-incidents` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/reported_escalator_incidents.csv
+- **Reported Lift Incident Records** — `hk-emsd-emsd1-reported-lift-incidents` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_808/dataset/reported_lift_incidents.csv
+- **Spending Data of Head 42 – Electrical and Mechanical Services Department** — `hk-emsd-emsd1-spending-head-42-emsd` · Electrical and Mechanical Services Department · CSV · Quarterly
+  - https://www.emsd.gov.hk/filemanager/en/content_207/dataset/spending_head_42_emsd_2021-22.csv
+- **Greenhouse Gas Emissions and Carbon Intensity in Hong Kong** — `hk-epd-climatechg-greenhouse-gas-emissions-and-carbon-intensity` · Environmental Protection Department · JSON · The third quarter of each year after the release of the Greenhouse Gas Emissions in Hong Kong
+  - https://cnsd.gov.hk/wp-content/uploads/pdf/greenhouse_gas_emissions_and_carbon_intensity.json
+- **Greenhouse Gas Emissions in Hong Kong by Sector** — `hk-epd-climatechg-greenhouse-gas-emissions-by-sector` · Environmental Protection Department · JSON · The third quarter of each year after the release of the Greenhouse Gas Emissions in Hong Kong
+  - https://cnsd.gov.hk/wp-content/uploads/pdf/greenhouse_gas_emissions_by_sector.json
+- **List of Clinical Waste Collectors** — `hk-epd-rngteam-clinical-waste-collectors-list` · Environmental Protection Department · GML · Quarterly
+  - https://portal.csdi.gov.hk/geoportal/?lang=en&datasetId=epd_rcd_1666160952535_97414
+- **List of Licensed Chemical Waste Collectors** — `hk-epd-rngteam-chemical-waste-collectors-list` · Environmental Protection Department · GML · Quarterly
+  - https://portal.csdi.gov.hk/geoportal/?lang=en&datasetId=epd_rcd_1666161129768_2527
+- **Spending data of Head 147–Government Secretariat: Financial Services and the Treasury Bureau (The Treasury Branch)** — `hk-fstb-tsyb-spending-data` · Financial Services and the Treasury Bureau · CSV · Quarterly
+  - https://www.fstb.gov.hk/datagovhk/tsyb/spending-data/en/h147-spending-data-2021-22.csv
+- **Spending data of Head 148–Government Secretariat: Financial Services and the Treasury Bureau (Financial Services Branch)** — `hk-fstb-tsyb-spending-data-fsb` · Financial Services and the Treasury Bureau · CSV · Quarterly
+  - https://www.fstb.gov.hk/datagovhk/fsb/spending-data/en/h148-spending-data-2021-22.csv
+- **Fire Protection and Prevention Indicators** — `hk-fsd-fsd1-fsdfppiq` · Fire Services Department · CSV, XLSX · About quarterly
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/Fire_Protection_Prevention_Indicators_eng.csv
+- **Fire Protection and Prevention Targets (Building Inspection)** — `hk-fsd-fsd1-fsdfpptq` · Fire Services Department · CSV, XLSX · About quarterly
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/Fire_Protection_Prevention_Targets_eng.csv
+- **Fire Service Indicators (Fire Protection Related)** — `hk-fsd-fsd1-fsdfsiq` · Fire Services Department · CSV, XLSX · About quarterly
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/Fire_Service_Indicators_FP_eng.csv
+- **List of accepted Fire Service Installations and Equipment** — `hk-fsd-fsd1-fsdfsie` · Fire Services Department · CSV, XLS · Quarterly or as when the revised list is published
+  - http://www.hkfsd.gov.hk/datagovhk/datasets/List_accepted_FS_Installations_Equipment.xlsx
+- **Data of flying hours and number of sortie about major emergency response services** — `hk-gfs-it_unit-dataset-1` · Government Flying Service · CSV · Quarterly
+  - https://www.gfs.gov.hk/datagovhk/GFS_Data_2019_Q1_Eng.csv
+- **List of government departments which maintain notification lists for suppliers of commonly used goods and services** — `hk-gld-procure5-notification-lists-bd` · Government Logistics Department · CSV · Quarterly
+  - https://www.gld.gov.hk/datagovhk/procurement/NotificationListsBD_EN.csv
+- **Bituminous Material Suppliers on Approved List** — `hk-hyd-bmsal-bituminous-material-suppliers-on-approved-list` · Highways Department · CSV · Quarterly
+  - https://www.hyd.gov.hk/datagovhk/BMSAL/resource/Suppliers_en.csv
+- **Lamp Post Location Data** — `hk-hyd-plis-lamppostdata` · Highways Department · CSV · Quarterly
+  - https://plis.hyd.gov.hk/datagovhk/plis/lamppost_en.csv
+- **Spending data of Head 060 - Highways Department** — `hk-hyd-gra-gra-summary-item-spending-data` · Highways Department · CSV · Quarterly
+  - https://www.hyd.gov.hk/datagovhk/GRA/resource/testing/GRASummaryApr23Mar24_en.csv
+- **Community Care Fund Assistance Programmes in progress or to be rolled out** — `hk-hyab-hyabdiv001-ccf-assistance-programmes-in-progress-or-to-be-rolledout` · Home and Youth Affairs Bureau · JSON · Quarterly
+  - https://www.hyab.gov.hk/datagovhk/hyabdiv001/resource-en.json
+- **Cyberport Accelerator Support Programme (CASP)** — `cyberport-cyberport1-data-on-cyberport-accelerator-support-programme` · Hong Kong Cyberport Management Company Limited · CSV · Quarterly
+  - https://connect.cyberport.hk/opendata/casp/casp.csv
+- **Cyberport Community** — `cyberport-cyberport1-data-on-the-cyberport-community` · Hong Kong Cyberport Management Company Limited · CSV · Quarterly
+  - https://connect.cyberport.hk/opendata/cc/cc.csv
+- **Cyberport Creative Micro Fund** — `cyberport-cyberport1-data-on-cyberport-creative-micro-fund` · Hong Kong Cyberport Management Company Limited · CSV · Quarterly
+  - https://connect.cyberport.hk/opendata/ccmf/ccmf.csv
+- **Cyberport Incubation Programme** — `cyberport-cyberport1-data-on-cyberport-incubation-programme` · Hong Kong Cyberport Management Company Limited · CSV · Quarterly
+  - https://connect.cyberport.hk/opendata/cip/cip.csv
+- **Cyberport Incubation Programme for Smart Living Start ups** — `cyberport-cyberport3-cyberport-incubation-programme-for-smart-living-start-ups` · Hong Kong Cyberport Management Company Limited · CSV · Quarterly
+  - https://connect.cyberport.hk/opendata/sls/sls.csv
+- **Cyberport Macro Fund (CMF)** — `cyberport-cyberport1-data-on-cyberport-macro-fund` · Hong Kong Cyberport Management Company Limited · CSV · Quarterly
+  - https://connect.cyberport.hk/opendata/cmf/cmf.csv
+- **Cyberport Web3.0 Ecosystem Development** — `cyberport-cyberport3-cyberport-web30-ecosystem-development` · Hong Kong Cyberport Management Company Limited · CSV · Quarterly (Web 3.0 company information), As and when necessary (Web3.0 events)
+  - https://connect.cyberport.hk/opendata/web30/web30-companyinfo.csv
+- **Digital Transformation Support Pilot Programme** — `cyberport-cyberport3-digital-transformation-support-pilot-programme` · Hong Kong Cyberport Management Company Limited · CSV · Quarterly
+  - https://connect.cyberport.hk/opendata/dtspp/dtspp.csv
+- **Overseas/Mainland Market Development Support Scheme (MDSS)** — `cyberport-cyberport1-data-on-the-overseas-mainland-market-development-scheme` · Hong Kong Cyberport Management Company Limited · CSV · Quarterly
+  - https://connect.cyberport.hk/opendata/mdss/mdss.csv
+- **Housing Authority's Public Rental Housing Stock** — `hk-housing-emms-emms-housing-stock` · Hong Kong Housing Authority · JSON · QUARTERLY
+  - https://data.housingauthority.gov.hk/dataset/emms/ha_prhs_a_en.json
+- **Sale transactions under the Tenants Purchase Scheme** — `hk-housing-tpssale-tpssale` · Hong Kong Housing Authority · JSON · Quarterly
+  - https://data.housingauthority.gov.hk/dataset/hass/tps_sale_transactions_en.json
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Asset quality - Authorized institutions** — `hk-hkma-t03-t030601assetquality-ais` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/assetquality-ais
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Asset quality - Retail banks** — `hk-hkma-t03-t030602assetquality-retailbanks` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/assetquality-retailbanks
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Capital adequacy** — `hk-hkma-t03-t0314capital-adequacy` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/capital-adequacy
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Credit card lending survey results** — `hk-hkma-t03-t0308credit-card-lending-survey` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/credit-card-lending-survey
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Liquidity** — `hk-hkma-t03-t0315liquidity` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/liquidity
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Mainland-related lending and other non-bank exposures - Mainland-related lending** — `hk-hkma-t03-t031301mr-lending` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/mr-lending
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Mainland-related lending and other non-bank exposures - Mainland-related lending by type of Ais** — `hk-hkma-t03-t031302mr-lending-ais-type` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/mr-lending-ais-type
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Mainland-related lending and other non-bank exposures - Mainland-related lending by type of borrowers** — `hk-hkma-t03-t031303mr-lending-borrowers-type` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/mr-lending-borrowers-type
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Mainland-related lending and other non-bank exposures - Other Mainland-related non-bank exposures** — `hk-hkma-t03-t031304other-mr-non-bank-exposures` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/other-mr-non-bank-exposures
+- **Market Data and Statistics - Monthly Statistical Bulletin - Banking - Residential Mortgage Loans in Negative Equity** — `hk-hkma-t03-t0316residential-mortgage-loans-neg-equity` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/banking/residential-mortgage-loans-neg-equity
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money markets and debt instruments - New issues of Hong Kong dollar debt instruments, other than Exchange Fund Bills and Notes** — `hk-hkma-t04-t0406ni-hkd-debt-inst-oth-efbn` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money-markets/ni-hkd-debt-inst-oth-efbn
+- **Market Data and Statistics - Monthly Statistical Bulletin - Money markets and debt instruments - Outstanding amount of Hong Kong dollar debt instruments, other than Exchange Fund Bills and Notes** — `hk-hkma-t04-t0405osamt-hkd-debtinst-otherthan-efbn` · Hong Kong Monetary Authority · JSON · Quarterly
+  - https://api.hkma.gov.hk/public/market-data-and-statistics/monthly-statistical-bulletin/money-markets/osamt-hkd-debtinst-otherthan-efbn
+- **Elective Surgery Services Statistics** — `hospital-hadata-elective-surgery` · Hospital Authority · JSON, XLSX · Quarterly (January, April, July and October)
+  - https://www.ha.org.hk/opendata/electivesurgery/elective-cataract-surgery-en.json
+- **List of Hospital Authority Hospitals/Institutions/Specialist Outpatient Clinics/Family Medicine Clinics** — `hospital-hadata-health-care-facilities` · Hospital Authority · JSON, XLSX · Quarterly (January, April, July and October)
+  - https://www.ha.org.hk/opendata/facility-hosp.json
+- **Waiting Time for New Case Booking for Specialist Outpatient Services** — `hospital-hadata-sop-waiting-time` · Hospital Authority · JSON, XLSX · Quarterly (January, April, July and October)
+  - https://www.ha.org.hk/opendata/sop/sop-waiting-time-en.json
+- **Corruption Complaints (Excluding election complaints) (Classified by Sectors)** — `hk-icac-ops_stats-quart-corruption-complaint-by-sector` · Independent Commission Against Corruption · CSV · Quarterly
+  - https://www.icac.org.hk/datagovhk/opendata/ops/stats/01_corruption_complaints_ex_election_classified_by_sectors_en.csv
+- **Prosecutions (Excluding election cases)** — `hk-icac-ops_stats-quart-prosecution-by-sector` · Independent Commission Against Corruption · CSV · Quarterly
+  - https://www.icac.org.hk/datagovhk/opendata/ops/stats/02_prosecutions_ex_election_en.csv
+- **Spending data of Head 155 - Innovation and Technology Commission (CSV)** — `hk-itc-finance-spending-data-of-head-155` · Innovation and Technology Commission · CSV · Quarterly
+  - https://www.itc.gov.hk/datagovhk/Finance/spending_data_of_head_155_en.csv
+- **Finance / Spending data of Head 135 – Government Secretariat: Innovation Technology and industry Bureau** — `hk-itib-itib02-itib-spending-data` · Innovation, Technology and Industry Bureau · CSV · Quarterly
+  - https://www.itib.gov.hk/en/spending/data/spending_data_of_head_135_en.csv
+- **Quarterly Release of Provisional Financial Information on Insurance Industry (as at December 2024)** — `ia-iaebs-ebsstatsq2024q4` · Insurance Authority · XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q24_Industry_Financial_Info.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2001  (January to September)** — `ia-ia1-gstatsq2001q3` · Insurance Authority · CSV · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q01gen_Total_E.csv
+- **Quarterly Release of Provisional Statistics for General Business 2001 (January to December)** — `ia-ia1-gstatsq2001q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q01gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2001 (January to June)** — `ia-ia1-gstatsq2001q2` · Insurance Authority · CSV · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q01gen_Total_E.csv
+- **Quarterly Release of Provisional Statistics for General Business 2001 (January to March)** — `ia-ia1-gstatsq2001q1` · Insurance Authority · CSV · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q01gen_Total_E.csv
+- **Quarterly Release of Provisional Statistics for General Business 2002  (January to September)** — `ia-ia1-gstatsq2002q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q02gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2002 (January to December)** — `ia-ia1-gstatsq2002q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q02gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2002 (January to June)** — `ia-ia1-gstatsq2002q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q02gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2002 (January to March)** — `ia-ia1-gstatsq2002q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q02gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2003  (January to September)** — `ia-ia1-gstatsq2003q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q03-aggregate-General.xls
+- **Quarterly Release of Provisional Statistics for General Business 2003 (January to December)** — `ia-ia1-gstatsq2003q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/GIBPS.xls
+- **Quarterly Release of Provisional Statistics for General Business 2003 (January to June)** — `ia-ia1-gstatsq2003q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q03gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2003 (January to March)** — `ia-ia1-gstatsq2003q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q03gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2004  (January to September)** — `ia-ia1-gstatsq2004q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q04gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2004 (January to December)** — `ia-ia1-gstatsq2004q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q04gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2004 (January to June)** — `ia-ia1-gstatsq2004q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q04gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2004 (January to March)** — `ia-ia1-gstatsq2004q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q04gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2005  (January to September)** — `ia-ia1-gstatsq2005q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q05gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2005 (January to December)** — `ia-ia1-gstatsq2005q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q05gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2005 (January to June)** — `ia-ia1-gstatsq2005q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q05gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2005 (January to March)** — `ia-ia1-gstatsq2005q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q05gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2006  (January to September)** — `ia-ia1-gstatsq2006q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q06gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2006 (January to December)** — `ia-ia1-gstatsq2006q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q06gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2006 (January to June)** — `ia-ia1-gstatsq2006q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q06gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2006 (January to March)** — `ia-ia1-gstatsq2006q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q06gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2007  (January to September)** — `ia-ia1-gstatsq2007q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q07gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2007 (January to December)** — `ia-ia1-gstatsq2007q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q07gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2007 (January to June)** — `ia-ia1-gstatsq2007q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q07gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2007 (January to March)** — `ia-ia1-gstatsq2007q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q07gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2008  (January to September)** — `ia-ia1-gstatsq2008q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q08gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2008 (January to December)** — `ia-ia1-gstatsq2008q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q08gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2008 (January to June)** — `ia-ia1-gstatsq2008q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q08gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2008 (January to March)** — `ia-ia1-gstatsq2008q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q08gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2009  (January to September)** — `ia-ia1-gstatsq2009q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q09gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2009 (January to December)** — `ia-ia1-gstatsq2009q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q09gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2009 (January to June)** — `ia-ia1-gstatsq2009q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q09gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2009 (January to March)** — `ia-ia1-gstatsq2009q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q09gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2010  (January to September)** — `ia-ia1-gstatsq2010q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q10gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2010 (January to December)** — `ia-ia1-gstatsq2010q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q10gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2010 (January to June)** — `ia-ia1-gstatsq2010q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q10gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2010 (January to March)** — `ia-ia1-gstatsq2010q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q10gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2011  (January to September)** — `ia-ia1-gstatsq2011q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q11gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2011 (January to December)** — `ia-ia1-gstatsq2011q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q11gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2011 (January to June)** — `ia-ia1-gstatsq2011q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q11gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2011 (January to March)** — `ia-ia1-gstatsq2011q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q11gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2012  (January to September)** — `ia-ia1-gstatsq2012q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q12gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2012 (January to December)** — `ia-ia1-gstatsq2012q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q12gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2012 (January to June)** — `ia-ia1-gstatsq2012q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q12gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2012 (January to March)** — `ia-ia1-gstatsq2012q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q12gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2013  (January to September)** — `ia-ia1-gstatsq2013q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q13gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2013 (January to December)** — `ia-ia1-gstatsq2013q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q13gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2013 (January to June)** — `ia-ia1-gstatsq2013q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q13gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2013 (January to March)** — `ia-ia1-gstatsq2013q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q13gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2014  (January to September)** — `ia-ia1-gstatsq2014q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q14gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2014 (January to December)** — `ia-ia1-gstatsq2014q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q14gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2014 (January to June)** — `ia-ia1-gstatsq2014q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q14gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2014 (January to March)** — `ia-ia1-gstatsq2014q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q14gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2015  (January to September)** — `ia-ia1-gstatsq2015q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q15gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2015 (January to December)** — `ia-ia1-gstatsq2015q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q15gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2015 (January to June)** — `ia-ia1-gstatsq2015q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q15gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2015 (January to March)** — `ia-ia1-gstatsq2015q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q15gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2016  (January to September)** — `ia-ia1-gstatsq2016q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q16gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2016 (January to December)** — `ia-ia1-gstatsq2016q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q16gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2016 (January to June)** — `ia-ia1-gstatsq2016q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q16gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2016 (January to March)** — `ia-ia1-gstatsq2016q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q16gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2017  (January to September)** — `ia-ia1-gstatsq2017q3` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q17gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2017 (January to December)** — `ia-ia1-gstatsq2017q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q17gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2017 (January to June)** — `ia-ia1-gstatsq2017q2` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q17gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2017 (January to March)** — `ia-ia1-gstatsq2017q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q17gen.xls
+- **Quarterly Release of Provisional Statistics for General Business 2018  (January to September)** — `ia-ia1-gstatsq2018q3` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q18gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2018 (January to December)** — `ia-ia1-gstatsq2018q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q18gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2018 (January to June)** — `ia-ia1-gstatsq2018q2` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q18gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2018 (January to March)** — `ia-ia1-gstatsq2018q1` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q18gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2019  (January to September)** — `ia-ia1-gstatsq2019q3` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q19gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2019 (January to December)** — `ia-ia1-gstatsq2019q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q19gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2019 (January to June)** — `ia-ia1-gstatsq2019q2` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q19gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2019 (January to March)** — `ia-ia1-gstatsq2019q1` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q19gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2020  (January to September)** — `ia-ia1-gstatsq2020q3` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q20gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2020 (January to December)** — `ia-ia1-gstatsq2020q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q20gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2020 (January to June)** — `ia-ia1-gstatsq2020q2` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q20gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2020 (January to March)** — `ia-ia1-gstatsq2020q1` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q20gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2021  (January to September)** — `ia-ia1-gstatsq2021q3` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q21gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2021 (January to December)** — `ia-ia1-gstatsq2021q4` · Insurance Authority · CSV · Quarterly
+  - https://www.ia.org.hk/tc/infocenter/statistics/files/4q21gen_Total_C.csv
+- **Quarterly Release of Provisional Statistics for General Business 2021 (January to June)** — `ia-ia1-gstatsq2021q2` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q21gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2021 (January to March)** — `ia-ia1-gstatsq2021q1` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q21gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2022  (January to September)** — `ia-iagb-gstatsq2022q3` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q22gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2022 (January to December)** — `ia-iagb-gstatsq2022q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q22gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2022 (January to June)** — `ia-iagb-gstatsq2022q2` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q22gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2022 (January to March)** — `ia-iagb-gstatsq2022q1` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q22gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2023  (January to September)** — `ia-iagb-gstatsq2023q3` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q23gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2023 (January to December)** — `ia-iagb-gstatsq2023q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q23gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2023 (January to June)** — `ia-iagb-gstatsq2023q2` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q23gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2023 (January to March)** — `ia-iagb-gstatsq2023q1` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q23gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2024  (January to December)** — `ia-iagb-gstatsq2024q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q24gen_Mkt_UW_Results.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2024  (January to September)** — `ia-iagb-gstatsq2024q3` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q24gen_Mkt_UW_Results_AYUY.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2024 (January to June)** — `ia-iagb-gstatsq2024q2` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q24gen.xlsx
+- **Quarterly Release of Provisional Statistics for General Business 2024 (January to March)** — `ia-iagb-gstatsq2024q1` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q24gen.xlsx
+- **Quarterly Release of Provisional Statistics for Long Term Business 2001  (January to September)** — `ia-ia1-lstatsq2001q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/output-nb.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2001 (January to December)** — `ia-ia1-lstatsq2001q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/output-nb-dec01.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2001 (January to June)** — `ia-ia1-lstatsq2001q2` · Insurance Authority · CSV · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q01long_E.csv
+- **Quarterly Release of Provisional Statistics for Long Term Business 2001 (January to March)** — `ia-ia1-lstatsq2001q1` · Insurance Authority · CSV · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q01long_E.csv
+- **Quarterly Release of Provisional Statistics for Long Term Business 2002  (January to September)** — `ia-ia1-lstatsq2002q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/output-nb-sep02.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2002 (January to December)** — `ia-ia1-lstatsq2002q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/output-nb-dec02.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2002 (January to June)** — `ia-ia1-lstatsq2002q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/output-nb-jun02.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2002 (January to March)** — `ia-ia1-lstatsq2002q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/output-nb-mar02.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2003  (January to September)** — `ia-ia1-lstatsq2003q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/Output-LongTermBusiness.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2003 (January to December)** — `ia-ia1-lstatsq2003q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/Output-LongTermBusiness1.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2003 (January to June)** — `ia-ia1-lstatsq2003q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/output-jun03.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2003 (January to March)** — `ia-ia1-lstatsq2003q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/output-mar03.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2004  (January to September)** — `ia-ia1-lstatsq2004q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q04long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2004 (January to December)** — `ia-ia1-lstatsq2004q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q04long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2004 (January to June)** — `ia-ia1-lstatsq2004q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q04long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2004 (January to March)** — `ia-ia1-lstatsq2004q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q04long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2005  (January to September)** — `ia-ia1-lstatsq2005q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q05long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2005 (January to December)** — `ia-ia1-lstatsq2005q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q05long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2005 (January to June)** — `ia-ia1-lstatsq2005q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q05long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2005 (January to March)** — `ia-ia1-lstatsq2005q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q05long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2006  (January to September)** — `ia-ia1-lstatsq2006q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q06long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2006 (January to December)** — `ia-ia1-lstatsq2006q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q06long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2006 (January to June)** — `ia-ia1-lstatsq2006q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q06long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2006 (January to March)** — `ia-ia1-lstatsq2006q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q06long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2007  (January to September)** — `ia-ia1-lstatsq2007q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q07long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2007 (January to December)** — `ia-ia1-lstatsq2007q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q07long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2007 (January to June)** — `ia-ia1-lstatsq2007q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q07long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2007 (January to March)** — `ia-ia1-lstatsq2007q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q07long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2008  (January to September)** — `ia-ia1-lstatsq2008q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q08long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2008 (January to December)** — `ia-ia1-lstatsq2008q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q08long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2008 (January to June)** — `ia-ia1-lstatsq2008q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q08long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2008 (January to March)** — `ia-ia1-lstatsq2008q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q08long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2009  (January to September)** — `ia-ia1-lstatsq2009q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q09long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2009 (January to December)** — `ia-ia1-lstatsq2009q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q09long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2009 (January to June)** — `ia-ia1-lstatsq2009q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q09long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2009 (January to March)** — `ia-ia1-lstatsq2009q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q09long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2010  (January to September)** — `ia-ia1-lstatsq2010q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q10long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2010 (January to December)** — `ia-ia1-lstatsq2010q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q10long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2010 (January to June)** — `ia-ia1-lstatsq2010q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q10long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2010 (January to March)** — `ia-ia1-lstatsq2010q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q10long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2011  (January to September)** — `ia-ia1-lstatsq2011q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q11long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2011 (January to December)** — `ia-ia1-lstatsq2011q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q11long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2011 (January to June)** — `ia-ia1-lstatsq2011q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q11long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2011 (January to March)** — `ia-ia1-lstatsq2011q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q11long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2012  (January to September)** — `ia-ia1-lstatsq2012q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q12long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2012 (January to December)** — `ia-ia1-lstatsq2012q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q12long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2012 (January to June)** — `ia-ia1-lstatsq2012q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q12long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2012 (January to March)** — `ia-ia1-lstatsq2012q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q12long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2013  (January to September)** — `ia-ia1-lstatsq2013q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q13long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2013 (January to December)** — `ia-ia1-lstatsq2013q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q13long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2013 (January to June)** — `ia-ia1-lstatsq2013q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q13long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2013 (January to March)** — `ia-ia1-lstatsq2013q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q13long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2014  (January to September)** — `ia-ia1-lstatsq2014q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q14long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2014 (January to December)** — `ia-ia1-lstatsq2014q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q14long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2014 (January to June)** — `ia-ia1-lstatsq2014q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q14long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2014 (January to March)** — `ia-ia1-lstatsq2014q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q14long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2015  (January to September)** — `ia-ia1-lstatsq2015q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q15long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2015 (January to December)** — `ia-ia1-lstatsq2015q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q15long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2015 (January to June)** — `ia-ia1-lstatsq2015q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q15long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2015 (January to March)** — `ia-ia1-lstatsq2015q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q15long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2016  (January to September)** — `ia-ia1-lstatsq2016q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q16long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2016 (January to December)** — `ia-ia1-lstatsq2016q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q16long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2016 (January to June)** — `ia-ia1-lstatsq2016q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q16long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2016 (January to March)** — `ia-ia1-lstatsq2016q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q16long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2017  (January to September)** — `ia-ia1-lstatsq2017q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q17long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2017 (January to December)** — `ia-ia1-lstatsq2017q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q17long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2017 (January to June)** — `ia-ia1-lstatsq2017q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q17long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2017 (January to March)** — `ia-ia1-lstatsq2017q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q17long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2018  (January to September)** — `ia-ia1-lstatsq2018q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q18long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2018 (January to December)** — `ia-ia1-lstatsq2018q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q18long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2018 (January to June)** — `ia-ia1-lstatsq2018q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q18long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2018 (January to March)** — `ia-ia1-lstatsq2018q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q18long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2019  (January to September)** — `ia-ia1-lstatsq2019q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q19long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2019 (January to December)** — `ia-ia1-lstatsq2019q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q19long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2019 (January to June)** — `ia-ia1-lstatsq2019q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q19long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2019 (January to March)** — `ia-ia1-lstatsq2019q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q19long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2020  (January to September)** — `ia-ia1-lstatsq2020q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q20long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2020 (January to December)** — `ia-ia1-lstatsq2020q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q20long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2020 (January to June)** — `ia-ia1-lstatsq2020q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q20long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2020 (January to March)** — `ia-ia1-lstatsq2020q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q20long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2021  (January to September)** — `ia-ia1-lstatsq2021q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q21long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2021 (January to December)** — `ia-ia1-lstatsq2021q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q21long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2021 (January to June)** — `ia-ia1-lstatsq2021q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q2021long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2021 (January to March)** — `ia-ia1-lstatsq2021q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q2021long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2022  (January to September)** — `ia-ialtb-lstatsq2022q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q22long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2022 (January to December)** — `ia-ialtb-lstatsq2022q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q22long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2022 (January to June)** — `ia-ialtb-lstatsq2022q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q22long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2022 (January to March)** — `ia-ialtb-lstatsq2022q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q22long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2023  (January to September)** — `ia-ialtb-lstatsq2023q3` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q23long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2023 (January to December)** — `ia-ialtb-lstatsq2023q4` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q23long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2023 (January to June)** — `ia-ialtb-lstatsq2023q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q23long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2023 (January to March)** — `ia-ialtb-lstatsq2023q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q23long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2024  (January to December)** — `ia-ialtb-lstatsq2024q4` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/4q24long.xlsx
+- **Quarterly Release of Provisional Statistics for Long Term Business 2024  (January to September)** — `ia-ialtb-lstatsq2024q3` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/3q24_long.xlsx
+- **Quarterly Release of Provisional Statistics for Long Term Business 2024 (January to June)** — `ia-ialtb-lstatsq2024q2` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/2q24long.xls
+- **Quarterly Release of Provisional Statistics for Long Term Business 2024 (January to March)** — `ia-ialtb-lstatsq2024q1` · Insurance Authority · CSV, XLS · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/1q24long.xls
+- **Statistics - Insurance Intermediary Licence** — `ia-iamc-msiil` · Insurance Authority · CSV, XLSX · Quarterly
+  - https://www.ia.org.hk/en/infocenter/statistics/files/Number_of_Licensed_Insurance_Intermediaries_by_Licence_Type_ENG.csv
+- **Spending data under Head 174 - The Joint Secretariat for the Advisory Bodies on Civil Service and Judicial Salaries and Conditions of Service** — `hk-jsscs-spending-spending-data-of-head174-jsscs` · Joint Secretariat for the Advisory Bodies on Civil Service and Judicial Salaries and Conditions of Service · CSV · Quarterly
+  - https://www.jsscs.gov.hk/datagovhk/spendingdata/spendingdata_head174.csv
+- **Conviction records under the Boilers and Pressure Vessels Ordinance (Cap. 56), the Factories and Industrial Undertakings Ordinance (Cap. 59), the Occupational Safety and Health Ordinance (Cap. 509) and their subsidiary regulations in the past 2 years.** — `hk-ld-lsd-lsd-convictionrecords` · Labour Department · XLSX, XML · QUARTERLY
+  - https://www.labour.gov.hk/datagovhk/resource/lsd/lsd-convictionrecords_en.xml
+- **Spending data of Head 90  - Labour Department** — `hk-ld-dad-spendingdata` · Labour Department · CSV · QUARTERLY
+  - https://www.labour.gov.hk/datagovhk/resource/dad/spending_data_head_90_2022-23.csv
+- **Spending data of Head 141 - Government Secretariat: Labour and Welfare Bureau** — `hk-lwb-lwb-spending-data` · Labour and Welfare Bureau · CSV · Quarterly
+  - https://www.lwb.gov.hk/datagovhk/spending-data/h141-spending-data.csv
+- **3D Pedestrian Network** — `hk-landsd-openmap-3d-pedestrian-network` · Lands Department · GML, JSON · Quarterly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637222018065_52265
+- **Certificate of Compliance** — `hk-landsd-openmap-certificate-of-compliance` · Lands Department · CSV, GEOJSON, GML, KML, XLS · Quarterly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1631598950643_64107
+- **Executed Land Exchange Cases (Available in GML)** — `hk-landsd-openmap-lao-lec` · Lands Department · GML · As and when published and at least quarterly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637224372675_83413
+- **Executed Lease Extension Cases (Available in GML)** — `hk-landsd-openmap-lao-lext` · Lands Department · GML · As and when published and at least quarterly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637224682055_15833
+- **Executed Lease Modification Cases (Available in GML)** — `hk-landsd-openmap-lao-lmc` · Lands Department · GML · As and when published and at least quarterly
+  - https://portal.csdi.gov.hk/geoportal/?datasetId=landsd_rcd_1637225104335_55505
+- **Geo-Community Database iGeoCom** — `hk-landsd-openmap-development-hkms-digital-geocom` · Lands Department · CSV, GEOJSON · Quarterly
+  - https://open.hkmapservice.gov.hk/OpenData/directDownload?productName=iGeoCom&sheetName=iGeoCom&productFormat=GEOJSON
+- **Revision Date of GeoCommunity Database – iGeoCom** — `hk-landsd-openmap-revision-date-of-geocommunity-database-igeocom` · Lands Department · CSV · Quarterly
+  - https://www.landsd.gov.hk/doc/en/mapping/digital-map/common/update/igeocom_update.csv
+- **Spending Data of Head 94 - Legal Aid Department** — `hk-lad-lad_2-spending-data-head94` · Legal Aid Department · CSV · Quarterly
+  - https://www.lad.gov.hk/datagovhk2/data/spending-data-head94.csv
+- **A Catalogue of Books Printed in Hong Kong** — `hk-lcsd-lib-lib-bro` · Leisure and Cultural Services Department · CSV · Quarterly
+  - https://www.hkpl.gov.hk/en/common/attachments/about-us/services/book-registration/BRO-PSI-CSV/catalogueHK17Q1e.csv
+- **Collection items accessible on the Internet** — `hk-lcsd-stats-museum-collection-accessible-internet` · Leisure and Cultural Services Department · CSV · Quarterly
+  - https://www.lcsd.gov.hk/datagovhk/stats/lcsd_museum_collection_accessible_internet.csv
+- **List of e-Books of Hong Kong Public Libraries** — `hk-lcsd-lib-lib-ebook` · Leisure and Cultural Services Department · CSV · Quarterly
+  - https://www.hkpl.gov.hk/en/common/attachments/e-resources/e-books/Chinese_e-Books.csv
+- **Museum Attendance by Venue** — `hk-lcsd-stats-museum-stats` · Leisure and Cultural Services Department · CSV · Quarterly
+  - https://www.lcsd.gov.hk/datagovhk/stats/lcsd_museum_stats.csv
+- **Performances and Attendances at Cultural and Entertainment Programmes by Office** — `hk-lcsd-pa-pa-perf-attd-office` · Leisure and Cultural Services Department · CSV · Quarterly
+  - https://www.lcsd.gov.hk/datagovhk/pa/off.csv
+- **Performances and Attendances at Cultural and Entertainment Programmes by Venue** — `hk-lcsd-pa-pa-perf-attd-venue` · Leisure and Cultural Services Department · CSV · Quarterly
+  - https://www.lcsd.gov.hk/datagovhk/pa/cult.csv
+- **School visit groups** — `hk-lcsd-stats-school-visit-grps` · Leisure and Cultural Services Department · CSV · Quarterly
+  - https://www.lcsd.gov.hk/datagovhk/stats/lcsd_school_visit_grps.csv
+- **Contributions received and benefits paid of MPF Schemes** — `mpfa-mpfa-contributions-received-and-benefits-paid-of-mpf-schemes` · Mandatory Provident Fund Schemes Authority · CSV, XLSX · Quarterly
+  - https://www.mpfa.org.hk/en/-/media/files/information-centre/research-and-statistics/other-reports/statistics/contributions_received_and_benefits_paid02_en.csv
+- **MPF assets invested in Default Investment Strategy constituent funds** — `mpfa-mpfa-mpf-assets-invested-in-dis-constituent-funds` · Mandatory Provident Fund Schemes Authority · CSV, XLSX · Quarterly
+  - https://www.mpfa.org.hk/en/-/media/files/information-centre/research-and-statistics/other-reports/statistics/mpf_assets_invested_in_dis_constituent_funds02_en.csv
+- **Net asset values of approved constituent funds** — `mpfa-mpfa-net-asset-values-of-approved-constituent-funds` · Mandatory Provident Fund Schemes Authority · CSV, XLSX · Quarterly
+  - https://www.mpfa.org.hk/en/-/media/files/information-centre/research-and-statistics/other-reports/statistics/net_asset_values_of_approved_constituent_funds02_en.csv
+- **Number of MPF accounts** — `mpfa-mpfa-number-of-mpf-accounts` · Mandatory Provident Fund Schemes Authority · CSV, XLSX · Quarterly
+  - https://www.mpfa.org.hk/en/-/media/files/information-centre/research-and-statistics/other-reports/statistics/number_of_mpf_accounts02_en.csv
+- **Number of accounts investing in Default Investment Strategy constituent funds** — `mpfa-mpfa-number-of-accounts-investing-in-dis-constituent-funds` · Mandatory Provident Fund Schemes Authority · CSV, XLSX · Quarterly
+  - https://www.mpfa.org.hk/en/-/media/files/information-centre/research-and-statistics/other-reports/statistics/number_of_accounts_investing_in_dis_constituent_funds02_en.csv
+- **Spending data of Head 100 - Marine Department** — `hk-md-mardep-gra-summary-item-spending-data` · Marine Department · CSV, JSON, XML · QUARTERLY
+  - https://www.mardep.gov.hk/e_files/en/opendata/GRA_Spending_data_of_Head_100.csv
+- **Public Payphone Register** — `hk-ofca-ofca-ofca-dataset-3` · Office of the Communications Authority · CSV · Quarterly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/PayPhoneRegister.csv
+- **Statistics on Activated Capacity of External Telecommunications Facilities by Countries or Territories** — `hk-ofca-ofca-ofca-dataset-9` · Office of the Communications Authority · CSV · Quarterly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/act_cap_ext_tel_fac_en.csv
+- **Statistics on Capacity of External Telecommunications Facilities** — `hk-ofca-ofca-ofca-dataset-8` · Office of the Communications Authority · CSV · Quarterly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/cap_ext_tel_fac.csv
+- **Statistics on Fixed Number Portings** — `hk-ofca-ofca-ofca-dataset-19` · Office of the Communications Authority · CSV · Quarterly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/onp_porting.csv
+- **Statistics on Mobile Number Portings** — `hk-ofca-ofca-ofca-dataset-18` · Office of the Communications Authority · CSV · Quarterly
+  - https://www.ofca.gov.hk/filemanager/ofca/common/datagovhk/mnp_porting.csv
+- **Spending data of Head 116 under General Revenue Account - Official Receiver's Office** — `hk-oro-oro-spending-data` · Official Receiver's Office · CSV · Quarterly
+  - https://www.oro.gov.hk/eng/stat/csv/GRA_Summary_en_apr2026-jun2026.csv
+- **Names of Buildings** — `hk-rvd-tsinfo_rvd-names-of-buildings` · Rating and Valuation Department · XLS, XML · Quarterly
+  - http://www.rvd.gov.hk/doc/en/urban_print.xls
+- **Spending data of Head 163 - Registration and Electoral Office** — `hk-reo-reopsi01-gra-summary-item-spending-data` · Registration and Electoral Office · CSV, JSON, XML · Quarterly
+  - https://www.reo.gov.hk/datagovhk/spendingdata/Spending_Data_of_Head_163-REO/spending_data_of_head_163_2021-22_en.csv
+- **Central Registry of Drug Abuse quarterly statistics** — `hk-sb-sb_nd-crda-quarterly-statistics` · Security Bureau · CSV · Quarterly
+  - https://www.nd.gov.hk/psi-dataset/crda-quarterly-statistics/en/t1.csv
+- **Statistics on non-refoulement claims** — `hk-sb-sb_usm-non-refoulement-claims` · Security Bureau · CSV · Once every quarter
+  - https://www.sb.gov.hk/datagovhk/usm/data_chi.csv
+- **Information on Cases Selected for Services through Central Referral System for Rehabilitation Services (excluding Subsystem for Pre-school Children with Disabilities)** — `hk-swd-rm-information-on-cases-selected-through-crsrehab` · Social Welfare Department · CSV · Quarterly
+  - https://www.swd.gov.hk/datagovhk/rm/Resource-Data2.csv
+- **Information on Number of Applications Waitlisted in the Central Referral System for Rehabilitaion Services (excluding Subsystem for Pre-school Children with Disabilities)** — `hk-swd-rm-information-on-applications-waitlisted-in-crsrehab` · Social Welfare Department · CSV · Quarterly
+  - https://www.swd.gov.hk/datagovhk/rm/Resource-Data3.csv
+- **Spending Data of Head 170 - Social Welfare Department** — `hk-swd-fb-head170-swd-spendingdata` · Social Welfare Department · CSV · Quarterly
+  - https://www.swd.gov.hk/datagovhk/fb/spending_data_of_head_170_en.csv
+- **Statistics on Complaints Handled by Lump Sum Grant Independent Complaints Handling Committee** — `hk-swd-sb-statistics-on-complaints-handled-by-lsg-ichc` · Social Welfare Department · CSV · Quarterly
+  - https://www.swd.gov.hk/datagovhk/sb/Statistics-on-Complaints-Handled-by-LSG-ICHC-overall.csv
+- **Statistics on Foster Care Service** — `hk-swd-fcw-key-statistics-on-cfcu-service` · Social Welfare Department · CSV · Quarterly
+  - https://www.swd.gov.hk/datagovhk/fcw/key-statistics-on-cfcu-service.csv
+- **Statistics on Residential Care Services for the Elderly** — `hk-swd-elderly-statistics-on-rcse` · Social Welfare Department · CSV · Quarterly
+  - https://www.swd.gov.hk/datagovhk/elderly/statistics-on-rcse-overview.csv
+- **List and Information of Statutory Plans Gazetted** — `tpd-tpb1-list-and-information-of-statutory-plans-gazetted` · Town Planning Board · XML · Quarterly
+  - https://www.ozp.tpb.gov.hk/api/OZPStatistic?year=2019&quarter=1&type=xml
+- **Planning Applications Considered by the Town Planning Board** — `tpd-tpb1-planning-applications-considered-by-the-tpb` · Town Planning Board · XML · Quarterly
+  - https://www.ozp.tpb.gov.hk/api/APPStatistic?year=2019&quarter=1&type=xml
+- **Junction Blacksite List** — `hk-td-tis_9-junction-blacksite-list` · Transport Department · CSV, XLSX · Quarterly
+  - https://www.td.gov.hk/datagovhk_td/junction_blacksite_list/resources/en/junctionblacksite_internet_eng.xlsx
+- **The Code on Access to Information - Disclosure Log** — `hk-td-wcms_5-disclosure-log` · Transport Department · CSV, XLSX · Quarterly
+  - https://www.td.gov.hk/datagovhk_td/dis-log/resources/en/dlog_jan_mar_2021_updatedon102021_eng.xlsx
+- **Data related to Quarterly Accounts of the Government Published in the Gazette** — `hk-try-tryqtlyac-quarterly-accounts` · Treasury · CSV, JSON, XML · Every Quarter
+  - https://www.try.gov.hk/internet/tryqtlyac/qa_jun_2019_eng_csv.zip
+- **Spending data of Head 188 - the Treasury** — `hk-try-spending-spending-data-of-head188-the-treasury` · Treasury · CSV, JSON, XML · QUARTERLY
+  - https://www.try.gov.hk/internet/tryspddata/Spending_data_of_Head_188_2025_26_en.csv
+- **Spending data of Head 173 - Working Family and Student Financial Assistance Agency** — `hk-wfsfaa-wfao_01-data-on-spending-data-of-head-173` · Working Family and Student Financial Assistance Agency · CSV · Quarterly
+  - https://www.wfsfaa.gov.hk/wfao/psi/csv/h173-spending-data.csv

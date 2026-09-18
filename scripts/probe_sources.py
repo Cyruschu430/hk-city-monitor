@@ -40,11 +40,18 @@ UA = "hk-city-monitor/0.1 (+https://github.com/; open-data client)"
 TIMEOUT = 30
 MAX_BYTES = 4 * 1024 * 1024          # ponytail: hard cap so one huge feed can't stall the probe
 
-# data.gov.hk ships some files with odd encodings and some gov sites have stale
-# chains; a bare urllib context refuses them, so relax verification but keep TLS.
-CTX = ssl.create_default_context()
+# Two concessions to HK government TLS stacks, both of which would otherwise show
+# up as "the source is broken" when the client is at fault:
+#   1. verification off — some hosts have incomplete chains that a browser tolerates.
+#   2. cipher security level relaxed — esd.wsd.gov.hk answers a default ClientHello
+#      with SSLV3_ALERT_HANDSHAKE_FAILURE and only negotiates at SECLEVEL=1.
+CTX = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 CTX.check_hostname = False
 CTX.verify_mode = ssl.CERT_NONE
+try:
+    CTX.set_ciphers("DEFAULT@SECLEVEL=1")
+except ssl.SSLError:                                  # pragma: no cover — older OpenSSL
+    pass
 
 OK, WARN, BAD = "🟢", "🟡", "🔴"
 ICONS = {"ok": OK, "fail": BAD, "unprobeable": WARN,

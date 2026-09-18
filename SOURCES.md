@@ -3,7 +3,7 @@
 > **本檔案由 `scripts/probe_sources.py` 自動生成，唔好手改。**
 > 改源 → 改 `sources.json` → 跑 `python3 scripts/probe_sources.py`。
 
-最後實測：`2026-09-18 19:51 CST`　·　**81 / 87 個源成功**
+最後實測：`2026-09-18 20:09 CST`　·　**95 / 103 個源成功**
 
 每個 URL 都真係發過 HTTP 請求。🟢 = 200 而且回傳真數據　🟡 = 未解決／要 key　🔴 = 失敗。
 
@@ -12,8 +12,8 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | 運輸署 交通快拍攝影機位置 | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | irregular | none | CSV ~1013 rows, cols: key, region, district, description, easting, northing |
-| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 32637B |
-| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 592044B |
+| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 30826B |
+| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 588539B |
 | 天文台 天氣攝影機目錄頁 | `https://www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm` | 🟢 ok | static | none | HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko |
 
 - **運輸署 交通快拍攝影機位置** — UTF-16LE with a DOUBLE BOM (\xff\xfe\xff\xfe) and tab-delimited. Columns: key, region, district, description, easting, northing, latitude, longitude, url. Python's utf-16 codec leaves a stray \ufeff on the first field name — strip it or every row reads empty.
@@ -41,6 +41,11 @@
 | 天文台 暑熱指數 WBGT（每 10 分鐘） | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/recent10_60min_wbgt.csv` | 🟢 ok | 10 minutes | none | CSV ~100 rows, cols: Date time, Automatic Weather Station, 60-minute mean Wet Bulb Globe Temperature (WBGT) |
 | 天文台 格網降雨臨近預報（每 12 分鐘） | `https://data.weather.gov.hk/weatherAPI/hko_data/F3/Gridded_rainfall_nowcast.csv` | 🟢 ok | hourly | none | CSV ~58564 rows, cols: Updated Date and Time (in Hong Kong Time), Ending Date and Time (in Hong Kong Time), Latitude (degree), Longitude (degree), Half-hourly Nowcast Accumulated Rainfall (mm) |
 | 天文台 智慧燈柱氣象數據（微尺度） | `https://www.hko.gov.hk/common/hko_data/smart-lamppost/files/smart_lamppost_met_device_l…` | 🟢 ok | 10 minutes | none | JSON array, 71 items |
+| 天文台 熱帶氣旋路徑資訊（現行） | `https://www.weather.gov.hk/wxinfo/currwx/tc_list.xml` | 🟢 ok | as issued | none | XML, 0 <item> entries, root tags: TropicalCycloneList |
+| 天文台 熱帶氣旋最佳路徑（事後分析，逐年） | `https://data.weather.gov.hk/weatherAPI/hko_data/tc/HKO2024BST.csv` | 🟢 ok | annual | none | CSV ~655 rows, cols: Tropical Cyclone Best Track Data (post analysis) |
+| 環保署 AQHI（City Dashboard 版，JSON/CSV/XML） | `https://dashboard.data.gov.hk/api/aqhi-individual?format=json` | 🟢 ok | hourly | none | JSON array, 18 items |
+| 天文台 香港暑熱指數（10 分鐘） | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/recent10_10min_hkhi.csv` | 🟢 ok | 10 minutes | none | CSV ~100 rows, cols: Date time, Automatic Weather Station, 10 minute mean Hong Kong Heat Index |
+| 天文台 1 分鐘平均氣溫（分區） | `https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperatur…` | 🟢 ok | 10 minutes | none | CSV ~39 rows, cols: Date time, Automatic Weather Station, Air Temperature(degree Celsius) |
 
 - **天文台 天氣警告一覽** — CORS allow-origin * so the browser can fetch directly. Returns {} when no warning is in force. Otherwise keyed by warning code with name, code, actionCode, issueTime, updateTime, expireTime.
 - **天文台 詳細天氣警告資訊** — Full warning text, useful for a detail drawer.
@@ -57,6 +62,11 @@
 - **天文台 暑熱指數 WBGT（每 10 分鐘）** — 濕球黑球溫度 — 戶外工作與運動嘅真正熱壓力指標，比氣溫誠實得多。對露營、賽事、地盤、跑步都直接有用。
 - **天文台 格網降雨臨近預報（每 12 分鐘）** — 格網狀未來降雨預報 —— 可以砌落雨動畫／時間軸，係整個天氣層最有動感嘅一個。另有 _tc 中文版。
 - **天文台 智慧燈柱氣象數據（微尺度）** — 街頭級氣象站（智慧燈柱），比天文台站密得多。位置表 + device type 表各一個 JSON。做微尺度城市氣候／跑步路線熱壓力嘅原材料。
+- **天文台 熱帶氣旋路徑資訊（現行）** — Live tropical cyclone list and track — the data behind the HKO TC track pages. Feeds the 颱風模式 vertical. Note the host is www.weather.gov.hk (not data.weather.gov.hk).
+- **天文台 熱帶氣旋最佳路徑（事後分析，逐年）** — Full post-analysed track of every cyclone in a year — the honest basis for 'this storm looks like the one in 2023' comparisons, because it is the quality-controlled record rather than the forecast. Build the year into the URL and step back a year when the current one 404s.
+- **環保署 AQHI（City Dashboard 版，JSON/CSV/XML）** — Cleaner than the RSS for machine use, and gives per-station current AQHI as real JSON. Hourly, plus a forecast published three times a day.
+- **天文台 香港暑熱指數（10 分鐘）** — The HK Heat Index (a local apparent-temperature measure) every 10 minutes — complements WBGT. Relevant to outdoor work, sport and elderly care.
+- **天文台 1 分鐘平均氣溫（分區）** — One-minute-mean temperature by station — the finest temperature resolution HKO publishes. Sibling files cover humidity, grass temperature, sea-level pressure and 10-minute wind.
 
 ## transport
 
@@ -72,6 +82,10 @@
 | 九巴／龍運 路線及到站時間（免 key！） | `https://data.etabus.gov.hk/v1/transport/kmb/eta/18492910339410B1/1/1` | 🟢 ok | 1 minute | none | JSON object, keys: type, version, generated_timestamp, data |
 | 港鐵 下一班列車（免 key） | `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=ADM` | 🟢 ok | real-time | none | JSON object, keys: sys_time, curr_time, data, isdelay, status, message |
 | 龍運巴士 ETA | `https://data.etabus.gov.hk/v1/transport/lwb/route/` | 🟡 needs-params | 1 minute | none | — |
+| 綠色專線小巴 ETA（1 分鐘） | `https://data.etagmb.gov.hk/route/HKI` | 🟢 ok | 1 minute | none | JSON object, keys: type, version, generated_timestamp, data |
+| 新渡輪 下一班船 ETA（1 分鐘） | `https://www.sunferry.com.hk/eta/?route=CW` | 🟡 needs-params | 1 minute | none | — |
+| 港九小輪 ETA／時間表／票價 | `https://www.hkkfeta.com/opendata/route/` | 🟢 ok | 1 minute | none | JSON object, keys: type, version, generated_timestamp, data |
+| 運輸署 交通數據分析系統（5 分鐘） | `https://tdas-api.hkemobility.gov.hk/tdas/api/route -> HTTP 403` | 🔴 fail | 5 minutes | none | — |
 
 - **運輸署 行車速度圖** — REAL PATHS NOT FOUND: resource.data.one.gov.hk/td/speedmap.xml returns 404 (the 404 body is a decoy PHP index that lists paths which do not exist). Use td_traffic_speed_city (JSON) instead; for XML find the current TIS path on data.gov.hk.
 - **運輸署 行車時間顯示器** — REAL PATH NOT FOUND: resource.data.one.gov.hk/td/journeytime.xml returns 404. See the City Dashboard journey-time dataset on data.gov.hk.
@@ -83,6 +97,10 @@
 - **九巴／龍運 路線及到站時間（免 key！）** — NO KEY NEEDED — data.etabus.gov.hk is KMB's own open data portal. Verified: /route/ lists all routes (~349KB); /route-stop/{route}/{direction}/{service_type} for the stop sequence; /eta/{stop_id}/{route}/{service_type} for arrivals. GOTCHA: direction must be the literal 'outbound' or 'inbound' — O/I/1/2 all return 422 'Invalid direction'.
 - **港鐵 下一班列車（免 key）** — Keyless mirror on rt.data.gov.hk — the official opendata.mtr.com.hk Next Train API instead wants a free registration. line=ISL / sta=ADM returns UP and DOWN trains with platform and ttnt.
 - **龍運巴士 ETA** — Service is live (it answers structured 422 JSON) but the parameter format differs from KMB and is unconfirmed. Cheap to finish — try the KMB path shapes with the lwb prefix.
+- **綠色專線小巴 ETA（1 分鐘）** — Green minibus real-time arrivals, keyless. Paths use region codes and the dataset lists the full set of templates (/route/{region}, /route-stop/{route_id}/{route_seq}, /stop-route/{stop_id}, /eta/route-stop/{route_id}/{route_seq}/{stop_seq}).
+- **新渡輪 下一班船 ETA（1 分鐘）** — Sun Ferry estimated arrivals, refreshed every minute. The route code goes in the query string — confirm the valid codes from their site before wiring it.
+- **港九小輪 ETA／時間表／票價** — Hong Kong & Kowloon Ferry open data: piers, routes, timetables, fares and ETA. One operator quietly publishing a clean JSON API — worth supporting by using it.
+- **運輸署 交通數據分析系統（5 分鐘）** — 403 on every attempt — including with Referer and Origin headers set to hk eMobility, so it is not a simple hotlink guard: the endpoint is likely keyed or IP-restricted. Left in the catalogue as a known-gated source rather than deleted, because it is the live road-speed API behind 香港出行易. We already have TD's speed map and journey time feeds, so nothing is blocked by this.
 
 ## border
 
@@ -92,11 +110,13 @@
 | 香港出行易 管制站狀況 | `https://www.hkemobility.gov.hk/tc/control-point` | 🟡 ok | 15 minutes | none | HTML page — title: HKeMobility |
 | 入境處 13 個出入境管制站＋開放時間 | `https://www.immd.gov.hk/hkt/contactus/control_points.html` | 🟢 ok | static | none | HTML page — title: 出入境管制站地點 | 入境事務處 |
 | 保安局「口岸通」陸路管制站即時狀況（JSON） | `https://www.sb.gov.hk/bwt/json/overview_tc.json` | 🟢 ok | 15 minutes | none | JSON object, keys: updateDate, cpInfoList, otherInfo, remark |
+| 入境處 陸路管制站輪候時間（官方 15 分鐘） | `https://secure1.info.gov.hk/immd/mobileapps/2bb9ae17/data/CPQueueTimeR.json` | 🟢 ok | 15 minutes | none | JSON object, keys: HYW, HZM, LMC, LSC, LWS, MKT |
 
 - **保安局「口岸通」陸路管制站情況** — The human page. The machine-readable data is sb_bwt_json (/bwt/json/overview_tc.json) — use that; do not parse this HTML.
 - **香港出行易 管制站狀況** — Page is a ~3.5KB JS app. Find its data endpoint. Covers passenger and private-car channels.
 - **入境處 13 個出入境管制站＋開放時間** — Static list of 13 control points with opening hours. Hardcode once — lets the UI show 現正開放／已關閉 without any live source.
 - **保安局「口岸通」陸路管制站即時狀況（JSON）** — SOLVED — this is the JSON behind 口岸通, and it is the highest-value source in the project. updateDate + cpInfoList[]; each control point has code, cpName, openFrom/openTo and arrival/departure, each broken down into resident / visitor / car / cross-border shuttle, with status 1/2/3 for the green-yellow-red level. Keyless. NOTE: there is no Chinese in the path — /bwt/json/overview_tc.json sits directly under www.sb.gov.hk.
+- **入境處 陸路管制站輪候時間（官方 15 分鐘）** — THE OFFICIAL control-point waiting time feed from Immigration — 15-minute cadence, no key. This is better than reading 口岸通's page: 口岸通 gives a green/yellow/red band, this gives the actual queue time. Keep 口岸通 too — it adds the incident notices and the cross-boundary shuttle waits. Found only by the full CKAN scan; a keyword search misses it. Verified response keys are the control-point codes themselves: HYW, HZM, LMC, LSC, LWS, MKT.
 
 ## aviation
 
@@ -121,8 +141,12 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | AISStream 船隻 AIS（WebSocket） | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | real-time | free-key | — |
+| 海事處 跨境渡輪到港／離港（5 分鐘） | `https://www.mardep.gov.hk/e_files/hk/opendata/arrival_tc.csv` | 🟢 ok | 5 minutes | none | CSV ~57 rows, cols: 抵達時間|出發地|營運公司|碼頭|泊位|現況 |
+| 海事處 船隻抵港／離港（20 分鐘） | `https://www.mardep.gov.hk/e_files/en/opendata/RN0010.XML` | 🟢 ok | 15 minutes | none | XML, 0 <item> entries, root tags: RN0010, G_SQL1, VESSEL_NAME, SHIP_TYPE_DESC, LIC_MD_REF |
 
 - **AISStream 船隻 AIS（WebSocket）** — THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope. Fallback if that measurement says NO-GO: a free-tier keyed REST AIS provider (VesselAPI and similar) is the next step, but do not add one to this catalogue until a real endpoint has been requested and returns data — vendor marketing pages are not sources.
+- **海事處 跨境渡輪到港／離港（5 分鐘）** — Cross-boundary ferry arrivals and departures, 5-minute cadence. Together with the ImmD queue time this completes the 'cross the border by any mode' picture.
+- **海事處 船隻抵港／離港（20 分鐘）** — Ocean and river vessel arrivals/departures. Also declared missing earlier and found by the full scan — the lesson repeats: a keyword search is not evidence of absence.
 
 ## civic
 
@@ -152,6 +176,10 @@
 | 2021 人口普查（最新已公佈） | `https://www.censtatd.gov.hk/tc/scode500.html` | 🟡 ok | decennial | none | HTML page — title: 住戶 |
 | 天文台 公曆↔農曆對照（通勝／擇日基礎） | `https://data.weather.gov.hk/weatherAPI/opendata/lunardate.php?date=2026-02-17` | 🟢 ok | yearly | none | JSON object, keys: LunarYear, LunarDate |
 | 天文台 日出／日中／日落時間 | `https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=SRS&year=2026&rfo…` | 🟢 ok | yearly | none | CSV ~365 rows, cols: YYYY-MM-DD, RISE, TRAN., SET |
+| 醫管局 急症室輪候時間（15 分鐘） | `https://www.ha.org.hk/opendata/aed/aedwtdata2-tc.json` | 🟢 ok | 15 minutes | none | JSON object, keys: waitTime, updateTime |
+| 水務署 臨時停水通知（5 分鐘） | `https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv` | 🟢 ok | 5 minutes | none | CSV ~190 rows, cols: SUSPENSION_ID|WATER_TYPE_DESCRIPTION|WATER_TYPE_DESCRIPTION_ZHT|DISTRICT_ENG|DISTRICT_ZHT|NATURE_DESCRIPTION|NATURE_DESCRIPTION_ZHT|SUSPENSION_DATE_TIME|ACTUAL_RESUMPTION_DATE_TIME|LONG_ADDRESS|LONG_ADDRESS_ZHT|CAUSE|CAUSE_ZHT|STATUS|STATUS_ZHT |
+| 康文署 即時可訂場節數（羽毛球／籃球／網球／草地足球／排球） | `https://data.smartplay.lcsd.gov.hk/rest/cms/api/v1/publ/contents/open-data/badminton/file` | 🟢 ok | 5 minutes | none | large json response, truncated at the 4MB probe cap — reachable, payload not parsed |
+| 消防處 自動體外心臟去顫器（AED）位置（實時） | `https://es.hkfsd.gov.hk/aed_api/export_aed.php?lang=TC` | 🟢 ok | real-time | none | CSV ~4624 rows, cols: AED Name, AED Address, Detailed location of the AED installed, Location Google Map coordinate: latitude, Location Google Map coordinate: longitude, Whether the AED can be used by anyone |
 
 - **康文署 康體活動節目（未來約 1.5 個月）** — This is the 'what's on soon' feed. Note the http (not https) scheme. Try the https variant too and prefer it if it works.
 - **康文署 康體設施使用率（年度）** — Annual statistics only — NOT live booking availability. Do not present as real-time.
@@ -177,6 +205,10 @@
 - **2021 人口普查（最新已公佈）** — IMPORTANT for expectations: the 2021 census is the newest published census. The 2026 POPULATION CENSUS is being collected during calendar 2026 (by order published in the Gazette on 2025-02-14, one in ten households sampled), so its results are NOT available yet — plan the census layer around 2021 plus the rolling half-yearly statistics tables, and add 2026 when it lands. Dataset subject pages host the tables as XLSX.
 - **天文台 公曆↔農曆對照（通勝／擇日基礎）** — 喂 date=YYYY-MM-DD，回農曆日期（年月日、干支、生肖）。年度 CSV 全表：hko_data/calendar/nongli_calendar_2023.csv。呢個就係所有農曆功能嘅官方地基 —— 農曆新年、清明、中秋、初一十五、擇日，全部由佢計，唔使自己寫曆法。
 - **天文台 日出／日中／日落時間** — 全年逐日日出日落。三種人會用：影相嘅（黃金時間）、跑山嘅（幾點天黑）、風水／座向參考。同一個 opendata.php 仲有月出月落。
+- **醫管局 急症室輪候時間（15 分鐘）** — Accident & Emergency waiting time per public hospital, updated every 15 minutes, keyless. Genuinely useful to a resident and rarely seen in dashboards — this is the kind of source that makes a monitor worth opening.
+- **水務署 臨時停水通知（5 分鐘）** — Temporary water suspension notices, every 5 minutes. Directly answers 'why is my water off' — pair with a map of the affected address. Reaches us only after relaxing the TLS cipher security level — if a future client gets a handshake failure here, that is the cause, not the dataset.
+- **康文署 即時可訂場節數（羽毛球／籃球／網球／草地足球／排球）** — !! I PREVIOUSLY DECLARED THIS DID NOT EXIST, AND I WAS WRONG. LCSD publishes the live availability of bookable sessions per venue every 5 minutes, keyless, for badminton / basketball / tennis / turf soccer / volleyball. So the honest answer to 'can we show 訂場情況' is yes — with real vacancy, not a workaround. Every court type is the same path with a different sport segment.
+- **消防處 自動體外心臟去顫器（AED）位置（實時）** — Every public AED location with coordinates, keyless. A map layer that could genuinely save a life, and a good example of a layer that earns its place on a dashboard. Verified: 4,624 AED records with latitude/longitude and a usable-by-anyone flag.
 
 ## prices
 
@@ -272,3 +304,5 @@
 - `censtatd_2021_census` — 2021 人口普查（最新已公佈） → HTML page — title: 住戶
 - `centaline_ccl` — 中原城市指數 CCL／CRI（私人，冇公開 API） → HTML page — title: 地產新聞資訊 | 中原地產
 - `hko_stations_network` — 天文台 氣象站網絡（含座標，CSDI） → JSON object, keys: type, features
+- `sunferry_eta` — 新渡輪 下一班船 ETA（1 分鐘） → 422 — endpoint exists, needs POST body/parameters
+- `tdas_traffic` — 運輸署 交通數據分析系統（5 分鐘） → https://tdas-api.hkemobility.gov.hk/tdas/api/route -> HTTP 403

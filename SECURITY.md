@@ -84,8 +84,8 @@
 
 | 規則 | 點解 |
 |---|---|
-| **唔好喺公開專案暴露 VPS IP** | VPS 冇 Cloudflare 擋，一洩漏就係直接攻擊目標 |
-| **唔好喺公開專案暴露 duckdns hostname** | 同上 |
+| **唔好喺公開專案暴露 VPS 嘅 IP** | VPS 冇 Cloudflare 擋，一洩漏就係直接攻擊目標 |
+| **唔好喺公開專案暴露 VPS 嘅網域** | 同上 |
 | Worker 加 **rate limit** | 免費層有基本保護，但 public endpoint 一定要限速 |
 | 任何表單加 **Turnstile** | 免費，擋 bot |
 | 只准 **GET**，唔准 POST 通用代理 | 唔好將 Worker 變成開放 proxy（會俾人當跳板） |

@@ -83,10 +83,28 @@ thirty features and none finished. Build the primitives, then one vertical, then
      and getting blocked is the one real outage risk (see `COST.md`)
   4. inject the 3D tileset URL server-side, the way HomeCheck does with `~/.tiles3d_url` — never
      hardcode it in the front end, even though keyless currently works
-  **Acceptance**: `curl` the Worker from a terminal for an `immd_cp_queue` payload and get real
-  data; then fetch the same through a browser page and get it without a CORS error. A request for
-  a host not in `sources.json` must be refused. Paste both results.
+  **Acceptance — test the handler IN-PROCESS. Do not start a web server.** `wrangler dev` is a
+  server that never exits, and a shell tool waits on it forever, so a round that starts one hangs
+  permanently. That is not a theory: it cost three hang-and-kill cycles on 2026-09-18 and nearly the
+  whole night. Instead import the handler and call it directly — same code path, nothing to await:
 
+  ```js
+  // test/handler.test.mjs — `node test/handler.test.mjs`, exits on its own
+  import worker from '../src/index.js';
+  const env = { /* the vars wrangler.toml declares */ };
+  const res = await worker.fetch(
+    new Request('http://localhost/proxy?url=' + encodeURIComponent(URL_OF_IMMD_CP_QUEUE)), env);
+  const body = await res.json();
+  if (res.status !== 200 || !('HYW' in body)) { console.error('FAIL', res.status, body); process.exit(1); }
+  console.log('PASS', res.status, Object.keys(body).length, 'crossings');
+  ```
+
+  This must cover: a real payload for `immd_cp_queue`, a **non-registry host refused** (403), and a
+  **tile cache MISS then HIT** (call twice, assert the cache headers differ). Print the actual values;
+  a claim about a payload without the payload in the output is not a result.
+
+  **If an in-process test is genuinely impossible, mark the acceptance UNVERIFIED in the log and move
+  on.** Starting a server to work around it is the one thing that will cost you the round.
 - **Run 2 — the renderer.** Vite/TS scaffold, `src/styles/tokens.css` from `DESIGN_BRIEF.md`, plus
   `render.mjs` and `context.mjs` per `PRIMITIVES.md` §6 and §5. One renderer handles **all eight**
   render types — `big_number`, `list`, `table`, `image_single`, `image_wall`, `raster_map`,
@@ -154,17 +172,30 @@ The PC reaches the VPS over a reverse SSH tunnel, so the working copy may be on 
 one source. It exists to falsify the primitive design cheaply. If it needs a code change beyond
 config, the primitives are wrong and you must fix them before adding a second vertical.
 
+## Never start a web server
+
+**Hard rule.** A server does not exit, and the shell tool waits for output that never comes, so the
+round hangs forever and has to be killed by hand. That happened three times on 2026-09-18.
+
+- **Test in-process instead** — import the handler and call it. See Run 1's acceptance.
+- **Never** `wrangler dev`, `npm run dev`, `vite`, `python -m http.server`, or anything else that
+  keeps running, in order to verify something.
+- If a server seems genuinely required, **stop and mark the step UNVERIFIED** in the log. A round
+  that ends honestly blocked is worth more than a round that hangs.
+
 ## Long-running processes
 
-A command that never exits will hang your round forever, because the shell tool waits for it.
-**Redirect its output to a file and detach it**, then test it in a separate step:
+Any command that never exits hangs the round, because the shell tool waits for output that never
+arrives. See **Never start a web server** above — the answer is almost always to test in-process.
+Only if a genuinely long-running command is unavoidable, **redirect its output to a file and detach
+it**, then check it in a separate step:
 
 ```powershell
-Start-Process -FilePath cmd -ArgumentList '/c','wrangler dev > C:\path\dev.log 2>&1' -WindowStyle Hidden
+Start-Process -FilePath cmd -ArgumentList '/c','<command> > C:\path\out.log 2>&1' -WindowStyle Hidden
 ```
 
-Paid for twice on 2026-09-18 (`wrangler dev`), including once where `Start-Process` alone was not
-enough because the child still inherited the pipe.
+Paid for three times on 2026-09-18; `Start-Process` alone was not enough once, because a child
+without a redirect still inherits the tool's pipe.
 
 ## Hard constraints
 

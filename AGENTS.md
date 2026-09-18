@@ -77,6 +77,19 @@ Build `web/`, then it deploys by copying `web/dist/*` over the root later. Until
   `public/data/events.sample.json` as the contract; the real collector comes later.
   **Do not write any scraper in v0.2.**
 
+## Who builds this, and where
+
+**Front end: OpenCode + Kimi on Cyrus's home PC** (decided 2026-09-18). Hermes writes the specs,
+the source registry, the validators and the data pipeline; the coding agent builds the app.
+The PC reaches the VPS over a reverse SSH tunnel, so the working copy may be on either machine.
+
+**Public repo: `github.com/Cyruschu430/hk-city-monitor`** — public, and hosting is Cloudflare
+(`git push` deploys).
+
+**First vertical: 停水模式 (water supply).** Deliberately the smallest — one panel, one layer,
+one source. It exists to falsify the primitive design cheaply. If it needs a code change beyond
+config, the primitives are wrong and you must fix them before adding a second vertical.
+
 ## Hard constraints
 
 **Hosting（Cyrus 2026-09-18 定）**：Cloudflare，git push 即出街。**公開 repo。**

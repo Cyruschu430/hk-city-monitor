@@ -1,5 +1,5 @@
 {
- "probed_at": "2026-09-18T19:39:53+0800",
+ "probed_at": "2026-09-18T19:45:53+0800",
  "results": [
   {
    "id": "td_camera_list",
@@ -15,7 +15,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 268098,
-   "ms": 28,
+   "ms": 33,
    "shape": "CSV ~1013 rows, cols: key, region, district, description, easting, northing",
    "tried": []
   },
@@ -32,9 +32,9 @@
    "working_url": "https://tdcctv.data.one.gov.hk/H109F.JPG",
    "http_status": 200,
    "content_type": "image/jpeg",
-   "bytes": 32200,
-   "ms": 32,
-   "shape": "image 32200B",
+   "bytes": 31356,
+   "ms": 184,
+   "shape": "image 31356B",
    "tried": []
   },
   {
@@ -50,9 +50,9 @@
    "working_url": "https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg",
    "http_status": 200,
    "content_type": "image/jpeg",
-   "bytes": 588609,
-   "ms": 306,
-   "shape": "image 588609B",
+   "bytes": 588775,
+   "ms": 879,
+   "shape": "image 588775B",
    "tried": []
   },
   {
@@ -69,7 +69,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 38946,
-   "ms": 168,
+   "ms": 185,
    "shape": "HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko",
    "tried": []
   },
@@ -87,7 +87,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 2,
-   "ms": 118,
+   "ms": 320,
    "shape": "JSON object, keys: ",
    "tried": []
   },
@@ -105,7 +105,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 2,
-   "ms": 863,
+   "ms": 349,
    "shape": "JSON object, keys: ",
    "tried": []
   },
@@ -123,7 +123,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 2705,
-   "ms": 145,
+   "ms": 128,
    "shape": "JSON object, keys: rainfall, warningMessage, icon, iconUpdateTime, uvindex, updateTime",
    "tried": []
   },
@@ -141,7 +141,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 4144,
-   "ms": 441,
+   "ms": 346,
    "shape": "JSON object, keys: generalSituation, weatherForecast, updateTime, seaTemp, soilTemp",
    "tried": []
   },
@@ -159,7 +159,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 10,
-   "ms": 211,
+   "ms": 317,
    "shape": "JSON object, keys: swt",
    "tried": []
   },
@@ -177,7 +177,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 66031,
-   "ms": 442,
+   "ms": 214,
    "shape": "JSON object, keys: fields, data",
    "tried": []
   },
@@ -195,7 +195,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 1154,
-   "ms": 521,
+   "ms": 133,
    "shape": "JSON object, keys: HKOReadingsAccumRainfall, HKOReadingsAvgRainfall, HKOReadingsMaxRH, HKOReadingsMaxTemp, HKOReadingsMinGrassTemp, HKOReadingsMinRH",
    "tried": []
   },
@@ -213,7 +213,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 160,
-   "ms": 121,
+   "ms": 117,
    "shape": "JSON object, keys: lat, lon, mag, region, ptime, updateTime",
    "tried": []
   },
@@ -231,7 +231,7 @@
    "http_status": 200,
    "content_type": "image/jpeg",
    "bytes": 88161,
-   "ms": 228,
+   "ms": 210,
    "shape": "image 88161B",
    "tried": []
   },
@@ -248,9 +248,9 @@
    "working_url": "https://www.hko.gov.hk/wxinfo/intersat/satellite/image/asia/202609181900+181100GLB__global_150_internet.jpg",
    "http_status": 200,
    "content_type": "image/jpeg",
-   "bytes": 216531,
-   "ms": 263,
-   "shape": "image 216531B",
+   "bytes": 187827,
+   "ms": 233,
+   "shape": "image 187827B",
    "tried": []
   },
   {
@@ -294,8 +294,8 @@
    "working_url": "https://resource.data.one.gov.hk/td/tc/specialtrafficnews.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 19872,
-   "ms": 242,
+   "bytes": 18576,
+   "ms": 34,
    "shape": "XML, 0 <item> entries, root tags: body, message, msgID, CurrentStatus, ChinText",
    "tried": []
   },
@@ -313,7 +313,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 3445,
-   "ms": 18,
+   "ms": 17,
    "shape": "JSON array, 6 items",
    "tried": []
   },
@@ -330,8 +330,8 @@
    "working_url": "https://resource.data.one.gov.hk/td/carpark/vacancy_all.json",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 119568,
-   "ms": 42,
+   "bytes": 119567,
+   "ms": 49,
    "shape": "JSON object, keys: car_park",
    "tried": []
   },
@@ -349,7 +349,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 427049,
-   "ms": 1161,
+   "ms": 1340,
    "shape": "JSON object, keys: results",
    "tried": []
   },
@@ -384,7 +384,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 70883,
-   "ms": 46,
+   "ms": 266,
    "shape": "HTML page — title: 口岸通",
    "tried": []
   },
@@ -402,7 +402,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 3549,
-   "ms": 319,
+   "ms": 100,
    "shape": "HTML page — title: HKeMobility",
    "tried": []
   },
@@ -420,7 +420,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 19134,
-   "ms": 108,
+   "ms": 151,
    "shape": "HTML page — title: 出入境管制站地點 | 入境事務處",
    "tried": []
   },
@@ -431,14 +431,14 @@
    "type": "json",
    "auth": "none",
    "cadence": "~10 seconds",
-   "notes": "NO KEY, NO REGISTRATION. Verified: 40 aircraft within 100nm of Hong Kong. This is the practical flights layer — OpenSky's anonymous tier is rate-limited. Radius in nautical miles.",
+   "notes": "NO KEY, NO REGISTRATION, and the best of the free ADS-B mirrors: verified 52 aircraft on the HK 100nm circle. Path is /v2/point/{lat}/{lon}/{radius_nm}. Use this as the primary flights layer.",
    "todo": false,
    "status": "ok",
    "working_url": "https://api.adsb.lol/v2/point/22.32/114.17/100",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 30860,
-   "ms": 726,
+   "bytes": 31466,
+   "ms": 679,
    "shape": "JSON object, keys: ac, msg, now, total, ctime, ptime",
    "tried": []
   },
@@ -449,14 +449,14 @@
    "type": "json",
    "auth": "register",
    "cadence": "~10 seconds",
-   "notes": "Verified: 23 aircraft in the HK bbox anonymously. Free account raises the rate limit. Use as fallback to adsb.lol.",
+   "notes": "Verified 26 aircraft in the HK bbox anonymously. Rate-limited without an account, so it is the fallback mirror rather than the primary. Free account raises the limit.",
    "todo": false,
    "status": "ok",
    "working_url": "https://opensky-network.org/api/states/all?lamin=22.10&lomin=113.80&lamax=22.60&lomax=114.50",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 2975,
-   "ms": 480,
+   "bytes": 3470,
+   "ms": 490,
    "shape": "JSON object, keys: time, states",
    "tried": []
   },
@@ -467,7 +467,7 @@
    "type": "json",
    "auth": "free-key",
    "cadence": "real-time",
-   "notes": "Free API key. WebSocket with a bounding-box subscription — CANNOT run from a static page. Needs a persistent VPS collector that writes static JSON. Dark ships (AIS off) need paid satellite AIS: out of scope.",
+   "notes": "THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope.",
    "todo": false,
    "status": "unprobeable",
    "working_url": "",
@@ -488,7 +488,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 903438,
-   "ms": 296,
+   "ms": 343,
    "shape": "JSON array, 629 items",
    "tried": []
   },
@@ -506,7 +506,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 13616,
-   "ms": 61,
+   "ms": 49,
    "shape": "CSV ~262 rows, cols: 年份, 設施, 場地, 使用率, 地區, 備註",
    "tried": []
   },
@@ -524,7 +524,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 301803,
-   "ms": 152,
+   "ms": 1600,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -542,7 +542,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 15520,
-   "ms": 181,
+   "ms": 153,
    "shape": "JSON object, keys: vcalendar",
    "tried": []
   },
@@ -559,8 +559,8 @@
    "working_url": "https://www.info.gov.hk/gia/rss/general_zh.xml",
    "http_status": 200,
    "content_type": "application/xml",
-   "bytes": 495016,
-   "ms": 476,
+   "bytes": 500218,
+   "ms": 234,
    "shape": "XML, 100 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -578,7 +578,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 17313,
-   "ms": 231,
+   "ms": 407,
    "shape": "HTML page — title: 新聞公報 | 香港消防處",
    "tried": []
   },
@@ -596,7 +596,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 1284,
-   "ms": 23,
+   "ms": 27,
    "shape": "JSON object, keys: chart",
    "tried": []
   },
@@ -614,7 +614,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 54,
-   "ms": 30,
+   "ms": 337,
    "shape": "JSON object, keys: bitcoin, ethereum",
    "tried": []
   },
@@ -632,7 +632,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 70431,
-   "ms": 13,
+   "ms": 21,
    "shape": "JSON object, keys: version, name, metadata, sources, sprite, glyphs",
    "tried": []
   },
@@ -650,7 +650,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 58128,
-   "ms": 107,
+   "ms": 315,
    "shape": "JSON object, keys: type, name, features",
    "tried": []
   },
@@ -668,7 +668,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 683,
-   "ms": 274,
+   "ms": 340,
    "shape": "JSON object, keys: RequestAddress, SuggestedAddress",
    "tried": []
   },
@@ -686,7 +686,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 310,
-   "ms": 449,
+   "ms": 803,
    "shape": "JSON object, keys: type, metadata, features",
    "tried": []
   },
@@ -704,7 +704,7 @@
    "http_status": 200,
    "content_type": "application/rss+xml",
    "bytes": 53,
-   "ms": 959,
+   "ms": 962,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -721,8 +721,8 @@
    "working_url": "https://api.open-meteo.com/v1/forecast?latitude=22.32&longitude=114.17&current=temperature_2m,wind_speed_10m,precipitation&hourly=precipitation&forecast_days=2&timezone=Asia%2FHong_Kong",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 1674,
-   "ms": 704,
+   "bytes": 1675,
+   "ms": 690,
    "shape": "JSON object, keys: latitude, longitude, generationtime_ms, utc_offset_seconds, timezone, timezone_abbreviation",
    "tried": []
   },
@@ -740,7 +740,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 72585,
-   "ms": 558,
+   "ms": 564,
    "shape": "HTML page — title: 今日折扣及優惠 - 消費者委員會油價資訊通",
    "tried": []
   },
@@ -758,7 +758,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 263621,
-   "ms": 202,
+   "ms": 284,
    "shape": "HTML page — title: 搜尋貨品",
    "tried": []
   },
@@ -776,7 +776,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 94752,
-   "ms": 275,
+   "ms": 260,
    "shape": "HTML page — title: 嬰幼兒配方奶粉價格調查 | 消費者委員會",
    "tried": []
   },
@@ -794,7 +794,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 69289,
-   "ms": 296,
+   "ms": 344,
    "shape": "CSV ~1811 rows, cols: ",
    "tried": []
   },
@@ -830,7 +830,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 4194304,
-   "ms": 2738,
+   "ms": 2854,
    "shape": "large json response, truncated at the 4MB probe cap — reachable, payload not parsed",
    "tried": []
   },
@@ -848,7 +848,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 1914166,
-   "ms": 321,
+   "ms": 306,
    "shape": "XML, 0 <item> entries, root tags: events, event, titlec, titlee, cat1",
    "tried": []
   },
@@ -866,7 +866,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 1901314,
-   "ms": 277,
+   "ms": 338,
    "shape": "XML, 0 <item> entries, root tags: event_dates, event, indate",
    "tried": []
   },
@@ -884,7 +884,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 36209,
-   "ms": 97,
+   "ms": 137,
    "shape": "XML, 0 <item> entries, root tags: venues, venue, venuec, venuee, latitude",
    "tried": []
   },
@@ -902,7 +902,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 623110,
-   "ms": 212,
+   "ms": 280,
    "shape": "JSON array, 629 items",
    "tried": []
   },
@@ -920,7 +920,7 @@
    "http_status": 200,
    "content_type": "application/xml",
    "bytes": 548689,
-   "ms": 1286,
+   "ms": 386,
    "shape": "XML, 0 <item> entries, root tags: BATCH, SEND_DATE, SYSTEM, TOTAL, EVENTS",
    "tried": []
   },
@@ -938,7 +938,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 172149,
-   "ms": 374,
+   "ms": 418,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -956,7 +956,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 60500,
-   "ms": 1591,
+   "ms": 447,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -974,7 +974,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 145444,
-   "ms": 266,
+   "ms": 366,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -992,7 +992,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 396102,
-   "ms": 413,
+   "ms": 1732,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1010,7 +1010,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 189057,
-   "ms": 475,
+   "ms": 345,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1028,7 +1028,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 15584,
-   "ms": 1621,
+   "ms": 295,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1046,7 +1046,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 135524,
-   "ms": 174,
+   "ms": 1380,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1064,7 +1064,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 2573,
-   "ms": 1517,
+   "ms": 1752,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1082,7 +1082,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 53264,
-   "ms": 1411,
+   "ms": 339,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1100,7 +1100,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 9321,
-   "ms": 219,
+   "ms": 631,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1118,7 +1118,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 60065,
-   "ms": 390,
+   "ms": 283,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -1136,7 +1136,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 8985,
-   "ms": 926,
+   "ms": 961,
    "shape": "JSON array, 27 items",
    "tried": []
   },
@@ -1154,7 +1154,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 7247,
-   "ms": 124,
+   "ms": 144,
    "shape": "XML, 18 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -1172,7 +1172,7 @@
    "http_status": 200,
    "content_type": "application/javascript",
    "bytes": 225647,
-   "ms": 264,
+   "ms": 270,
    "shape": "JavaScript data file, `station_24_data` = (strip the prefix, then JSON)",
    "tried": []
   },
@@ -1190,7 +1190,7 @@
    "http_status": 200,
    "content_type": "application/javascript",
    "bytes": 5489,
-   "ms": 127,
+   "ms": 145,
    "shape": "JavaScript data file, `aqhi_report` = (strip the prefix, then JSON)",
    "tried": []
   },
@@ -1208,7 +1208,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 7384,
-   "ms": 16,
+   "ms": 202,
    "shape": "JSON object, keys: updateDate, cpInfoList, otherInfo, remark",
    "tried": []
   },
@@ -1226,7 +1226,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 1781,
-   "ms": 155,
+   "ms": 107,
    "shape": "JSON object, keys: type, version, generated_timestamp, data",
    "tried": []
   },
@@ -1244,7 +1244,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 1029,
-   "ms": 226,
+   "ms": 198,
    "shape": "JSON object, keys: sys_time, curr_time, data, isdelay, status, message",
    "tried": []
   },
@@ -1255,15 +1255,15 @@
    "type": "json",
    "auth": "none",
    "cadence": "real-time",
-   "notes": "The public feed hongkongairport.com itself uses — keyless (the official AAHK Data Services API wants a free developer account; this does not). Add arrival=true&cargo=false to filter. /rest/flights/past also works; /rest/flights/search is 404. ~210KB.",
+   "notes": "The public keyless feed hongkongairport.com itself uses (the official AAHK Data Services API wants a free developer account). Add arrival=true&cargo=false to filter. /rest/flights/past also works; /rest/flights/search is 404. ~210KB per request — fetch it server-side and slim it, not per client.",
    "todo": false,
    "status": "ok",
    "working_url": "https://www.hongkongairport.com/flightinfo-rest/rest/flights?date=2026-09-18&lang=en",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 210459,
-   "ms": 308,
-   "shape": "JSON array, 8 items",
+   "bytes": 210833,
+   "ms": 354,
+   "shape": "JSON array, 9 items",
    "tried": []
   },
   {
@@ -1282,6 +1282,78 @@
    "tried": [
     "https://data.etabus.gov.hk/v1/transport/lwb/route/ -> HTTP 422"
    ]
+  },
+  {
+   "id": "adsb_fi_hk",
+   "group": "aviation",
+   "name": "adsb.fi 香港範圍航班（第二個免 key 鏡）",
+   "type": "json",
+   "auth": "none",
+   "cadence": "~10 seconds",
+   "notes": "VERIFIED — 42 aircraft, keyless. Note the path shape differs from adsb.lol: /v2/lat/{lat}/lon/{lon}/dist/{nm}. Having two independent keyless mirrors means the flights layer survives one of them going down; interleave them rather than picking one.",
+   "todo": false,
+   "status": "ok",
+   "working_url": "https://opendata.adsb.fi/api/v2/lat/22.32/lon/114.17/dist/100",
+   "http_status": 200,
+   "content_type": "application/json",
+   "bytes": 27864,
+   "ms": 219,
+   "shape": "JSON object, keys: now, aircraft, resultCount, ptime",
+   "tried": []
+  },
+  {
+   "id": "adsbdb",
+   "group": "aviation",
+   "name": "adsbdb 飛機註冊／機型補充資料",
+   "type": "json",
+   "auth": "none",
+   "cadence": "static",
+   "notes": "VERIFIED keyless enrichment: callsign to airline/route, and /v0/aircraft/{hex} for registration, type, owner and photo. Cheap way to turn a bare hex+callsign on the map into something a reader understands. Cache it — this data barely changes.",
+   "todo": false,
+   "status": "ok",
+   "working_url": "https://api.adsbdb.com/v0/callsign/CPA255",
+   "http_status": 200,
+   "content_type": "application/json",
+   "bytes": 669,
+   "ms": 863,
+   "shape": "JSON object, keys: response",
+   "tried": []
+  },
+  {
+   "id": "airplanes_live",
+   "group": "aviation",
+   "name": "airplanes.live（403，唔用）",
+   "type": "json",
+   "auth": "register",
+   "cadence": "~10 seconds",
+   "notes": "Returns 403 without credentials. Listed so nobody re-tries it; adsb.lol and adsb.fi cover the need.",
+   "todo": true,
+   "status": "fail",
+   "working_url": "",
+   "http_status": 0,
+   "detail": "https://api.airplanes.live/v2/point/22.32/114.17/100 -> HTTP 403",
+   "tried": [
+    "https://api.airplanes.live/v2/point/22.32/114.17/100 -> HTTP 403"
+   ]
+  },
+  {
+   "id": "vesselapi",
+   "group": "marine",
+   "name": "VesselAPI 船隻位置（免費層，要 key）",
+   "type": "json",
+   "auth": "free-key",
+   "cadence": "sub-minute",
+   "notes": "REST AIS with a free tier and bbox filters — a candidate fallback if AISStream's terrestrial coverage around HK proves too thin. Not yet verified beyond the marketing page; sign-up needed. Only worth pursuing if scripts/test_ais_coverage.py says NO-GO.",
+   "todo": true,
+   "status": "wrong-payload",
+   "working_url": "https://vesselapi.com/ais-data-api",
+   "http_status": 200,
+   "content_type": "text/html",
+   "bytes": 22887,
+   "ms": 1499,
+   "shape": "declared JSON but unparseable (starts '<!DOCTYPE html>\\n<html lang=\"en\">\\n<head>\\n')",
+   "detail": "200 but the body is not parseable as declared",
+   "tried": []
   }
  ]
 }

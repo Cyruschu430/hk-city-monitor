@@ -72,17 +72,24 @@
 ### 3.4 航空 ✈️（免 key！）
 | 源 | Endpoint | 更新 | 狀態 |
 |---|---|---|---|
-| **adsb.lol**（社群 ADS-B） | `https://api.adsb.lol/v2/point/{lat}/{lon}/{radius_nm}` | ~10 秒 | 🟢🟢 **實測香港 100nm 內 40 部飛機，零 key、零註冊** |
-| OpenSky Network | `https://opensky-network.org/api/states/all?lamin=22.10&lomin=113.80&lamax=22.60&lomax=114.50` | ~10 秒 | 🟢 實測 23 部。匿名有速率限制，註冊免費提升 |
+| **adsb.lol**（社群 ADS-B，主力） | `https://api.adsb.lol/v2/point/{lat}/{lon}/{radius_nm}` | ~10 秒 | 🟢🟢 **實測香港 100nm 內 52 部飛機，零 key、零註冊** |
+| **adsb.fi**（第二個免 key 鏡） | `https://opendata.adsb.fi/api/v2/lat/{lat}/lon/{lon}/dist/{nm}` | ~10 秒 | 🟢 **實測 42 部**。路徑形狀同 adsb.lol 唔同。**兩個獨立鏡 = 一個死都仲有**，互相補位好過揀一個 |
+| OpenSky Network | `https://opensky-network.org/api/states/all?lamin=22.10&lomin=113.80&lamax=22.60&lomax=114.50` | ~10 秒 | 🟢 實測 26 部。匿名有速率限制 → 做第三後備 |
+| **adsbdb 飛機／航班補充資料** | `https://api.adsbdb.com/v0/callsign/{callsign}`、`/v0/aircraft/{hex}` | 靜態 | 🟢 免 key。callsign → 航空公司／航線；hex → 註冊號、機型、機主、相片。可以 cache，好少變 |
+| ~~airplanes.live／adsb.one~~ | — | — | 🔴 兩者都回 **403**，唔使試 |
 | **香港國際機場航班（免 key）** | `https://www.hongkongairport.com/flightinfo-rest/rest/flights?date=YYYY-MM-DD&lang=en` | 實時 | 🟢 實測。加 `arrival=true&cargo=false` 可過濾。官方 AAHK Data Services API 要開發者帳號，但呢條唔使 |
 
 ### 3.5 海事 🚢
 | 源 | 更新 | 狀態 |
 |---|---|---|
-| AISStream.io（WebSocket，可 subscribe 香港 bbox） | 實時 | 🟡 免費但要註冊 key；**需要一個常駐連線 → 放 VPS，唔可以純靜態** |
-| 海事處 抵港／離港船隻 | 15 分鐘 | 🟡 待驗（data.gov.hk） |
+| **AISStream.io（唯一真正免費嘅 live AIS）** | 實時 | 🟡 免費 key、WebSocket + bbox 訂閱。**但三點要老實講**：① 係**陸基**接收，離岸 ~40nm 就消失；② 廠方自己講覆蓋最強喺歐洲／大西洋、**最弱喺亞洲** —— 香港正正喺弱區，所以**覆蓋係未證實，唔係假定**；③ 一定要 VPS 常駐連線，純靜態做唔到 |
+| VesselAPI（免費層，要 key） | 次分鐘 | 🟡 若 AISStream 覆蓋唔夠嘅 fallback，未驗證 |
+| 海事處 抵港／離港船隻 | 15 分鐘 | 🔴 **更正**：data.gov.hk CKAN 搜 `vessel`／`船隻`／`marine traffic` **全部 count 0** —— 呢個 dataset 唔存在。之前我寫「待驗」係太樂觀 |
 | 香港水流預測 | 每日 | 🟢 data.gov.hk |
 
+> ⚠️ **未量度之前唔准起呢個圖層。** 陸基 AIS 喺香港可能只得幾隻船 —— 噉畫出嚟就會**將「冇船」同「冇覆蓋」混淆**，係最嚴重嘅一種講大話。
+> 已經寫好量度工具：`python3 scripts/test_ais_coverage.py --minutes 10`（要免費 key），會直接俾 GO／MARGINAL／NO-GO 同一個船數。
+>
 > 「暗黑船隻」（關 AIS）唔做：需要衛星 AIS 商業授權，非公開範圍。
 
 ### 3.6 天氣／環境 🌦
@@ -231,6 +238,8 @@ data.gov.hk **冇**任何消費者格價數據（消委會只有投訴統計）�
 2. 面板層面顯示：來源名、來源連結、觀測時間、更新頻率
 3. 有 stale / error 狀態，唔可以爆錯或顯示假數據
 4. 超過 fresh 門檻要**視覺上降級**，唔可以扮 fresh
+5. **覆蓋率有限嘅源（AIS、社群 ADS-B、傳感器網）一定要先量度覆蓋，再決定起唔起圖層。**
+   一個 90% 空白嘅船隻圖層，睇落同「香港冇船」完全一樣 —— 兩種都係講大話。
 5. 冇授權唔可以轉載媒體內容（RSS 只出標題 + 連結）
 
 ## 7. 分階段
@@ -266,7 +275,7 @@ data.gov.hk **冇**任何消費者格價數據（消委會只有投訴統計）�
 9. ~~康文署設施 dataset~~ ✅ **已解**：11 個 CSDI dataset 全部實測 🟢
 10. ~~漁護署封閉山徑／設施~~ ✅ **已解**
 11. ~~香港公眾假期~~ ✅ **已解**：1823 iCal（JSON/ICS）
-12. **AIS 船隻** — 要免費 key，而且要 VPS 常駐連線
+12. **AIS 船隻** — ⚠️ 要先量度覆蓋：`scripts/test_ais_coverage.py`（要免費 key，2 分鐘申請）。GO 先起圖層，MARGINAL 只做港口view並標明覆蓋限制，NO-GO 就唔做
 13. **九巴／港鐵／機管局／渡輪 API** — 待驗（有啲要免費註冊）
 14. **消委會兩個格價工具** — 冇 API；先考慮正式去信要 feed
 15. **公共交通收費 `.mdb` → SQLite/Parquet converter** — 未寫

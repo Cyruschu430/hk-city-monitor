@@ -3,7 +3,7 @@
 > **本檔案由 `scripts/probe_sources.py` 自動生成，唔好手改。**
 > 改源 → 改 `sources.json` → 跑 `python3 scripts/probe_sources.py`。
 
-最後實測：`2026-09-18 19:39 CST`　·　**67 / 72 個源成功**
+最後實測：`2026-09-18 19:45 CST`　·　**69 / 76 個源成功**
 
 每個 URL 都真係發過 HTTP 請求。🟢 = 200 而且回傳真數據　🟡 = 未解決／要 key　🔴 = 失敗。
 
@@ -12,8 +12,8 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | 運輸署 交通快拍攝影機位置 | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | irregular | none | CSV ~1013 rows, cols: key, region, district, description, easting, northing |
-| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 32200B |
-| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 588609B |
+| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 31356B |
+| 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 588775B |
 | 天文台 天氣攝影機目錄頁 | `https://www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm` | 🟢 ok | static | none | HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko |
 
 - **運輸署 交通快拍攝影機位置** — UTF-16LE with a DOUBLE BOM (\xff\xfe\xff\xfe) and tab-delimited. Columns: key, region, district, description, easting, northing, latitude, longitude, url. Python's utf-16 codec leaves a stray \ufeff on the first field name — strip it or every row reads empty.
@@ -34,7 +34,7 @@
 | 天文台 環境伽馬輻射水平 | `https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=RYES&station=HKO&…` | 🟢 ok | hourly | none | JSON object, keys: HKOReadingsAccumRainfall, HKOReadingsAvgRainfall, HKOReadingsMaxRH, HKOReadingsMaxTemp, HKOReadingsMinGrassTemp, HKOReadingsMinRH |
 | 天文台 地震速報 | `https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=qem&lang=en` | 🟢 ok | as issued | none | JSON object, keys: lat, lon, mag, region, ptime, updateTime |
 | 天文台 天氣雷達圖（256km） | `https://www.hko.gov.hk/wxinfo/radars/rad_256_png/2d256nradar_202609181924.jpg` | 🟡 ok | 6 minutes | none | image 88161B |
-| 天文台 衛星雲圖 | `https://www.hko.gov.hk/wxinfo/intersat/satellite/image/asia/202609181900+181100GLB__glo…` | 🟡 ok | hourly | none | image 216531B |
+| 天文台 衛星雲圖 | `https://www.hko.gov.hk/wxinfo/intersat/satellite/image/asia/202609181900+181100GLB__glo…` | 🟡 ok | hourly | none | image 187827B |
 | 環保署 空氣質素健康指數（各監測站，RSS） | `https://www.aqhi.gov.hk/epd/ddata/html/out/aqhi_ind_rss_Eng.xml` | 🟢 ok | hourly | none | XML, 18 <item> entries, root tags: rss, channel, title, link, image |
 | 環保署 AQHI 過去 24 小時逐站讀數 | `https://www.aqhi.gov.hk/js/data/past_24_pollutant.js` | 🟢 ok | hourly | none | JavaScript data file, `station_24_data` = (strip the prefix, then JSON) |
 | 環保署 AQHI 預報／健康風險級別 | `https://www.aqhi.gov.hk/js/data/forecast_aqhi.js` | 🟢 ok | daily | none | JavaScript data file, `aqhi_report` = (strip the prefix, then JSON) |
@@ -98,19 +98,27 @@
 |---|---|---|---|---|---|
 | adsb.lol 香港範圍航班（社群 ADS-B） | `https://api.adsb.lol/v2/point/22.32/114.17/100` | 🟢 ok | ~10 seconds | none | JSON object, keys: ac, msg, now, total, ctime, ptime |
 | OpenSky Network 香港 bbox | `https://opensky-network.org/api/states/all?lamin=22.10&lomin=113.80&lamax=22.60&lomax=1…` | 🟢 ok | ~10 seconds | register | JSON object, keys: time, states |
-| 香港國際機場 航班（免 key） | `https://www.hongkongairport.com/flightinfo-rest/rest/flights?date=2026-09-18&lang=en` | 🟢 ok | real-time | none | JSON array, 8 items |
+| 香港國際機場 航班（免 key） | `https://www.hongkongairport.com/flightinfo-rest/rest/flights?date=2026-09-18&lang=en` | 🟢 ok | real-time | none | JSON array, 9 items |
+| adsb.fi 香港範圍航班（第二個免 key 鏡） | `https://opendata.adsb.fi/api/v2/lat/22.32/lon/114.17/dist/100` | 🟢 ok | ~10 seconds | none | JSON object, keys: now, aircraft, resultCount, ptime |
+| adsbdb 飛機註冊／機型補充資料 | `https://api.adsbdb.com/v0/callsign/CPA255` | 🟢 ok | static | none | JSON object, keys: response |
+| airplanes.live（403，唔用） | `https://api.airplanes.live/v2/point/22.32/114.17/100 -> HTTP 403` | 🔴 fail | ~10 seconds | register | — |
 
-- **adsb.lol 香港範圍航班（社群 ADS-B）** — NO KEY, NO REGISTRATION. Verified: 40 aircraft within 100nm of Hong Kong. This is the practical flights layer — OpenSky's anonymous tier is rate-limited. Radius in nautical miles.
-- **OpenSky Network 香港 bbox** — Verified: 23 aircraft in the HK bbox anonymously. Free account raises the rate limit. Use as fallback to adsb.lol.
-- **香港國際機場 航班（免 key）** — The public feed hongkongairport.com itself uses — keyless (the official AAHK Data Services API wants a free developer account; this does not). Add arrival=true&cargo=false to filter. /rest/flights/past also works; /rest/flights/search is 404. ~210KB.
+- **adsb.lol 香港範圍航班（社群 ADS-B）** — NO KEY, NO REGISTRATION, and the best of the free ADS-B mirrors: verified 52 aircraft on the HK 100nm circle. Path is /v2/point/{lat}/{lon}/{radius_nm}. Use this as the primary flights layer.
+- **OpenSky Network 香港 bbox** — Verified 26 aircraft in the HK bbox anonymously. Rate-limited without an account, so it is the fallback mirror rather than the primary. Free account raises the limit.
+- **香港國際機場 航班（免 key）** — The public keyless feed hongkongairport.com itself uses (the official AAHK Data Services API wants a free developer account). Add arrival=true&cargo=false to filter. /rest/flights/past also works; /rest/flights/search is 404. ~210KB per request — fetch it server-side and slim it, not per client.
+- **adsb.fi 香港範圍航班（第二個免 key 鏡）** — VERIFIED — 42 aircraft, keyless. Note the path shape differs from adsb.lol: /v2/lat/{lat}/lon/{lon}/dist/{nm}. Having two independent keyless mirrors means the flights layer survives one of them going down; interleave them rather than picking one.
+- **adsbdb 飛機註冊／機型補充資料** — VERIFIED keyless enrichment: callsign to airline/route, and /v0/aircraft/{hex} for registration, type, owner and photo. Cheap way to turn a bare hex+callsign on the map into something a reader understands. Cache it — this data barely changes.
+- **airplanes.live（403，唔用）** — Returns 403 without credentials. Listed so nobody re-tries it; adsb.lol and adsb.fi cover the need.
 
 ## marine
 
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | AISStream 船隻 AIS（WebSocket） | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | real-time | free-key | — |
+| VesselAPI 船隻位置（免費層，要 key） | `https://vesselapi.com/ais-data-api` | 🔴 wrong-payload | sub-minute | free-key | declared JSON but unparseable (starts '<!DOCTYPE html>\n<html lang="en">\n<head>\n') |
 
-- **AISStream 船隻 AIS（WebSocket）** — Free API key. WebSocket with a bounding-box subscription — CANNOT run from a static page. Needs a persistent VPS collector that writes static JSON. Dark ships (AIS off) need paid satellite AIS: out of scope.
+- **AISStream 船隻 AIS（WebSocket）** — THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope.
+- **VesselAPI 船隻位置（免費層，要 key）** — REST AIS with a free tier and bbox filters — a candidate fallback if AISStream's terrestrial coverage around HK proves too thin. Not yet verified beyond the marketing page; sign-up needed. Only worth pursuing if scripts/test_ais_coverage.py says NO-GO.
 
 ## civic
 
@@ -225,7 +233,7 @@
 ## 未解決 / 待辦
 
 - `hko_radar` — 天文台 天氣雷達圖（256km） → image 88161B
-- `hko_satellite` — 天文台 衛星雲圖 → image 216531B
+- `hko_satellite` — 天文台 衛星雲圖 → image 187827B
 - `td_speedmap` — 運輸署 行車速度圖 → not an HTTP endpoint (websocket or still unknown)
 - `td_journeytime` — 運輸署 行車時間顯示器 → not an HTTP endpoint (websocket or still unknown)
 - `bus_eta_citybus_nlb` — 城巴／新大嶼山巴士 ETA → 422 — endpoint exists, needs POST body/parameters
@@ -238,3 +246,5 @@
 - `cc_complaints_stats` — 消委會 投訴統計 → CSV ~1811 rows, cols: 
 - `td_routes_and_fares` — 運輸署 公共交通路線及收費（巴士/小巴/渡輪/電車） → CSV ~42 rows, cols: ROUTE_ID, ROUTE_SEQ, CHANGE
 - `lwb_eta` — 龍運巴士 ETA → 422 — endpoint exists, needs POST body/parameters
+- `airplanes_live` — airplanes.live（403，唔用） → https://api.airplanes.live/v2/point/22.32/114.17/100 -> HTTP 403
+- `vesselapi` — VesselAPI 船隻位置（免費層，要 key） → 200 but the body is not parseable as declared

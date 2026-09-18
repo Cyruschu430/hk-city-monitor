@@ -300,7 +300,7 @@
       "auth": "none",
       "cadence": "~10 seconds",
       "hk_filter": true,
-      "notes": "NO KEY, NO REGISTRATION. Verified: 40 aircraft within 100nm of Hong Kong. This is the practical flights layer — OpenSky's anonymous tier is rate-limited. Radius in nautical miles."
+      "notes": "NO KEY, NO REGISTRATION, and the best of the free ADS-B mirrors: verified 52 aircraft on the HK 100nm circle. Path is /v2/point/{lat}/{lon}/{radius_nm}. Use this as the primary flights layer."
     },
     {
       "id": "opensky_hk",
@@ -311,7 +311,8 @@
       "auth": "register",
       "cadence": "~10 seconds",
       "hk_filter": true,
-      "notes": "Verified: 23 aircraft in the HK bbox anonymously. Free account raises the rate limit. Use as fallback to adsb.lol."
+      "notes": "Verified 26 aircraft in the HK bbox anonymously. Rate-limited without an account, so it is the fallback mirror rather than the primary. Free account raises the limit.",
+      "todo": false
     },
     {
       "id": "aisstream",
@@ -322,7 +323,7 @@
       "auth": "free-key",
       "cadence": "real-time",
       "hk_filter": true,
-      "notes": "Free API key. WebSocket with a bounding-box subscription — CANNOT run from a static page. Needs a persistent VPS collector that writes static JSON. Dark ships (AIS off) need paid satellite AIS: out of scope."
+      "notes": "THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope."
     },
     {
       "id": "lcsd_leisure_prog",
@@ -813,7 +814,7 @@
       "auth": "none",
       "cadence": "real-time",
       "todo": false,
-      "notes": "The public feed hongkongairport.com itself uses — keyless (the official AAHK Data Services API wants a free developer account; this does not). Add arrival=true&cargo=false to filter. /rest/flights/past also works; /rest/flights/search is 404. ~210KB."
+      "notes": "The public keyless feed hongkongairport.com itself uses (the official AAHK Data Services API wants a free developer account). Add arrival=true&cargo=false to filter. /rest/flights/past also works; /rest/flights/search is 404. ~210KB per request — fetch it server-side and slim it, not per client."
     },
     {
       "id": "lwb_eta",
@@ -825,6 +826,52 @@
       "cadence": "1 minute",
       "todo": true,
       "notes": "Service is live (it answers structured 422 JSON) but the parameter format differs from KMB and is unconfirmed. Cheap to finish — try the KMB path shapes with the lwb prefix."
+    },
+    {
+      "id": "adsb_fi_hk",
+      "group": "aviation",
+      "name": "adsb.fi 香港範圍航班（第二個免 key 鏡）",
+      "type": "json",
+      "url": "https://opendata.adsb.fi/api/v2/lat/22.32/lon/114.17/dist/100",
+      "auth": "none",
+      "cadence": "~10 seconds",
+      "hk_filter": true,
+      "todo": false,
+      "notes": "VERIFIED — 42 aircraft, keyless. Note the path shape differs from adsb.lol: /v2/lat/{lat}/lon/{lon}/dist/{nm}. Having two independent keyless mirrors means the flights layer survives one of them going down; interleave them rather than picking one."
+    },
+    {
+      "id": "adsbdb",
+      "group": "aviation",
+      "name": "adsbdb 飛機註冊／機型補充資料",
+      "type": "json",
+      "url": "https://api.adsbdb.com/v0/callsign/CPA255",
+      "auth": "none",
+      "cadence": "static",
+      "todo": false,
+      "notes": "VERIFIED keyless enrichment: callsign to airline/route, and /v0/aircraft/{hex} for registration, type, owner and photo. Cheap way to turn a bare hex+callsign on the map into something a reader understands. Cache it — this data barely changes."
+    },
+    {
+      "id": "airplanes_live",
+      "group": "aviation",
+      "name": "airplanes.live（403，唔用）",
+      "type": "json",
+      "url": "https://api.airplanes.live/v2/point/22.32/114.17/100",
+      "auth": "register",
+      "cadence": "~10 seconds",
+      "todo": true,
+      "notes": "Returns 403 without credentials. Listed so nobody re-tries it; adsb.lol and adsb.fi cover the need."
+    },
+    {
+      "id": "vesselapi",
+      "group": "marine",
+      "name": "VesselAPI 船隻位置（免費層，要 key）",
+      "type": "json",
+      "url": "https://vesselapi.com/ais-data-api",
+      "auth": "free-key",
+      "cadence": "sub-minute",
+      "hk_filter": true,
+      "todo": true,
+      "notes": "REST AIS with a free tier and bbox filters — a candidate fallback if AISStream's terrestrial coverage around HK proves too thin. Not yet verified beyond the marketing page; sign-up needed. Only worth pursuing if scripts/test_ais_coverage.py says NO-GO."
     }
   ]
 }

@@ -76,11 +76,21 @@ Worker 硬規則：**目標 URL 白名單**（唔可以係開放 proxy，否則�
 **格式**：Cesium 3D Tiles、WGS84、開放格式。**授權**：商用非商用免費，**要註明政府為來源**。
 **限額**：100 個並發、5GB/s。**免費 key**：email `3dmap@landsd.gov.hk`（地政總署測繪處 GIS Projects Section）。
 
-⚠️ **兩個要講清嘅陷阱**
-1. 官方文件自己公開咗一個 sample key，而且**我實測冇 key 都回 200**。
-   **唔准靠呢點** —— 一來違反佢哋註明嘅限額精神，二來隨時被封。**去申請自己個 key。**
-2. **key 唔准入 repo**（公開 repo！）→ 入 Cloudflare Worker secret。
-   呢個係我哋第一個真正嘅 secret，亦係 Worker 必要嘅第二個理由。
+**關於 key（2026-09-18 查清）**
+
+實測：**冇 key 都回 200 同一個 tileset**（`open3dhk_tilemodel` 等等全部通）。
+Cyrus 亦指出 HomeCheck 都係咁做。查咗 HomeCheck 個 code，實情係：
+
+- **功能上**：唔加 key 真係 work（我實測確認）✅
+- **但技術上**：HomeCheck 其實**有存一個 key** —— `~/.tiles3d_url`（96 bytes、`?key=…`、權限 600），
+  由 server 注入 HTML，註釋寫明「so the client never carries a stale hardcoded credential」。
+
+**所以採用同一個模式（呢個係好 pattern，唔係多餘）：**
+- 3D tileset URL（連 key 與否）**由 Worker 注入**，**唔准 hardcode 落前端**
+- 就算而家 keyless 都 work，都唔准硬編碼 URL 落 code —— 因為將來 LandsD 一開強制 key，硬編碼版本會即刻死
+- `~/.tiles3d_url` 呢類檔案**永遠唔入 repo**（權限 600 係正確做法）
+
+即係話：**唔使急住申請 key，但個架構要當佢存在。**
 
 ⚠️ **1,220 萬個三角面唔可能係首屏。** 3D 一定要 lazy load、按 vertical 需要先開（零件 8 嘅 loading 態）。
 
@@ -158,6 +168,7 @@ trigger.mjs     一個純函數：(狀態) → 應該開邊個 vertical
 ## 2.5 語言規則（香港官方語文）
 
 **繁體中文 ＋ 英文，兩者並列，缺一即 build 失敗。**
+**預設語言 = 繁體中文**（2026-09-18 Cyrus 定），英文可切。
 
 - `tc` = **繁體**（唔係簡體）。validator 會檢查有冇中文字
 - `en` = 英文，唔可以含中文

@@ -1,8 +1,18 @@
 # DESIGN_BRIEF.md — HK City Monitor
 
-> This is the visual contract. It is not inspiration, it is the spec.
-> "一定要靚" is a requirement, not a preference. Vague prettiness is not acceptable;
-> every claim below is a number you can check. If you deviate, say so and say why.
+> **A starting direction, not a spec.** The layout below is one honest attempt. If you can do
+> better, **do it** — you do not need permission, and you are not expected to comply.
+>
+> Two kinds of statement live in this file, and they are not equal:
+>
+> - **Measured facts** (marked as such) are binding. They are numbers someone ran, not opinions.
+>   If you contradict one, show your own measurement. Do not argue with it in prose.
+> - **Everything else — layout, palette, type, composition, which panels exist — is taste**, and it
+>   is yours to overrule. If you throw the whole structure away, say what you replaced and why.
+>
+> "一定要靚" is a requirement, not a preference. Vague prettiness is not acceptable; every claim
+> below is either a number you can check or an opinion you may beat. If you deviate, say so and say
+> why — deviating is expected, silently ignoring a measurement is not.
 
 ## 0. CORRECTION 2026-09-18 — read this before §1
 
@@ -11,7 +21,7 @@ Cyrus corrected the direction: it is a **big-screen tile wall** with **embedded 
 headline**, and categories are a drill-down on top. The reference is Palantir, not a web
 dashboard.
 
-**The real contract:**
+**The starting direction (you may replace all of it):**
 
 - **A wall of tiles filling a 12 × 5 grid at 1920×1080.** Tiles are flush; the 1px grid line *is*
   the divider. **The packing must be exact (60/60 cells)** — a one-cell hole in a video wall reads
@@ -22,7 +32,7 @@ dashboard.
 - **No floating glass cards, no rounded corners, no shadows.** Flat tiles, hairline borders,
   a corner accent. Depth comes from the grid, not from blur.
 
-### ⚠️ Live video: the finding that changes the design
+### ⚠️ MEASURED FACT — live video: not a hardcoded embed
 
 The v0.1 app embedded YouTube with `youtube.com/embed/live_stream?channel=<CHANNEL_ID>`.
 **That pattern is unreliable and must not be used.**
@@ -74,7 +84,7 @@ gap: designing a visual thing from prose. Screenshots of both now reviewed. What
 > **hero visual + HUD over it + a rail of filters + dense functional sub-panels + a ticker.**
 > Not a wall of equal tiles. Hierarchy, not equality.
 
-### Two basemap decisions, measured rather than guessed
+### MEASURED FACTS — two basemap decisions, not guesses
 
 1. **LandsD aerial imagery at night is unusable as a basemap** — at 21:52 the frames are nearly
    black and the map stops reading as a map. The official **topographic** map is the better base.

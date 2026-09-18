@@ -4,7 +4,42 @@
 **Read `AGENTS.md` first — it is the authority.** This file only adds: tonight's scope, the working
 discipline, the stop rules, and the handover format. Do not treat it as a second spec.
 
-## 0. Read these before writing anything (in this order)
+## 0. You are expected to beat this, not comply with it
+
+**Cyrus's concern, verbatim: 「但佢有可能比佢設計得更好，寫佢冇得改好大鑊，佢係頂級國產模型」.**
+
+So: the design in this repo is **one attempt, not a ceiling**. Cyrus believes you may well design it
+better than the attempt that produced it, and he is explicit that boxing you in would be the bigger
+failure. **You have permission to redesign the front end from scratch.** You do not need to ask.
+
+Two kinds of constraint, and only one of them binds you:
+
+**Binding — these are measured facts, not opinions.** Contradicting one requires your own measurement,
+not a paragraph of reasoning:
+- LandsD aerial imagery is unusable as a night basemap (measured at 21:52: the map stops reading as a map)
+- darken the topographic tiles (`Brightness(0.52)` + `Contrast(1.12)`); a desaturated version loses
+  the roads entirely; `invert` is banned
+- LandsD tile order is `{z}/{x}/{y}`; Esri's is `{z}/{y}/{x}` — swapping them gives a plausible-looking
+  wrong map
+- a vision model reviewing a screenshot **invented** labels that a broken build had deleted, and
+  invented UI that was never in the file. **A count beats an adjective.**
+- YouTube's `embed/live_stream?channel=` pattern is unreliable — verified across three channels, none
+  live, and it errored over both `file://` and `https://`
+- the real data values in §4 below
+- the security and cost stops in §3 — these are not design choices
+
+**Not binding — this is taste, and it is yours:** layout, hierarchy, palette, typography, type scale,
+whether there is a hero at all, how labels are drawn, which panels exist and in what order, motion.
+**If you discard the whole structure, do it, and say what you replaced and why.**
+
+The banned list in `DESIGN_BRIEF.md` is a diagnostic for amateur tells, not a law. If you want to use
+something on it, name the item and argue it — a considered exception is fine; silently inheriting my
+taste is not.
+
+`design/attempts/` exists as **evidence of what went wrong**, not as a style to follow. The useful
+part of each is the verdict, not the pixels.
+
+## 0.1 Read these before writing anything (in this order)
 
 `AGENTS.md` → `TECH_SPEC.md` → `PRIMITIVES.md` → `VERTICALS.md` → `DESIGN_BRIEF.md` →
 `SECURITY.md` → `COST.md`
@@ -33,7 +68,7 @@ Work **`AGENTS.md`'s Run sequence, in order**: Run 1 → Run 6. One Run per comm
 
 Run 0 is Cyrus's, not yours — it is already satisfied if you are reading this on his PC.
 
-## 2. The design loop — for anything visual
+## 2. The design loop — for anything visual (this part IS binding)
 
 Four earlier attempts at the front end all failed, and every one was a **single generation**. The
 strongest of them scored 6.5/10 — *"competent but generic"*. The variable was never the model. It

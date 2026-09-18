@@ -1,6 +1,6 @@
 # AGENTS.md — HK City Monitor
 
-> Read this file first. Then read `DESIGN_BRIEF.md` (the visual contract — non-negotiable)
+> Read this file first. Then read `DESIGN_BRIEF.md` (a starting visual direction — improve on it; the facts marked MEASURED inside are the binding part)
 > and `TECH_SPEC.md` (data sources, verified endpoints, legal boundaries).
 
 ## What this is
@@ -46,7 +46,7 @@ have its layers/panels liftable into a World Monitor fork — which is vanilla T
 ```
 / (repo root, also the live nginx root for /hkmonitor/)
   AGENTS.md              ← this file
-  DESIGN_BRIEF.md        ← visual contract
+  DESIGN_BRIEF.md        ← starting visual direction (facts marked MEASURED are binding)
   TECH_SPEC.md           ← full verified source inventory + rules
   README.md
   index.html             ← v0.1, LIVE. Reference implementation. Do not break it.

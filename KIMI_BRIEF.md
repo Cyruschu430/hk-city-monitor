@@ -140,6 +140,17 @@ the tool waits forever.** Start the server in one step, then in a *separate* ste
 If you already have a dev server running from an earlier round, do not start a second one — check
 first (`netstat -ano | findstr :8787`).
 
+## 4.6 Two attempts, then move on
+
+**Measured 2026-09-18:** the agent spent three attempts on the same dev-server test, each one hanging
+the round. A blocked step that has failed twice will usually keep failing — and the night has a fixed
+budget of rounds.
+
+**After two failed attempts at the same step: stop.** Write what you tried, the exact error, and
+what you believe the cause is, into `design/OVERNIGHT_LOG.md`, mark the step **unverified**, and move
+to the next item. An honest "this needs manual verification" is worth far more than a fourth attempt,
+and a round that ends blocked-but-logged is a successful round.
+
 ## 5. Work in rounds, not one long sprint
 
 Cap yourself at a fixed number of rounds and stop. For each round, append to

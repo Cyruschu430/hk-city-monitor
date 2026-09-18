@@ -29,9 +29,10 @@ sources.
 | Layer | Choice |
 |---|---|
 | Build | **Vite + TypeScript**, `strict: true` |
-| Map | **CesiumJS — one engine, scene mode switch.** 2D is the default view; 3D is opt-in. Changed 2026-09-18: see PRIMITIVES.md §0.00 for why single-engine beats World Monitor's dual-engine (one layer implementation instead of two, and the 3D question can be deferred instead of decided) |
-| Basemap | 2D default = **Esri World Imagery** (keyless) + OSM auto-fallback; 3D = Cesium ion token (eligible personal/non-commercial use) or Google Photorealistic 3D Tiles. *Never* an inline style object — see Pitfalls |
-| **Layers** | `layers.json` definitions are **engine-agnostic**: one definition, rendered by the active engine. Never write a 2D set and a 3D set |
+| Map | **MapLibre GL JS (base) + deck.gl (overlay).** No globe, no Cesium — city scale means a flat map, decided 2026-09-18 after Cyrus pointed out that a globe is the wrong instrument for 18 districts and that 3D can come from Open3Dhk directly. See PRIMITIVES.md §0.00 |
+| Basemap | CARTO dark-matter GL style URL (keyless). *Never* an inline style object — see Pitfalls |
+| **3D** | **A layer, not an engine.** Open3Dhk 3D Tiles via deck.gl `Tile3DLayer`, lazy-loaded only when a vertical asks for it. 12.2M triangles must never be on first paint |
+| **Layers** | `layers.json` definitions are **engine-agnostic**: one definition, rendered by MapLibre (2D) or deck.gl (3D). Never write a 2D set and a 3D set |
 | UI | Vanilla TS + a small DOM helper. **No React/Vue/Svelte.** |
 | Style | Hand-written CSS with custom properties. **No Tailwind, no CSS-in-JS, no component library.** |
 | Data | `fetch` of static JSON + keyless official APIs. **Corrected 2026-09-18: a backend IS required** — 99 of 164 sources (60%) are CORS-closed and must go through a **Cloudflare Worker**. The earlier "no backend" claim held only for the camera wall. See PRIMITIVES.md §0.0 and SECURITY.md |

@@ -29,11 +29,12 @@ sources.
 | Layer | Choice |
 |---|---|
 | Build | **Vite + TypeScript**, `strict: true` |
-| Map | **MapLibre GL JS** (flat) — the same engine as v0.1 and as World Monitor's flat map |
-| Basemap | CARTO dark-matter GL style URL (keyless). *Never* an inline style object — see Pitfalls |
+| Map | **CesiumJS — one engine, scene mode switch.** 2D is the default view; 3D is opt-in. Changed 2026-09-18: see PRIMITIVES.md §0.00 for why single-engine beats World Monitor's dual-engine (one layer implementation instead of two, and the 3D question can be deferred instead of decided) |
+| Basemap | 2D default = **Esri World Imagery** (keyless) + OSM auto-fallback; 3D = Cesium ion token (eligible personal/non-commercial use) or Google Photorealistic 3D Tiles. *Never* an inline style object — see Pitfalls |
+| **Layers** | `layers.json` definitions are **engine-agnostic**: one definition, rendered by the active engine. Never write a 2D set and a 3D set |
 | UI | Vanilla TS + a small DOM helper. **No React/Vue/Svelte.** |
 | Style | Hand-written CSS with custom properties. **No Tailwind, no CSS-in-JS, no component library.** |
-| Data | `fetch` of static JSON + keyless official APIs. No backend, no database. |
+| Data | `fetch` of static JSON + keyless official APIs. **Corrected 2026-09-18: a backend IS required** — 99 of 164 sources (60%) are CORS-closed and must go through a **Cloudflare Worker**. The earlier "no backend" claim held only for the camera wall. See PRIMITIVES.md §0.0 and SECURITY.md |
 | Charts | Hand-rolled SVG sparklines. No charting library. |
 
 Rationale: this must stay deployable as a static bundle to Cloudflare Pages, and must eventually

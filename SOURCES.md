@@ -3,7 +3,7 @@
 > **本檔案由 `scripts/probe_sources.py` 自動生成，唔好手改。**
 > 改源 → 改 `sources.json` → 跑 `python3 scripts/probe_sources.py`。
 
-最後實測：`2026-09-18 19:49 CST`　·　**81 / 88 個源成功**
+最後實測：`2026-09-18 19:51 CST`　·　**81 / 87 個源成功**
 
 每個 URL 都真係發過 HTTP 請求。🟢 = 200 而且回傳真數據　🟡 = 未解決／要 key　🔴 = 失敗。
 
@@ -12,7 +12,7 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | 運輸署 交通快拍攝影機位置 | `https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_Tc.…` | 🟢 ok | irregular | none | CSV ~1013 rows, cols: key, region, district, description, easting, northing |
-| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 33171B |
+| 運輸署 交通快拍圖像（單張） | `https://tdcctv.data.one.gov.hk/H109F.JPG` | 🟢 ok | 2 minutes | none | image 32637B |
 | 天文台 天氣攝影機（單站 HD） | `https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg` | 🟢 ok | 5 minutes | none | image 592044B |
 | 天文台 天氣攝影機目錄頁 | `https://www.hko.gov.hk/en/wxinfo/ts/index_webcam.htm` | 🟢 ok | static | none | HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko |
 
@@ -121,10 +121,8 @@
 | 源 | Endpoint | 狀態 | 更新 | Auth | 回傳 |
 |---|---|---|---|---|---|
 | AISStream 船隻 AIS（WebSocket） | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | real-time | free-key | — |
-| VesselAPI 船隻位置（免費層，要 key） | `https://vesselapi.com/ais-data-api` | 🔴 wrong-payload | sub-minute | free-key | declared JSON but unparseable (starts '<!DOCTYPE html>\n<html lang="en">\n<head>\n') |
 
-- **AISStream 船隻 AIS（WebSocket）** — THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope.
-- **VesselAPI 船隻位置（免費層，要 key）** — REST AIS with a free tier and bbox filters — a candidate fallback if AISStream's terrestrial coverage around HK proves too thin. Not yet verified beyond the marketing page; sign-up needed. Only worth pursuing if scripts/test_ais_coverage.py says NO-GO.
+- **AISStream 船隻 AIS（WebSocket）** — THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope. Fallback if that measurement says NO-GO: a free-tier keyed REST AIS provider (VesselAPI and similar) is the next step, but do not add one to this catalogue until a real endpoint has been requested and returns data — vendor marketing pages are not sources.
 
 ## civic
 
@@ -271,7 +269,6 @@
 - `td_routes_and_fares` — 運輸署 公共交通路線及收費（巴士/小巴/渡輪/電車） → CSV ~42 rows, cols: ROUTE_ID, ROUTE_SEQ, CHANGE
 - `lwb_eta` — 龍運巴士 ETA → 422 — endpoint exists, needs POST body/parameters
 - `airplanes_live` — airplanes.live（403，唔用） → https://api.airplanes.live/v2/point/22.32/114.17/100 -> HTTP 403
-- `vesselapi` — VesselAPI 船隻位置（免費層，要 key） → 200 but the body is not parseable as declared
 - `censtatd_2021_census` — 2021 人口普查（最新已公佈） → HTML page — title: 住戶
 - `centaline_ccl` — 中原城市指數 CCL／CRI（私人，冇公開 API） → HTML page — title: 地產新聞資訊 | 中原地產
 - `hko_stations_network` — 天文台 氣象站網絡（含座標，CSDI） → JSON object, keys: type, features

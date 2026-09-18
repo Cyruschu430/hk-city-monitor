@@ -349,7 +349,7 @@
       "auth": "free-key",
       "cadence": "real-time",
       "hk_filter": true,
-      "notes": "THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope.",
+      "notes": "THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope. Fallback if that measurement says NO-GO: a free-tier keyed REST AIS provider (VesselAPI and similar) is the next step, but do not add one to this catalogue until a real endpoint has been requested and returns data — vendor marketing pages are not sources.",
       "kind": "api"
     },
     {
@@ -934,19 +934,6 @@
       "cadence": "~10 seconds",
       "todo": true,
       "notes": "Returns 403 without credentials. Listed so nobody re-tries it; adsb.lol and adsb.fi cover the need.",
-      "kind": "api"
-    },
-    {
-      "id": "vesselapi",
-      "group": "marine",
-      "name": "VesselAPI 船隻位置（免費層，要 key）",
-      "type": "json",
-      "url": "https://vesselapi.com/ais-data-api",
-      "auth": "free-key",
-      "cadence": "sub-minute",
-      "hk_filter": true,
-      "todo": true,
-      "notes": "REST AIS with a free tier and bbox filters — a candidate fallback if AISStream's terrestrial coverage around HK proves too thin. Not yet verified beyond the marketing page; sign-up needed. Only worth pursuing if scripts/test_ais_coverage.py says NO-GO.",
       "kind": "api"
     },
     {

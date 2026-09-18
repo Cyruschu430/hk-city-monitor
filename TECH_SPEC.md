@@ -49,8 +49,8 @@
 | 源 | Endpoint | 更新 | 狀態 |
 |---|---|---|---|
 | 行車速度圖（City Dashboard 版，JSON） | `https://static.data.gov.hk/opendata/dataset/traffic-speed/traffic-speed-info.json`（亦有 .csv） | 2 分鐘 | 🟢 實測 URL 由 CKAN 取得 |
-| 行車速度圖（TIS 版） | `https://resource.data.one.gov.hk/td/speedmap.xml` | 2 分鐘 | 🟢 host 實測存在 |
-| 行車時間 | `https://resource.data.one.gov.hk/td/journeytime.xml` | 2 分鐘 | 🟢 |
+| 行車速度圖（TIS 版） | ~~`resource.data.one.gov.hk/td/speedmap.xml`~~ | — | 🔴 **404**（之前以為存在，係估；個 404 頁面係一個假 PHP index 列出唔存在嘅路徑，呃咗我一次）。用上面 JSON 版；XML 真路徑要再搵 |
+| 行車時間 | ~~`resource.data.one.gov.hk/td/journeytime.xml`~~ | — | 🔴 同樣 404。改用 City Dashboard journey-time dataset |
 | 特別交通消息 | `https://resource.data.one.gov.hk/td/{tc,en,sc}/specialtrafficnews.xml` | 即時 | 🟢 |
 | 停車場空位（整合版） | `https://api.data.gov.hk/v1/carpark-info-vacancy` | 即時 | 🟢 |
 | 巴士 ETA（城巴＋新大嶼山） | `https://rt.data.gov.hk/v1/transport/batch/stop-eta`、`/v1.1/transport/batch/stop-route` | 1 分鐘 | 🟢 |
@@ -137,7 +137,21 @@ data.gov.hk 有 **~180 個康文署／公民設施 dataset**。已查證幾項�
 
 **未查（TODO）**：康文署場地暫停開放公告、公眾泳池季節性開放時間表、圖書館臨時閉館、公眾假期表。
 
-### 3.11 環境／公共健康（部分待辦）
+### 3.11 格價 💰（消費者價格）
+
+data.gov.hk **冇**任何消費者格價數據（消委會只有投訴統計）。價格工具全部係消委會自己嘅網站，
+**冇官方 API**。
+
+| 源 | Endpoint | 更新 | 狀態 |
+|---|---|---|---|
+| **消委會 油價資訊通** | `https://oil-price.consumer.org.hk/tc/price`（另有 `/tc/today-discount`、`/tc/station`） | 每日 | 🟡 頁面實測 200。全港油站**零售價 + 折後價 + 每週優惠**。係伺服器渲染嘅 Typo3 站（純 GET、路徑穩定），唔使瀏覽器都捉得到 —— 但始終係 scraping。已有第三方（talklivelihood.hk）做緊同一件事。**最好嘅做法：正式向消委會要一個 feed** |
+| **消委會 網上價格一覽通**（超市格價） | `https://online-price-watch.consumer.org.hk/opw/list/{類}/{子}/{細}` | 每週 | 🟡 分層 URL 穩定、唔使 JS，**但商品頁 HTML 內冇價錢** —— 價錢係另一個 AJAX 攞。比油價難做、易爛。都係建議先問 |
+| 消委會 嬰幼兒配方奶粉價格調查 | `consumer.org.hk/tc/price-comparison-tools/infant-formula-price-survey` | 每月 | 🟡 實測 200，要睇係表格定 PDF |
+| 消委會 投訴統計 | data.gov.hk `cc-complaints-complaints-statistics` | 每月 | 🟢 實測 CSV ~1811 行（唯一上 data.gov.hk 嘅消委會數據） |
+| **運輸署 公共交通路線及收費**（巴士／小巴／渡輪／電車） | `static.data.gov.hk/td/routes-and-fares/FARE_BUS.csv` | 每日 | 🟡 **魔鬼細節**：啲 CSV 係**每日變更日誌**（只有 `ROUTE_ID, ROUTE_SEQ, CHANGE`），**完全冇收費數字**。真收費表藏喺 MS Access `.mdb`（`FARE_BUS.mdb` = **32.9 MB**）。全家：`ROUTE_/RSTOP_/STOP_/FARE_` × `BUS/GMB/FERRY/TRAM/PTRAM`。用法：`mdbtools` 一次性轉 SQLite/Parquet，之後每日食 delta。**呢個係全港唯一免費完整公共交通收費數據源，寫個 converter 係好有價值嘅開源貢獻** |
+| 其他格價角度 | 電費（中電／港燈燃料調整費）、咪錶位收費、超市以外商戶 | 🟡 待查 |
+
+### 3.12 環境／公共健康（部分待辦）
 | 源 | 狀態 |
 |---|---|
 | 漁護署 郊野公園資料、封閉山徑／設施 | 🟢 見 §3.10 |
@@ -146,7 +160,7 @@ data.gov.hk 有 **~180 個康文署／公民設施 dataset**。已查證幾項�
 | 無障礙設施（民政署、港鐵、復康會） | 🟡 多個 dataset |
 | 公眾假期、政府公告 | 🟡 待 pin |
 
-### 3.12 空間基底 🗺
+### 3.13 空間基底 🗺
 | 源 | 更新 | 狀態 |
 |---|---|---|
 | CSDI WFS / WMS / ArcGIS REST | — | 🟢 |
@@ -212,9 +226,24 @@ data.gov.hk 有 **~180 個康文署／公民設施 dataset**。已查證幾項�
 - **官方源優先**：涉及個人（失蹤人口、防罪）只鏡像官方公佈，只出標題 + 連回官方頁。
 - **每個 panel 都要有來源聲明**；天氣警告一律以天文台公佈為準。
 
-## 9. 未決定
+## 9. 未決定 / 未解決（全部由 `scripts/probe_sources.py` 追蹤）
 
-1. Repo 名／GitHub 公開定 private（fork 會通知原作者）
-2. 雷達圖／衛星圖／AQHI 真正 endpoint（待捉）
-3. 口岸通 JSON endpoint（待捉）
-4. AIS key 申請
+跑 `python3 scripts/probe_sources.py` 會重新實測 **48 個源**，並生成 `SOURCES.md`（唔好手改）
+＋ `data/sources_report.json`。以下係 🔴／🟡，即係仲要解決嘅：
+
+1. **天文台雷達圖 256km** — 所有估嘅 pattern 都 404，要由雷達頁 JS 抽真 URL
+2. **天文台衛星雲圖** — 同上
+3. **天文台潮汐／輻射／地震速報** — `hhOT` 等 dataType 名錯（API 回「Please include valid parameters」），要查官方 API 文件 PDF
+4. **環保署 AQHI** — 估嘅路徑全 404，要抽 aqhi.gov.hk 前端真正嘅 XHR
+5. **保安局「口岸通」JSON** — 頁面真、數據係 JS 載入，要捉 endpoint（**最高價值嘅未解決項**）
+6. **香港出行易 管制站 API** — 同上
+7. **CSDI WFS / ArcGIS REST base** — 要一個真嘅 GetFeature 示範
+8. **地址搜尋 ALS**（`www.map.gov.hk`）— 同上，新聞／事件 geocode 靠佢
+9. **康文署 ~30 類設施 CSDI dataset** — 要可重用嘅下載／WFS 路徑
+10. **漁護署封閉山徑／設施** — 同上
+11. **香港公眾假期** — 未有 machine-readable 源
+12. **AIS 船隻** — 要免費 key，而且要 VPS 常駐連線
+13. **九巴／港鐵／機管局／渡輪 API** — 待驗（有啲要免費註冊）
+14. **消委會兩個格價工具** — 冇 API；先考慮正式去信要 feed
+15. **公共交通收費 `.mdb` → SQLite/Parquet converter** — 未寫
+16. Repo 上唔上 GitHub（公開）／改咩名

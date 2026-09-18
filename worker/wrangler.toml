@@ -1,0 +1,26 @@
+# HK City Monitor Worker — the project's only server-side piece.
+# What it is for (SECURITY.md §4, COST.md §4):
+#   1. CORS proxy for the sources.json entries whose "fetch" is "proxy" (102 of 171)
+#   2. target-host whitelist derived from sources.json — NOT an open proxy
+#   3. per-IP rate limit + edge cache, so a busy day does not get us blocked by LandsD
+#   4. server-side injection of the Open3Dhk tileset URLs (the HomeCheck ~/.tiles3d_url
+#      pattern): the front end never hardcodes them, so a future mandatory key does not
+#      kill a deployed front end.
+#
+# DO NOT add account_id or routes here: deployment is out of scope for the overnight
+# run and this repo is public. Local development: `npm run dev` (wrangler dev).
+
+name = "hk-city-monitor"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+# Non-secret configuration. These URLs are public endpoints (they are in PRIMITIVES.md
+# §0.00, already public) — putting them HERE instead of the front end is the injection
+# pattern, not secrecy. When LandsD starts enforcing a key, the keyed URL goes in as a
+# secret with the SAME NAME (`wrangler secret put TILES3D_BUILDING_URL`) — a secret
+# shadows a var of the same name, and a keyed URL must never be committed.
+[vars]
+WORKER_VERSION = "0.2.0"
+TILES3D_BUILDING_URL = "https://data.map.gov.hk/api/3d-data/3dsd/WGS84/building/tileset.json"
+TILES3D_INFRASTRUCTURE_URL = "https://data.map.gov.hk/api/3d-data/3dsd/WGS84/infrastructure/tileset.json"
+TILES3D_TILEMODEL_URL = "https://data.map.gov.hk/api/3d-data/3dtiles/f2/tileset.json"

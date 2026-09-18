@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!--
+  Browser CORS acceptance fixture for Run 1 (worker/).
+  Serve this file from an origin DIFFERENT from the worker (e.g. python http.server
+  on :8788 while `wrangler dev` runs on :8787), then load it in a real browser:
+
+    py -3 -m http.server 8788 --directory worker/test
+    http://127.0.0.1:8788/cors-test.html
+
+  It cross-origin fetches the worker, and writes PASS/FAIL into #out and the title,
+  so a headless dump (`--dump-dom`) shows the verdict without opening devtools.
+-->
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><title>CORS-TEST RUNNING</title></head>
+<body>
+<pre id="out">running…</pre>
+<script>
+const WORKER = new URLSearchParams(location.search).get("worker") || "http://127.0.0.1:8787";
+const IMMD = "https://secure1.info.gov.hk/immd/mobileapps/2bb9ae17/data/CPQueueTimeR.json";
+const out = [];
+const log = (s) => { out.push(s); document.getElementById("out").textContent = out.join("\n"); };
+
+(async () => {
+  let pass = true;
+
+  // 1. Cross-origin proxy fetch of the Run 1 acceptance source (immd_cp_queue).
+  try {
+    const r = await fetch(`${WORKER}/proxy?url=${encodeURIComponent(IMMD)}`);
+    const body = await r.json();
+    const keys = Object.keys(body);
+    // The real feed keys are control-point codes (HYW, HZM, LMC, LSC, LWS, MKT…).
+    const hasCP = keys.some((k) => ["HYW", "HZM", "LMC", "LSC", "LWS", "MKT"].includes(k));
+    log(`1. proxy fetch: HTTP ${r.status}, keys=${keys.slice(0, 8).join(",")}, controlPointKeys=${hasCP}`);
+    if (!r.ok || !hasCP) pass = false;
+  } catch (e) {
+    pass = false;
+    log(`1. proxy fetch FAILED (this is what a CORS block looks like): ${e}`);
+  }
+
+  // 2. A host outside sources.json must be refused (403 host_not_allowed).
+  try {
+    const r = await fetch(`${WORKER}/proxy?url=${encodeURIComponent("https://example.com/")}`);
+    const body = await r.json();
+    const ok = r.status === 403 && body.error && body.error.code === "host_not_allowed";
+    log(`2. non-registry host: HTTP ${r.status}, code=${body.error && body.error.code} ${ok ? "(refused, correct)" : "(WRONG)"}`);
+    if (!ok) pass = false;
+  } catch (e) {
+    pass = false;
+    log(`2. non-registry host fetch FAILED: ${e}`);
+  }
+
+  // 3. /config/3d returns the server-injected tileset URLs (never hardcoded front-side).
+  try {
+    const r = await fetch(`${WORKER}/config/3d`);
+    const body = await r.json();
+    const ok = r.ok && body.wgs84 && body.wgs84.building.startsWith("https://data.map.gov.hk/");
+    log(`3. /config/3d: HTTP ${r.status}, building=${body.wgs84 && body.wgs84.building}`);
+    if (!ok) pass = false;
+  } catch (e) {
+    pass = false;
+    log(`3. /config/3d FAILED: ${e}`);
+  }
+
+  document.title = pass ? "CORS-TEST PASS" : "CORS-TEST FAIL";
+  log(`verdict: ${pass ? "PASS" : "FAIL"}`);
+})();
+</script>
+</body>
+</html>

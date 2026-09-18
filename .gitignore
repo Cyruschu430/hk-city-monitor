@@ -4,6 +4,7 @@ web/dist/
 web/node_modules/
 web/.vite/
 dist/
+worker/.wrangler/
 
 # python
 __pycache__/

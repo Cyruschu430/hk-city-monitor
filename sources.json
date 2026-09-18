@@ -2494,6 +2494,45 @@
       "notes": "news.gov.hk school_work category, 20 items. Together with law_order these seven categories are the backbone of the event layer: official, time-stamped, and carrying a place name we can geocode. The eighth category, city_life, 404s — do not assume symmetry across the set.",
       "fetch": "proxy",
       "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk"
+    },
+    {
+      "id": "open3dhk_building",
+      "group": "geospatial",
+      "name": "地政總署 三維數碼地圖 · 建築物（3D Tiles）",
+      "type": "3d-tiles",
+      "url": "https://data.map.gov.hk/api/3d-data/3dsd/WGS84/building/tileset.json",
+      "auth": "free-key",
+      "cadence": "as issued",
+      "todo": false,
+      "fetch": "proxy",
+      "notes": "VERIFIED 200, a valid 3D Tiles 1.2.3 tileset: gltfUpAxis Y, 218,927 components, 12,199,184 triangles, 36,557,692 vertices — the whole HK territory of buildings. WGS84, Cesium 3D Tiles open format, free for commercial and non-commercial use with attribution to the Government. Get a free key by emailing 3dmap@landsd.gov.hk (Lands Department, GIS Projects Section). LIMITS: 100 concurrent users, 5GB/s — so do not build a demo that hammers it. NOTE: the docs publish a sample key and the endpoint currently answers without one; do NOT rely on that, and never commit a key to this repo — it belongs in the Cloudflare Worker secret. 12M triangles means this loads on demand, never on first paint.",
+      "cors_note": "CORS 回 echo Origin（技術上可直接 fetch），但 key 唔可以落前端 → 一定要經 Worker"
+    },
+    {
+      "id": "open3dhk_infrastructure",
+      "group": "geospatial",
+      "name": "地政總署 三維數碼地圖 · 基建（3D Tiles）",
+      "type": "3d-tiles",
+      "url": "https://data.map.gov.hk/api/3d-data/3dsd/WGS84/infrastructure/tileset.json",
+      "auth": "free-key",
+      "cadence": "as issued",
+      "todo": false,
+      "fetch": "proxy",
+      "notes": "VERIFIED 200, valid tileset: 1,826 components, 7,602,740 triangles, 22,797,304 vertices. Same key, licence and limits as the building tileset.",
+      "cors_note": "CORS 回 echo Origin（技術上可直接 fetch），但 key 唔可以落前端 → 一定要經 Worker"
+    },
+    {
+      "id": "open3dhk_tilemodel",
+      "group": "geospatial",
+      "name": "地政總署 可視化三維地圖 · 方格模型（3D Tiles 1.1）",
+      "type": "3d-tiles",
+      "url": "https://data.map.gov.hk/api/3d-data/3dtiles/f2/tileset.json",
+      "auth": "free-key",
+      "cadence": "as issued",
+      "todo": false,
+      "fetch": "proxy",
+      "notes": "VERIFIED 200: 3D Tiles 1.1, geometricError 271850.84. The mesh-model (方格形式) visualisation map built from oblique aerial imagery, covering the whole territory — heavier but more faithful than the individualised building models.",
+      "cors_note": "CORS 回 echo Origin（技術上可直接 fetch），但 key 唔可以落前端 → 一定要經 Worker"
     }
   ]
 }

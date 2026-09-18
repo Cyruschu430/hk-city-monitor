@@ -20,41 +20,46 @@
 Worker 硬規則：**目標 URL 白名單**（唔可以係開放 proxy，否則會俾人當免費跳板）＋ rate limit。
 細節見 `SECURITY.md`。相機牆仍然可以純靜態。
 
-## 0.00 地圖引擎決定（2026-09-18 查實兩個參考之後）
+## 0.00 地圖引擎決定（2026-09-18，兩次修正後）
 
-**兩個參考都做到 2D 同 3D，但做法完全唔同：**
+### 最終：MapLibre 做底 ＋ deck.gl 疊圖層。**冇地球，冇 Cesium。**
 
-| | 做法 | 實作 |
+我中間一度決定用 Cesium（單引擎、2D 預設、3D opt-in）。**撤回。** 理由：
+
+1. **城市尺度，地球儀係錯工具**（Cyrus 嘅判斷）：我哋 30 個 vertical 全部係 18 區、
+   相機、口岸呢個尺度。「我嗰區停水」用地球儀答冇意義
+2. **3D 可以直接 call Open3Dhk**（Cyrus 嘅判斷，實測成立）—— 所以 3D 變成
+   **一個圖層**，唔係一個**引擎**。呢個令 Cesium 嘅核心賣點（地球 ＋ photorealistic tiles）變得無關
+3. 用 Cesium 就要重做現有 P0（MapLibre 寫嘅），而且背一個大好多嘅 bundle，換嚟用唔著嘅能力
+
+**layers.json 一條定義 → MapLibre 畫 2D／deck.gl 畫 3D。引擎係實作細節。**
+
+### 3D 圖層用邊個引擎？實測對照
+
+| | 做法 | 實測 |
 |---|---|---|
-| **World Monitor** | **雙引擎**，runtime 切換 | 3D = `globe.gl + Three.js`；平面 = `deck.gl + MapLibre GL JS`。用 `VITE_MAP_INTERACTION_MODE = globe\|flat` 切，存 localStorage |
-| **God's Eye View** | **單引擎**，scene mode 切換 | CesiumJS。**免 token 預設係 2D**（Esri World Imagery）＋ 免 key 地形；加 Cesium ion token 先出 photorealistic 3D |
+| **World Monitor** | 雙引擎：`globe.gl + Three.js` 做地球、`deck.gl + MapLibre` 做平面 | 佢個平面棧就係我哋要嘅 |
+| **God's Eye View** | 單引擎 CesiumJS，免 token 預設 2D | 地球向 |
+| **我哋** | **MapLibre（底）＋ deck.gl（疊 3D Tiles）** | 城市尺度、無地球 |
 
-### 決定：單引擎（Cesium），2D 做預設，3D 做 opt-in
+### Open3Dhk 實測（地政總署，2026-09-18）
 
-**理由**：雙引擎 = 每樣嘢寫兩次。World Monitor 列出嘅 deck.gl layer 同 globe 嘅 render
-係兩套實作。我哋得一個人，唔可以照抄。
+| 圖層 | URL | 實測 |
+|---|---|---|
+| 建築物 | `data.map.gov.hk/api/3d-data/3dsd/WGS84/building/tileset.json` | 🟢 3D Tiles 1.2.3，**218,927 構件／12,199,184 三角面** |
+| 基建 | `…/3dsd/WGS84/infrastructure/tileset.json` | 🟢 1,826 構件／7,602,740 三角面 |
+| 方格模型（可視化三維地圖） | `…/3dtiles/f2/tileset.json` | 🟢 3D Tiles 1.1 |
 
-單引擎令：
-- 圖層只寫**一次**
-- **「要唔要 3D」呢個決定可以無限期推遲** —— 因為加 token 就有，唔使改架構
-- 免 token 預設 2D 用 Esri World Imagery（順便：Cyrus 係 Esri 人）
+**格式**：Cesium 3D Tiles、WGS84、開放格式。**授權**：商用非商用免費，**要註明政府為來源**。
+**限額**：100 個並發、5GB/s。**免費 key**：email `3dmap@landsd.gov.hk`（地政總署測繪處 GIS Projects Section）。
 
-### 新增硬規則：圖層定義要引擎中立
+⚠️ **兩個要講清嘅陷阱**
+1. 官方文件自己公開咗一個 sample key，而且**我實測冇 key 都回 200**。
+   **唔准靠呢點** —— 一來違反佢哋註明嘅限額精神，二來隨時被封。**去申請自己個 key。**
+2. **key 唔准入 repo**（公開 repo！）→ 入 Cloudflare Worker secret。
+   呢個係我哋第一個真正嘅 secret，亦係 Worker 必要嘅第二個理由。
 
-```
-layers.json 一條定義  →  由當前引擎 render
-```
-
-**唔准**為 2D 同 3D 各寫一份圖層定義。`render` 種類（8 種）係抽象嘅，
-引擎係實作細節。違反呢條 = 返工。
-
-### 誠實講代價
-
-- Cesium 比 MapLibre **大好多**（bundle size 要實測，未量度 —— 唔准吹數字）。
-  手機首屏會慢，要有 loading 態（零件 8）
-- 現有 P0 相機牆係 MapLibre 寫嘅 → 轉引擎要重做。但相機牆只係 marker + cluster，細
-- **HK 尺度（18 區、相機、口岸）其實平面圖好用過地球儀。**
-  「我嗰區停水」用地球儀答係錯工具。所以 **平面係預設**，地球係加分項
+⚠️ **1,220 萬個三角面唔可能係首屏。** 3D 一定要 lazy load、按 vertical 需要先開（零件 8 嘅 loading 態）。
 
 ## 0. 一句話設計
 

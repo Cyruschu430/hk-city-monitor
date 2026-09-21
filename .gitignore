@@ -9,6 +9,11 @@ worker/.wrangler/
 # browser verification artifacts (screenshots + logs) — regenerated on demand
 web/test/artifacts/
 
+# generated at build/dev time by web/scripts/sync-data.mjs — the canonical
+# copies of these registries live at the repo root (data/*.json, sources.json)
+web/public/data/
+web/public/basemap/
+
 # python
 __pycache__/
 *.pyc

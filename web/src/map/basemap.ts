@@ -53,9 +53,12 @@ export function landsdBadge(): HTMLElement {
 }
 
 export function setBasemap(map: maplibregl.Map, kind: "topo" | "imagery"): void {
-  if (!map.getLayer("landsd-topo") || !map.getLayer("esri-imagery")) return;
+  if (!map.getLayer("landsd-topo") || !map.getLayer("landsd-imagery")) return;
   map.setLayoutProperty("landsd-topo", "visibility", kind === "topo" ? "visible" : "none");
-  map.setLayoutProperty("esri-imagery", "visibility", kind === "imagery" ? "visible" : "none");
+  // Official LandsD aerial (same source their 3D-map example uses); Esri
+  // remains in the style as a fallback, off by default.
+  map.setLayoutProperty("landsd-imagery", "visibility", kind === "imagery" ? "visible" : "none");
+  map.setLayoutProperty("esri-imagery", "visibility", "none");
   // Labels are designed for the topographic map; on imagery they are noise.
   map.setLayoutProperty("landsd-label-tc", "visibility", kind === "topo" ? "visible" : "none");
 }

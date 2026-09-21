@@ -1,0 +1,37 @@
+/* Design tokens — copied exactly from DESIGN_BRIEF.md §2 (measured/iterated there). */
+:root{
+  /* surfaces */
+  --void:        #05070d;   /* page background, map surround */
+  --panel:       rgba(12,18,30,.72);
+  --panel-solid: #0c121e;
+  --shade:       rgba(4,7,13,.86);   /* drawer / modal */
+  --hairline:    rgba(140,190,255,.14);
+  --hairline-hi: rgba(140,190,255,.34);
+
+  /* ink */
+  --txt:         #e9f2ff;
+  --dim:         #8ea6c4;
+  --faint:       #5d7a9b;
+
+  /* signal */
+  --cyan:        #22d3ee;   /* 運輸署 cameras, primary accent, live */
+  --violet:      #a855f7;   /* 天文台 cameras, secondary accent */
+  --amber:       #fbbf24;   /* warning issued, stale 4–10 min */
+  --alert:       #ff5d6c;   /* critical, stale >10 min, market up (HK convention) */
+  --ok:          #34d399;   /* nominal */
+
+  /* market — HONG KONG CONVENTION: red = up, green = down */
+  --mkt-up:      #ff5d6c;
+  --mkt-down:    #2ee6a8;
+
+  /* depth */
+  --shadow:      0 18px 44px -20px rgba(0,0,0,.95);
+  --glass:       blur(14px) saturate(140%);
+  --radius-sm:   8px;
+  --radius:      14px;
+  --radius-pill: 999px;
+
+  /* type */
+  --font-ui:     "Inter", -apple-system, "PingFang HK", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  --font-mono:   "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}

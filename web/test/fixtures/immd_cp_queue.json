@@ -1,0 +1,49 @@
+{
+  "HYW":
+  {
+    "arrQueue":0,
+    "depQueue":0
+  }
+,
+  "HZM":
+  {
+    "arrQueue":0,
+    "depQueue":0
+  }
+,
+ "LMC":
+ {                
+   "arrQueue":0, 
+   "depQueue":0  
+ }                
+,
+  "LSC":
+  {
+    "arrQueue":0,
+    "depQueue":0
+  }
+,
+  "LWS":
+  {
+    "arrQueue":0,
+    "depQueue":0
+  }
+,
+  "MKT":
+  {
+    "arrQueue":0,
+    "depQueue":0
+  }
+,
+  "SBC":
+  {
+    "arrQueue":0,
+    "depQueue":0
+  }
+,
+  "STK":
+  {
+    "arrQueue":99,
+    "depQueue":99
+  }
+}

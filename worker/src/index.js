@@ -150,6 +150,10 @@ async function handleProxy(request, ctx) {
     });
   } catch (err) {
     const timeout = err && (err.name === "TimeoutError" || err.name === "AbortError");
+    // Server-side only: the client gets a generic code, the operator gets the
+    // real reason in `wrangler tail` / the dashboard. Without this a 502 from a
+    // legacy-TLS or DNS failure is indistinguishable from any other.
+    console.error(`proxy upstream failed: ${target.host}${target.pathname} — ${err && (err.message || err.name)}`);
     return jsonError(timeout ? 504 : 502, timeout ? "upstream_timeout" : "upstream_error",
       timeout ? "upstream did not answer in time" : "upstream fetch failed");
   }

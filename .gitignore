@@ -6,6 +6,9 @@ web/.vite/
 dist/
 worker/.wrangler/
 
+# browser verification artifacts (screenshots + logs) — regenerated on demand
+web/test/artifacts/
+
 # python
 __pycache__/
 *.pyc

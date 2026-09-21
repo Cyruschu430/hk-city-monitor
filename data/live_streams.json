@@ -1,0 +1,22 @@
+{
+  "_comment": "CURATED COMMUNITY LIST (not official open data): 16 Hong Kong live cam / live TV YouTube streams the project owner chose for the 直播 panel. Every tile is labelled 第三方直播 / third-party, and each stream's live state is resolved at runtime (probeLive) — an off-air tile says 現時無直播 instead of playing a black rectangle. If any channel dies, remove its row here.",
+  "source_name": "第三方 YouTube 香港直播",
+  "streams": [
+    { "id": "XN-ArdUrqtc", "title": "實時東九龍維港 Live", "channel": "Country & Folk bgm" },
+    { "id": "cmGz913hKFI", "title": "太子景觀 24/7", "channel": "語音天氣報告｜減壓音樂" },
+    { "id": "jmwM1hA3JE0", "title": "TST 尖沙咀 Live", "channel": "陪您休閒上班看風景" },
+    { "id": "B_PPdZmkpwo", "title": "香港仔海峽 Live", "channel": "HK Live Aberdeen Harbour" },
+    { "id": "ygC5wni2DMQ", "title": "香港國際機場 ATC 即時追蹤", "channel": "VHHH/HKG" },
+    { "id": "TIYZVyzOk4k", "title": "太平山頂 24/7 實景直播", "channel": "Relaxing Music BGM" },
+    { "id": "6YYmUo2TgJ0", "title": "維多利亞港東面直播", "channel": "HK Live Cam" },
+    { "id": "3dDD5F0euCY", "title": "香港天氣台 LIVE", "channel": "颱風路徑追蹤｜地震速報" },
+    { "id": "WkcmApaOvWc", "title": "銅鑼灣 Live", "channel": "4K 減壓音樂" },
+    { "id": "Fwr8lBTaBtE", "title": "尖沙咀鬧市風景直播", "channel": "沉浸式減壓音樂" },
+    { "id": "O1oQhMlBiOA", "title": "葵青區開揚天空直播", "channel": "即時天氣｜雲朵流動" },
+    { "id": "RqwBvGHOcnQ", "title": "鴨脷洲海怡半島 24/7", "channel": "HK Live" },
+    { "id": "JPREngCARsA", "title": "香港機場 24/7 3D 空中交通", "channel": "VHHH ATC" },
+    { "id": "l8SwiH3vr0M", "title": "茶果嶺村寮屋區直播", "channel": "Cha Kwo Ling Village" },
+    { "id": "dEtt5bzoHjc", "title": "鴨脷洲南景繞射", "channel": "Nature Sound" },
+    { "id": "eSm_NTKduV4", "title": "香港實時天氣地圖 24 小時直播", "channel": "HKWind 各區風速雨量" }
+  ]
+}

@@ -250,5 +250,100 @@
     "en": "Follows the official calendar"
    }
   }
+,  {
+   "id": "hk_market_table",
+   "source": "yahoo_hk_quotes",
+   "render": "table",
+   "title": {
+    "tc": "港股（延遲報價）",
+    "en": "HK Market (delayed)"
+   },
+   "params": {
+    "symbols": [
+     "^HSI",
+     "^HSCE",
+     "0700.HK",
+     "9988.HK"
+    ]
+   },
+   "cadence_note": {
+    "tc": "延遲報價，唔係即時",
+    "en": "Delayed, not real-time"
+   }
+  },
+  {
+   "id": "crypto_prices",
+   "source": "coingecko",
+   "render": "list",
+   "title": {
+    "tc": "加密貨幣（港元）",
+    "en": "Crypto (HKD)"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "即時",
+    "en": "Live"
+   }
+  },
+  {
+   "id": "breaking_news_list",
+   "source": "gov_news_law_order",
+   "render": "list",
+   "title": {
+    "tc": "突發新聞（治安消息）",
+    "en": "Breaking News (law & order)"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "即時",
+    "en": "Live"
+   }
+  },
+  {
+   "id": "aqhi_gauge_grid",
+   "source": "aqhi_city_dashboard",
+   "render": "gauge_grid",
+   "title": {
+    "tc": "空氣質素指數 AQHI",
+    "en": "Air Quality Health Index"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每小時",
+    "en": "Hourly"
+   }
+  },
+  {
+   "id": "carpark_vacancy_list",
+   "source": "td_carpark_vacancy",
+   "render": "table",
+   "title": {
+    "tc": "停車場空位",
+    "en": "Carpark Vacancy"
+   },
+   "params": {
+    "max_rows": 12
+   },
+   "cadence_note": {
+    "tc": "即時",
+    "en": "Real-time"
+   }
+  },
+  {
+   "id": "live_cams_wall",
+   "source": "hk_live_cams_community",
+   "render": "image_wall",
+   "title": {
+    "tc": "香港直播（第三方）",
+    "en": "HK Live Streams (third-party)"
+   },
+   "params": {
+    "max": 8
+   },
+   "cadence_note": {
+    "tc": "直播狀態即時偵測",
+    "en": "Live state detected"
+   }
+  }
  ]
 }

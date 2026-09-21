@@ -77,6 +77,20 @@
    "filters": {
     "scope": "district"
    }
+  },
+  {
+   "id": "water_suspension_districts",
+   "source": "wsd_water_suspension_districts",
+   "render": "raster_map",
+   "geom": "polygon",
+   "title": {
+    "tc": "停水受影響地區",
+    "en": "Districts with Water Suspensions"
+   },
+   "popup": "district_popup",
+   "filters": {
+    "scope": "hk"
+   }
   }
  ]
 }

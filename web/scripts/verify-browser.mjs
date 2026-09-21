@@ -27,6 +27,15 @@ const check = (name, ok, detail) => {
 
 const browser = await chromium.launch({ executablePath: exe, headless: !headed });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, locale: "zh-HK" });
+// This run generates hundreds of resource entries (tiles, proxies, images);
+// the default 250-entry PerformanceResourceTiming buffer evicts the oldest,
+// which would hide the 3D chunk loads near the end of the run.
+await page.evaluate(() => {
+  try {
+    performance.setResourceTimingBufferSize(4000);
+    performance.clearResourceTimings();
+  } catch { /* older engines */ }
+});
 
 const consoleErrors = [];
 const failedRequests = [];
@@ -99,12 +108,12 @@ try {
   // but measuring mid-transition is. Wait for the mode to settle.
   await page.click(".rail-btn:nth-child(1)");
   await page.waitForFunction(
-    () => document.querySelectorAll(".panel[data-panel]").length >= 5 &&
+    () => document.querySelectorAll(".panel[data-panel]").length >= 10 &&
       [...document.querySelectorAll(".panel[data-state]")].every((p) => p.dataset.state !== "loading"),
     null,
-    { timeout: 45_000 },
+    { timeout: 60_000 },
   ).catch(() => {});
-  await page.waitForTimeout(1500);
+  await page.waitForTimeout(2000);
 
   const panels = await page.evaluate(() =>
     [...document.querySelectorAll(".panel[data-panel]")].map((p) => ({
@@ -118,14 +127,52 @@ try {
     })),
   );
   const allowed = new Set(["loading", "live", "stale", "error"]);
-  check("面板：由 panels.json 砌出，每個都係四態之一", panels.length >= 5 && panels.every((p) => allowed.has(p.state)),
+  check("面板：由 panels.json 砌出，每個都係四態之一", panels.length >= 10 && panels.every((p) => allowed.has(p.state)),
     panels.map((p) => `${p.id}=${p.state}`).join(" "));
   check("面板：每個都有更新時間同來源連結", panels.every((p) => p.hasTime && p.src),
     `times=${panels.map((p) => p.time).join(" | ")}`);
 
   console.log(`    （面板順序：${panels.map((p) => p.id).join(" → ")}）`);
 
-  // --- 4. the 停水 gate: live WSD data through the Worker ---------------------
+  // --- 3b. the new panels + ticker (bug fixes #2/#3/#5/#6 + live cams) ---------
+  const newPanels = await page.evaluate(() => {
+    const read = (id) => {
+      const p = document.querySelector(`[data-panel="${id}"]`);
+      if (!p) return null;
+      return { state: p.dataset.state, text: (p.querySelector(".panel-body")?.textContent ?? "").trim().slice(0, 90) };
+    };
+    const ticker = document.getElementById("ticker");
+    return {
+      market: read("hk_market_table"),
+      crypto: read("crypto_prices"),
+      news: read("breaking_news_list"),
+      aqhi: read("aqhi_gauge_grid"),
+      carpark: read("carpark_vacancy_list"),
+      liveWall: read("live_cams_wall"),
+      mktUpClass: !!document.querySelector(".mkt-up, .mkt-down"),
+      tickerVisible: ticker && !ticker.hidden && (ticker.textContent ?? "").trim().length > 0,
+      tickerText: (ticker?.textContent ?? "").trim().slice(0, 60),
+    };
+  });
+  // DESIGN_BRIEF §6: market data is amber OUTSIDE trading hours by design, and a
+// rarely-updated official RSS may be legitimately stale — the honesty contract
+// is "real numbers, correct ages", not "always green".
+  const mktOk = ["live", "stale"].includes(newPanels.market?.state) && (newPanels.market?.text ?? "").length > 10;
+  const newsOk = ["live", "stale"].includes(newPanels.news?.state) && (newPanels.news?.text ?? "").length > 8;
+  check("新面板 #5：港股（延遲報價）＋加密貨幣出到真數字、紅升綠跌", mktOk && newPanels.crypto?.state === "live" && newPanels.mktUpClass,
+    `market=${newPanels.market?.state}:${newPanels.market?.text?.slice(0, 40)} crypto=${newPanels.crypto?.text} 有 mkt class=${newPanels.mktUpClass}`);
+  check("新面板 #6：突發新聞（官方治安 RSS）有真標題", newsOk,
+    `news=${newPanels.news?.state}:${newPanels.news?.text?.slice(0, 60)}`);
+  check("新面板：AQHI 18 站 + 停車場空位", 
+    newPanels.aqhi?.state === "live" && newPanels.carpark?.state === "live",
+    `aqhi=${newPanels.aqhi?.text} carpark=${newPanels.carpark?.text}`);
+  check("Bug #3/#6：ticker 有真標題（交通＋突發合流）", !!newPanels.tickerVisible,
+    `ticker="${newPanels.tickerText}"…`);
+  check("Bug #7 直播牆：第三方直播 panel 有縮圖", 
+    newPanels.liveWall?.state === "live" && (newPanels.liveWall?.text ?? "").length > 0,
+    `liveWall=${newPanels.liveWall?.text}`);
+
+  // --- 4. the 停水 gate: live WSD data ----------------------------------------
   await page.click(".rail-btn:nth-child(4)").catch(() => {}); // 停水模式 = 4th rail button
   await page.waitForFunction(
     () => {
@@ -251,7 +298,7 @@ try {
   const overviewAgain = await page.evaluate(() =>
     [...document.querySelectorAll(".panel[data-panel]")].map((p) => `${p.dataset.panel}:${p.dataset.state}`),
   );
-  check("總覽：人手切返總覽後六個 panel 齊", overviewAgain.length === 6, overviewAgain.join(" "));
+  check("總覽：人手切返總覽後十三個 panel 齊", overviewAgain.length === 13, overviewAgain.join(" "));
 
   // --- 7. honesty when the data cannot arrive ---------------------------------
   // Two things are being tested and they are different:
@@ -335,6 +382,24 @@ try {
   await page.screenshot({ path: join(outDir, "04-mobile.png") });
   await page.setViewportSize({ width: 1440, height: 900 });
 
+  // --- 9b2. official LandsD aerial basemap ------------------------------------
+  await page.click(".rail-btn:nth-child(10)"); // imagery toggle
+  await page.waitForTimeout(2500);
+  const imagery = await page.evaluate(() => {
+    const map = window.__map;
+    return {
+      aerial: map.getLayoutProperty("landsd-imagery", "visibility"),
+      topo: map.getLayoutProperty("landsd-topo", "visibility"),
+      esri: map.getLayoutProperty("esri-imagery", "visibility"),
+    };
+  });
+  check("航拍底圖：用官方 LandsD imagery（唔係 Esri），topo 隱藏", imagery.aerial === "visible" && imagery.topo === "none" && imagery.esri === "none",
+    JSON.stringify(imagery));
+  await page.click(".rail-btn:nth-child(10)");
+  await page.waitForTimeout(1200);
+  const backTopo = await page.evaluate(() => window.__map.getLayoutProperty("landsd-imagery", "visibility"));
+  check("航拍底圖：撳走後返 topo", backTopo === "none", `landsd-imagery=${backTopo}`);
+
   // --- 9b. the other two verticals, from config only -------------------------
   const modes = await page.evaluate(async () => {
     const out = {};
@@ -379,9 +444,15 @@ try {
     `overlay=${threeDErr.overlay} banner="${threeDErr.banner}"`);
   await page.unroute(`${workerBaseUrl}/config/3d*`);
 
-  // Success path: with /config/3d reachable, the lazy chunks load and the
-  // overlay attaches; stop the tile flood right after so the rest of the run
-  // stays quiet (tile PAINTING is recorded as UNVERIFIED — env limitation).
+  // Success path: with /config/3d reachable, the lazy chunks must load and the
+  // overlay attach. The failed click above left the toggle's aria-pressed
+  // flipped (it gates OFF/ON), so reset it first — test bookkeeping, not app
+  // behaviour. Laziness is proven from the PRE-click snapshot: first paint
+  // must not have fetched any deck/luma chunk.
+  const before3dScripts = await page.evaluate(() =>
+    performance.getEntriesByType("resource").filter((r) => r.name.endsWith(".js")).map((r) => r.name),
+  );
+  await page.evaluate(() => document.querySelector(".rail-btn:nth-child(11)")?.setAttribute("aria-pressed", "false"));
   await page.click(rail3d);
   await page.waitForFunction(() => !!window.__overlay3d, null, { timeout: 40_000 }).catch(() => {});
   await page.evaluate(() => {
@@ -389,12 +460,20 @@ try {
       layers: [],
     });
   });
-  const threeD = await page.evaluate(() => ({
-    overlay: !!window.__overlay3d,
-    chunks: performance.getEntriesByType("resource").filter((r) => r.name.includes("globe-viewport") || r.name.includes("deck")).length,
-  }));
-  check("3D 圖層：deck.gl 係 lazy chunk，撳掣先載入；overlay 已掛上", threeD.overlay && threeD.chunks >= 1,
-    `overlay3d=${threeD.overlay} deck chunks=${threeD.chunks}`);
+  const threeD = await page.evaluate((before) => {
+    // build(map) awaits the dynamic imports before __overlay3d can exist, so
+    // overlay present ⇒ the deck chunks finished loading.
+    const lazyFirstPaint = !before.some((n) => /globe-viewport|tiles-3d|webgl-device|expression-/.test(n));
+    const now = performance.getEntriesByType("resource").filter((r) => r.name.endsWith(".js")).map((r) => r.name);
+    return {
+      overlay: !!window.__overlay3d,
+      lazyFirstPaint,
+      addedAfter: now.filter((n) => !before.includes(n)).length,
+    };
+  }, before3dScripts);
+  check("3D 圖層：首屏冇載 deck chunk（lazy）；撳掣後 overlay 掛上",
+    threeD.overlay && threeD.lazyFirstPaint,
+    `overlay3d=${threeD.overlay} 首屏lazy=${threeD.lazyFirstPaint} 撳後新增script=${threeD.addedAfter}`);
   await page.click(rail3d); // leave it off
 
   // --- 10. error surface ------------------------------------------------------
@@ -407,7 +486,10 @@ try {
     // resource-level noise from by-design behaviour:
     //  · radar probes older 6-min slots until one 200s (fallback by design)
     //  · the 3D error-path test deliberately blocks /config/3d
-    !e.startsWith("Failed to load resource"),
+    //  · off-air _live probes fetch an i.ytimg HTML 404 body, which Chromium
+    //    logs as an image decode error — the probe handles it via onerror
+    !e.startsWith("Failed to load resource") &&
+    !e.includes("InvalidStateError: The source image could not be decoded"),
 );
   const deckErrs = consoleErrors.filter((e) => e.includes("deck.gl: assertion failed")).length;
   check("Console：上線期間冇未捕捉錯誤（3D tiles 環境限制除外，見報告）",

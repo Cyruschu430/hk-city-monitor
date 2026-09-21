@@ -37,14 +37,20 @@ export function degrade(h: Honesty, cadenceSeconds: number, now = new Date()): H
 }
 
 /** Parse the cadence strings in sources.json ("5 minutes", "15 minutes",
-    "every 2 minutes", "as issued") into seconds. Defaults to 5 minutes — the
-    modal cadence in the registry — for anything unparseable, and 10 minutes
-    for "as issued" sources (there is no cadence to double, so pick the
-    slowest common one rather than flashing stale on a quiet day). */
+    "every 2 minutes", "hourly", "as issued") into seconds. Defaults to 5
+    minutes — the modal cadence in the registry — for anything unparseable,
+    and 10 minutes for "as issued" sources (there is no cadence to double, so
+    pick the slowest common one rather than flashing stale on a quiet day). */
 export function cadenceSeconds(cadence: string | undefined): number {
   if (!cadence) return 300;
   const m = /(\d+)\s*(minute|min|hour|second|sec)/i.exec(cadence);
-  if (!m) return /as issued|real-time|即時/i.test(cadence) ? 600 : 300;
+  if (!m) {
+    // "hourly" / "daily" carry no leading number — don't let them fall
+    // through to the 5-minute default, or an hourly model flashes stale.
+    if (/hourly|per hour|每小時/i.test(cadence)) return 3600;
+    if (/daily|per day|每日/i.test(cadence)) return 86_400;
+    return /as issued|real-time|即時/i.test(cadence) ? 600 : 300;
+  }
   const n = Number(m[1]);
   const unit = m[2]!.toLowerCase();
   if (unit.startsWith("hour")) return n * 3600;

@@ -11,6 +11,7 @@ import { fetchSource, resolveUrl, type PanelDefRaw, type Registry, type SourceDe
 import { fetchUrl } from "./sources.ts";
 import * as P from "./parsers.ts";
 import { lang } from "./i18n.ts";
+import { liveThumb, probeLive } from "./live.ts";
 import { hkToday } from "./format.ts";
 import type { PanelData } from "./render.ts";
 
@@ -169,14 +170,117 @@ const ADAPTERS: Record<string, Adapter> = {
     const grid = P.parseNowcast(await text(await get(src)), bbox);
     if (!grid) throw new Error("格網資料為空");
     const opacity = Number(panel.params?.["opacity"] ?? 0.6);
+    const observedAt = new Date(
+      `${grid.updated.slice(0, 4)}-${grid.updated.slice(4, 6)}-${grid.updated.slice(6, 8)}T${grid.updated.slice(8, 10)}:${grid.updated.slice(10, 12)}:00+08:00`,
+    );
+    const legend = lang() === "tc" ? `0 → ${grid.max.toFixed(1)} 毫米（未來半小時）` : `0 → ${grid.max.toFixed(1)} mm (next 30 min)`;
+    // All-zero grids are the honest "no rain" state: a transparent canvas is
+    // indistinguishable from a broken image, so the panel says so plainly.
+    if (grid.max < 0.1) {
+      return { data: { kind: "raster_map", src: "", alt: "格網降雨臨近預報", empty: true, legend }, observedAt };
+    }
     const rendered = await ctx.raster.nowcast(grid, bbox, opacity);
-    return {
-      data: { kind: "raster_map", src: rendered, alt: "格網降雨臨近預報" },
-      // "202609191312" = HKT wall clock
-      observedAt: new Date(
-        `${grid.updated.slice(0, 4)}-${grid.updated.slice(4, 6)}-${grid.updated.slice(6, 8)}T${grid.updated.slice(8, 10)}:${grid.updated.slice(10, 12)}:00+08:00`,
-      ),
+    return { data: { kind: "raster_map", src: rendered, alt: "格網降雨臨近預報", legend }, observedAt };
+  },
+
+  async yahoo_hk_quotes(src, panel, _ctx) {
+    void src;
+    const symbols = (panel.params?.["symbols"] as string[] | undefined) ?? ["^HSI", "^HSCE", "0700.HK", "9988.HK"];
+    const NAMES: Record<string, { tc: string; en: string }> = {
+      "^HSI": { tc: "恒生指數", en: "Hang Seng Index" },
+      "^HSCE": { tc: "國企指數", en: "HSCE Index" },
+      "0700.HK": { tc: "騰訊控股", en: "Tencent" },
+      "9988.HK": { tc: "阿里巴巴", en: "Alibaba" },
     };
+    const rows: (string | { text: string; cls: string })[][] = [];
+    let observedAt: Date | null = null;
+    for (const sym of symbols) {
+      try {
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`;
+        const j = (await json(await getAbsolute(url))) as unknown;
+        const q = P.parseYahooQuote(j);
+        if (!q) continue;
+        if (q.time && (!observedAt || q.time > observedAt)) observedAt = q.time;
+        const nm = (NAMES[sym] ?? { tc: sym, en: sym })[lang() === "tc" ? "tc" : "en"];
+        const up = q.changePct >= 0;
+        // HK convention: red = up, green = down — the CSS class uses the
+        // project tokens (--mkt-up is 紅 for rises).
+        rows.push([
+          nm,
+          q.price.toLocaleString("en-US", { maximumFractionDigits: 2 }),
+          { text: `${up ? "+" : ""}${q.changePct.toFixed(2)}%`, cls: up ? "mkt-up" : "mkt-down" },
+        ]);
+      } catch {
+        // One symbol failing must not kill the whole market panel.
+      }
+    }
+    if (!rows.length) throw new Error("所有報價都攞唔到");
+    return { data: { kind: "table", columns: lang() === "tc" ? ["指數", "現價", "變幅"] : ["Index", "Price", "Chg"], rows }, observedAt };
+  },
+
+  async coingecko(src) {
+    const ids = ["bitcoin", "ethereum"];
+    const j = (await json(await get(src))) as Record<string, { hkd?: number }>;
+    const { rows } = P.parseCoingecko(j, ids);
+    const items = rows.map(([id, price]) => ({
+      title: id === "bitcoin" ? "比特幣 BTC" : "以太幣 ETH",
+      sub: lang() === "tc" ? `HK$ ${price}` : `HKD ${price}`,
+    }));
+    return { data: { kind: "list", items }, observedAt: null };
+  },
+
+  async gov_news_law_order(src) {
+    // The official 治安 / crime-and-order announcements feed — the "突發新聞"
+    // backbone (TECH_SPEC §3.7). RSS, through the proxy (CORS-closed).
+    const { items, observedAt } = P.parseRss(await text(await get(src)), 25);
+    return { data: { kind: "list", items }, observedAt };
+  },
+
+  async aqhi_city_dashboard(src) {
+    const j = (await json(await get(src))) as unknown;
+    const { cells, observedAt } = P.parseAqhiDashboard(j);
+    return { data: { kind: "gauge_grid", cells }, observedAt };
+  },
+
+  async td_carpark_vacancy(src, panel, ctx) {
+    const max = Number(panel.params?.["max_rows"] ?? 10);
+    const infoSrc = ctx.registry.byId.get("td_carpark_info");
+    if (!infoSrc) throw new Error("sources.json 冇 td_carpark_info");
+    const [v, info] = await Promise.all([json(await get(src)), json(await get(infoSrc))]);
+    const rows = P.parseCarpark(v, info, max).map((r) => [
+      r.name,
+      String(r.vacancy),
+      r.capacity ? String(r.capacity) : "—",
+    ]);
+    return {
+      data: {
+        kind: "table",
+        columns: lang() === "tc" ? ["停車場", "空位", "總數"] : ["Carpark", "Free", "Total"],
+        rows,
+      },
+      observedAt: null,
+    };
+  },
+
+  async hk_live_cams_community(src, panel) {
+    // A curated COMMUNITY list (data/live_streams.json) — not official data, and
+    // the panel is labelled as such. Live state is resolved at runtime.
+    void src;
+    const res = await fetch("data/live_streams.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const j = (await res.json()) as { streams: { id: string; title: string; channel?: string }[] };
+    const max = Number(panel.params?.["max"] ?? 8);
+    const images = [];
+    for (const s of j.streams.slice(0, max)) {
+      const live = await probeLive(s.id);
+      images.push({
+        id: s.id,
+        name: s.title,
+        src: liveThumb(s.id),
+        video: { id: s.id, live: live, channel: s.channel },
+      });
+    }
+    return { data: { kind: "image_wall", images }, observedAt: new Date() };
   },
 
   async hko_tc_track(src, _panel, ctx) {

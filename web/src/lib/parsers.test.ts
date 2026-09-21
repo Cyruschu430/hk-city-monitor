@@ -15,6 +15,7 @@ import { fileURLToPath } from "node:url";
 
 const P = await import("./parsers.ts");
 const fx = (name: string) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "..", "test", "fixtures", name));
+const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFEFF/, ""));
 
 // 1. warnsum — live capture had 酷熱天氣警告 + 火災危險警告 in force.
 {
@@ -133,6 +134,60 @@ const fx = (name: string) => readFileSync(join(dirname(fileURLToPath(import.meta
   assert.equal(P.zhDurationMinutes("少於 15 分鐘"), 15);
   assert.equal(P.zhDurationMinutes("1.5 小時"), 90);
   console.log("✓ 日期解析：TD 上下午格式、WSD DD-MM-YYYY、中文時長");
+}
+
+// 13. Yahoo quote — real captured HSI chart payload.
+{
+  const j = jx("yahoo_hsi.json");
+  const q = P.parseYahooQuote(j);
+  assert.ok(q && q.symbol === "^HSI", "symbol parsed");
+  assert.ok(q.price > 0 && Number.isFinite(q.changePct), `price=${q.price} chg=${q.changePct}%`);
+  assert.ok(q.spark.length >= 2, `sparkline ${q.spark.length} points`);
+  console.log(`✓ 港股報價: ${q.symbol} ${q.price}（${q.changePct >= 0 ? "+" : ""}${q.changePct.toFixed(2)}%）、spark ${q.spark.length} 點`);
+}
+
+// 14. RSS (gov news 治安 feed).
+{
+  const { items, observedAt } = P.parseRss(fx("gov_news_law_order.xml").toString("utf8"), 25);
+  assert.ok(items.length > 0, `${items.length} news items`);
+  assert.ok(items.every((i) => i.title.length > 5), "titles are real text");
+  console.log(`✓ 突發新聞 RSS: ${items.length} 則，最新 ${observedAt?.toISOString()}`);
+  console.log(`    首則：${items[0]!.title.slice(0, 60)}`);
+}
+
+// 15. CoinGecko.
+{
+  const { rows } = P.parseCoingecko(jx("coingecko.json"), ["bitcoin", "ethereum"]);
+  assert.equal(rows.length, 2);
+  assert.ok(rows[0]![1] !== "—", "BTC price present");
+  console.log(`✓ 加密貨幣: BTC ${rows[0]![1]} HKD, ETH ${rows[1]![1]} HKD`);
+}
+
+// 16. AQHI city dashboard.
+{
+  const { cells, observedAt } = P.parseAqhiDashboard(jx("aqhi_city_dashboard.json"));
+  assert.ok(cells.length >= 15, `${cells.length} AQHI stations`);
+  assert.ok(cells.every((c) => c.level === "ok" || c.level === "warn" || c.level === "alert"));
+  assert.ok(observedAt !== null, "publish_date parsed");
+  console.log(`✓ AQHI: ${cells.length} 站，風險級別全齊，更新 ${observedAt?.toISOString().slice(0, 16)}`);
+}
+
+// 17. Carpark merge.
+{
+  const v = jx("carpark_vacancy.json");
+  const i = jx("carpark_basic_info.json");
+  const rows = P.parseCarpark(v, i, 12);
+  assert.ok(rows.length > 0, `${rows.length} carparks`);
+  assert.ok(rows.every((r) => r.name.length > 0), "names present");
+  console.log(`✓ 停車場: ${rows.length} 個（空位最高優先），首個 ${rows[0]!.name} ${rows[0]!.vacancy}/${rows[0]!.capacity}`);
+}
+
+// 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).
+{
+  const cells = P.parseImmdQueue({ HYW: { arrQueue: 0, depQueue: 0 }, LWS: { arrQueue: 25, depQueue: 18 } }, ["HYW", "LWS"]);
+  assert.ok(cells[0]!.value.includes("少於 15 分鐘") || cells[0]!.value.includes("< 15"), `0 → 少於 15 分鐘, got: ${cells[0]!.value}`);
+  assert.equal(cells[1]!.status, 1, "25 分鐘 → warn band");
+  console.log(`✓ 口岸顯示: 0 分鐘 → 「少於 15 分鐘」；25 分鐘 → amber（${cells[1]!.value}）`);
 }
 
 console.log("\nparsers.test.ts: ALL PASS");

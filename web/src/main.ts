@@ -25,10 +25,25 @@ import { createDrawer } from "./ui/drawer.ts";
 import { createPanelEngine } from "./ui/panels.ts";
 import { createRail, type RailLayer } from "./ui/rail.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
+import { createTicker } from "./ui/ticker.ts";
 
-/** The vertical-free default view. Six panels covering the six render types a
-    resident needs before choosing a mode. */
-const OVERVIEW = ["warnings_list", "cameras_wall", "special_traffic_list", "tp_queue_grid", "ae_waiting_grid", "water_suspension_list"];
+/** The vertical-free default view. Ordered as a World-Monitor-style dense
+    wall: imagery heads the column, then life-safety and civic reads. */
+const OVERVIEW = [
+  "live_cams_wall",
+  "warnings_list",
+  "breaking_news_list",
+  "cameras_wall",
+  "hko_cameras_wall",
+  "special_traffic_list",
+  "tp_queue_grid",
+  "hk_market_table",
+  "crypto_prices",
+  "aqhi_gauge_grid",
+  "carpark_vacancy_list",
+  "ae_waiting_grid",
+  "water_suspension_list",
+];
 
 /** Trigger polling: two sources, 3 minutes. The Worker edge-caches 60s, so a
     faster loop would buy nothing. */
@@ -44,6 +59,7 @@ const RAIL_LAYERS: RailLayer[] = [
 
 async function boot(): Promise<void> {
   const statusbar = createStatusBar(document.getElementById("statusbar")!);
+  const tickerEl = document.getElementById("ticker")!;
   const railEl = document.getElementById("rail")!;
   const panelsEl = document.getElementById("panels")!;
   const mapEl = document.getElementById("map")!;
@@ -55,6 +71,7 @@ async function boot(): Promise<void> {
     loadCameras(),
     fetch("data/build-manifest.json").then((r) => r.json() as Promise<{ tilesVia: string }>).catch(() => ({ tilesVia: "direct" })),
   ]);
+  createTicker(tickerEl, registry);
 
   statusbar.setTiles(manifest.tilesVia);
   statusbar.setCameras(cameras.td.length, cameras.hko.length);
@@ -104,6 +121,11 @@ async function boot(): Promise<void> {
     cameras,
     tilesVia: manifest.tilesVia,
     onWallImage: (img) => {
+      if (img.video) {
+        // A live-stream tile plays in the drawer; a dead one says so there.
+        drawer.openVideo({ id: img.video.id, title: img.name, channel: img.video.channel, live: img.video.live });
+        return;
+      }
       const cam = [...cameras.td, ...cameras.hko].find((c) => c.id === img.id);
       if (cam) drawer.openCamera(cam);
     },

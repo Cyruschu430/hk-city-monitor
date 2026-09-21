@@ -35,6 +35,8 @@ const files = [
   // Collector output (scripts/build_water_suspension.py) — the front end reads
   // it because the upstream host's legacy TLS is unreachable from the Worker.
   ["data/water_suspension.json", "water_suspension.json"],
+  // Curated community live-stream list (YouTube, third-party — see source entry)
+  ["data/live_streams.json", "live_streams.json"],
   ["sources.json", "sources.json"],
 ];
 for (const [src, dst] of files) {

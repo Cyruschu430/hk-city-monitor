@@ -33,6 +33,8 @@ export interface WallImage {
   name: string;
   fresh?: string; // freshness chip text
   dead?: boolean; // known-dead camera: honest wash + 暫時未能提供
+  /** present when the tile is a live stream (YouTube etc.) */
+  video?: { id: string; live: boolean; channel?: string };
 }
 
 export interface Gauge {
@@ -48,13 +50,14 @@ export interface StatusCell {
   status: 0 | 1 | 2;
 }
 
+export type TableCell = string | { text: string; cls?: string };
 export type PanelData =
   | { kind: "big_number"; value: string; unit?: string; sub?: string }
   | { kind: "list"; items: ListItem[] }
-  | { kind: "table"; columns: string[]; rows: string[][] }
+  | { kind: "table"; columns: string[]; rows: TableCell[][] }
   | { kind: "image_single"; src: string; alt: string; note?: string }
   | { kind: "image_wall"; images: WallImage[] }
-  | { kind: "raster_map"; src: string; alt: string; legend?: string }
+  | { kind: "raster_map"; src: string; alt: string; legend?: string; empty?: boolean }
   | { kind: "gauge_grid"; cells: Gauge[] }
   | { kind: "status_grid"; cells: StatusCell[] };
 
@@ -159,11 +162,12 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
 
     case "table": {
       if (data.rows.length === 0) return emptyBox(opts.emptyText ?? DEFAULT_EMPTY);
+      const cell = (c: TableCell) => (typeof c === "string" ? h("td", {}, c) : h("td", c.cls ? { class: c.cls } : {}, c.text));
       return h(
         "table",
         { class: "ptable" },
         h("thead", {}, h("tr", {}, ...data.columns.map((c) => h("th", {}, c)))),
-        h("tbody", {}, ...data.rows.map((r) => h("tr", {}, ...r.map((c) => h("td", {}, c))))),
+        h("tbody", {}, ...data.rows.map((r) => h("tr", {}, ...r.map(cell)))),
       );
     }
 
@@ -180,8 +184,12 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
       return h(
         "div",
         { class: "wall" },
-        ...data.images.map((img) =>
-          h(
+        ...data.images.map((img) => {
+          // The <img> is built out and given its own error handler: a camera
+          // that fails to load right now is NOT a live frame — degrade the
+          // tile instead of leaving a broken-image box.
+          const im = h("img", { src: img.src, alt: img.name, loading: "lazy" }) as HTMLImageElement;
+          const tile = h(
             "div",
             {
               class: `cam${img.dead ? " dead" : ""}`,
@@ -190,18 +198,44 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
               tabindex: "0",
               onclick: () => opts.onImageClick?.(img),
             },
-            h("img", { src: img.src, alt: img.name, loading: "lazy" }),
-            h("span", { class: "lab" }, img.name),
+            im,
+            h("span", { class: "lab" }, `${img.name}${img.video?.channel ? ` · ${img.video.channel}` : ""}`),
             img.fresh ? h("span", { class: "fresh chip" }, img.fresh) : "",
-          ),
-        ),
+            img.video
+              ? img.video.live
+                ? h("span", { class: "fresh chip live", style: "background:rgba(255,93,108,.9);color:#fff" }, "LIVE 直播")
+                : h("span", { class: "fresh chip" }, lang() === "tc" ? "現時無直播" : "not live now")
+              : "",
+          );
+          im.addEventListener("error", () => {
+            if (!tile.getAttribute("class")?.includes("dead")) tile.setAttribute("class", "cam dead");
+          });
+          return tile;
+        }),
       );
     }
 
     case "raster_map":
       // The map overlay itself is a layer concern; the panel shows the source
       // frame as a preview so the column stays honest when the map is hidden.
-      return h("img", { class: "praster", src: data.src, alt: data.alt, loading: "lazy" });
+      if (data.empty) {
+        return h(
+          "div",
+          { class: "praster-empty" },
+          h(
+            "p",
+            { class: "p-empty" },
+            lang() === "tc" ? "現時無降雨（格網降雨量 ~0 mm）" : "No rainfall in the grid (~0 mm)",
+          ),
+          data.legend ? h("p", { class: "praster-legend" }, data.legend) : "",
+        );
+      }
+      return h(
+        "figure",
+        { class: "pimg", style: "margin:0" },
+        h("img", { class: "praster", src: data.src, alt: data.alt, loading: "lazy" }),
+        data.legend ? h("figcaption", { class: "note" }, data.legend) : "",
+      );
 
     case "gauge_grid": {
       if (data.cells.length === 0) return emptyBox(opts.emptyText ?? DEFAULT_EMPTY);

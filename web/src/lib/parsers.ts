@@ -166,9 +166,13 @@ export function parseImmdQueue(json: Record<string, { arrQueue: number; depQueue
       // a genuinely long queue for a land crossing.
       const status: 0 | 1 | 2 = worst <= 15 ? 0 : worst <= 30 ? 1 : 2;
       const nm = CP_STATIONS[code] ?? { tc: code, en: code };
+      // 0 minutes is ImmD's "smooth" sentinel, shown as their own 少於 15 分鐘
+      // band rather than a cryptic 0′.
+      const m = (mins: number) =>
+        mins <= 0 ? (lang() === "tc" ? "少於 15 分鐘" : "< 15 min") : `${mins} ${lang() === "tc" ? "分鐘" : "min"}`;
       return {
         label: lang() === "tc" ? nm.tc : nm.en,
-        value: lang() === "tc" ? `到${q.arrQueue}′ 離${q.depQueue}′` : `in ${q.arrQueue}′ out ${q.depQueue}′`,
+        value: `${m(q.arrQueue)}↔${m(q.depQueue)}`,
         status,
       };
     });
@@ -333,6 +337,143 @@ export function parseTcTrack(xml: string): { name: string; enName: string; bulle
     bulletinTime: iso(tag(xml, "BulletinTime")),
     points,
   };
+}
+
+// --- RSS feeds (news.gov.hk, RTHK) ----------------------------------------------
+/** RFC 822-ish dates from RSS: "Fri, 19 Sep 2026 13:00:00 +0800" /
+    "2026/09/19 13:00 +08". Parsed defensively; null when unrecognisable. */
+export function parseRssDate(s: string): Date | null {
+  const t = s.trim();
+  const d = new Date(t.replace(/GMT|UTC/i, "Z").replace(/([+-]\d{2})(\d{2})$/, "$1:$2"));
+  if (!Number.isNaN(d.getTime())) return d;
+  const m = /(\d{4})\/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{2})/.exec(t);
+  if (m) {
+    const g = m.slice(1).map((x) => x ?? "");
+    return iso(`${g[0]}-${g[1]!.padStart(2, "0")}-${g[2]!.padStart(2, "0")}T${g[3]!}:${g[4]!}:00+08:00`);
+  }
+  return null;
+}
+
+export function parseRss(xml: string, max = 25): { items: ListItem[]; observedAt: Date | null } {
+  const items: ListItem[] = [];
+  const times: Date[] = [];
+  for (const b of blocks(xml, "item").slice(0, max)) {
+    const title = ent(stripCdata(tag(b, "title")));
+    const link = ent(tag(b, "link"));
+    if (!title) continue;
+    const when = parseRssDate(tag(b, "pubDate"));
+    if (when) times.push(when);
+    items.push({
+      title,
+      time: when ? when.toISOString().slice(0, 16).replace("T", " ") : undefined,
+      href: link || undefined,
+    });
+  }
+  return { items, observedAt: times.length ? new Date(Math.max(...times.map((d) => d.getTime()))) : null };
+}
+
+function stripCdata(s: string): string {
+  const m = /<!\[CDATA\[([\s\S]*?)\]\]>/.exec(s.trim());
+  return m ? m[1]! : s.trim();
+}
+
+// --- Yahoo Finance chart (proxy; keyless) -----------------------------------------
+export interface QuoteRow {
+  symbol: string;
+  price: number;
+  prevClose: number;
+  changePct: number;
+  time: Date | null;
+  spark: number[]; // last close values, for the sparkline
+}
+
+/** v8 chart JSON → one quote row. The meta block carries the numbers; the
+    close[] histogram is the sparkline. */
+export function parseYahooQuote(json: unknown): QuoteRow | null {
+  const result = (json as { chart?: { result?: unknown[] } })?.chart?.result?.[0] as
+    | { meta?: Record<string, unknown>; timestamp?: number[]; indicators?: { quote?: { close?: (number | null)[] }[] } }
+    | undefined;
+  if (!result?.meta) return null;
+  const price = Number(result.meta["regularMarketPrice"]);
+  const prev = Number(result.meta["chartPreviousClose"] ?? result.meta["previousClose"]);
+  const closes = (result.indicators?.quote?.[0]?.close ?? []).filter((c): c is number => typeof c === "number");
+  const spark = closes.slice(-60).map((c) => Number(c.toFixed(1)));
+  const t = result.meta["regularMarketTime"];
+  return {
+    symbol: String(result.meta["symbol"] ?? "?"),
+    price,
+    prevClose: prev || price,
+    changePct: prev ? ((price - prev) / prev) * 100 : 0,
+    time: typeof t === "number" ? new Date(t * 1000) : null,
+    spark,
+  };
+}
+
+export function parseCoingecko(json: Record<string, { hkd?: number }>, ids: string[]): { rows: [string, string, string][]; observedAt: Date | null } {
+  const rows: [string, string, string][] = [];
+  for (const id of ids) {
+    const v = json[id]?.hkd;
+    // CoinGecko may omit a coin; keep the row honest with —.
+    rows.push([id, v === undefined ? "—" : Number(v).toLocaleString("en-US"), "HKD"]);
+  }
+  return { rows, observedAt: null };
+}
+
+// --- AQHI (EPD city-dashboard JSON) -----------------------------------------------
+export interface AqhiStation { station: string; aqhi: number; healthRisk: string }
+
+/** dashboard.data.gov.hk/aqhi-individual returns an array:
+    [{station:"Central/Western", aqhi:4, health_risk:"Moderate", publish_date}].
+    frontend shows the English zone name (the official AQHI labels are English
+    zone names); the risk band drives the gauge colour. */
+export function parseAqhiDashboard(json: unknown): { cells: Gauge[]; observedAt: Date | null } {
+  const list = (json as { station?: string; aqhi?: number; health_risk?: string; publish_date?: string }[] | undefined) ?? [];
+  const cells = list
+    .filter((s) => s.station && typeof s.aqhi === "number")
+    .map((s) => {
+      const v = s.aqhi!;
+      const level: Gauge["level"] = v <= 3 ? "ok" : v <= 6 ? "warn" : "alert";
+      return { label: s.station!, value: String(v), level };
+    });
+  const times = list.map((s) => iso(s.publish_date ?? "")).filter((d): d is Date => d !== null);
+  return { cells, observedAt: times.length ? new Date(Math.max(...times.map((d) => d.getTime()))) : null };
+}
+
+// --- Carpark vacancy (Transport Department) ---------------------------------------
+export interface CarparkRow {
+  id: string;
+  name: string;
+  vacancy: number;
+  capacity: number;
+}
+
+/** vacancy_all.json + basic_info_all.json both wrap {car_park:[…]}; merge by
+    park_id. Cap at maxRows, sort by occupancy ratio (highest first) so the
+    panel leads with the fullest lots. */
+export function parseCarpark(vacancyJson: unknown, infoJson: unknown, maxRows: number): CarparkRow[] {
+  const vac = (vacancyJson as { car_park?: { park_id?: string; vehicle_type?: { vacancy?: number }[] }[] })?.car_park ?? [];
+  const info = (infoJson as { car_park?: { park_id?: string; name_tc?: string; name_en?: string; capacity?: number }[] })?.car_park ?? [];
+  const byId = new Map(info.filter((p) => p.park_id).map((p) => [p.park_id!, p]));
+  const rows: CarparkRow[] = [];
+  for (const p of vac) {
+    if (!p.park_id) continue;
+    const base = byId.get(p.park_id);
+    if (!base?.name_tc && !base?.name_en) continue;
+    const vacancy = (p.vehicle_type ?? []).reduce((a, b) => a + (Number(b.vacancy) || 0), 0);
+    const capacity = Number(base.capacity) || 0;
+    rows.push({
+      id: p.park_id,
+      name: (base.name_tc ?? base.name_en)!,
+      vacancy,
+      capacity,
+    });
+  }
+  rows.sort((a, b) => {
+    const ar = a.capacity ? a.vacancy / a.capacity : 0;
+    const br = b.capacity ? b.vacancy / b.capacity : 0;
+    return br - ar;
+  });
+  return rows.slice(0, maxRows);
 }
 
 // --- HKO radar timestamped URL ------------------------------------------------------

@@ -73,9 +73,11 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
   }
 
   async function load(panel: PanelDefRaw): Promise<{ data: PanelData; observedAt: Date | null; state?: unknown }> {
-    // Image walls draw from the prebuilt camera lists, not from a single image
-    // source — `params.list_source` in the panel definition is what says so.
-    if (panel.render === "image_wall") {
+    // Camera walls draw from the prebuilt camera lists — but ONLY the two
+    // camera-wall sources. Any other image_wall panel (the live-stream wall)
+    // goes through its own adapter; the list-source shortcut must not capture
+    // panels it was never meant for.
+    if (panel.render === "image_wall" && (panel.source === "td_snapshot" || panel.source === "hko_webcam")) {
       const { data, observedAt } = wallData(panel);
       return { data, observedAt };
     }

@@ -79,6 +79,15 @@ const style = {
       tileSize: 256,
       maxzoom: 19,
     },
+    // Official aerial imagery — the exact layer LandsD's own 3D-map example
+    // uses (mapapi.geodata.gov.hk/xyz/imagery). Keyless when served directly,
+    // routed via the Worker's edge cache like the other LandsD tiles.
+    "landsd-imagery": {
+      type: "raster",
+      tiles: [tile(`${LANDSD}/imagery/WGS84/{z}/{x}/{y}.png`)],
+      tileSize: 256,
+      maxzoom: 19,
+    },
     "esri-imagery": {
       type: "raster",
       tiles: [`${ESRI}/{z}/{y}/{x}`], // direct — see tileViaWorker note above
@@ -98,6 +107,15 @@ const style = {
       // and invert is banned. MapLibre raster paint approximates it:
       // brightness-max clamps highlights, contrast is an offset from neutral.
       paint: { "raster-brightness-max": 0.52, "raster-contrast": 0.12 },
+    },
+    {
+      id: "landsd-imagery",
+      type: "raster",
+      source: "landsd-imagery",
+      layout: { visibility: "none" },
+      // Aerial at night is too dark to read; the same darkened treatment as the
+      // topo keeps it usable without becoming a heatmap blob (DESIGN_BRIEF §0.5).
+      paint: { "raster-brightness-max": 0.6, "raster-contrast": 0.1 },
     },
     {
       id: "esri-imagery",

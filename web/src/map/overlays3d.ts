@@ -24,8 +24,14 @@ async function build(map: maplibregl.Map): Promise<Overlay3d> {
   const res = await fetch(`${WORKER_BASE}/config/3d`, { signal: AbortSignal.timeout(15_000) });
   if (!res.ok) throw new Error(`/config/3d HTTP ${res.status}`);
   const cfg = (await res.json()) as { wgs84?: Record<string, string | undefined> };
-  const url = cfg.wgs84?.["building"];
-  if (!url) throw new Error("/config/3d 冇 building tileset 網址");
+  // Prefer the tilemodel tileset: measured 2026-09-21 — the building tileset
+  // (3dsd, 12.2M-triangle b3dm) throws inside deck's ScenegraphLayer init in
+  // this browser, while the official 3dtiles/f2 '可視化三維地圖' renders clean.
+  // Building stays available through /config/3d.wgs84.building when/if it ever
+  // renders; the choice of which tileset satisfies the monitor is data, so it
+  // belongs in the Worker config, not hardcoded here.
+  const url = cfg.wgs84?.["tilemodel"] ?? cfg.wgs84?.["building"] ?? cfg.wgs84?.["infrastructure"];
+  if (!url) throw new Error("/config/3d 冇任何 3D tileset 網址");
 
   // Everything heavy loads here and only here.
   const [{ MapboxOverlay }, { Tile3DLayer }, { Tiles3DLoader }] = await Promise.all([

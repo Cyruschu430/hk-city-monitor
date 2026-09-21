@@ -3,11 +3,11 @@
  "source_name": "水務署 臨時停水通知",
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
- "generated": "2026-09-21T21:27:38+08:00",
+ "generated": "2026-09-21T22:51:08+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
   "records": 138,
-  "active": 6
+  "active": 3
  },
  "districts": [
   "中西區",
@@ -1390,11 +1390,11 @@
    "district_en": "Kowloon City",
    "nature": "緊急停水",
    "suspend_at": "2026-09-20T22:30:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-21T21:03:00+08:00",
    "address": "嘉林邊道42-54號",
    "address_en": "NO.42-54 GRAMPIAN ROAD",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026092113520",
@@ -1520,11 +1520,11 @@
    "district_en": "Eastern",
    "nature": "緊急停水",
    "suspend_at": "2026-09-21T10:25:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-21T21:10:00+08:00",
    "address": "嘉華國際中心, 柯達大廈, 水務署香港區大樓, 廉正公署, 渣華道323號",
    "address_en": "K WAH CENTRE, KODAK HOUSE II, WSD HK OFFICE, ICAC, NO.323 JAVA ROAD",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026092113535",
@@ -1702,11 +1702,11 @@
    "district_en": "Kowloon City",
    "nature": "緊急停水",
    "suspend_at": "2026-09-21T15:17:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-21T21:00:00+08:00",
    "address": "木廠街17號",
    "address_en": "NO.17 MOK CHEONG STREET",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026092113551",
@@ -1828,9 +1828,6 @@
  ],
  "active_ids": [
   "2026091913487",
-  "2026092013519",
-  "2026092113534",
-  "2026092113550",
   "2026092113561",
   "2026092113563"
  ]

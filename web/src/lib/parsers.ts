@@ -796,6 +796,114 @@ export function windStatus(stations: WindStation[]): StatusCell[] {
   return out;
 }
 
+/** Wind-barb speed buckets, at the real-world 5/10 kt steps so the icon reads
+ *  like a standard station plot. Lives here (not in the map layer) because the
+ *  per-feature `barbId` is written by windToGeoJson below, and parsers.ts must
+ *  stay importable from Node tests — the map layer touches `document`. */
+export const BARB_BUCKETS: { maxKt: number; id: string; full: number; half: number }[] = [
+  { maxKt: 2, id: "calm", full: 0, half: 0 },
+  { maxKt: 7, id: "b05", full: 0, half: 1 },
+  { maxKt: 12, id: "b10", full: 1, half: 0 },
+  { maxKt: 17, id: "b15", full: 1, half: 1 },
+  { maxKt: 22, id: "b20", full: 2, half: 0 },
+  { maxKt: 27, id: "b25", full: 2, half: 1 },
+  { maxKt: 32, id: "b30", full: 3, half: 0 },
+  { maxKt: 37, id: "b35", full: 3, half: 1 },
+  { maxKt: 1000, id: "b40", full: 4, half: 0 },
+];
+
+/** Map a km/h reading to its bucket id. km/h → knots is ×0.539957. */
+export function barbIdFor(speedKmh: number): string {
+  const kt = speedKmh * 0.539957;
+  for (const b of BARB_BUCKETS) if (kt < b.maxKt) return b.id;
+  return "b40";
+}
+
+/** Wind stations → point features for the barb layer.
+ *
+ * This is where the ROADMAP B5 honesty rule is enforced in data rather than in
+ * prose: a barb exists only where a station MEASURED the wind, and each barb
+ * carries a `fade` value that falls to zero with distance from the station.
+ *
+ * The grid is regular and coarse (~0.1°, roughly 11km) and covers only the
+ * neighbourhood of reporting stations. `fade` is 1.0 at a station and decays to
+ * 0 by ~15km — beyond that nothing is drawn, so the field can never imply
+ * measured wind over an area with no measurements. IDW weighting is used for
+ * the interpolated vectors, and the fade is driven by the distance to the
+ * NEAREST station, not by the interpolation weights: weights normalise, so they
+ * would happily produce a confident-looking vector in an empty sea.
+ */
+export function windToGeoJson(
+  located: WindStation[],
+  opts: { stepDeg?: number; fadeKm?: number } = {},
+): GeoJSON.FeatureCollection {
+  const step = opts.stepDeg ?? 0.1;
+  const fadeKm = opts.fadeKm ?? 15;
+  const features: GeoJSON.Feature[] = [];
+  if (located.length === 0) return { type: "FeatureCollection", features };
+
+  const lons = located.map((s) => s.lon!);
+  const lats = located.map((s) => s.lat!);
+  const minLon = Math.min(...lons), maxLon = Math.max(...lons);
+  const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+
+  // Metres per degree at HK's latitude — good enough for a 15km fade and far
+  // cheaper than a geodesic call per grid cell.
+  const KM_PER_DEG_LAT = 110.574;
+  const KM_PER_DEG_LON = 111.32 * Math.cos((22.3 * Math.PI) / 180);
+
+  const toKm = (lon: number, lat: number, s: WindStation): number => {
+    const dx = (lon - s.lon!) * KM_PER_DEG_LON;
+    const dy = (lat - s.lat!) * KM_PER_DEG_LAT;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  for (let lat = minLat; lat <= maxLat + 1e-9; lat += step) {
+    for (let lon = minLon; lon <= maxLon + 1e-9; lon += step) {
+      let nearest = Infinity;
+      let wsum = 0;
+      let ux = 0, uy = 0;
+      for (const s of located) {
+        const d = toKm(lon, lat, s);
+        if (d < nearest) nearest = d;
+        // Inverse-distance weighting, squared, with a small floor so a station
+        // sitting exactly on a grid cell cannot produce an infinite weight.
+        const w = 1 / Math.max(d, 0.5) ** 2;
+        // Meteorological direction is where the wind comes FROM; the vector
+        // points where it is going, hence the +180.
+        const rad = ((s.dirDeg! + 180) * Math.PI) / 180;
+        ux += Math.sin(rad) * s.speedKmh! * w;
+        uy += Math.cos(rad) * s.speedKmh! * w;
+        wsum += w;
+      }
+      if (wsum === 0 || !Number.isFinite(nearest)) continue;
+      // Fade: 1 at the station, 0 at fadeKm, linear in between.
+      const fade = Math.max(0, Math.min(1, 1 - nearest / fadeKm));
+      if (fade <= 0.02) continue; // beyond the radius: nothing is drawn at all
+
+      const speed = Math.hypot(ux, uy) / wsum;
+      // Below ~2 km/h the barb has no feathers and would render as a bare dot —
+      // visual noise that says nothing. Calm water is better conveyed by ABSENCE
+      // than by a field of dots, which is also what a real station plot does.
+      if (speed < 2) continue;
+      const dir = (Math.atan2(ux, uy) * 180) / Math.PI; // 0..360, direction TOWARD
+      const dirFrom = (dir + 180 + 360) % 360; // back to meteorological convention
+      features.push({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [lon, lat] },
+        properties: {
+          speedKmh: Math.round(speed * 10) / 10,
+          dirDeg: Math.round(dirFrom),
+          barbId: barbIdFor(speed),
+          fade: Math.round(fade * 100) / 100,
+          nearestKm: Math.round(nearest * 10) / 10,
+        },
+      });
+    }
+  }
+  return { type: "FeatureCollection", features };
+}
+
 // --- HKO radar timestamped URL ------------------------------------------------------
 /** Radar filenames carry the frame time (TECH_SPEC §3.6): build the current
     6-minute slot and step back so the panel can fall back instead of 404ing. */

@@ -41,6 +41,7 @@ const LAYER_ICONS: Record<string, string> = {
   imagery: "M3 5h18v14H3zM3 15l5-5 4 4 3-3 6 6",
   buildings3d: "M4 20V9l8-5 8 5v11M9 20v-6h6v6",
   aircraft: "M12 2l2 7 7 3v2l-7-1v5l2.5 2v1.6L12 20.5l-4.5 1.1V20l2.5-2v-5l-7 1v-2l7-3z",
+  wind_field: "M3 8h11a3 3 0 10-3-3|M3 12h15a3 3 0 11-3 3|M3 16h9",
 };
 
 export interface RailLayer {

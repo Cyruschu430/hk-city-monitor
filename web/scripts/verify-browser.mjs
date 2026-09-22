@@ -25,6 +25,24 @@ const check = (name, ok, detail) => {
   console.log(`${ok ? "✓" : "✗"} ${name}${detail ? `\n    ${detail}` : ""}`);
 };
 
+// Click a rail button by its LABEL, not its position.
+//
+// These were selected with nth-child indices ("rail order: 5 modes, sep, 5
+// layers"). Adding one layer toggle shifted every later index, so the imagery
+// and 3D checks silently clicked the wrong buttons and reported three failures
+// that had nothing to do with the change. Label selection cannot drift.
+const railClick = async (label) => {
+  const ok = await page.evaluate((needle) => {
+    const b = [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
+      (x.querySelector(".tip")?.textContent ?? "").includes(needle),
+    );
+    if (!b) return false;
+    b.click();
+    return true;
+  }, label);
+  if (!ok) throw new Error(`rail button not found: ${label}`);
+};
+
 const browser = await chromium.launch({ executablePath: exe, headless: !headed });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, locale: "zh-HK" });
 // This run generates hundreds of resource entries (tiles, proxies, images);
@@ -562,7 +580,15 @@ try {
   const overviewAgain = await page.evaluate(() =>
     [...document.querySelectorAll(".panel[data-panel]")].map((p) => `${p.dataset.panel}:${p.dataset.state}`),
   );
-  check("總覽：人手切返總覽後十三個 panel 齊", overviewAgain.length === 13, overviewAgain.join(" "));
+  // Assert against the ACTUAL overview list rather than a magic number: adding
+  // a panel to OVERVIEW is a legitimate change, and a hardcoded 13 turned that
+  // into a false failure. Read the expectation from the app itself.
+  const expected = await page.evaluate(() => window.__hkcm.overviewIds?.() ?? null);
+  check(
+    `總覽：人手切返總覽後 ${expected?.length ?? 13} 個 panel 齊`,
+    overviewAgain.length === (expected?.length ?? 13),
+    overviewAgain.join(" "),
+  );
 
   // --- 7. honesty when the data cannot arrive ---------------------------------
   // Two things are being tested and they are different:
@@ -694,7 +720,7 @@ try {
   await page.setViewportSize({ width: 1440, height: 900 });
 
   // --- 9b2. official LandsD aerial basemap ------------------------------------
-  await page.click(".rail-btn:nth-child(10)"); // imagery toggle
+  await railClick("航拍底圖");
   await page.waitForTimeout(2500);
   const imagery = await page.evaluate(() => {
     const map = window.__map;
@@ -706,10 +732,45 @@ try {
   });
   check("航拍底圖：用官方 LandsD imagery（唔係 Esri），topo 隱藏", imagery.aerial === "visible" && imagery.topo === "none" && imagery.esri === "none",
     JSON.stringify(imagery));
-  await page.click(".rail-btn:nth-child(10)");
+  await railClick("航拍底圖");
   await page.waitForTimeout(1200);
   const backTopo = await page.evaluate(() => window.__map.getLayoutProperty("landsd-imagery", "visibility"));
   check("航拍底圖：撳走後返 topo", backTopo === "none", `landsd-imagery=${backTopo}`);
+
+  // --- 9b1. aircraft layer (ADS-B) -------------------------------------------
+  // The plane glyph is rotated from the feature's `bearing`; if the parser stops
+  // emitting it, every aircraft silently points north and still looks plausible.
+  // So assert (a) features exist, (b) the icon is the plane glyph, and (c) the
+  // bearings are VARIED — one constant value means the rotation is not wired.
+  await railClick("航機");
+  await page.waitForFunction(() => {
+    const m = window.__map;
+    return m && m.getSource("vl-aircraft") && m.querySourceFeatures("vl-aircraft").length > 0;
+  }, null, { timeout: 30_000 }).catch(() => {});
+  await page.waitForTimeout(1500);
+  const ac = await page.evaluate(() => {
+    const map = window.__map;
+    const layer = "vl-aircraft-point";
+    if (!map.getLayer(layer)) return { layer: false };
+    const feats = map.querySourceFeatures("vl-aircraft");
+    const bearings = [...new Set(feats.map((f) => f.properties?.bearing))];
+    return {
+      layer: true,
+      features: feats.length,
+      icon: map.getLayoutProperty(layer, "icon-image"),
+      hasImage: map.hasImage("plane"),
+      rotate: JSON.stringify(map.getLayoutProperty(layer, "icon-rotate")),
+      distinctBearings: bearings.length,
+      sample: bearings.slice(0, 4),
+      callsigns: feats.map((f) => f.properties?.flight).filter(Boolean).slice(0, 3),
+    };
+  });
+  check("航機圖層：ADS-B 畫出嚟、用 plane glyph、依 track 旋轉",
+    ac.layer && ac.features > 0 && ac.icon === "plane" && ac.hasImage &&
+      ac.rotate.includes("bearing") && ac.distinctBearings > 1,
+    `${ac.features} 架 · icon=${ac.icon} · rotate=${ac.rotate} · 唔同方位=${ac.distinctBearings} ${JSON.stringify(ac.sample)} · ${(ac.callsigns ?? []).join(",")}`);
+  await railClick("航機"); // leave it off for the rest of the run
+  await page.waitForTimeout(800);
 
   // --- 9b. the other two verticals, from config only -------------------------
   const modes = await page.evaluate(async () => {
@@ -739,17 +800,38 @@ try {
 
   // --- 9c. 3D: lazy layer, and an honest error state when it cannot load ------
   const workerBaseUrl = "http://127.0.0.1:8787";
-  const rail3d = ".rail-btn:nth-child(11)"; // rail order: 5 modes, sep, 5 layers
-  // Error path FIRST, on a fresh overlay: block /config/3d so the first build
-  // must fail → the toggle shows red + the banner names the layer.
+  // Selected by LABEL: this used nth-child(11) with the comment "5 modes, sep,
+  // 5 layers", and adding the aircraft toggle shifted it to 12 — the three 3D
+  // checks then drove the wrong button and failed for no real reason.
+  const rail3dBtn = "3D 樓宇";
+  const rail3dColor = () =>
+    page.evaluate(
+      (needle) =>
+        getComputedStyle(
+          [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
+            (x.querySelector(".tip")?.textContent ?? "").includes(needle),
+          ) ?? document.body,
+        ).color,
+      rail3dBtn,
+    );
+  const rail3dPressed = (value) =>
+    page.evaluate(
+      ([needle, v]) => {
+        const b = [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
+          (x.querySelector(".tip")?.textContent ?? "").includes(needle),
+        );
+        b?.setAttribute("aria-pressed", v);
+      },
+      [rail3dBtn, value],
+    );
   await page.route(`${workerBaseUrl}/config/3d*`, (route) => route.abort("failed"));
-  await page.click(rail3d);
+  await railClick(rail3dBtn);
   await page.waitForTimeout(2500);
   const threeDErr = await page.evaluate(() => ({
     overlay: !!window.__overlay3d,
     banner: document.querySelector("#mapHud .panel")?.textContent?.slice(0, 90) ?? null,
-    red: getComputedStyle(document.querySelector(".rail-btn:nth-child(11)")).color,
   }));
+  threeDErr.red = await rail3dColor();
   check("3D 圖層：config 連唔到 → overlay 唔會出現，有明確錯誤訊息",
     !threeDErr.overlay && threeDErr.banner.includes("圖層開唔到"),
     `overlay=${threeDErr.overlay} banner="${threeDErr.banner}"`);
@@ -763,8 +845,8 @@ try {
   const before3dScripts = await page.evaluate(() =>
     performance.getEntriesByType("resource").filter((r) => r.name.endsWith(".js")).map((r) => r.name),
   );
-  await page.evaluate(() => document.querySelector(".rail-btn:nth-child(11)")?.setAttribute("aria-pressed", "false"));
-  await page.click(rail3d);
+  await rail3dPressed("false");
+  await railClick(rail3dBtn);
   await page.waitForFunction(() => !!window.__overlay3d, null, { timeout: 40_000 }).catch(() => {});
   await page.evaluate(() => {
     window.__overlay3d?.setProps?.({
@@ -787,8 +869,10 @@ try {
     `overlay3d=${threeD.overlay} 首屏lazy=${threeD.lazyFirstPaint} 撳後新增script=${threeD.addedAfter}`);
 
   // 3D is an ON-THE-FLY overlay layer: off must empty it, on must refill it.
-  const threeDCycle = await page.evaluate(async () => {
-    const rail = document.querySelector(".rail-btn:nth-child(11)");
+  const threeDCycle = await page.evaluate(async (needle) => {
+    const rail = [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
+      (x.querySelector(".tip")?.textContent ?? "").includes(needle),
+    );
     const st = () => (window.__overlay3dState ? window.__overlay3dState() : null);
     const before = st();
     rail?.setAttribute("aria-pressed", "true");
@@ -800,16 +884,19 @@ try {
     await new Promise((r) => setTimeout(r, 1500));
     const on = st();
     return { before, off, on };
-  });
+  }, rail3dBtn);
   check("3D 圖層：on-the-fly 開關（on → off → on 都跟得住）",
     threeDCycle.off === false && threeDCycle.on === true,
     `before=${threeDCycle.before} off=${threeDCycle.off} onAgain=${threeDCycle.on}`);
-  await page.evaluate(() => {
+  await page.evaluate((needle) => {
     // leave the overlay empty so the tile flood stops for the rest of the run
     window.__overlay3d?.setProps?.({ layers: [] });
-    document.querySelector(".rail-btn:nth-child(11)")?.setAttribute("aria-pressed", "false");
-  });
-  await page.click(rail3d); // leave it off
+    const b = [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
+      (x.querySelector(".tip")?.textContent ?? "").includes(needle),
+    );
+    b?.setAttribute("aria-pressed", "false");
+  }, rail3dBtn);
+  await railClick(rail3dBtn); // leave it off
 
   // --- 10. error surface ------------------------------------------------------
   const unexpected = consoleErrors.filter(

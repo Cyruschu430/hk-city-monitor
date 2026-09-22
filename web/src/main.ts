@@ -37,6 +37,7 @@ const OVERVIEW = [
   "live_cams_wall",
   "warnings_list",
   "breaking_news_list",
+  "aircraft_status",
   "cameras_wall",
   "hko_cameras_wall",
   "special_traffic_list",
@@ -56,6 +57,7 @@ const TRIGGER_POLL_MS = 3 * 60_000;
 const RAIL_LAYERS: RailLayer[] = [
   { id: "cameras_td", label: { tc: "運輸署相機", en: "TD cameras" }, on: true },
   { id: "cameras_hko", label: { tc: "天文台相機", en: "HKO cameras" }, on: true },
+  { id: "aircraft", label: { tc: "航機（ADS-B）", en: "Aircraft (ADS-B)" } },
   { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" } },
   { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
   { id: "buildings3d", label: { tc: "3D 樓宇（載入慢）", en: "3D buildings (heavy)" } },
@@ -398,6 +400,18 @@ async function boot(): Promise<void> {
           if (!drawn.includes("rain_nowcast")) throw new Error("降雨圖層畫唔出");
           break;
         }
+        case "aircraft": {
+          // Same layers.json definition the aircraft panel uses: one definition,
+          // one renderer, whether the user or a vertical asked for it. The
+          // adapter feeds both, so the map and the panel cannot disagree.
+          const def = registry.layers.find((l) => l.id === "aircraft");
+          if (!def) throw new Error("layers.json 冇 aircraft");
+          clearVerticalLayers(map, [def]);
+          if (!on) break;
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });
+          if (!drawn.includes("aircraft")) throw new Error("航機圖層畫唔出");
+          break;
+        }
         case "buildings3d": {
           await toggle3d(map, on);
           rail.setLayerError(id, null);
@@ -456,6 +470,9 @@ async function boot(): Promise<void> {
         instead of guessing from a screenshot */
     activeDistricts: () => [...activeDistricts],
     drawnLayers: () => [...currentLayerIds],
+    /** the panels the overview mode shows — QA compares against this instead of
+        a hardcoded count, so adding a panel is not reported as a failure */
+    overviewIds: () => [...OVERVIEW],
     /** drop the 30s payload memo — QA uses this to force a true refetch
         (e.g. the offline / source-down honesty checks) */
     clearDataCache: () => clearDataCache(),

@@ -40,6 +40,7 @@ const LAYER_ICONS: Record<string, string> = {
   rain_nowcast: "M7 15a4 4 0 010-8 5 5 0 019.6 1.4A3.5 3.5 0 0116 15H7zM9 19l-1 2M13 19l-1 2M17 19l-1 2",
   imagery: "M3 5h18v14H3zM3 15l5-5 4 4 3-3 6 6",
   buildings3d: "M4 20V9l8-5 8 5v11M9 20v-6h6v6",
+  aircraft: "M12 2l2 7 7 3v2l-7-1v5l2.5 2v1.6L12 20.5l-4.5 1.1V20l2.5-2v-5l-7 1v-2l7-3z",
 };
 
 export interface RailLayer {

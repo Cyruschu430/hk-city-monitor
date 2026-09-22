@@ -101,7 +101,9 @@
     "tc": "特別交通消息",
     "en": "Special Traffic News"
    },
-   "params": {},
+   "params": {
+    "max": 12
+   },
    "cadence_note": {
     "tc": "即時",
     "en": "Real-time"
@@ -214,7 +216,9 @@
     "tc": "臨時停水通知",
     "en": "Temporary Water Suspension Notices"
    },
-   "params": {},
+   "params": {
+    "max": 10
+   },
    "cadence_note": {
     "tc": "每 5 分鐘",
     "en": "Every 5 minutes"
@@ -293,7 +297,9 @@
     "tc": "突發新聞（治安消息）",
     "en": "Breaking News (law & order)"
    },
-   "params": {},
+   "params": {
+    "max": 8
+   },
    "cadence_note": {
     "tc": "即時",
     "en": "Live"

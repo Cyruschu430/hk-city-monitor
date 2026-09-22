@@ -119,6 +119,9 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
         emptyText: EMPTY_TEXT[entry.panel.source],
         onRetry: () => void refresh(id),
         onImageClick: deps.onWallImage,
+        // Row cap comes from panels.json `params.max` — config, not a
+        // hardcoded opinion about which lists are too long.
+        maxRows: typeof entry.panel.params?.["max"] === "number" ? (entry.panel.params["max"] as number) : undefined,
       }),
     );
   }

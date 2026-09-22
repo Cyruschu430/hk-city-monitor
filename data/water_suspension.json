@@ -3,7 +3,7 @@
  "source_name": "水務署 臨時停水通知",
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
- "generated": "2026-09-22T22:38:08+08:00",
+ "generated": "2026-09-22T23:40:00+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
   "records": 139,
@@ -1598,11 +1598,11 @@
    "district_en": "Tuen Mun",
    "nature": "緊急停水",
    "suspend_at": "2026-09-22T13:00:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-22T22:30:00+08:00",
    "address": "興旺街",
    "address_en": "HING WONG STREET",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026092213584",
@@ -1810,7 +1810,7 @@
    "address": "皇后大道西414-440號 (雙數)",
    "address_en": "NO.414-440 (EVEN) QUEEN'S ROAD WEST",
    "cause": "緊急維修水管工程",
-   "status": "停水仍未開始"
+   "status": "現正停水"
   },
   {
    "id": "2026092213604",
@@ -1833,8 +1833,8 @@
    "nature": "緊急停水",
    "suspend_at": "2026-09-22T21:00:00+08:00",
    "resume_at": null,
-   "address": "富騰工業中心",
-   "address_en": "FO TAN INDUSTRIAL CENTRE",
+   "address": "坳背灣街",
+   "address_en": "AU PUI WAN STREET",
    "cause": "緊急維修水管工程",
    "status": "現正停水"
   }
@@ -1842,11 +1842,11 @@
  "active_ids": [
   "2026091513285",
   "2026092213575",
-  "2026092213583",
   "2026092213586",
   "2026092213587",
   "2026092213594",
   "2026092213598",
+  "2026092213601",
   "2026092213604",
   "2026092213605"
  ]

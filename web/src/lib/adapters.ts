@@ -116,13 +116,19 @@ const ADAPTERS: Record<string, Adapter> = {
       time: `${fmt(r.suspend_at)} → ${r.resume_at ? fmt(r.resume_at) : lang() === "tc" ? "待定" : "TBC"}`,
     }));
     const observedAt = new Date(j.generated);
-    // Only a FRESH collector run may hoist 停水模式: stale records are still
-    // worth showing, but they must not drive a life-safety auto-switch.
+    // TWO fields on purpose:
+    //  · records      — every active notice in the collector output. The panel
+    //                   lists them with their own timestamps and the freshness
+    //                   chip, and the map highlights the same districts: that
+    //                   visualises what is already on screen, nothing more.
+    //  · records_fresh — empty once the collector output is older than 30 min.
+    //                   ONLY the 停水 vertical trigger reads this: auto-hoisting
+    //                   a life-safety mode on stale data is the thing we refuse.
     const fresh = Date.now() - observedAt.getTime() < 30 * 60_000;
     return {
       data: { kind: "list", items },
       observedAt,
-      state: { records: fresh ? active : [] },
+      state: { records: active, records_fresh: fresh ? active : [] },
     };
   },
 

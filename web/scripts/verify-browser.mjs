@@ -223,25 +223,31 @@ try {
 
   // P1 district labels: in water mode the active districts carry name labels.
   await page.click(".rail-btn:nth-child(4)"); // water
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(3000);
   const districtLabel = await page.evaluate(() => {
     const map = window.__map;
     const active = window.__hkcm.activeDistricts();
-    const hasLabelLayer = !!map.getLayer("vl-water_suspension_districts-label");
-    // covers: the filter's literal list contains every active district.
-    // getFilter returns ["in", ["get","DISTRICT_CHINESE"], ["literal", [...]]]
+    const hasFill = !!map.getLayer("vl-water_suspension_districts-fill");
+    const hasLabel = !!map.getLayer("vl-water_suspension_districts-label");
     let covers = false;
-    if (hasLabelLayer) {
+    if (hasLabel) {
+      // ["in", ["get","DISTRICT_CHINESE"], ["literal", [...]]]
       const f = map.getFilter("vl-water_suspension_districts-label") ?? [];
       const expr = f[2];
       const list = Array.isArray(expr) && Array.isArray(expr[1]) ? expr[1] : [];
       covers = active.length > 0 && active.every((d) => list.includes(d));
     }
-    const fillOp = map.getPaintProperty("vl-water_suspension_districts-fill", "fill-opacity");
-    return { active: active.length, hasLabelLayer, covers, quiet: JSON.stringify(fillOp).includes("0.03") };
+    return { active: active.length, hasFill, hasLabel, covers };
   });
-  check("P1 停水區 label＋非活躍區安靜化", districtLabel.hasLabelLayer && districtLabel.covers && districtLabel.quiet,
-    `active=${districtLabel.active} label=${districtLabel.hasLabelLayer} covers=${districtLabel.covers} quietFill=${districtLabel.quiet}`);
+  // Rule (from a screenshot review): with no active districts the layer is not
+  // drawn at all — 18 faint outlines made the map a violet wireframe. With
+  // districts affected, the fill + name labels must be present and cover them.
+  const districtOk = districtLabel.active > 0
+    ? districtLabel.hasFill && districtLabel.hasLabel && districtLabel.covers
+    : !districtLabel.hasFill;
+  check("P1 停水區：有 active 區 → 紅 fill＋區名 label 覆蓋；冇 active → 唔畫（唔做線網）",
+    districtOk,
+    `active=${districtLabel.active} fill=${districtLabel.hasFill} label=${districtLabel.hasLabel} covers=${districtLabel.covers}`);
 
   // P1 rail accent colors applied to the active mode button.
   const railAccent = await page.evaluate(() => {

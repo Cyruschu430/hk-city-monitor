@@ -132,7 +132,25 @@ node scripts/verify-browser.mjs http://localhost:4173/   # 目標 36/36+
 
 ---
 
-## 6. 呢份 Plan 點嚟（證據）
+## 7. v0.2.2 視覺複查（原生 vision 睇真 screenshot，2026-09-22）
+
+改用有 image input 嘅 model 直接睇圖（唔再靠 modlens）之後，捉到 4 個**程式化 check 完全捉唔到**嘅問題，全部已修：
+
+| 睇到嘅問題 | 根因 | 修法 |
+|---|---|---|
+| Ticker 跑馬燈文字壓過 LIVE tag 同 tab pills | `translateX(-50%)` 嘅超寬 track 屬 flex item，動畫令文字滑過整個 row | track 包入獨立 `.ticker-viewport`（`flex:1 1 auto;min-width:0;overflow:hidden`），動畫永遠困喺自己個 box |
+| Trigger banner 塞成句問題入 title | `偵測到：停水模式（我嗰區有冇停水？幾時回復？）` | banner 分兩層：粗體標題＋暗色細字 detail |
+| 停水圖層變紫色線網（冇 active 區都畫） | 18 區輪廓以 0.03/0.5 畫出，睇落係網 | **冇 active 區就唔畫個層**（`activeList.length === 0 → return`） |
+| 有 9 宗停水但地圖零紅區、零區名 | `records` 被 30 分鐘 freshness 閘清空——但個閘係為咗「自動開 mode」呢個生死決定，唔應該連地圖顯示都禁 | state 分兩個 field：`records`（永遠，俾 panel＋地圖）／`records_fresh`（30 分鐘內，只俾 trigger）；`verticals.json` trigger 改讀 `records_fresh` |
+| 相機 HUD 同區 popup 重疊彈出 | MapLibre 會 fire cursor 下**每一層**嘅 click handler | district fill 嘅 click 先 `queryRenderedFeatures` 相機層，有中就 return |
+
+複查同時確認咗：ticker tabs、5 km 比例尺、dark zoom 掣、6 格直播牆、新聞相對時間、CJK 區名 label（`localIdeographFontFamily`）、HUD leader line＋drawer 並存、drawer 死機態＋重試——**全部真係畫咗出嚟**。
+
+> 教訓：46 項 DOM/行為 check 全綠，同「睇落啱」係兩件事。以後每次 UI 改動都應該跑 `capture-v3.mjs` 再親眼睇一次。
+
+---
+
+## 8. 呢份 Plan 點嚟（證據）
 
 - `read_image` 逐張睇 `r1–r6`（1600×1000 桌面六視角 + 390px 手機）
 - worldmonitor.app 官網（2026-09-21 fetch）：「⌘K」「first 5 min」「lens 一鍵切」「live right now 底欄＋每項附來源」「markets watchlist 格式」

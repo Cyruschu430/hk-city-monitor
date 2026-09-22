@@ -127,6 +127,9 @@ async function boot(): Promise<void> {
   const emit = (sourceId: string, value: unknown) => {
     triggerState[sourceId] = value;
     if (sourceId === "wsd_water_suspension") {
+      // `records` lists what the panel is already showing (with timestamps);
+      // `records_fresh` is what the trigger reads. The map highlights the
+      // former, so the map and the panel can never disagree.
       const records = (value as { records?: { district?: string }[] } | undefined)?.records ?? [];
       const next = new Set(records.map((r) => r.district).filter((d): d is string => !!d));
       const changed = next.size !== activeDistricts.size || [...next].some((d) => !activeDistricts.has(d));
@@ -165,16 +168,20 @@ async function boot(): Promise<void> {
     onToggleLayer: (id, on) => void toggleLayer(id, on),
   });
 
-  function showBanner(title: string, action: { label: string; run: () => void } | null): void {
+  /** Banner: a bold one-line title (what happened) plus an optional dim detail
+    line (why it matters). The trigger banner used to cram the whole vertical
+    question into the title, which read as a wall of text over the map. */
+  function showBanner(title: string, action: { label: string; run: () => void } | null, detail = ""): void {
     clear(banner);
     banner.style.display = "";
     banner.append(
       h(
         "div",
-        { class: "panel-head", style: "margin-bottom:6px" },
-        h("h2", {}, title),
+        { class: "panel-head", style: "margin-bottom:4px" },
+        h("h2", { title }, title),
         action ? h("button", { class: "chip stale", type: "button", onclick: action.run }, action.label) : h("span", {}),
       ),
+      detail ? h("p", { class: "banner-detail" }, detail) : "",
     );
   }
 
@@ -250,10 +257,11 @@ async function boot(): Promise<void> {
     }
     // The user picked a mode; a trigger still gets to ask, not to decide.
     pendingVertical = v;
-    showBanner(lang() === "tc" ? `偵測到：${v.name.tc}（${v.question.tc}）` : `Detected: ${v.name.en}`, {
-      label: lang() === "tc" ? "切換" : "Switch",
-      run: () => activateMode(v.id, true),
-    });
+    showBanner(
+      lang() === "tc" ? `偵測到：${v.name.tc}` : `Detected: ${v.name.en}`,
+      { label: lang() === "tc" ? "切換" : "Switch", run: () => activateMode(v.id, true) },
+      lang() === "tc" ? v.question.tc : v.question.en,
+    );
   }
 
   // --- trigger polling, independent of panel visibility ----------------------

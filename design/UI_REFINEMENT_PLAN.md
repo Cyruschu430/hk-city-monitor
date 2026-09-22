@@ -212,3 +212,36 @@ WM 底欄寫：`Digest coverage: complete — 116 publishers, 295 items, feeds 2
 5. 9.3 panel 密度（最大，最後做，因為前面幾樣會改變版面比例）
 
 每步後：`npm run typecheck` → `npm test` → `validate_config.py` → `build` → `verify-browser.mjs`（50 項，唔可以跌）→ `capture-v3.mjs` → **親眼睇**。
+
+---
+
+## 11. v0.4 完成紀錄（2026-09-23）
+
+五項全部做完，`verify-browser.mjs` 由 50 → **54 項全綠**。逐項實測數字：
+
+| 項 | 做咗乜 | 實測 |
+|---|---|---|
+| 9.2 底圖 | topo `opacity .3 / brightness-max .35 / contrast .3 / saturation -.6` | luma 113 → **34**，spread 8（近中性） |
+| 9.4 map-head | `#mapHead` 左「香港即時態勢」右 `WED, 23 SEP 2026 01:35:27 HKT` | 每秒跳；跟 mode 改名；切語言即時 relabel |
+| 9.1 LAYERS | checkbox + glyph + 雙語名 + `ⓘ`（來源／連結） | tick 真係改 `visibility`（新 check 前後都 assert MapLibre property） |
+| 9.5 coverage | `覆蓋：7/13 個面板來源正常 · 3 個過期 · 目錄共 175 個源` | 離線時轉紅＋報錯誤數（新 check） |
+| 9.3 密度 | 清單上限＋兩行夾＋gauge 收窄＋wall 3-up | 總捲動 **6316 → 4323px（−32%）** |
+
+### 兩個「量度推翻直覺」嘅記錄（值得留低）
+
+**1. `raster-brightness-max` 冇 `raster-contrast` 就完全冇效。**
+試咗三次先搵到：單獨 `brightness-max .45` → luma 110（幾乎冇郁）；單獨 `.22` → luma 112。
+用 live paint matrix（`probe-basemap-matrix.mjs`）一行一行量，先發現同一個 clamp **加埋 contrast** 就變 luma 34。
+呢個係 MapLibre raster 模型嘅實際行為，唔係文件寫得清楚嘅嘢——所以 probe script 留低咗，下次直接量。
+
+**2. 密度問題唔係「行太多」，係「行太高」。**
+`special_traffic_list` 只得 10 行但 1304px 高（每行 ~130px，因為每行係一整句新聞）。
+`breaking_news_list` 有 20 行但每行 38px。
+同一個「太長」症狀，兩個相反嘅成因：前者要夾行高（1304 → 537），後者要截行數（962 → 455）。
+**先量再改**，唔係就up啱一半。
+
+### 未做（留返下一輪）
+
+- 9.1 嘅「展開」`⤢`（WM 有，我哋只做咗 `ⓘ`）——需要一個 panel-level 展開 concept，同 drawer 有重疊，要先諗清楚。
+- 9.3 嘅 overview 2 欄 grid：而家仲係單欄。單欄已經夠密（每 panel ≤ 欄高），再分欄要先問「邊個 panel 值得闊」。
+- ROADMAP_v0.4 嘅 ANALYTICS / 新資料源（另一條線，未開工）。

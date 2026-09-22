@@ -10,6 +10,7 @@
 import type maplibregl from "maplibre-gl";
 import { proxied } from "../config.ts";
 import type { WallImage } from "../lib/render.ts";
+import { registerGlyphs } from "./symbols.ts";
 import { whenSourceReady } from "./basemap.ts";
 
 export interface Camera {
@@ -73,6 +74,10 @@ export function addCameraLayers(map: maplibregl.Map, cameras: { td: Camera[]; hk
   }
   if (map.getSource(TD_SRC)) return; // already attached
 
+  // Icons must exist in the map's image registry before any symbol layer that
+  // references them is added, or MapLibre silently draws nothing.
+  registerGlyphs(map);
+
   const byId = new Map<string, Camera>();
   for (const c of [...cameras.td, ...cameras.hko]) byId.set(c.id, c);
 
@@ -90,13 +95,15 @@ export function addCameraLayers(map: maplibregl.Map, cameras: { td: Camera[]; hk
       source: id,
       filter: ["has", "point_count"],
       paint: {
-        // Radius steps 15/21/27/33 by count (DESIGN_BRIEF §7).
-        "circle-radius": ["step", ["get", "point_count"], 15, 10, 21, 50, 27, 200, 33],
+        // Restrained bubbles (a screenshot review showed the old 15/21/27/33
+        // steps reading as huge overlapping balloons that buried the map).
+        // Smaller, denser, thinner stroke — the count carries the meaning.
+        "circle-radius": ["step", ["get", "point_count"], 11, 10, 15, 50, 19, 200, 24],
         "circle-color": color,
-        "circle-opacity": 0.18,
+        "circle-opacity": 0.1,
         "circle-stroke-color": color,
-        "circle-stroke-width": 1.4,
-        "circle-stroke-opacity": 0.85,
+        "circle-stroke-width": 1.1,
+        "circle-stroke-opacity": 0.7,
       },
     });
     map.addLayer({
@@ -109,20 +116,25 @@ export function addCameraLayers(map: maplibregl.Map, cameras: { td: Camera[]; hk
         // (measured pitfall — a missing font silently drops the counts).
         "text-field": ["get", "point_count_abbreviated"],
         "text-font": ["Noto Sans Regular"],
-        "text-size": 11,
+        "text-size": ["step", ["get", "point_count"], 10, 50, 11, 200, 12],
+        "text-allow-overlap": true,
       },
-      paint: { "text-color": "#e9f2ff" },
+      paint: { "text-color": "#dceaff" },
     });
     map.addLayer({
       id: `${id}-point`,
-      type: "circle",
+      type: "symbol",
       source: id,
       filter: ["!", ["has", "point_count"]],
-      paint: {
-        "circle-radius": id === TD_SRC ? 4.5 : 6,
-        "circle-color": color,
-        "circle-stroke-color": "#05070d",
-        "circle-stroke-width": 1.2,
+      layout: {
+        // The camera layer draws CAMERA GLYPHS (drawn at runtime into the map's
+        // image registry — see symbols.ts), not anonymous dots: at a glance the
+        // map says "traffic/weather camera here".
+        "icon-image": id === TD_SRC ? "cam-td" : "cam-hko",
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 9, 0.4, 13, 0.5, 16, 0.62],
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+        "icon-padding": 2,
       },
     });
   };

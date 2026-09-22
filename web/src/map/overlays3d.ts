@@ -52,12 +52,19 @@ async function build(map: maplibregl.Map): Promise<Overlay3d> {
 
   const overlay = new MapboxOverlay({ interleaved: true, layers: [layer] });
   map.addControl(overlay as unknown as maplibregl.IControl);
+  // QA/debug hooks: the harness asserts the overlay is present, empty when
+  // "off", and repopulated when "on" again — i.e. the 3D really is an
+  // on-the-fly layer rather than a one-shot add.
   (window as unknown as Record<string, unknown>)["__overlay3d"] = overlay;
+  let visible = true;
+  (window as unknown as Record<string, unknown>)["__overlay3dState"] = () => visible;
   return {
     setVisible(v: boolean) {
+      visible = v;
       overlay.setProps({ layers: v ? [layer] : [] });
     },
     dispose() {
+      visible = false;
       overlay.setProps({ layers: [] });
       map.removeControl(overlay as unknown as maplibregl.IControl);
     },

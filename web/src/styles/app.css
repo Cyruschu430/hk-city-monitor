@@ -28,7 +28,9 @@ a:hover{color:var(--cyan)}
 .ticker-viewport{flex:1 1 auto;min-width:0;overflow:hidden;position:relative}
 .ticker-frame .ticker-track{white-space:nowrap;display:inline-block;
   font-family:var(--font-mono);font-size:11px;color:var(--txt);line-height:26px;
-  animation:ticker-scroll 60s linear infinite}
+  /* duration is set from JS (constant px/s across tabs); the shorthand here
+     must stay animation-NAME only so it cannot clobber animationDuration */
+  animation-name:ticker-scroll;animation-timing-function:linear;animation-iteration-count:infinite}
 @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ---------- GEV-style focus HUD (tethered box + leader line) ---------- */

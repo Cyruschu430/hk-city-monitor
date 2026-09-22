@@ -179,6 +179,53 @@ const ADAPTERS: Record<string, Adapter> = {
 
   hko_radar: radarFrame,
 
+  async ck_hk_hko_rss_latest_ten_minute_wind_info(src, _panel, ctx) {
+    // Two datasets, one layer: the wind CSV carries readings but no positions,
+    // the CSDI network carries positions. They are joined here so the panel and
+    // the map layer read one result — and so the shortfall (stations that could
+    // not be placed, or that reported no usable wind) is computed once and
+    // reported honestly rather than papered over at each call site.
+    const { stations, observedAt } = P.parseWindCsv(await text(await get(src)));
+
+    let network: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [] };
+    try {
+      const netSrc = ctx.registry.byId.get("hko_stations_network");
+      if (netSrc) network = (await json(await get(netSrc))) as GeoJSON.FeatureCollection;
+    } catch {
+      // Without coordinates there is no field to draw. That is an honest error,
+      // not an empty map: the cells below report the readings regardless.
+    }
+
+    const joined = P.joinWindToStations(stations, network);
+    const cells = P.windStatus(stations);
+    if (network.features.length === 0) {
+      cells.push({
+        label: lang() === "tc" ? "測站座標" : "Station coords",
+        value: lang() === "tc" ? "攞唔到" : "unavailable",
+        status: 2,
+      });
+    } else {
+      cells.push({
+        label: lang() === "tc" ? "可上圖測站" : "Mappable stations",
+        value: `${joined.located.length}/${stations.length}`,
+        status: joined.located.length > 0 ? 0 : 2,
+      });
+      if (joined.droppedNoCoord.length) {
+        cells.push({
+          label: lang() === "tc" ? "無座標（唔畫）" : "No coords (not drawn)",
+          value: String(joined.droppedNoCoord.length),
+          status: 1,
+        });
+      }
+    }
+    return {
+      data: { kind: "status_grid", cells },
+      observedAt,
+      state: { records: joined.located, records_fresh: joined.located },
+      geo: P.windToGeoJson(joined.located),
+    };
+  },
+
   async adsb_fi_hk(src) {
     const { aircraft, observedAt } = P.parseAdsb(await json(await get(src)));
     // The trigger state carries the aircraft themselves: the map layer reads

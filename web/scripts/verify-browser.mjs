@@ -772,6 +772,51 @@ try {
   await railClick("航機"); // leave it off for the rest of the run
   await page.waitForTimeout(800);
 
+  // --- 9b1b. wind barbs, and the honesty rule that shapes them ---------------
+  // ROADMAP B5: wind is never shown where no station measured it. That is
+  // enforced as DATA (a `fade` per feature, computed from the distance to the
+  // nearest reporting station), so it is assertable rather than a styling
+  // claim. If someone raises the fade radius or drops the fade property, this
+  // fails instead of quietly painting wind over empty sea.
+  await railClick("風場");
+  await page.waitForFunction(() => {
+    const m = window.__map;
+    return m && m.getSource("vl-wind_field") && m.querySourceFeatures("vl-wind_field").length > 0;
+  }, null, { timeout: 30_000 }).catch(() => {});
+  await page.waitForTimeout(1500);
+  const wind = await page.evaluate(() => {
+    const map = window.__map;
+    const layer = "vl-wind_field-point";
+    if (!map.getLayer(layer)) return { layer: false };
+    const feats = map.querySourceFeatures("vl-wind_field");
+    const fades = feats.map((f) => f.properties?.fade).filter((v) => typeof v === "number");
+    const nearest = feats.map((f) => f.properties?.nearestKm).filter((v) => typeof v === "number");
+    const barbs = [...new Set(feats.map((f) => f.properties?.barbId))];
+    return {
+      layer: true,
+      features: feats.length,
+      ids: barbs,
+      iconOk: barbs.every((b) => map.hasImage(`barb-${b}`)),
+      opacity: JSON.stringify(map.getPaintProperty(layer, "icon-opacity")),
+      rotate: JSON.stringify(map.getLayoutProperty(layer, "icon-rotate")),
+      maxNearestKm: nearest.length ? Math.max(...nearest) : null,
+      minFade: fades.length ? Math.min(...fades) : null,
+      // A real falloff has a spread of values; a constant means the fade is not
+      // wired to distance at all.
+      distinctFades: new Set(fades).size,
+    };
+  });
+  check("風場：風羽畫出嚟、每支對應速度桶、依風向旋轉",
+    wind.layer && wind.features > 0 && wind.iconOk &&
+      wind.rotate.includes("dirDeg") && wind.ids.length >= 1,
+    `${wind.features} 支 · 速度桶=${JSON.stringify(wind.ids)} · rotate=${wind.rotate}`);
+  check("風場誠實：冇站嘅地方淡出（≤15km）＋ 透明度真係跟距離",
+    wind.maxNearestKm !== null && wind.maxNearestKm <= 15.5 &&
+      wind.opacity.includes("fade") && wind.distinctFades > 1,
+    `最遠測站距離=${wind.maxNearestKm}km · 最少 fade=${wind.minFade} · 唔同透明度值=${wind.distinctFades}`);
+  await railClick("風場"); // leave it off
+  await page.waitForTimeout(800);
+
   // --- 9b. the other two verticals, from config only -------------------------
   const modes = await page.evaluate(async () => {
     const out = {};

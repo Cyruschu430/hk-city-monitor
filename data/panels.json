@@ -364,6 +364,20 @@
     "tc": "約 10 秒",
     "en": "~10 seconds"
    }
+  },
+  {
+   "id": "wind_status",
+   "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
+   "render": "status_grid",
+   "title": {
+    "tc": "風勢（天文台 10 分鐘風）",
+    "en": "Wind (HKO 10-min stations)"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每 10 分鐘",
+    "en": "Every 10 minutes"
+   }
   }
  ]
 }

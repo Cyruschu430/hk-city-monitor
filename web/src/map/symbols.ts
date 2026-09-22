@@ -9,6 +9,7 @@
 // of "another cyan circle".
 
 import type maplibregl from "maplibre-gl";
+import { BARB_BUCKETS } from "../lib/parsers.ts";
 
 export type GlyphId =
   | "cam-td"
@@ -216,6 +217,86 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   ferry: { draw: drawFerry, disc: "#38bdf8" },
   water: { draw: drawWater, disc: "#22d3ee" },
 };
+
+// --- wind barbs ------------------------------------------------------------------
+// A wind barb is the standard meteorological way to show a wind vector: a shaft
+// pointing INTO the wind, with tail feathers encoding speed (half feather = 5
+// kt, full = 10 kt, pennant = 50 kt). It is used here instead of particles
+// because it needs NO new runtime dependency — it is one more registered image
+// plus a per-feature icon-rotate, exactly like the aircraft plane.
+//
+// Speed is quantised into buckets and one image is registered per bucket. That
+// is cheap (a handful of images) and it keeps the speed readable at a glance
+// without a legend lookup. The bucket table lives in parsers.ts because the
+// per-feature `barbId` property is written THERE, and the data layer must stay
+// importable from Node tests (this file touches `document`).
+
+/** Draw one barb: shaft + feathers on the tail, drawn pointing NORTH (up); the
+ *  map layer rotates it by the wind direction. */
+function drawBarb(ctx: CanvasRenderingContext2D, size: number, full: number, half: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  // Drawn dark-on-light first, then light-on-dark over it: a plain white stroke
+  // washed out against the dark basemap (caught in a screenshot review), and the
+  // barbs need to read as countable feathers, not as smudges.
+  const stroke = (color: string, width: number, inset: number) => {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    // Shaft: from the tail (bottom) to the station point (centre).
+    ctx.beginPath();
+    ctx.moveTo(0, 13);
+    ctx.lineTo(0, -2);
+    ctx.stroke();
+    let y = 13;
+    const step = 4.2;
+    for (let i = 0; i < full; i++) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(-8 - inset, y - 5 - inset);
+      ctx.stroke();
+      y -= step;
+    }
+    for (let i = 0; i < half; i++) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(-4.5 - inset, y - 3 - inset * 0.6);
+      ctx.stroke();
+      y -= step;
+    }
+  };
+  stroke("rgba(6,10,18,.95)", 5.2, 0.9); // dark casing
+  stroke("rgba(240,248,255,.98)", 2.6, 0); // bright barb
+  // Station dot at the point of observation.
+  ctx.beginPath();
+  ctx.arc(0, -2, 3, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(240,248,255,.98)";
+  ctx.fill();
+  ctx.lineWidth = 1.4;
+  ctx.strokeStyle = "rgba(6,10,18,.95)";
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** Register one image per speed bucket. Kept out of GLYPHS because these are
+ *  not fixed glyphs — there is a family of them, one per bucket. */
+export function registerBarbs(map: maplibregl.Map): void {
+  for (const b of BARB_BUCKETS) {    const id = `barb-${b.id}`;
+    if (map.hasImage(id)) continue;
+    const scale = 2;
+    const px = S * scale;
+    const canvas = document.createElement("canvas");
+    canvas.width = px;
+    canvas.height = px;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) continue;
+    ctx.scale(scale, scale);
+    drawBarb(ctx, S, b.full, b.half);
+    map.addImage(id, ctx.getImageData(0, 0, px, px), { pixelRatio: 2, sdf: false });
+  }
+}
 
 /** Render one glyph to an ImageData at the canonical icon size. */
 function renderGlyph(id: GlyphId, scale = 2): ImageData {

@@ -38,9 +38,11 @@ export interface LayerControl {
 }
 
 /** Layer id → the runtime glyph that represents it. Config-first: a layer that
-    declares `symbol` wins, otherwise fall back to the known ids. */
+    declares `symbol` wins, otherwise fall back to the known ids.
+    `wind-barb` is not a fixed glyph (there is one image per speed bucket), so
+    it is excluded here and drawn as a generic swatch instead. */
 function glyphFor(def: LayerDefRaw): GlyphId | null {
-  if (def.symbol) return def.symbol as GlyphId;
+  if (def.symbol && def.symbol !== "wind-barb") return def.symbol as GlyphId;
   if (def.id === "cameras_all") return "cam-td";
   if (def.id === "hko_cameras") return "cam-hko";
   if (def.geom === "raster") return "water";

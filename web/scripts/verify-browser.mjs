@@ -613,6 +613,18 @@ try {
   check("完全離線：冇一個面板變空白，每個都保留時間戳，狀態仍然係四態之一",
     allowedAll && offline.every((p) => !p.empty && p.hasTime),
     offline.map((p) => `${p.id}=${p.state}${p.empty ? "(BLANK!)" : ""}`).join(" "));
+
+  // The coverage line must degrade with the data, not stay green. A "healthy"
+  // coverage sentence while every panel is failing would be worse than no
+  // coverage line at all — it would be the dashboard lying about itself.
+  const coverOffline = await page.evaluate(() => {
+    const el = document.querySelector(".coverage");
+    return { text: el?.textContent?.trim() ?? "", health: el?.getAttribute("data-health") ?? "" };
+  });
+  check("覆蓋率句：離線時轉紅並報出錯誤數，唔會照樣顯示健康",
+    coverOffline.health === "bad" && /\d+\s*個出錯/.test(coverOffline.text),
+    `health=${coverOffline.health} text="${coverOffline.text}"`);
+
   await page.screenshot({ path: join(outDir, "03-offline.png") });
   await page.context().setOffline(false);
   await page.unroute("**/proxy?url=https%3A%2F%2Fsecure1.info.gov.hk**");

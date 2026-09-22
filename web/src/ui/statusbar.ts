@@ -13,6 +13,9 @@ export interface StatusBar {
   setTiles(via: string): void;
   /** readout for the currently active vertical's data age, if any */
   setFreshness(text: string, state: "ok" | "warn" | "bad"): void;
+  /** The coverage line: what fraction of the catalog is actually on screen and
+      working right now. Numbers must come from runtime, never a literal. */
+  setCoverage(s: { live: number; total: number; error: number; stale: number; catalog: number }): void;
 }
 
 /** One label+value readout cell. */
@@ -45,18 +48,31 @@ export function createStatusBar(root: HTMLElement): StatusBar {
 
   const freshStat = stat("狀態", h("span", {}, freshDot, freshEl), "stat-fresh");
 
+  // Coverage strip. World Monitor's footer reads "Digest coverage: complete —
+  // 116 publishers, 295 items, feeds 234/245, categories 17/17". That sentence
+  // IS this project's honesty principle, but worn as chrome instead of hidden
+  // in a panel corner. We have a large catalog and only a slice of it surfaced
+  // at any moment — not saying so would be the misleading option.
+  const coverEl = h("span", { class: "cover-text" });
+  const coverWrap = h("div", { class: "coverage", title: "" }, h("span", { class: "cover-dot" }), coverEl);
+
   root.append(
-    h("div", { class: "brand" }, pulse, h("h1", {}, "HK CITY MONITOR"), h("span", { class: "sub" }, "香港城市監察")),
     h(
       "div",
-      { class: "meta" },
-      freshStat,
-      stat("模式", modeEl),
-      stat("相機", camsEl, "hide-s"),
-      stat("底圖", tilesEl, "hide-s"),
-      stat("HKT", clockEl),
-      langBox,
+      { class: "sb-row1" },
+      h("div", { class: "brand" }, pulse, h("h1", {}, "HK CITY MONITOR"), h("span", { class: "sub" }, "香港城市監察")),
+      h(
+        "div",
+        { class: "meta" },
+        freshStat,
+        stat("模式", modeEl),
+        stat("相機", camsEl, "hide-s"),
+        stat("底圖", tilesEl, "hide-s"),
+        stat("HKT", clockEl),
+        langBox,
+      ),
     ),
+    coverWrap,
   );
 
   const timer = window.setInterval(() => (clockEl.textContent = clockNow()), 1000);
@@ -76,6 +92,19 @@ export function createStatusBar(root: HTMLElement): StatusBar {
     setFreshness(text, state) {
       freshEl.textContent = text;
       freshStat.setAttribute("data-fresh", state);
+    },
+    setCoverage(s) {
+      const tc = lang() === "tc";
+      // "來源" here means the sources behind the panels currently mounted, not
+      // the whole catalog — the catalog figure is stated separately so the two
+      // can never be read as the same claim.
+      const parts: string[] = [];
+      parts.push(tc ? `${s.live}/${s.total} 個面板來源正常` : `${s.live}/${s.total} panel sources healthy`);
+      if (s.error > 0) parts.push(tc ? `${s.error} 個出錯` : `${s.error} failed`);
+      if (s.stale > 0) parts.push(tc ? `${s.stale} 個過期` : `${s.stale} stale`);
+      parts.push(tc ? `目錄共 ${s.catalog} 個源` : `${s.catalog} in catalog`);
+      coverEl.textContent = (tc ? "覆蓋：" : "Coverage: ") + parts.join(" · ");
+      coverWrap.setAttribute("data-health", s.error > 0 ? "bad" : s.stale > 0 ? "warn" : "ok");
     },
   };
 }

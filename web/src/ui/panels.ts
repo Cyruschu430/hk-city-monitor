@@ -42,6 +42,10 @@ export interface PanelEngine {
   setPanels(ids: string[]): void;
   currentIds(): string[];
   refreshAll(): void;
+  /** Live health tally over the panels currently MOUNTED. Feeds the coverage
+      line in the status bar — the number has to come from what actually
+      happened at runtime, never from a hardcoded total. */
+  stats(): { total: number; live: number; stale: number; error: number; loading: number };
 }
 
 const EMPTY_TEXT: Record<string, { tc: string; en: string }> = {
@@ -206,6 +210,23 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     currentIds: () => [...order],
     refreshAll() {
       for (const id of order) void refresh(id);
+    },
+    stats() {
+      // Deduplicated by SOURCE, not by panel: two panels reading the same
+      // source are one upstream, and counting them twice would overstate the
+      // coverage line in exactly the direction this project must not overstate.
+      const bySource = new Map<string, Honesty["state"]>();
+      for (const id of order) {
+        const entry = entries.get(id);
+        if (!entry) continue;
+        const prev = bySource.get(entry.panel.source);
+        // Worst state wins, so one broken panel is never masked by a sibling.
+        const rank = { error: 3, stale: 2, loading: 1, live: 0 } as const;
+        if (!prev || rank[entry.honesty.state] > rank[prev]) bySource.set(entry.panel.source, entry.honesty.state);
+      }
+      const tally = { total: bySource.size, live: 0, stale: 0, error: 0, loading: 0 };
+      for (const st of bySource.values()) tally[st] += 1;
+      return tally;
     },
   };
 }

@@ -127,13 +127,43 @@ UI 一律寫「**同時發生**」，**唔准寫「因為」**（法律＋信譽
 
 ## PART D — 建議次序（每個 dispatch 一件事）
 
-1. **D1**：sources.json `license` 欄位 + hko_radar entry 改模板寫法（文檔債，最平）
-2. **D2**：飛機圖層（adsb.fi + lol，plane glyph + track 旋轉）← 最有視覺回報
+1. **D1**：sources.json `license` 欄位 + hko_radar entry 改模板寫法（文檔債，最平）✅ **完成**
+2. **D2**：飛機圖層（adsb.fi + lol，plane glyph + track 旋轉）✅ **完成**
 3. **D3**：Tier 0/1（基線 + 規則引擎 + `data/rules.json` + validator 擴充 + unit test）
 4. **D4**：Tier 2 匯聚（官方 18 區界 + 60 分鐘窗 + score）＋ UI panel（「同時發生」字眼）
-5. **D5**：風場 flow render（IDW + 距離淡出）＋ 氣象站圖層
+5. **D5**：風場 flow render（IDW + 距離淡出）＋ 氣象站圖層 ← **解析器已完成，剩渲染**
 6. **D6**：Tier 3/4（LLM 敘述 + template fallback + 每日簡報）
 7. **D7**：AIS（待決定）／TomTom（待 key）／RFZ（待 Cyrus 匯出）
+
+---
+
+## PART D2 — 實作進度（2026-09-23 實測，唔係計劃）
+
+### ✅ D1 完成
+- `license` 欄位：**165/175** 有。剩 10 個**故意留空**（未讀過條款唔准估），validator 出 warning 而唔係 error，令缺口可見但唔逼人亂填。
+- `hko_radar` URL 改 `{YYYYMMDDHHMM}` 模板；validator 新增「URL 唔准有硬編時戳」檢查（實測三種情況：硬編中招、模板過、純檔名過）。
+- **踩過嘅坑**：`apply_licenses.py` 第一版硬編 1-space 縮排，改寫咗 2-space 檔案 → 165 行改動變成 2988 行 diff，review 睇唔到真正改咗乜。已改成自動偵測縮排。
+
+### ✅ D2 完成
+- `adsb_fi_hk` + `adsb_lol_hk` 落地，panel（status_grid）+ 地圖圖層（plane glyph，依 `bearing` 旋轉）。
+- **實測兩個 feed 有三處唔同**，全部係「讀一份就中招」：
+  1. **Envelope key**：fi = `aircraft`，lol = `ac`。讀錯 → 空 array → 地圖顯示「香港上空冇飛機」（最誤導嘅失敗）。
+  2. **時戳單位**：同一刻 fi = `1790099582`（**秒**），lol = `1790099583501`（**毫秒**）。當兩者都係毫秒 → fi 變成 1970 年 → age 56 年 → 永遠 stale。
+  3. **`alt_baro` 係字串 `"ground"`**：唔係高度 0。畫成 0 會令停機坪飛機飛咗上半空。
+- 飛機**唔 cluster**（會移動，cluster 會不斷重組，遮住本身要睇嘅軌跡）。
+- 圖層加暗底光環：純白色機頭喺暗底圖上係一粒睇唔到嘅點（同相機層當初一樣）。
+- Harness 順手修好兩個真問題：rail 位置 selector（加第 6 個 layer 就全部移位，令 imagery/3D 三個 check 㩒錯掣而假失敗）→ 改為**按 label 揀**；「十三個 panel」硬編 → 由 app 讀返。
+
+### 🟡 D5 一半（解析器 ✅、渲染 ⏳）
+- `hko_10min_wind` 解析器 + `joinWindToStations` 完成，26/30 名稱直接對上。
+- **實測 30 站之中只有 13 站有可用風向量**。呢個數字係**正確**唔係 bug：02:10 平靜嘅夜晚，大部分站報 `Calm` 或 `N/A` 風向。
+  - `Calm` ≠ 0；`N/A` ≠ 正北。當數字處理 = 憑空生成觀測。
+  - 兩個 alias 人手寫（Chek Lap Kok → HKIA、Star Ferry → Star Ferry(Kowloon)），兩個真係冇（North Point、Hong Kong Sea School）→ **丟棄並上報**。
+- **未做**：IDW 插值 + ~15km 淡出 + `geoql/maplibre-gl-wind` 粒子渲染、氣象站圖層。
+- ⚠️ 渲染前要決定：`geoql/maplibre-gl-wind` 係新 runtime dependency，要講明理由（AGENTS.md 硬性規定）。**替代方案**：用 MapLibre 原生 symbol 層畫風羽（wind barb），零新依賴但冇流動感。
+
+### ⏳ 未開工
+D3（Tier 0/1）、D4（Tier 2）、D6（Tier 3/4）、D7（AIS/TomTom/RFZ — 全部等 Cyrus 決定）。
 
 ---
 

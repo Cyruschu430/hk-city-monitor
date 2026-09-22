@@ -16,14 +16,17 @@ a:hover{color:var(--cyan)}
   display:flex;overflow:hidden;z-index:25}
 #ticker[hidden]{display:none}
 .ticker-frame{display:flex;align-items:center;gap:0;width:100%}
-.ticker-tag{flex:0 0 auto;margin:0 8px 0 10px;padding:2px 9px;border-radius:var(--radius-pill);
+.ticker-tag{flex:0 0 auto;margin:0 10px 0 10px;padding:3px 9px;border-radius:var(--radius-pill);
   background:var(--alert);color:#fff;font-size:10px;font-weight:600;letter-spacing:.12em}
-.ticker-tabs{flex:0 0 auto;display:flex;gap:2px;margin-right:10px}
-.ticker-tab{padding:2px 9px;border-radius:var(--radius-pill);font-size:10px;color:var(--dim);
-  border:1px solid transparent;letter-spacing:.06em}
+.ticker-tabs{flex:0 0 auto;display:flex;gap:3px;margin-right:10px;padding-right:10px;
+  border-right:1px solid var(--hairline)}
+.ticker-tab{padding:3px 10px;border-radius:var(--radius-pill);font-size:10.5px;color:var(--dim);
+  border:1px solid transparent;letter-spacing:.06em;line-height:1.35}
 .ticker-tab:hover{color:var(--txt)}
 .ticker-tab[aria-selected="true"]{color:var(--cyan);border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.1)}
-.ticker-frame .ticker-track{white-space:nowrap;overflow:hidden;
+/* the marquee's own clip box: the sliding text can never reach the controls */
+.ticker-viewport{flex:1 1 auto;min-width:0;overflow:hidden;position:relative}
+.ticker-frame .ticker-track{white-space:nowrap;display:inline-block;
   font-family:var(--font-mono);font-size:11px;color:var(--txt);line-height:26px;
   animation:ticker-scroll 60s linear infinite}
 @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -48,6 +51,9 @@ a:hover{color:var(--cyan)}
 .focus-close:hover{color:var(--txt);border-color:var(--hairline-hi)}
 .focus-leader{position:absolute;height:1px;background:var(--hairline-hi);transform-origin:0 50%;
   z-index:8;pointer-events:none}
+
+/* banner (auto-switch / layer-error notices over the map) */
+.banner-detail{margin:0;font-size:11px;color:var(--dim);line-height:1.45}
 
 /* ---------- market (HK convention: red = up, green = down) ---------- */
 .mkt-up{color:var(--mkt-up)}.mkt-down{color:var(--mkt-down)}

@@ -290,4 +290,86 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log(`    樣本 ${a.flight || a.hex} · ${a.altFt} ft · ${a.trackDeg}° · ${a.gsKt} kt · GeoJSON ${gj.features.length} 點`);
 }
 
+// 24. HKO 10-minute wind — the payload's fields are NOT all numbers, and the
+// difference between "calm" and "no reading" is the difference between a real
+// observation and an invented one. The fixture holds all three cases.
+{
+  const { stations, observedAt } = P.parseWindCsv(fx("hko_10min_wind.csv").toString("utf8"));
+  assert.ok(stations.length >= 25, `${stations.length} stations`);
+
+  const byName = new Map(stations.map((s) => [s.name, s]));
+
+  const cheungChau = byName.get("Cheung Chau");
+  assert.ok(cheungChau, "Cheung Chau present");
+  assert.equal(cheungChau!.dirDeg, 90, "East → 90°");
+  assert.equal(cheungChau!.speedKmh, 18, "speed parsed");
+  assert.equal(cheungChau!.gustKmh, 27, "gust parsed");
+
+  // "N/A" direction with a real speed: the speed is usable, the direction is
+  // NOT. Defaulting it to 0 would draw a northerly wind that does not exist.
+  const green = byName.get("Green Island");
+  assert.ok(green, "Green Island present");
+  assert.equal(green!.dirDeg, null, "N/A direction → null, not 0");
+  assert.equal(green!.speedKmh, 27, "N/A direction still yields its speed");
+
+  // "Calm" is not the number 0 — it is a state, and its direction field is
+  // meaningless. Treating it as 0 km/h from due north invents an observation.
+  const wetland = byName.get("Wetland Park");
+  assert.ok(wetland, "Wetland Park present");
+  assert.equal(wetland!.speedKmh, null, "Calm → null, not 0");
+  assert.equal(wetland!.dirDeg, null, "Calm direction → null");
+
+  assert.equal(observedAt?.getFullYear(), 2026, `timestamp parsed (${observedAt?.toISOString()})`);
+
+  // The summary must disclose the gap, not paper over it.
+  const cells = P.windStatus(stations);
+  const noDirCell = cells.find((c) => c.label.includes("無風向") || c.label.includes("direction"));
+  assert.ok(noDirCell, "summary reports stations with no direction");
+  assert.ok(Number(noDirCell!.value) >= 1, `no-direction count = ${noDirCell!.value}`);
+
+  console.log(`✓ 10 分鐘風: ${stations.length} 站 · ${cells[0]!.value} 有完整風數據 · 無風向 ${noDirCell!.value} 站`);
+  console.log(`    樣本：${cheungChau!.name} ${cheungChau!.dirText} ${cheungChau!.speedKmh} km/h（陣風 ${cheungChau!.gustKmh}）`);
+
+  // --- the join to the CSDI station network ---------------------------------
+  // The wind CSV has NAMES; the coordinates live in a separate dataset. The
+  // join is where an invented reading could sneak in, so assert the exact
+  // shortfall rather than just "some stations came back".
+  const net = jx("hko_stations_network.json");
+  const joined = P.joinWindToStations(stations, net);
+  // NOT an arbitrary floor. At 02:10 on a calm autumn night most stations
+  // report "Calm" or an N/A direction, so only a minority carry a usable
+  // wind vector — measured 13 of 30 on the capture day. A high floor here
+  // would fail on calm nights and push someone to loosen the parser (i.e.
+  // to invent calm air as a real direction), which is the failure this
+  // whole layer is built to avoid. Assert the invariants instead.
+  assert.ok(joined.located.length > 0, `${joined.located.length} stations located`);
+  assert.ok(
+    joined.located.every((s) => typeof s.lon === "number" && typeof s.lat === "number"),
+    "every located station has coordinates",
+  );
+  // Nothing that contributes to the field may lack a direction or speed — a
+  // zero/absent reading in a vector field is an invented arrow.
+  assert.ok(
+    joined.located.every((s) => s.dirDeg !== null && s.speedKmh !== null && s.speedKmh > 0),
+    "no calm / no-direction station entered the field",
+  );
+  // The two documented aliases must resolve, or they were written wrongly.
+  assert.ok(joined.located.some((s) => s.name === "Chek Lap Kok"), "alias: Chek Lap Kok → HKIA");
+  assert.ok(joined.located.some((s) => s.name === "Star Ferry"), "alias: Star Ferry(Kowloon)");
+  // And the genuinely-missing ones must be REPORTED, not silently gone.
+  assert.deepEqual(
+    [...joined.droppedNoCoord].sort(),
+    ["Hong Kong Sea School", "North Point"],
+    "the two absent-from-CSDI stations are the only ones dropped for coordinates",
+  );
+  assert.ok(joined.droppedNoWind.length > 0, `dropped (no wind): ${joined.droppedNoWind.length}`);
+  assert.equal(
+    joined.located.length + joined.droppedNoCoord.length + joined.droppedNoWind.length,
+    stations.length,
+    "every station is either located or explicitly dropped — none vanish",
+  );
+
+  console.log(`    落圖：${joined.located.length} 站有座標+風 · 無座標 ${joined.droppedNoCoord.length}（${joined.droppedNoCoord.join("、")}）· 無風 ${joined.droppedNoWind.length}`);
+}
+
 console.log("\nparsers.test.ts: ALL PASS");

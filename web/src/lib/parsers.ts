@@ -637,6 +637,165 @@ export function aircraftToGeoJson(aircraft: Aircraft[]): GeoJSON.FeatureCollecti
   };
 }
 
+// --- HKO 10-minute wind (regional AWS) -----------------------------------------
+// 30 automatic weather stations, refreshed every 10 minutes. The payload is a
+// small CSV whose fields are NOT all numbers — measured 2026-09-23:
+//     Green Island,       N/A,  27, 35     direction missing, speed present
+//     Wetland Park,       Calm, Calm, 0,   wind is calm; direction meaningless
+//     (last column sometimes empty)        gust absent
+// So every field is parsed defensively and a station with no usable wind is
+// DROPPED rather than filled in. The map requirement (ROADMAP B5) is that wind
+// is never invented where there is no station, and that the field fades out
+// with distance from real observations — both depend on knowing which stations
+// genuinely reported.
+
+export interface WindStation {
+  name: string;
+  /** compass point as published ("East", "N/A", "Calm") */
+  dirText: string;
+  /** degrees clockwise from north, or null when the station did not report */
+  dirDeg: number | null;
+  /** km/h, or null when not a number ("Calm", "N/A", blank) */
+  speedKmh: number | null;
+  /** km/h gust, or null */
+  gustKmh: number | null;
+  observedAt: Date | null;
+  /** [lon, lat], filled in by joinWindToStations */
+  lon?: number;
+  lat?: number;
+}
+
+/** Compass point → degrees. 16-point rose, which is what HKO publishes. */
+const COMPASS: Record<string, number> = {
+  North: 0, NNE: 22.5, NE: 45, ENE: 67.5,
+  East: 90, ESE: 112.5, SE: 135, SSE: 157.5,
+  South: 180, SSW: 202.5, SW: 225, WSW: 247.5,
+  West: 270, WNW: 292.5, NW: 315, NNW: 337.5,
+};
+
+/** Wind-CSV station name → CSDI station name, for pairs that differ.
+ *
+ * Measured 2026-09-23: joining the two datasets on name alone matches 26 of 30.
+ * The four that do not are NOT all missing — two are the same site published
+ * under a different name, and mapping those by hand (rather than fuzzy-matching)
+ * keeps the join auditable:
+ *   Chek Lap Kok  → Hong Kong International Airport  (the airport is on CLK)
+ *   Star Ferry    → Star Ferry(Kowloon)              (punctuation variant)
+ * The other two — North Point and Hong Kong Sea School — are genuinely absent
+ * from the CSDI dataset. They are DROPPED. Guessing a nearby coordinate would
+ * paint an invented wind reading, which is the one thing this layer must not do
+ * (ROADMAP B5). */
+const STATION_ALIAS: Record<string, string> = {
+  "Chek Lap Kok": "Hong Kong International Airport",
+  "Star Ferry": "Star Ferry(Kowloon)",
+};
+
+/** Attach coordinates to wind readings using the CSDI station network.
+ *
+ * Returns only the stations that have BOTH a position and a usable wind
+ * reading. Anything else is left out and counted — the caller reports the
+ * shortfall rather than the map implying full coverage. */
+export function joinWindToStations(
+  wind: WindStation[],
+  network: GeoJSON.FeatureCollection,
+): { located: WindStation[]; droppedNoCoord: string[]; droppedNoWind: string[] } {
+  const byName = new Map<string, [number, number]>();
+  for (const f of network.features) {
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const name = String(p["Name_en"] ?? p["Name_tc"] ?? "").trim();
+    const g = f.geometry as GeoJSON.Point | null;
+    if (!name || !g || g.type !== "Point") continue;
+    const [lon, lat] = g.coordinates as [number, number];
+    if (Number.isFinite(lon) && Number.isFinite(lat)) byName.set(name, [lon, lat]);
+  }
+
+  const located: WindStation[] = [];
+  const droppedNoCoord: string[] = [];
+  const droppedNoWind: string[] = [];
+
+  for (const s of wind) {
+    const key = STATION_ALIAS[s.name] ?? s.name;
+    const pos = byName.get(key);
+    if (!pos) {
+      droppedNoCoord.push(s.name);
+      continue;
+    }
+    // A station must have a speed AND a direction to contribute to a vector
+    // field. "Calm" and "N/A" are not zeros — see parseWindCsv.
+    if (s.speedKmh === null || s.dirDeg === null || s.speedKmh === 0) {
+      droppedNoWind.push(s.name);
+      continue;
+    }
+    located.push({ ...s, lon: pos[0], lat: pos[1] });
+  }
+  return { located, droppedNoCoord, droppedNoWind };
+}
+
+export function parseWindCsv(text: string): { stations: WindStation[]; observedAt: Date | null } {
+  const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).filter((l) => l.trim());
+  if (lines.length < 2) return { stations: [], observedAt: null };
+
+  // "202609230210" → Date. HKT (UTC+8), no DST.
+  const stamp = (s: string): Date | null => {
+    const m = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})$/.exec(s.trim());
+    if (!m) return null;
+    const d = new Date(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:00+08:00`);
+    return Number.isNaN(d.getTime()) ? null : d;
+  };
+
+  const num = (s: string | undefined): number | null => {
+    // "Calm", "N/A", "" and "-" are all NOT zero. Zero is a real wind speed.
+    const t = (s ?? "").trim();
+    if (!/^-?\d+(\.\d+)?$/.test(t)) return null;
+    const n = Number(t);
+    return Number.isFinite(n) ? n : null;
+  };
+
+  const stations: WindStation[] = [];
+  let observedAt: Date | null = null;
+
+  for (const line of lines.slice(1)) {
+    const cols = line.split(",");
+    const name = (cols[1] ?? "").trim();
+    if (!name) continue;
+    const dirText = (cols[2] ?? "").trim();
+    const at = stamp((cols[0] ?? "").split(" ")[0] ?? "");
+    if (at && !observedAt) observedAt = at;
+    stations.push({
+      name,
+      dirText,
+      // A compass point that is not on the rose (N/A, Calm, blank) yields null,
+      // never a default direction — a made-up bearing is worse than none.
+      dirDeg: COMPASS[dirText] ?? null,
+      speedKmh: num(cols[3]),
+      gustKmh: num(cols[4]),
+      observedAt: at,
+    });
+  }
+  return { stations, observedAt };
+}
+
+/** Summary for the panel. Reports what the stations actually said, including
+ *  how many could not give a direction — an honest gap, not a hidden one. */
+export function windStatus(stations: WindStation[]): StatusCell[] {
+  const withWind = stations.filter((s) => s.speedKmh !== null && s.dirDeg !== null);
+  const calm = stations.filter((s) => s.speedKmh === 0);
+  const noDir = stations.filter((s) => s.dirDeg === null);
+  const speeds = withWind.map((s) => s.speedKmh!).filter((v) => v > 0);
+  const max = speeds.length ? Math.max(...speeds) : 0;
+  const mean = speeds.length ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0;
+
+  const tc = lang() === "tc";
+  const out: StatusCell[] = [
+    { label: tc ? "有風數據測站" : "Stations reporting", value: `${withWind.length}/${stations.length}`, status: 0 },
+    { label: tc ? "平均風速" : "Mean speed", value: `${mean.toFixed(1)} km/h`, status: 0 },
+    { label: tc ? "最大風速" : "Max speed", value: `${max.toFixed(0)} km/h`, status: max >= 40 ? 2 : max >= 25 ? 1 : 0 },
+  ];
+  if (calm.length) out.push({ label: tc ? "靜風" : "Calm", value: String(calm.length), status: 0 });
+  if (noDir.length) out.push({ label: tc ? "無風向讀數" : "No direction", value: String(noDir.length), status: 1 });
+  return out;
+}
+
 // --- HKO radar timestamped URL ------------------------------------------------------
 /** Radar filenames carry the frame time (TECH_SPEC §3.6): build the current
     6-minute slot and step back so the panel can fall back instead of 404ing. */

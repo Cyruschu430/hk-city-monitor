@@ -383,17 +383,38 @@ try {
   ).catch(() => {});
   await page.waitForTimeout(1500);
 
-  // UI 圖例 + 圖層符號 (checked here, where the water mode's layers are drawn).
+  // LAYERS control + 圖層符號 (checked here, where the water mode's layers are drawn).
   const legend = await page.evaluate(() => {
-    const el = document.querySelector(".map-legend");
+    const el = document.querySelector(".layer-control");
     return {
       hidden: el?.hidden ?? true,
-      rows: [...(el?.querySelectorAll(".legend-row") ?? [])].map((r) => r.textContent.trim()),
+      rows: [...(el?.querySelectorAll(".lyr-label") ?? [])].map((r) => r.textContent.trim()),
+      switches: el?.querySelectorAll('.lyr-row[role="switch"]').length ?? 0,
     };
   });
-  check("UI 圖例：有圖層嘅模式會顯示圖例，文字對得住個層",
+  check("UI 圖層控制：有圖層嘅模式會顯示，文字對得住個層",
     !legend.hidden && legend.rows.some((t) => t.includes("停水")),
     `rows=[${legend.rows}]`);
+
+  // The control is only real if ticking it changes the map. Assert the actual
+  // MapLibre layout property before and after — a DOM-only check would pass on
+  // a button wired to nothing.
+  const toggle = await page.evaluate(async () => {
+    const btn = document.querySelector('.layer-control .lyr-row[role="switch"]');
+    if (!btn) return { err: "no switch" };
+    const map = window.__map;
+    const before = map.getLayoutProperty("vl-water_suspension_districts-fill", "visibility") ?? "visible";
+    btn.click();
+    await new Promise((r) => setTimeout(r, 400));
+    const after = map.getLayoutProperty("vl-water_suspension_districts-fill", "visibility") ?? "visible";
+    btn.click(); // restore
+    await new Promise((r) => setTimeout(r, 400));
+    const restored = map.getLayoutProperty("vl-water_suspension_districts-fill", "visibility") ?? "visible";
+    return { before, after, restored, aria: btn.getAttribute("aria-checked") };
+  });
+  check("UI 圖層控制：tick／untick 真係改到地圖 layer visibility",
+    toggle.before === "visible" && toggle.after === "none" && toggle.restored === "visible",
+    `before=${toggle.before} after=${toggle.after} restored=${toggle.restored}`);
   const icons = await page.evaluate(() => {
     const map = window.__map;
     return {
@@ -446,21 +467,36 @@ try {
     const id = "vl-water_suspension_districts-fill";
     if (!map.getLayer(id)) return { ok: false };
     const feats = map.queryRenderedFeatures({ layers: [id] });
-    const names = [...new Set(feats.map((f) => f.properties?.DISTRICT_CHINESE))];
+    const names = [...new Set(feats.map((f) => f.properties?.DISTRICT_CHINESE))].filter(Boolean);
     const paint = JSON.stringify(map.getPaintProperty(id, "fill-color"));
+    const filter = JSON.stringify(map.getFilter(id));
     const active = window.__hkcm.activeDistricts();
+    // The source still carries all 18 districts; only the ACTIVE ones are
+    // filtered into the visible layer. Assert both, so "0 drawn because the
+    // fetch failed" can never pass as "correctly showing only active".
+    const srcFeats = map.querySourceFeatures("vl-water_suspension_districts");
+    const srcNames = [...new Set(srcFeats.map((f) => f.properties?.DISTRICT_CHINESE))].filter(Boolean);
     return {
       ok: true,
       rendered: feats.length,
-      districts: names.length,
+      drawnDistricts: names,
+      sourceDistricts: srcNames.length,
       highlighted: active,
       allActiveInPaint: active.every((d) => paint.includes(d)),
+      filterNamesActive: active.every((d) => filter.includes(d)),
       styled: paint.includes("ff5d6c"),
     };
   });
-  check("停水模式：CSDI 分區圖層畫出 18 區，有停水嘅區轉紅",
-    districtLayer.ok && districtLayer.districts === 18 && districtLayer.styled && districtLayer.allActiveInPaint,
-    `rendered=${districtLayer.rendered} distinct=${districtLayer.districts} 標紅區=${districtLayer.highlighted?.join("、")} 全部入 paint=${districtLayer.allActiveInPaint}`);
+  check("停水模式：只畫有停水嘅區（非受影響區唔畫），全部轉紅",
+    districtLayer.ok &&
+      districtLayer.sourceDistricts === 18 &&
+      districtLayer.drawnDistricts.length > 0 &&
+      districtLayer.drawnDistricts.length === districtLayer.highlighted.length &&
+      districtLayer.drawnDistricts.every((d) => districtLayer.highlighted.includes(d)) &&
+      districtLayer.styled &&
+      districtLayer.allActiveInPaint &&
+      districtLayer.filterNamesActive,
+    `來源18區=${districtLayer.sourceDistricts} 畫出=${districtLayer.drawnDistricts?.join("、")} 標紅區=${districtLayer.highlighted?.join("、")}`);
 
   // --- 5. camera click → focus drawer ----------------------------------------
   const drawer = await page.evaluate(async () => {

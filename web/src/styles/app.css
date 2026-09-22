@@ -71,18 +71,47 @@ a:hover{color:var(--cyan)}
 .mh-clock{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;
   color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
 
-/* ---------- map legend (bottom-left, above the scale bar) ---------- */
-.map-legend{position:absolute;left:10px;bottom:52px;display:flex;flex-direction:column;gap:4px;
-  padding:7px 9px;background:rgba(5,8,13,.66);border:1px solid var(--hairline);border-radius:8px;
-  backdrop-filter:var(--glass);pointer-events:none;max-width:200px}
-.map-legend[hidden]{display:none}
-.legend-row{display:flex;align-items:center;gap:7px}
-.legend-glyph{width:16px;height:16px;flex:0 0 auto}
-.legend-swatch{width:14px;height:9px;border-radius:2px;flex:0 0 auto}
-.legend-swatch.sw-polygon{background:rgba(255,93,108,.3);border:1.5px solid #ff5d6c}
-.legend-swatch.sw-raster{background:linear-gradient(90deg,#3884ff,#2ecc71,#f1c40f,#e74c3c)}
-.legend-swatch.sw-point{background:var(--cyan);border-radius:50%;width:9px;height:9px}
-.legend-label{font-size:10px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ---------- LAYERS control (bottom-left, above the scale bar) ---------- */
+/* World Monitor's map carries a real checklist here, not a caption: checkbox,
+   the layer's own glyph, a name, and an ⓘ for attribution. Rows are
+   interactive, so this is the one map-face element that takes pointer events. */
+.layer-control{position:absolute;left:10px;bottom:52px;display:flex;flex-direction:column;
+  background:rgba(5,8,13,.82);border:1px solid var(--hairline);border-radius:8px;
+  backdrop-filter:var(--glass);max-width:230px;overflow:hidden}
+.layer-control[hidden]{display:none}
+.lyr-head{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:6px 9px;border-bottom:1px solid var(--hairline)}
+.lyr-title{font-size:9.5px;letter-spacing:.16em;font-weight:600;color:#cfe0f5;text-transform:uppercase}
+.lyr-count{font-family:var(--font-mono);font-size:9px;color:var(--faint)}
+.lyr-body{display:flex;flex-direction:column;padding:3px 0}
+.lyr-item{display:flex;flex-direction:column}
+.lyr-line{display:flex;align-items:center;gap:2px}
+.lyr-row{display:flex;align-items:center;gap:7px;flex:1 1 auto;min-width:0;
+  background:none;border:0;padding:4px 8px;cursor:pointer;text-align:left;
+  font:inherit;color:var(--text);border-radius:5px}
+.lyr-row:hover{background:rgba(120,160,220,.10)}
+.lyr-row.off .lyr-label{color:var(--faint);text-decoration:line-through}
+.lyr-row.off .lyr-glyph,.lyr-row.off .lyr-swatch{opacity:.32;filter:grayscale(1)}
+/* The checkbox is drawn from the row's aria-checked state, so the visual can
+   never disagree with what a screen reader is told. */
+.lyr-box{width:11px;height:11px;flex:0 0 auto;border:1.4px solid #4a6b93;border-radius:3px;position:relative}
+.lyr-row[aria-checked="true"] .lyr-box{background:#34d399;border-color:#34d399}
+.lyr-row[aria-checked="true"] .lyr-box::after{content:"";position:absolute;left:3px;top:0.5px;
+  width:3px;height:6px;border:solid #06121a;border-width:0 1.8px 1.8px 0;transform:rotate(42deg)}
+.lyr-glyph{width:14px;height:14px;flex:0 0 auto}
+.lyr-swatch{width:12px;height:8px;border-radius:2px;flex:0 0 auto}
+.lyr-swatch.sw-polygon{background:rgba(255,93,108,.3);border:1.5px solid #ff5d6c}
+.lyr-swatch.sw-raster{background:linear-gradient(90deg,#3884ff,#2ecc71,#f1c40f,#e74c3c)}
+.lyr-swatch.sw-point{background:var(--cyan);border-radius:50%;width:8px;height:8px}
+.lyr-label{font-size:10.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lyr-info{flex:0 0 auto;width:18px;height:18px;margin-right:5px;border-radius:50%;
+  border:1px solid var(--hairline);background:none;color:var(--faint);
+  font:italic 600 10px/1 var(--font-mono);cursor:pointer;padding:0}
+.lyr-info:hover{color:var(--text);border-color:var(--dim)}
+.lyr-note{padding:2px 9px 6px 26px;font-size:9.5px;color:var(--dim);line-height:1.4}
+.lyr-note[hidden]{display:none}
+.lyr-note a{color:var(--cyan);text-decoration:none}
+.lyr-note a:hover{text-decoration:underline}
 
 /* ---------- market (HK convention: red = up, green = down) ---------- */
 .mkt-up{color:var(--mkt-up)}.mkt-down{color:var(--mkt-down)}

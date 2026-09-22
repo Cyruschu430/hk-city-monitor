@@ -499,6 +499,144 @@ export function parseCarpark(vacancyJson: unknown, infoJson: unknown, maxRows: n
   return rows.slice(0, maxRows);
 }
 
+// --- ADS-B aircraft (adsb.fi and adsb.lol) -------------------------------------
+// Both are keyless and ODbL-licensed (attribution required). They return the
+// SAME record shape but wrap it under DIFFERENT top-level keys — measured
+// against both live endpoints on 2026-09-23:
+//     adsb.fi  → { now, aircraft: [...], resultCount, ptime }
+//     adsb.lol → { now, ac: [...], msg, total, ctime, ptime }
+// So one record parser, two envelope readers. Hardcoding either key silently
+// yields an empty map for the other source, which reads as "no aircraft over
+// Hong Kong" — the most misleading possible failure for this layer.
+
+export interface Aircraft {
+  hex: string;
+  /** callsign / flight number, trimmed; empty when the feed omits it */
+  flight: string;
+  lat: number;
+  lon: number;
+  /** barometric altitude in feet; null when the feed reports "ground" */
+  altFt: number | null;
+  onGround: boolean;
+  /** ground speed in knots */
+  gsKt: number | null;
+  /** true track over ground in degrees, clockwise from north */
+  trackDeg: number | null;
+  /** vertical rate, feet per minute (positive = climbing) */
+  verticalFpm: number | null;
+  category?: string;
+}
+
+/** One record. Both feeds use identical field names, so this is shared. */
+function toAircraft(r: Record<string, unknown>): Aircraft | null {
+  const lat = Number(r["lat"]);
+  const lon = Number(r["lon"]);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  const hex = String(r["hex"] ?? "").trim();
+  if (!hex) return null;
+
+  // alt_baro is the string "ground" for an aircraft on the apron — that is NOT
+  // altitude 0, and plotting it at 0 would put it mid-air on the map.
+  const rawAlt = r["alt_baro"];
+  const onGround = rawAlt === "ground";
+  const alt = onGround ? null : Number(rawAlt);
+
+  const num = (v: unknown): number | null => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  };
+
+  return {
+    hex,
+    // Callsigns are space-padded to 8 chars by the feed.
+    flight: String(r["flight"] ?? "").trim(),
+    lat,
+    lon,
+    altFt: alt !== null && Number.isFinite(alt) ? alt : null,
+    onGround,
+    gsKt: num(r["gs"]),
+    trackDeg: num(r["track"]),
+    verticalFpm: num(r["baro_rate"]),
+    category: r["category"] !== undefined ? String(r["category"]) : undefined,
+  };
+}
+
+/** Read either envelope. Exported so the test can prove BOTH keys work. */
+export function parseAdsb(payload: unknown): { aircraft: Aircraft[]; observedAt: Date | null } {
+  const doc = (payload ?? {}) as Record<string, unknown>;
+  // adsb.fi says `aircraft`; adsb.lol says `ac`. Accept both, plus a bare array
+  // (some mirrors return the list at the top level).
+  const list = Array.isArray(doc) ? doc : (doc["aircraft"] ?? doc["ac"] ?? []);
+  const rows = (Array.isArray(list) ? list : []) as Record<string, unknown>[];
+  const aircraft = rows.map(toAircraft).filter((a): a is Aircraft => a !== null);
+  // `now` is an epoch timestamp, but the two feeds use DIFFERENT UNITS —
+  // measured 2026-09-23: adsb.fi sent 1790099582 (SECONDS) while adsb.lol sent
+  // 1790099583501 (MILLISECONDS) at the same moment. Treating both as ms dates
+  // the fi feed to 1970, so the panel would report an age of 56 years and the
+  // engine would mark a live feed permanently stale. Anything below ~1e11 is
+  // seconds (1e11 ms is 1973; 1e11 s is year 5138).
+  const now = Number(doc["now"]);
+  let observedAt: Date | null = null;
+  if (Number.isFinite(now) && now > 0) {
+    observedAt = new Date(now < 1e11 ? now * 1000 : now);
+  }
+  return { aircraft, observedAt };
+}
+
+/** Count summary for the panel: total, and how many are actually airborne. */
+export function adsbStatus(aircraft: Aircraft[]): StatusCell[] {
+  const airborne = aircraft.filter((a) => !a.onGround).length;
+  const ground = aircraft.length - airborne;
+  const out: StatusCell[] = [
+    {
+      label: lang() === "tc" ? "區內航機" : "Aircraft in range",
+      value: String(aircraft.length),
+      // 0 when there is traffic, 2 when the sky is genuinely empty — an empty
+      // sky is worth flagging because it usually means a feed problem, not
+      // calm airspace, and the operator should look.
+      status: aircraft.length > 0 ? 0 : 2,
+    },
+  ];
+  if (airborne > 0) out.push({ label: lang() === "tc" ? "空中" : "Airborne", value: String(airborne), status: 0 });
+  if (ground > 0) out.push({ label: lang() === "tc" ? "地面" : "On ground", value: String(ground), status: 1 });
+  const withCallsign = aircraft.filter((a) => a.flight).length;
+  out.push({
+    label: lang() === "tc" ? "有航班編號" : "With callsign",
+    value: `${withCallsign}/${aircraft.length}`,
+    status: 0,
+  });
+  return out;
+}
+
+/** Aircraft → point features for the map.
+ *
+ * `bearing` is the field the map layer reads to rotate the plane glyph, so an
+ * aircraft points where it is actually flying. Records with no track are given
+ * bearing 0 rather than dropped: a stationary or newly-seen aircraft is still
+ * an aircraft, and hiding it would understate what is in the air.
+ *
+ * Altitude rides along in the properties so the popup can show it without a
+ * second lookup, and so a future size-by-altitude style is config-only.
+ */
+export function aircraftToGeoJson(aircraft: Aircraft[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: aircraft.map((a) => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [a.lon, a.lat] },
+      properties: {
+        hex: a.hex,
+        flight: a.flight || a.hex.toUpperCase(),
+        altFt: a.altFt,
+        onGround: a.onGround,
+        gsKt: a.gsKt,
+        bearing: a.trackDeg ?? 0,
+        verticalFpm: a.verticalFpm,
+      },
+    })),
+  };
+}
+
 // --- HKO radar timestamped URL ------------------------------------------------------
 /** Radar filenames carry the frame time (TECH_SPEC §3.6): build the current
     6-minute slot and step back so the panel can fall back instead of 404ing. */

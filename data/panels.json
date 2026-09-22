@@ -350,6 +350,20 @@
     "tc": "直播狀態即時偵測",
     "en": "Live state detected"
    }
+  },
+  {
+   "id": "aircraft_status",
+   "source": "adsb_fi_hk",
+   "render": "status_grid",
+   "title": {
+    "tc": "區內航機（ADS-B）",
+    "en": "Aircraft in range (ADS-B)"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "約 10 秒",
+    "en": "~10 seconds"
+   }
   }
  ]
 }

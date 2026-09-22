@@ -101,7 +101,7 @@
     "any": [
      {
       "source": "wsd_water_suspension",
-      "field": "records",
+      "field": "records_fresh",
       "op": "exists"
      }
     ]

@@ -32,7 +32,11 @@ export function createTicker(root: HTMLElement, registry: Registry): void {
 
   const track = h("div", { class: "ticker-track", role: "marquee", "aria-label": lang() === "tc" ? "即時消息" : "live headlines" });
   const tabsEl = h("div", { class: "ticker-tabs", role: "tablist" });
-  const frame = h("div", { class: "ticker-frame" }, h("span", { class: "ticker-tag" }, "LIVE"), tabsEl, track);
+  // The marquee animates translateX(-50%) over a very wide track. It MUST live
+  // inside its own clipping viewport, otherwise the sliding text travels left
+  // across the LIVE tag and the tabs (measured in a screenshot review).
+  const viewport = h("div", { class: "ticker-viewport" }, track);
+  const frame = h("div", { class: "ticker-frame" }, h("span", { class: "ticker-tag" }, "LIVE"), tabsEl, viewport);
   root.replaceChildren(frame);
   root.hidden = false;
 

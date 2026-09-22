@@ -57,11 +57,12 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
 
   const active = args.activeDistricts ?? new Set<string>();
   const activeList = [...active];
-  // Districts with a live suspension are the story; the rest are context.
-  // With no active districts there is nothing to match, so use a plain colour.
-  const matchExpr: unknown = activeList.length
-    ? ["match", ["get", "DISTRICT_CHINESE"], ...activeList.flatMap((d) => [d, "#ff5d6c"]), "#a855f7"]
-    : "#a855f7";
+  // No active districts → nothing to say. Drawing 18 faint district outlines
+  // anyway turned the map into a violet wireframe (caught in a screenshot
+  // review), so the layer is skipped entirely in that case.
+  if (activeList.length === 0) return;
+
+  const matchExpr: unknown = ["match", ["get", "DISTRICT_CHINESE"], ...activeList.flatMap((d) => [d, "#ff5d6c"]), "#a855f7"];
 
   if (stale(args, gen)) throw new Error("obsolete layer request");
   map.addLayer({
@@ -70,9 +71,7 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
     source: id,
     paint: {
       "fill-color": matchExpr as never,
-      "fill-opacity": (activeList.length
-        ? ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 0.3, 0.03]
-        : 0.03) as never,
+      "fill-opacity": ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 0.3, 0.03] as never,
     },
   });
   map.addLayer({
@@ -81,37 +80,41 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
     source: id,
     paint: {
       "line-color": matchExpr as never,
-      "line-width": (activeList.length
-        ? ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 2, 0.5]
-        : 0.5) as never,
-      "line-opacity": (activeList.length ? 0.95 : 0.4) as never,
+      "line-width": ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 2, 0.5] as never,
+      "line-opacity": 0.95,
     },
   });
   // District name labels on the ACTIVELY affected areas only — MapLibre draws
   // CJK via localIdeographFontFamily (set in basemap.ts), no glyph server hit.
-  if (activeList.length) {
-    map.addLayer({
-      id: `${id}-label`,
-      type: "symbol",
-      source: id,
-      filter: ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]],
-      layout: {
-        "text-field": ["get", "DISTRICT_CHINESE"],
-        "text-font": ["Noto Sans Regular"],
-        "text-size": 12,
-        "text-offset": [0, 0.4],
-        "text-anchor": "center",
-      },
-      paint: {
-        "text-color": "#ff5d6c",
-        "text-halo-color": "rgba(5,7,13,.9)",
-        "text-halo-width": 1.2,
-      },
-    });
-  }
+  map.addLayer({
+    id: `${id}-label`,
+    type: "symbol",
+    source: id,
+    filter: ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]],
+    layout: {
+      "text-field": ["get", "DISTRICT_CHINESE"],
+      "text-font": ["Noto Sans Regular"],
+      "text-size": 12,
+      "text-offset": [0, 0.4],
+      "text-anchor": "center",
+    },
+    paint: {
+      "text-color": "#ff5d6c",
+      "text-halo-color": "rgba(5,7,13,.9)",
+      "text-halo-width": 1.2,
+    },
+  });
   if (stale(args, gen)) throw new Error("obsolete layer request");
 
   map.on("click", `${id}-fill`, (e) => {
+    // A camera sitting on a district polygon receives the same click: MapLibre
+    // fires every layer handler under the cursor, so without this guard a
+    // camera click stacked a district popup on top of the camera HUD + drawer
+    // (caught in a screenshot review).
+    const camHit = map.queryRenderedFeatures(e.point, {
+      layers: ["cameras-td-point", "cameras-hko-point", "cameras-td-cluster", "cameras-hko-cluster"],
+    });
+    if (camHit.length > 0) return;
     const f = e.features?.[0];
     if (!f) return;
     const props = f.properties ?? {};

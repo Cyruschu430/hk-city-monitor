@@ -1,0 +1,838 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "id": 1,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.15584695863305,
+     22.288881607942113
+    ]
+   },
+   "properties": {
+    "Latitude": 22.28888889,
+    "Longitude": 114.15583333,
+    "Name_en": "Central Pier",
+    "Name_tc": "中環碼頭"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 2,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.02667351355372,
+     22.201237228735415
+    ]
+   },
+   "properties": {
+    "Latitude": 22.20111111,
+    "Longitude": 114.02666667,
+    "Name_en": "Cheung Chau",
+    "Name_tc": "長洲"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 3,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.29918595467826,
+     22.262910078480978
+    ]
+   },
+   "properties": {
+    "Latitude": 22.26333333,
+    "Longitude": 114.29972222,
+    "Name_en": "Clear Water Bay",
+    "Name_tc": "清水灣"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 4,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1834717851,
+     22.27056681033245
+    ]
+   },
+   "properties": {
+    "Latitude": 22.27055556,
+    "Longitude": 114.18361111,
+    "Name_en": "Happy Valley",
+    "Name_tc": "跑馬地"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.11285643826874,
+     22.28502318301652
+    ]
+   },
+   "properties": {
+    "Latitude": 22.285,
+    "Longitude": 114.11277778,
+    "Name_en": "Green Island",
+    "Name_tc": "青洲"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.02925040897905,
+     22.21091886537292
+    ]
+   },
+   "properties": {
+    "Latitude": 22.21083333,
+    "Longitude": 114.02916667,
+    "Name_en": "Cheung Chau Beach",
+    "Name_tc": "長洲泳灘"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 7,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.9217889577435,
+     22.309397062175556
+    ]
+   },
+   "properties": {
+    "Latitude": 22.30944444,
+    "Longitude": 113.92194444,
+    "Name_en": "Hong Kong International Airport",
+    "Name_tc": "香港國際機場"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 8,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.16201691833552,
+     22.27831469189791
+    ]
+   },
+   "properties": {
+    "Latitude": 22.27833333,
+    "Longitude": 114.16222222,
+    "Name_en": "Hong Kong Park",
+    "Name_tc": "香港公園"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 9,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.17427393821771,
+     22.301952007134627
+    ]
+   },
+   "properties": {
+    "Latitude": 22.30194444,
+    "Longitude": 114.17416667,
+    "Name_en": "Hong Kong Observatory",
+    "Name_tc": "香港天文台"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 10,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.21331876554908,
+     22.309712492369524
+    ]
+   },
+   "properties": {
+    "Latitude": 22.30972222,
+    "Longitude": 114.21333333,
+    "Name_en": "Kai Tak",
+    "Name_tc": "啟德"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 11,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.21696254225652,
+     22.304928023767406
+    ]
+   },
+   "properties": {
+    "Latitude": 22.30472222,
+    "Longitude": 114.21694444,
+    "Name_en": "Kai Tak Runway Park",
+    "Name_tc": "啟德跑道公園"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 12,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.3131595167607,
+     22.369409548171536
+    ]
+   },
+   "properties": {
+    "Latitude": 22.37027778,
+    "Longitude": 114.3125,
+    "Name_en": "Kau Sai Chau",
+    "Name_tc": "滘西洲"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 13,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.18477853110983,
+     22.335122452857703
+    ]
+   },
+   "properties": {
+    "Latitude": 22.335,
+    "Longitude": 114.18472222,
+    "Name_en": "Kowloon City",
+    "Name_tc": "九龍城"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 14,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.17289356179661,
+     22.31182483022701
+    ]
+   },
+   "properties": {
+    "Latitude": 22.31194444,
+    "Longitude": 114.17277778,
+    "Name_en": "King's Park",
+    "Name_tc": "京士柏"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 15,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.10861763944988,
+     22.226234985389432
+    ]
+   },
+   "properties": {
+    "Latitude": 22.22611111,
+    "Longitude": 114.10861111,
+    "Name_en": "Lamma Island",
+    "Name_tc": "南丫島"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 16,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.3229888417953,
+     22.402805957801387
+    ]
+   },
+   "properties": {
+    "Latitude": 22.40277778,
+    "Longitude": 114.32305556,
+    "Name_en": "Pak Tam Chung",
+    "Name_tc": "北潭涌"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 17,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.98347614875925,
+     22.468929479600604
+    ]
+   },
+   "properties": {
+    "Latitude": 22.46888889,
+    "Longitude": 113.98361111,
+    "Name_en": "Lau Fau Shan",
+    "Name_tc": "流浮山"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 18,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.04354504394738,
+     22.29117406331588
+    ]
+   },
+   "properties": {
+    "Latitude": 22.29111111,
+    "Longitude": 114.04333333,
+    "Name_en": "Peng Chau",
+    "Name_tc": "坪洲"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 19,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.20993048681608,
+     22.402514689288807
+    ]
+   },
+   "properties": {
+    "Latitude": 22.4025,
+    "Longitude": 114.21,
+    "Name_en": "Sha Tin",
+    "Name_tc": "沙田"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 20,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.13682629756468,
+     22.335833520215495
+    ]
+   },
+   "properties": {
+    "Latitude": 22.33583333,
+    "Longitude": 114.13694444,
+    "Name_en": "Sham Shui Po",
+    "Name_tc": "深水埗"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 21,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1110937721486,
+     22.501913829111395
+    ]
+   },
+   "properties": {
+    "Latitude": 22.50194444,
+    "Longitude": 114.11111111,
+    "Name_en": "Sheung Shui",
+    "Name_tc": "上水"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 22,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.08469087243613,
+     22.436265152213892
+    ]
+   },
+   "properties": {
+    "Latitude": 22.43611111,
+    "Longitude": 114.08472222,
+    "Name_en": "Shek Kong",
+    "Name_tc": "石崗"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 23,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.15658128701327,
+     22.528572854931937
+    ]
+   },
+   "properties": {
+    "Latitude": 22.52861111,
+    "Longitude": 114.15666667,
+    "Name_en": "Ta Kwu Ling",
+    "Name_tc": "打鼓嶺"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 24,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.21852967415332,
+     22.21408235959622
+    ]
+   },
+   "properties": {
+    "Latitude": 22.21416667,
+    "Longitude": 114.21861111,
+    "Name_en": "Stanley",
+    "Name_tc": "赤柱"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 25,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.16846444221363,
+     22.293013510273777
+    ]
+   },
+   "properties": {
+    "Latitude": 22.29305556,
+    "Longitude": 114.16861111,
+    "Name_en": "Star Ferry(Kowloon)",
+    "Name_tc": "九龍天星碼頭"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 26,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1172096416533,
+     22.48464131458242
+    ]
+   },
+   "properties": {
+    "Latitude": 22.48472222,
+    "Longitude": 114.1175,
+    "Name_en": "Tai Lung",
+    "Name_tc": "大隴"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 27,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.23753517958698,
+     22.47523285588607
+    ]
+   },
+   "properties": {
+    "Latitude": 22.47527778,
+    "Longitude": 114.2375,
+    "Name_en": "Tai Mei Tuk",
+    "Name_tc": "大美督"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 28,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1244348553966,
+     22.41053067483216
+    ]
+   },
+   "properties": {
+    "Latitude": 22.41055556,
+    "Longitude": 114.12444444,
+    "Name_en": "Tai Mo Shan",
+    "Name_tc": "大帽山"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 29,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.17892305923212,
+     22.446050743219267
+    ]
+   },
+   "properties": {
+    "Latitude": 22.44611111,
+    "Longitude": 114.17888889,
+    "Name_en": "Tai Po",
+    "Name_tc": "大埔"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 30,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.18402151695233,
+     22.44260006614704
+    ]
+   },
+   "properties": {
+    "Latitude": 22.4425,
+    "Longitude": 114.18416667,
+    "Name_en": "Tai Po Kau",
+    "Name_tc": "大埔滘"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 31,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2177391800905,
+     22.357971699665725
+    ]
+   },
+   "properties": {
+    "Latitude": 22.35777778,
+    "Longitude": 114.21777778,
+    "Name_en": "Tate's Cairn",
+    "Name_tc": "大老山"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 32,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2556328804966,
+     22.315678231533795
+    ]
+   },
+   "properties": {
+    "Latitude": 22.31583333,
+    "Longitude": 114.25555556,
+    "Name_en": "Tseung Kwan O",
+    "Name_tc": "將軍澳"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 33,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.96415590484513,
+     22.385879395200647
+    ]
+   },
+   "properties": {
+    "Latitude": 22.38583333,
+    "Longitude": 113.96416667,
+    "Name_en": "Tuen Mun",
+    "Name_tc": "屯門"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 34,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.10991700290718,
+     22.344147315500148
+    ]
+   },
+   "properties": {
+    "Latitude": 22.34416667,
+    "Longitude": 114.11,
+    "Name_en": "Tsing Yi",
+    "Name_tc": "青衣"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 35,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.12665887492606,
+     22.375642370341662
+    ]
+   },
+   "properties": {
+    "Latitude": 22.37555556,
+    "Longitude": 114.12666667,
+    "Name_en": "Tsuen Wan Shing Mun Valley",
+    "Name_tc": "荃灣城門谷"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 36,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.00866954363285,
+     22.466870923389095
+    ]
+   },
+   "properties": {
+    "Latitude": 22.46666667,
+    "Longitude": 114.00888889,
+    "Name_en": "Wetland Park",
+    "Name_tc": "濕地公園"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 37,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.01821861323451,
+     22.440809044085597
+    ]
+   },
+   "properties": {
+    "Latitude": 22.44083333,
+    "Longitude": 114.01833333,
+    "Name_en": "Yuen Long Park",
+    "Name_tc": "元朗公園"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 38,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.20531575580968,
+     22.339385225729803
+    ]
+   },
+   "properties": {
+    "Latitude": 22.33944444,
+    "Longitude": 114.20527778,
+    "Name_en": "Wong Tai Sin",
+    "Name_tc": "黃大仙"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 39,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.17361091016288,
+     22.24777810502619
+    ]
+   },
+   "properties": {
+    "Latitude": 22.24777778,
+    "Longitude": 114.17361111,
+    "Name_en": "Wong Chuk Hang",
+    "Name_tc": "黃竹坑"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 40,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.30333334859333,
+     22.182222055736396
+    ]
+   },
+   "properties": {
+    "Latitude": 22.18222222,
+    "Longitude": 114.30333333,
+    "Name_en": "Waglan Island",
+    "Name_tc": "橫瀾島"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 41,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1077779767051,
+     22.383610691780643
+    ]
+   },
+   "properties": {
+    "Latitude": 22.38361111,
+    "Longitude": 114.10777778,
+    "Name_en": "Tsuen Wan Ho Koon",
+    "Name_tc": "荃灣可觀"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 42,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.36055535868219,
+     22.471389116576137
+    ]
+   },
+   "properties": {
+    "Latitude": 22.47138889,
+    "Longitude": 114.36055556,
+    "Name_en": "Tap Mun",
+    "Name_tc": "塔門"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 43,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.15499986163638,
+     22.264166424095144
+    ]
+   },
+   "properties": {
+    "Latitude": 22.26416667,
+    "Longitude": 114.155,
+    "Name_en": "The Peak",
+    "Name_tc": "山頂"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 44,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.23611142757636,
+     22.28166658637492
+    ]
+   },
+   "properties": {
+    "Latitude": 22.28166667,
+    "Longitude": 114.23611111,
+    "Name_en": "Shau Kei Wan",
+    "Name_tc": "筲箕灣"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 45,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.27444482526568,
+     22.375555209791106
+    ]
+   },
+   "properties": {
+    "Latitude": 22.37555556,
+    "Longitude": 114.27444444,
+    "Name_en": "Sai Kung",
+    "Name_tc": "西貢"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 46,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.89111066289483,
+     22.34583348142895
+    ]
+   },
+   "properties": {
+    "Latitude": 22.34583333,
+    "Longitude": 113.89111111,
+    "Name_en": "Sha Chau",
+    "Name_tc": "沙洲"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 47,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.91277822023959,
+     22.25861081489264
+    ]
+   },
+   "properties": {
+    "Latitude": 22.25861111,
+    "Longitude": 113.91277778,
+    "Name_en": "Ngong Ping",
+    "Name_tc": "昂坪"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 48,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.22472257209803,
+     22.318610974024754
+    ]
+   },
+   "properties": {
+    "Latitude": 22.31861111,
+    "Longitude": 114.22472222,
+    "Name_en": "Kwun Tong",
+    "Name_tc": "觀塘"
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 49,
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1049996813778,
+     22.493333143095835
+    ]
+   },
+   "properties": {
+    "Latitude": 22.49333333,
+    "Longitude": 114.105,
+    "Name_en": "Beas River",
+    "Name_tc": "雙魚河"
+   }
+  }
+ ]
+}

@@ -71,7 +71,9 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
     source: id,
     paint: {
       "fill-color": matchExpr as never,
-      "fill-opacity": ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 0.3, 0.03] as never,
+      // 0.22 keeps the district readable while the basemap still shows through
+      // (0.30 read as a solid blob in a screenshot review).
+      "fill-opacity": ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 0.22, 0.03] as never,
     },
   });
   map.addLayer({

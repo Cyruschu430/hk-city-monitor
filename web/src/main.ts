@@ -19,6 +19,7 @@ import { loadRegistry, clearDataCache, type VerticalDefRaw } from "./lib/sources
 import { createMap, landsdBadge, setBasemap } from "./map/basemap.ts";
 import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./map/cameras.ts";
 import { applyVerticalLayers, clearVerticalLayers } from "./map/overlays.ts";
+import { drawGlyphInto, type GlyphId } from "./map/symbols.ts";
 import { toggle3d } from "./map/overlays3d.ts";
 import type { LayerDefRaw } from "./lib/sources.ts";
 import { createDrawer } from "./ui/drawer.ts";
@@ -106,6 +107,42 @@ async function boot(): Promise<void> {
 
   const banner = h("div", { class: "panel", style: "position:absolute;left:12px;top:12px;max-width:420px;display:none" });
   hudEl.append(banner);
+
+  // Map legend — an instrument needs to say what its symbols mean. Reads from
+  // the SAME registry the layers do, so a legend entry cannot describe
+  // something that is not drawn (and vice versa).
+  const legendEl = h("div", { class: "map-legend" });
+  hudEl.append(legendEl);
+  function paintLegend(layerIds: string[]): void {
+    clear(legendEl);
+    const rows: HTMLElement[] = [];
+    for (const lid of layerIds) {
+      const def = registry.layers.find((l) => l.id === lid);
+      if (!def || def.geom === "none") continue;
+      const glyph =
+        def.id === "cameras_all" ? "cam-td" : def.id === "hko_cameras" ? "cam-hko" : def.id === "rain_nowcast" ? "water" : null;
+      rows.push(
+        h(
+          "div",
+          { class: "legend-row" },
+          glyph ? h("canvas", { class: `legend-glyph g-${glyph}`, width: "16", height: "16" }) : h("span", { class: `legend-swatch sw-${def.geom}` }),
+          h("span", { class: "legend-label" }, lang() === "tc" ? def.title.tc : def.title.en),
+        ),
+      );
+    }
+    if (rows.length === 0) {
+      legendEl.hidden = true;
+      return;
+    }
+    legendEl.hidden = false;
+    legendEl.append(...rows);
+    // Render the same runtime glyphs the map uses, so the legend can never
+    // drift from the symbol on the map.
+    for (const cv of legendEl.querySelectorAll("canvas")) {
+      const glyph = cv.className.replace("legend-glyph g-", "") as GlyphId;
+      drawGlyphInto(cv as HTMLCanvasElement, glyph, 16);
+    }
+  }
 
   const ctx = { registry, raster: browserRasterizer };
   const triggerState: State = {};
@@ -205,6 +242,7 @@ async function boot(): Promise<void> {
       const drawn = await applyVerticalLayers(map, defs, { registry, ctx, activeDistricts, gen, isCurrent: (g) => g === modeGen.current });
       if (gen !== modeGen.current) return; // superseded — nothing to record
       drawnLayers = defs.filter((d) => drawn.includes(d.id));
+      paintLegend(drawnLayers.map((d) => d.id));
     } catch (err) {
       if (gen !== modeGen.current) return; // stale failure — ignore
       const msg = err instanceof Error ? err.message : String(err);

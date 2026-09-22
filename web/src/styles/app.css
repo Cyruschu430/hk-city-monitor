@@ -57,6 +57,19 @@ a:hover{color:var(--cyan)}
 /* banner (auto-switch / layer-error notices over the map) */
 .banner-detail{margin:0;font-size:11px;color:var(--dim);line-height:1.45}
 
+/* ---------- map legend (bottom-left, above the scale bar) ---------- */
+.map-legend{position:absolute;left:10px;bottom:52px;display:flex;flex-direction:column;gap:4px;
+  padding:7px 9px;background:rgba(5,8,13,.66);border:1px solid var(--hairline);border-radius:8px;
+  backdrop-filter:var(--glass);pointer-events:none;max-width:200px}
+.map-legend[hidden]{display:none}
+.legend-row{display:flex;align-items:center;gap:7px}
+.legend-glyph{width:16px;height:16px;flex:0 0 auto}
+.legend-swatch{width:14px;height:9px;border-radius:2px;flex:0 0 auto}
+.legend-swatch.sw-polygon{background:rgba(255,93,108,.3);border:1.5px solid #ff5d6c}
+.legend-swatch.sw-raster{background:linear-gradient(90deg,#3884ff,#2ecc71,#f1c40f,#e74c3c)}
+.legend-swatch.sw-point{background:var(--cyan);border-radius:50%;width:9px;height:9px}
+.legend-label{font-size:10px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 /* ---------- market (HK convention: red = up, green = down) ---------- */
 .mkt-up{color:var(--mkt-up)}.mkt-down{color:var(--mkt-down)}
 

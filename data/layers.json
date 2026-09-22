@@ -13,6 +13,7 @@
    "source": "td_camera_list",
    "render": "image_wall",
    "geom": "point",
+   "symbol": "cam-td",
    "title": {
     "tc": "交通快拍相機",
     "en": "Traffic Cameras"
@@ -27,6 +28,7 @@
    "source": "hko_webcam_index",
    "render": "image_wall",
    "geom": "point",
+   "symbol": "cam-hko",
    "title": {
     "tc": "天氣攝影機",
     "en": "Weather Cameras"

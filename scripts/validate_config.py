@@ -133,6 +133,12 @@ def main() -> int:
         if l.get("geom") not in GEOMS:
             errors.append(f"layer {lid}: geom {l.get('geom')!r} not in {sorted(GEOMS)}")
         check_bilingual(l.get("title"), f"layer {lid} title")
+        # A point layer that is not one of the two camera walls is drawn by the
+        # generic symbol path, which needs a glyph id — failing here beats
+        # failing at runtime with an empty map.
+        if l.get("geom") == "point" and l.get("source") not in ("td_camera_list", "hko_webcam_index"):
+            if not l.get("symbol"):
+                errors.append(f"layer {lid}: point 圖層需要 symbol（非相機圖層）")
 
     # ---- verticals ----
     seen_v = set()

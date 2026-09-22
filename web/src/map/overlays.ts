@@ -12,8 +12,19 @@ import maplibregl from "maplibre-gl";
 import { fetchUrl, type LayerDefRaw, type PanelDefRaw, type Registry } from "../lib/sources.ts";
 import { adaptPanel, type AdapterCtx } from "../lib/adapters.ts";
 import { lang } from "../lib/i18n.ts";
+import { registerGlyphs } from "./symbols.ts";
 
 const PREFIX = "vl-";
+
+/** Cluster ring colour per glyph family, so a cluster of ferries does not read
+    as a cluster of cameras when both are on screen. */
+function glyphColor(glyph: string): string {
+  if (glyph.startsWith("cam-td")) return "#22d3ee";
+  if (glyph.startsWith("cam-hko") || glyph === "station-wind") return "#a855f7";
+  if (glyph === "aqhi") return "#34d399";
+  if (glyph === "water") return "#38bdf8";
+  return "#22d3ee";
+}
 
 export interface LayerArgs {
   registry: Registry;
@@ -167,7 +178,60 @@ async function rasterLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArg
   });
 }
 
-/** Apply a vertical's layers. Returns the ids actually drawn (for QA). */
+/** A point layer declared in layers.json with a `symbol` that is NOT one of the
+    two camera walls: fetch its GeoJSON and draw it with that glyph. The camera
+    walls stay in cameras.ts because they cluster + open a HUD; everything else
+    is a plain symbol layer, and the glyph comes from config. */
+async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs): Promise<void> {
+  const src = args.registry.byId.get(def.source);
+  if (!src) throw new Error(`layer ${def.id}: source ${def.source} 唔存在`);
+  const glyph = def.symbol;
+  if (!glyph) throw new Error(`layer ${def.id}: point 圖層需要 symbol 欄位`);
+  registerGlyphs(map); // idempotent; the point path may run before cameras.ts
+
+  const gen = args.gen ?? 0;
+  const res = await fetch(fetchUrl(src), { signal: AbortSignal.timeout(25_000) });
+  if (stale(args, gen)) throw new Error("obsolete layer request");
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = (await res.json()) as GeoJSON.FeatureCollection;
+
+  const id = `${PREFIX}${def.id}`;
+  if (stale(args, gen)) throw new Error("obsolete layer request");
+  map.addSource(id, { type: "geojson", data, cluster: true, clusterRadius: 46, clusterMaxZoom: 13 });
+
+  const size: unknown = ["interpolate", ["linear"], ["zoom"], 9, 0.4, 13, 0.55, 16, 0.7];
+  map.addLayer({
+    id: `${id}-circle`,
+    type: "circle",
+    source: id,
+    filter: ["has", "point_count"],
+    paint: {
+      "circle-color": "rgba(34,211,238,.10)",
+      "circle-stroke-color": glyphColor(glyph),
+      "circle-stroke-width": ["step", ["get", "point_count"], 1.1, 10, 1.6, 25, 2.2] as never,
+      "circle-radius": ["step", ["get", "point_count"], 13, 10, 18, 25, 24] as never,
+    },
+  });
+  map.addLayer({
+    id: `${id}-count`,
+    type: "symbol",
+    source: id,
+    filter: ["has", "point_count"],
+    layout: {
+      "text-field": ["get", "point_count_abbreviated"],
+      "text-font": ["Noto Sans Regular"],
+      "text-size": ["step", ["get", "point_count"], 10, 10, 11, 25, 12] as never,
+    },
+    paint: { "text-color": "#dceaff" },
+  });
+  map.addLayer({
+    id: `${id}-point`,
+    type: "symbol",
+    source: id,
+    filter: ["!", ["has", "point_count"]],
+    layout: { "icon-image": glyph, "icon-size": size as never, "icon-allow-overlap": true },
+  });
+}
 export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[], args: LayerArgs): Promise<string[]> {
   const drawn: string[] = [];
   for (const def of defs) {
@@ -185,10 +249,16 @@ export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw
           break;
         }
         case "point": {
-          // Camera sources are drawn by cameras.ts; a vertical only asserts them.
-          const prefix = def.source.includes("hko") ? "cameras-hko" : "cameras-td";
-          for (const suffix of ["cluster", "count", "point"]) {
-            if (map.getLayer(`${prefix}-${suffix}`)) map.setLayoutProperty(`${prefix}-${suffix}`, "visibility", "visible");
+          // The two camera walls are drawn (and clustered + HUD-wired) by
+          // cameras.ts; a vertical only asserts visibility. Any other point
+          // layer carries its own `symbol` and is drawn here.
+          if (def.source.includes("td_camera") || def.source.includes("hko_webcam")) {
+            const prefix = def.source.includes("hko") ? "cameras-hko" : "cameras-td";
+            for (const suffix of ["cluster", "count", "point"]) {
+              if (map.getLayer(`${prefix}-${suffix}`)) map.setLayoutProperty(`${prefix}-${suffix}`, "visibility", "visible");
+            }
+          } else {
+            await pointLayer(map, def, args);
           }
           drawn.push(def.id);
           break;

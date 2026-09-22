@@ -235,4 +235,59 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log(`✓ RTHK RSS: ${items.length} 則，最新 ${observedAt?.toISOString()}；首則「${items[0]!.title.slice(0, 30)}」`);
 }
 
+// 23. ADS-B aircraft — TWO feeds, TWO envelope keys, TWO timestamp units.
+// This is the case that would silently ship: adsb.fi wraps its list in
+// `aircraft` and stamps `now` in SECONDS, adsb.lol wraps the same records in
+// `ac` and stamps `now` in MILLISECONDS. Reading either key wrongly yields an
+// empty map, which reads as "no aircraft over Hong Kong" — the most misleading
+// possible failure for a live traffic layer.
+{
+  const fi = P.parseAdsb(jx("adsb_fi_hk.json"));
+  const lol = P.parseAdsb(jx("adsb_lol_hk.json"));
+
+  assert.ok(fi.aircraft.length > 0, `adsb.fi envelope 'aircraft' read (${fi.aircraft.length})`);
+  assert.ok(lol.aircraft.length > 0, `adsb.lol envelope 'ac' read (${lol.aircraft.length})`);
+
+  // 1e11 is the seconds/milliseconds divide. Both live captures are ~2026, so
+  // both must land in 2026 — a unit mix-up shows up as 1970 here.
+  assert.equal(fi.observedAt?.getFullYear(), 2026, `adsb.fi seconds -> ${fi.observedAt?.toISOString()}`);
+  assert.equal(lol.observedAt?.getFullYear(), 2026, `adsb.lol milliseconds -> ${lol.observedAt?.toISOString()}`);
+
+  const a = fi.aircraft[0]!;
+  assert.ok(a.hex.length > 0, "hex present");
+  assert.ok(a.lat > 22 && a.lat < 22.6 && a.lon > 113 && a.lon < 114.5, `in HK bbox ${a.lat},${a.lon}`);
+  assert.ok(a.altFt !== null && a.altFt > 0, `altitude ${a.altFt}`);
+  assert.ok(a.trackDeg !== null && a.trackDeg >= 0 && a.trackDeg <= 360, `track ${a.trackDeg}`);
+  // Callsigns arrive space-padded; trailing spaces would break equality checks
+  // and look wrong in the popup.
+  assert.ok(!/\s$/.test(a.flight) || a.flight === "", `callsign trimmed (${JSON.stringify(a.flight)})`);
+
+  // "ground" is NOT altitude 0 — plotting it at 0 puts an apron aircraft mid-air.
+  const onGround = P.parseAdsb({ ac: [{ hex: "abc123", lat: 22.3, lon: 114.1, alt_baro: "ground", gs: 4 }] });
+  assert.equal(onGround.aircraft[0]!.altFt, null, "alt_baro 'ground' -> null, not 0");
+  assert.equal(onGround.aircraft[0]!.onGround, true, "onGround flag");
+
+  // A record with no position must be dropped, not plotted at 0,0.
+  const bad = P.parseAdsb({ aircraft: [{ hex: "no-pos" }, { hex: "ok", lat: 22.3, lon: 114.1, alt_baro: 1000 }] });
+  assert.equal(bad.aircraft.length, 1, "records without lat/lon dropped");
+
+  // The map layer reads `bearing` off the feature to rotate the plane glyph, so
+  // the conversion has to carry it — a missing bearing draws every aircraft
+  // pointing north, which looks plausible and is wrong.
+  const gj = P.aircraftToGeoJson(fi.aircraft);
+  assert.equal(gj.features.length, fi.aircraft.length, "one feature per aircraft");
+  const f0 = gj.features[0]!;
+  assert.equal(f0.geometry.type, "Point", "point geometry");
+  const coords = (f0.geometry as GeoJSON.Point).coordinates;
+  assert.ok(Math.abs(coords[0]! - a.lon) < 1e-9 && Math.abs(coords[1]! - a.lat) < 1e-9, "lon,lat order");
+  assert.equal(f0.properties!["bearing"], a.trackDeg, "bearing carried for icon-rotate");
+  // No-track aircraft keep a default bearing rather than being dropped: hiding
+  // one would understate what is in the air.
+  const noTrack = P.aircraftToGeoJson([{ hex: "x1", flight: "", lat: 22.3, lon: 114.1, altFt: 100, onGround: false, gsKt: null, trackDeg: null, verticalFpm: null }]);
+  assert.equal(noTrack.features[0]!.properties!["bearing"], 0, "missing track -> bearing 0, not dropped");
+
+  console.log(`✓ ADS-B: fi ${fi.aircraft.length} 架（aircraft 鍵·秒）· lol ${lol.aircraft.length} 架（ac 鍵·毫秒）`);
+  console.log(`    樣本 ${a.flight || a.hex} · ${a.altFt} ft · ${a.trackDeg}° · ${a.gsKt} kt · GeoJSON ${gj.features.length} 點`);
+}
+
 console.log("\nparsers.test.ts: ALL PASS");

@@ -124,7 +124,13 @@ function drawAqhi(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** Aircraft: simple top-down plane, nose up (rotated per-track later). */
+/** Aircraft: simple top-down plane, nose up (rotated per-track by the layer).
+ *
+ * Drawn at full box size and in a warm off-white: aircraft are the only layer
+ * that moves, and against the dark basemap a pure-white speck at 44px scaled
+ * down to 0.32 is easy to lose. The warmth also separates "in the air" from
+ * the cool cyan/violet used by everything on the ground. The dark outline is
+ * what keeps it legible once the halo disc sits behind it. */
 function drawPlane(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();

@@ -93,6 +93,21 @@
    "filters": {
     "scope": "hk"
    }
+  },
+  {
+   "id": "aircraft",
+   "source": "adsb_fi_hk",
+   "render": "status_grid",
+   "geom": "point",
+   "symbol": "plane",
+   "title": {
+    "tc": "航機（ADS-B）",
+    "en": "Aircraft (ADS-B)"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   }
   }
  ]
 }

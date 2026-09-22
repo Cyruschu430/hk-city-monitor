@@ -22,6 +22,11 @@ export interface AdapterResult {
   observedAt: Date | null;
   /** contribution to the trigger engine's state, keyed by source id */
   state?: unknown;
+  /** Point features for the map layer, when this source can be drawn. Kept
+      SEPARATE from `state` so the trigger engine's shape and the map's shape
+      can change independently — the water layer taught that lesson (records
+      vs records_fresh had to split for the same reason). */
+  geo?: GeoJSON.FeatureCollection;
 }
 
 /** Rasterisation takes a canvas, which only exists in the browser. Injected
@@ -173,6 +178,29 @@ const ADAPTERS: Record<string, Adapter> = {
   },
 
   hko_radar: radarFrame,
+
+  async adsb_fi_hk(src) {
+    const { aircraft, observedAt } = P.parseAdsb(await json(await get(src)));
+    // The trigger state carries the aircraft themselves: the map layer reads
+    // them from here, so the panel and the map can never disagree (the same
+    // contract the water-suspension districts use).
+    return {
+      data: { kind: "status_grid", cells: P.adsbStatus(aircraft) },
+      observedAt,
+      state: { records: aircraft, records_fresh: aircraft },
+      geo: P.aircraftToGeoJson(aircraft),
+    };
+  },
+
+  async adsb_lol_hk(src) {
+    const { aircraft, observedAt } = P.parseAdsb(await json(await get(src)));
+    return {
+      data: { kind: "status_grid", cells: P.adsbStatus(aircraft) },
+      observedAt,
+      state: { records: aircraft, records_fresh: aircraft },
+      geo: P.aircraftToGeoJson(aircraft),
+    };
+  },
 
   async hko_rain_nowcast(src, panel, ctx) {
     const bbox = (panel.params?.["bbox"] as [number, number, number, number]) ?? [22.15, 113.83, 22.56, 114.44];

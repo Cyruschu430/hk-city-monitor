@@ -10,7 +10,7 @@
 
 import maplibregl from "maplibre-gl";
 import { fetchUrl, type LayerDefRaw, type PanelDefRaw, type Registry } from "../lib/sources.ts";
-import { adaptPanel, type AdapterCtx } from "../lib/adapters.ts";
+import { adaptPanel, hasAdapter, type AdapterCtx } from "../lib/adapters.ts";
 import { lang } from "../lib/i18n.ts";
 import { registerGlyphs } from "./symbols.ts";
 
@@ -42,8 +42,21 @@ function stale(args: LayerArgs, gen: number): boolean {
   return args.isCurrent !== undefined && !args.isCurrent(gen);
 }
 
+/** Every layer id a vertical layer may create. Removal must cover all of them:
+ *  a layer this list misses survives its own toggle and paints over the next
+ *  mode (the same class of bug as the orphaned district mesh). `-halo` and
+ *  `-point` were added with the aircraft layer; `-count` with the generic
+ *  point path. */
 function layersOf(def: LayerDefRaw): string[] {
-  return [`${PREFIX}${def.id}-fill`, `${PREFIX}${def.id}-line`, `${PREFIX}${def.id}-circle`, `${PREFIX}${def.id}-label`];
+  return [
+    `${PREFIX}${def.id}-fill`,
+    `${PREFIX}${def.id}-line`,
+    `${PREFIX}${def.id}-circle`,
+    `${PREFIX}${def.id}-label`,
+    `${PREFIX}${def.id}-count`,
+    `${PREFIX}${def.id}-halo`,
+    `${PREFIX}${def.id}-point`,
+  ];
 }
 
 export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): void {
@@ -188,9 +201,15 @@ async function rasterLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArg
 }
 
 /** A point layer declared in layers.json with a `symbol` that is NOT one of the
-    two camera walls: fetch its GeoJSON and draw it with that glyph. The camera
-    walls stay in cameras.ts because they cluster + open a HUD; everything else
-    is a plain symbol layer, and the glyph comes from config. */
+    two camera walls. Two data shapes reach here:
+ *
+ *   - a GeoJSON FeatureCollection (CSDI-style layers) → drawn as-is
+ *   - a JSON feed with an adapter (ADS-B aircraft) → the adapter's `records`
+ *     are converted to point features, and any `trackDeg` becomes a per-feature
+ *     `bearing` that rotates the glyph, so a plane points where it is flying.
+ *
+ * The camera walls stay in cameras.ts because they cluster into a HUD;
+ * everything else is a symbol layer, and the glyph comes from config. */
 async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs): Promise<void> {
   const src = args.registry.byId.get(def.source);
   if (!src) throw new Error(`layer ${def.id}: source ${def.source} 唔存在`);
@@ -199,14 +218,71 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   registerGlyphs(map); // idempotent; the point path may run before cameras.ts
 
   const gen = args.gen ?? 0;
-  const res = await fetch(fetchUrl(src), { signal: AbortSignal.timeout(25_000) });
-  if (stale(args, gen)) throw new Error("obsolete layer request");
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = (await res.json()) as GeoJSON.FeatureCollection;
+  const panel = args.registry.panels.find((p) => p.source === def.source);
+  let fc: GeoJSON.FeatureCollection;
+
+  if (panel && hasAdapter(def.source)) {
+    // Feed source (ADS-B): reuse the panel's adapter so the map and the panel
+    // read the SAME parse of the SAME fetch — they cannot disagree about what
+    // is aloft.
+    const { geo } = await adaptPanel(panel, args.ctx);
+    if (stale(args, gen)) throw new Error("obsolete layer request");
+    if (!geo) throw new Error(`layer ${def.id}: adapter 冇提供 geo 資料`);
+    fc = geo;
+  } else {
+    const res = await fetch(fetchUrl(src), { signal: AbortSignal.timeout(25_000) });
+    if (stale(args, gen)) throw new Error("obsolete layer request");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    fc = (await res.json()) as GeoJSON.FeatureCollection;
+  }
 
   const id = `${PREFIX}${def.id}`;
   if (stale(args, gen)) throw new Error("obsolete layer request");
-  map.addSource(id, { type: "geojson", data, cluster: true, clusterRadius: 46, clusterMaxZoom: 13 });
+  // A moving point layer is NOT clustered: aircraft change position every few
+  // seconds, so clusters would re-form constantly and hide exactly the
+  // individual tracks this layer exists to show. Camera points are static and
+  // stay clustered.
+  const moving = glyph === "plane" || glyph === "ferry";
+  map.addSource(id, {
+    type: "geojson",
+    data: fc,
+    ...(moving ? {} : { cluster: true, clusterRadius: 46, clusterMaxZoom: 13 }),
+  });
+
+  if (moving) {
+    // Aircraft get a dark halo disc under the glyph. The first version drew the
+    // bare plane outline, which on the dark basemap is a faint white speck you
+    // have to hunt for (caught in a screenshot review) — the camera layers had
+    // the same problem and solved it the same way. `icon-halo` is not a
+    // MapLibre property, so the disc is a separate circle layer.
+    map.addLayer({
+      id: `${id}-halo`,
+      type: "circle",
+      source: id,
+      paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 5.5, 12, 7.5, 16, 10] as never,
+        "circle-color": "rgba(8,14,24,.78)",
+        "circle-stroke-color": "rgba(120,180,240,.55)",
+        "circle-stroke-width": 1,
+      },
+    });
+    map.addLayer({
+      id: `${id}-point`,
+      type: "symbol",
+      source: id,
+      // `icon-rotate` reads the `bearing` property the adapter writes, so a
+      // plane points where it is flying rather than all pointing north.
+      layout: {
+        "icon-image": glyph,
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 8, 0.32, 12, 0.46, 16, 0.64] as never,
+        "icon-rotate": ["get", "bearing"],
+        "icon-rotation-alignment": "map",
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+      },
+    });
+    return;
+  }
 
   const size: unknown = ["interpolate", ["linear"], ["zoom"], 9, 0.4, 13, 0.55, 16, 0.7];
   map.addLayer({

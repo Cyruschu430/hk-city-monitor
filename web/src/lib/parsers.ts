@@ -162,32 +162,55 @@ export function parseImmdQueue(json: Record<string, { arrQueue: number; depQueue
     .map((code) => {
       const q = json[code]!;
       const worst = Math.max(q.arrQueue, q.depQueue);
+      const nm = CP_STATIONS[code] ?? { tc: code, en: code };
+      // MEASURED: ImmD's sentinel is 99 — the crossing is CLOSED / not
+      // collecting queue data (e.g. after its daily opening hours), NOT a
+      // 99-minute queue. Showing 99 分鐘 in red read as a huge queue when the
+      // control point was simply shut — a truth problem, not a format one.
+      if (worst >= 95) {
+        return {
+          label: lang() === "tc" ? nm.tc : nm.en,
+          value: lang() === "tc" ? "已關閉" : "Closed",
+          status: 3,
+        };
+      }
       // Bands: the ImmD app's own "normal" band is under 15 minutes; 30+ is
       // a genuinely long queue for a land crossing.
-      const status: 0 | 1 | 2 = worst <= 15 ? 0 : worst <= 30 ? 1 : 2;
-      const nm = CP_STATIONS[code] ?? { tc: code, en: code };
+      const status: StatusCell["status"] = worst <= 15 ? 0 : worst <= 30 ? 1 : 2;
       // 0 minutes is ImmD's "smooth" sentinel, shown as their own 少於 15 分鐘
       // band rather than a cryptic 0′.
       const m = (mins: number) =>
         mins <= 0 ? (lang() === "tc" ? "少於 15 分鐘" : "< 15 min") : `${mins} ${lang() === "tc" ? "分鐘" : "min"}`;
       return {
         label: lang() === "tc" ? nm.tc : nm.en,
-        value: `${m(q.arrQueue)}↔${m(q.depQueue)}`,
+        value: `${m(q.arrQueue)} · ${m(q.depQueue)}`,
         status,
       };
     });
 }
 
 // --- MarDep cross-boundary ferries (UTF-8 BOM, pipe-separated) -------------------
-export function parseFerry(text: string, maxRows: number): { columns: string[]; rows: string[][] } {
+export function parseFerry(text: string, maxRows: number): { columns: string[]; rows: string[][]; observedAt: Date | null } {
   const lines = text.replace(/^﻿/, "").split(/\r?\n/).filter((l) => l.trim());
   // (the literal above is a UTF-8 BOM, U+FEFF — the feed starts with one)
   const header = (lines[0] ?? "").split("|");
+  let observedAt: Date | null = null;
   const rows = lines.slice(1, maxRows + 1).map((l) => {
     const c = l.split("|");
+    // Column 0 is 抵達時間 "YYYY-MM-DD HH:mm" — the row's OWN timestamp. This
+    // feed is famous for lagging: a fresh fetch can still surface rows from
+    // weeks ago, so the panel's honesty must come from the ROW dates, not the
+    // fetch time — observedAt = latest row date, and the panel degrades to
+    // stale when those dates are old even though the HTTP request was new.
+    const when = iso(c[0] ?? "");
+    if (when && (!observedAt || when > observedAt)) observedAt = when;
     return [c[0]?.slice(5) ?? "", c[1] ?? "", c[2] ?? "", c[3] ?? "", c[5] ?? ""];
   });
-  return { columns: header.length >= 6 ? [header[0]!, header[1]!, header[2]!, header[3]!, header[5]!] : ["時間", "出發地", "營運公司", "碼頭", "現況"], rows };
+  return {
+    columns: header.length >= 6 ? [header[0]!, header[1]!, header[2]!, header[3]!, header[5]!] : ["時間", "出發地", "營運公司", "碼頭", "現況"],
+    rows,
+    observedAt,
+  };
 }
 
 // --- HKIA flights ------------------------------------------------------------------

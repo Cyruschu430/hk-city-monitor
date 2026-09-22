@@ -338,7 +338,7 @@
     "en": "HK Live Streams (third-party)"
    },
    "params": {
-    "max": 8
+    "max": 6
    },
    "cadence_note": {
     "tc": "直播狀態即時偵測",

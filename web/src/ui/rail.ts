@@ -22,6 +22,18 @@ const ICONS: Record<string, string> = {
   leave: "M7 3v4M17 3v4M4 8h16M5 5h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z",
 };
 
+/** Per-mode accent — keyed by the VERTICAL ID (verticals.json), so a mode is
+    identifiable by colour before its glyph (颱風=紅, 口岸=青, 停水=藍, 假期=綠,
+    總覽=中性). Applied on the active state only; idle stays muted so a wall
+    of colour never competes with the map. */
+const ACCENTS: Record<string, string> = {
+  overview: "#8ea6c4",
+  typhoon: "#ff5d6c",
+  border: "#22d3ee",
+  water_supply: "#38bdf8",
+  leave: "#34d399",
+};
+
 const LAYER_ICONS: Record<string, string> = {
   cameras_td: "M3 7h11v10H3zM14 10l7-3v10l-7-3|M7 12h3",
   cameras_hko: "M12 4v2M5 20h14M8 20a4 4 0 018 0M12 8a4 4 0 014 4v4H8v-4a4 4 0 014-4z",
@@ -53,7 +65,13 @@ export function createRail(
     const addMode = (id: string, name: { tc: string; en: string }, title: string) => {
       const b = h(
         "button",
-        { class: "rail-btn", type: "button", "aria-pressed": "false", onclick: () => cb.onMode(id) },
+        {
+          class: "rail-btn",
+          type: "button",
+          "aria-pressed": "false",
+          "data-accent": ACCENTS[id] ?? "",
+          onclick: () => cb.onMode(id),
+        },
         icon(ICONS[id] ?? ICONS["overview"]!),
         h("span", { class: "tip" }, `${lang() === "tc" ? name.tc : name.en} · ${title}`),
       );
@@ -92,7 +110,11 @@ export function createRail(
 
   return {
     setActive(id) {
-      for (const [key, b] of modeButtons) b.setAttribute("aria-pressed", String(key === id));
+      for (const [key, b] of modeButtons) {
+        b.setAttribute("aria-pressed", String(key === id));
+        // Active colour follows the mode's accent; idle buttons stay muted.
+        b.style.color = key === id ? (ACCENTS[key] ?? "") : "";
+      }
     },
     setLayerError(id, message) {
       const b = layerButtons.get(id);

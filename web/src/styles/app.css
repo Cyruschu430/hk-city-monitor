@@ -35,6 +35,44 @@ a:hover{color:var(--cyan)}
   border:1px solid var(--hairline);background:#0a1220}
 .live-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
+/* ---------- ⌘K command palette ---------- */
+.palette{position:fixed;top:64px;left:50%;translate:-50% 0;width:min(560px,92vw);z-index:70;
+  background:var(--shade);backdrop-filter:var(--glass);border:1px solid var(--hairline-hi);
+  border-radius:12px;overflow:hidden}
+.palette[hidden]{display:none}
+.palette-input{width:100%;padding:13px 16px;background:transparent;border:0;border-bottom:1px solid var(--hairline);
+  color:var(--txt);font:14px var(--font-ui);outline:0}
+.palette-list{list-style:none;margin:0;padding:6px;max-height:40vh;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.palette-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer}
+.palette-item[data-sel="true"]{background:rgba(34,211,238,.12)}
+.palette-kind{flex:0 0 auto;font-size:9.5px;letter-spacing:.1em;padding:2px 7px;border-radius:999px;
+  border:1px solid var(--hairline);color:var(--faint);text-transform:uppercase}
+.palette-kind.k-camera{color:var(--violet);border-color:rgba(168,85,247,.4)}
+.palette-kind.k-panel{color:var(--cyan);border-color:rgba(34,211,238,.35)}
+.palette-label{font-size:13px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.palette-hint{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--faint);white-space:nowrap}
+
+/* ---------- map chrome: coords readout + flash highlight ---------- */
+.map-coords{font-family:var(--font-mono);font-size:10px;color:var(--dim);
+  pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+@keyframes panel-flash{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 2px var(--cyan),0 0 24px -4px rgba(34,211,238,.7)}}
+.panel.flash{animation:panel-flash 1.4s ease-in-out}
+
+/* dark MapLibre chrome (the default white corners clash on a dark wall) */
+.maplibregl-ctrl-group{background:var(--panel-solid)!important;border-radius:8px!important;overflow:hidden}
+.maplibregl-ctrl-group button{background:var(--panel-solid)!important;border-bottom:1px solid var(--hairline)}
+.maplibregl-ctrl-group button+button{border-bottom:0}
+.maplibregl-ctrl-group button span{filter:none}
+.maplibregl-ctrl-scale{background:transparent!important;border-color:rgba(140,190,255,.4)!important;color:var(--dim);font-size:10px}
+
+/* live tiles are video thumbs → 16:9 instead of the cameras' 4:3 */
+.cam.live{aspect-ratio:16/9}
+/* queue station names may wrap (mobile) — truncation hid 香園圍 as 香… */
+.status .sl{white-space:normal;line-height:1.35}
+/* ImmD "closed" sentinel: grey dot, not a red queue */
+.status.s3 .dot{background:var(--faint)}
+.status.s3{opacity:.75}
+
 /* ---------- status bar (40px) ---------- */
 #statusbar{flex:0 0 40px;display:flex;align-items:center;justify-content:space-between;
   gap:12px;padding:0 14px;border-bottom:1px solid var(--hairline);
@@ -237,7 +275,15 @@ a:hover{color:var(--cyan)}
   #mapWrap{grid-row:1}
   #panels{grid-row:2;border-left:0;border-top:1px solid var(--hairline)}
   #drawer{top:auto;left:0;width:auto;height:70vh;border-left:0;border-top:1px solid var(--hairline-hi)}
+  /* measured P0-5: 390px was overflowing — brand text, mode, camera count,
+     tile route and clock all fought for one line. Hide the secondary meta
+     entirely and let the brand share the row with clock + language. */
+  #statusbar{padding:0 8px;gap:8px}
+  .brand h1{font-size:11px;letter-spacing:.1em;max-width:38vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand .sub{display:none}
   #statusbar .meta .hide-s{display:none}
+  #statusbar .meta{gap:6px;font-size:10px}
+  #langSwitch button{padding:2px 7px;font-size:10px}
 }
 
 /* ---------- reduced motion: required, not optional (DESIGN_BRIEF §5) ---------- */

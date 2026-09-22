@@ -20,10 +20,19 @@ export interface LayerArgs {
   ctx: AdapterCtx;
   /** districts (Traditional Chinese) that currently have a live suspension */
   activeDistricts?: Set<string>;
+  /** mode-switch generation: passed by main; a layer whose fetch outlives the
+      mode it was asked for must abort instead of painting orphan geometry */
+  gen?: number;
+  isCurrent?: (gen: number) => boolean;
+}
+
+/** true when this layer request was superseded by a newer mode switch. */
+function stale(args: LayerArgs, gen: number): boolean {
+  return args.isCurrent !== undefined && !args.isCurrent(gen);
 }
 
 function layersOf(def: LayerDefRaw): string[] {
-  return [`${PREFIX}${def.id}-fill`, `${PREFIX}${def.id}-line`, `${PREFIX}${def.id}-circle`];
+  return [`${PREFIX}${def.id}-fill`, `${PREFIX}${def.id}-line`, `${PREFIX}${def.id}-circle`, `${PREFIX}${def.id}-label`];
 }
 
 export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): void {
@@ -36,23 +45,25 @@ export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): v
 async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs): Promise<void> {
   const src = args.registry.byId.get(def.source);
   if (!src) throw new Error(`layer ${def.id}: source ${def.source} 唔存在`);
+  const gen = args.gen ?? 0;
   const res = await fetch(fetchUrl(src), { signal: AbortSignal.timeout(25_000) });
+  if (stale(args, gen)) throw new Error("obsolete layer request"); // mode switched mid-fetch
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = (await res.json()) as GeoJSON.FeatureCollection;
 
   const id = `${PREFIX}${def.id}`;
+  if (stale(args, gen)) throw new Error("obsolete layer request");
   map.addSource(id, { type: "geojson", data });
 
   const active = args.activeDistricts ?? new Set<string>();
   const activeList = [...active];
   // Districts with a live suspension are the story; the rest are context.
-  // A `match` expression needs at least one label/value pair plus a fallback —
-  // with no active districts there is nothing to match, so use a plain colour
-  // (MapLibre rejects `["match", input, fallback]` outright).
+  // With no active districts there is nothing to match, so use a plain colour.
   const matchExpr: unknown = activeList.length
     ? ["match", ["get", "DISTRICT_CHINESE"], ...activeList.flatMap((d) => [d, "#ff5d6c"]), "#a855f7"]
     : "#a855f7";
 
+  if (stale(args, gen)) throw new Error("obsolete layer request");
   map.addLayer({
     id: `${id}-fill`,
     type: "fill",
@@ -60,8 +71,8 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
     paint: {
       "fill-color": matchExpr as never,
       "fill-opacity": (activeList.length
-        ? ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 0.22, 0.07]
-        : 0.07) as never,
+        ? ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 0.3, 0.03]
+        : 0.03) as never,
     },
   });
   map.addLayer({
@@ -71,11 +82,34 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
     paint: {
       "line-color": matchExpr as never,
       "line-width": (activeList.length
-        ? ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 1.6, 0.8]
-        : 0.8) as never,
-      "line-opacity": 0.85,
+        ? ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 2, 0.5]
+        : 0.5) as never,
+      "line-opacity": (activeList.length ? 0.95 : 0.4) as never,
     },
   });
+  // District name labels on the ACTIVELY affected areas only — MapLibre draws
+  // CJK via localIdeographFontFamily (set in basemap.ts), no glyph server hit.
+  if (activeList.length) {
+    map.addLayer({
+      id: `${id}-label`,
+      type: "symbol",
+      source: id,
+      filter: ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]],
+      layout: {
+        "text-field": ["get", "DISTRICT_CHINESE"],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 12,
+        "text-offset": [0, 0.4],
+        "text-anchor": "center",
+      },
+      paint: {
+        "text-color": "#ff5d6c",
+        "text-halo-color": "rgba(5,7,13,.9)",
+        "text-halo-width": 1.2,
+      },
+    });
+  }
+  if (stale(args, gen)) throw new Error("obsolete layer request");
 
   map.on("click", `${id}-fill`, (e) => {
     const f = e.features?.[0];
@@ -100,7 +134,9 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
 
 async function rasterLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs, panel: PanelDefRaw | undefined): Promise<void> {
   if (!panel) throw new Error(`layer ${def.id}: 冇對應 panel 定義 bbox/opacity`);
+  const gen = args.gen ?? 0;
   const { data } = await adaptPanel(panel, args.ctx);
+  if (stale(args, gen)) throw new Error("obsolete layer request");
   if (data.kind !== "raster_map") throw new Error(`layer ${def.id}: 資料唔係 raster`);
   const bbox = (panel.params?.["bbox"] as [number, number, number, number]) ?? [22.15, 113.83, 22.56, 114.44];
   const [minLat, minLon, maxLat, maxLon] = bbox;

@@ -26,6 +26,7 @@ import { createPanelEngine } from "./ui/panels.ts";
 import { createRail, type RailLayer } from "./ui/rail.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
 import { createTicker } from "./ui/ticker.ts";
+import { createPalette } from "./ui/palette.ts";
 
 /** The vertical-free default view. Ordered as a World-Monitor-style dense
     wall: imagery heads the column, then life-safety and civic reads. */
@@ -85,6 +86,15 @@ async function boot(): Promise<void> {
   addCameraLayers(map, cameras, { onSelect: (cam: Camera) => drawer.openCamera(cam) });
   hudEl.append(landsdBadge());
 
+  // GEV-style constant readout: the pointer's position on the map, bottom-left
+  // above the scale bar. Provably the mouse's true coordinates, never a guess.
+  const coordsEl = h("span", { class: "map-coords", style: "position:absolute;left:10px;bottom:34px" });
+  hudEl.append(coordsEl);
+  map.on("mousemove", (e) => {
+    coordsEl.textContent = `${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`;
+  });
+  map.on("mouseleave", () => (coordsEl.textContent = ""));
+
   const banner = h("div", { class: "panel", style: "position:absolute;left:12px;top:12px;max-width:420px;display:none" });
   hudEl.append(banner);
 
@@ -98,6 +108,12 @@ async function boot(): Promise<void> {
   let activeDistricts = new Set<string>();
   let drawnLayers: LayerDefRaw[] = [];
   let currentLayerIds: string[] = [];
+  // Generation token: applyModeLayers is async (CSDI fetch); a mode switch
+  // while a previous apply is in flight must not let the stale result paint
+  // orphan layers over the new mode (measured: violet district mesh survived
+  // into overview/typhoon/border). Every apply bumps the token and checks it
+  // before the slow fetch's result is applied.
+  const modeGen = { current: 0 };
 
   const emit = (sourceId: string, value: unknown) => {
     triggerState[sourceId] = value;
@@ -160,6 +176,7 @@ async function boot(): Promise<void> {
 
   /** Draw exactly the layers a vertical names — from layers.json, nothing else. */
   async function applyModeLayers(layerIds: string[]): Promise<void> {
+    const gen = ++modeGen.current;
     currentLayerIds = layerIds;
     clearVerticalLayers(map, drawnLayers);
     drawnLayers = [];
@@ -167,9 +184,13 @@ async function boot(): Promise<void> {
       .map((lid) => registry.layers.find((l) => l.id === lid))
       .filter((l): l is LayerDefRaw => !!l);
     try {
-      const drawn = await applyVerticalLayers(map, defs, { registry, ctx, activeDistricts });
+      // The gen check travels with the slow fetch: the layer code throws a
+      // sentinel when a newer mode apply has already started.
+      const drawn = await applyVerticalLayers(map, defs, { registry, ctx, activeDistricts, gen, isCurrent: (g) => g === modeGen.current });
+      if (gen !== modeGen.current) return; // superseded — nothing to record
       drawnLayers = defs.filter((d) => drawn.includes(d.id));
     } catch (err) {
+      if (gen !== modeGen.current) return; // stale failure — ignore
       const msg = err instanceof Error ? err.message : String(err);
       showBanner(lang() === "tc" ? `圖層出錯：${msg}` : `Layer error: ${msg}`, {
         label: lang() === "tc" ? "閂" : "Dismiss",
@@ -181,7 +202,12 @@ async function boot(): Promise<void> {
 
   function activateMode(id: string, manual: boolean): void {
     currentMode = id;
-    if (manual) userPinned = true;
+    if (manual) {
+      userPinned = true;
+      // A manual choice moots the auto-switch notice — never leave a stale
+      // "自動切換" card telling the user to do what they just did.
+      hideBanner();
+    }
     rail.setActive(id);
     const v = registry.verticals.find((x) => x.id === id);
     statusbar.setMode(
@@ -306,6 +332,17 @@ async function boot(): Promise<void> {
   // --- go ---------------------------------------------------------------------
   activateMode("overview", false);
   drawer.close();
+  // ⌘K command palette — jump to any mode / panel / camera.
+  createPalette({
+    registry,
+    cameras,
+    onMode: (id) => activateMode(id, true),
+    onCamera: (cam) => {
+      map.flyTo({ center: [cam.lon, cam.lat], zoom: 15, duration: 600 });
+      drawer.openCamera(cam);
+    },
+    currentMode: () => currentMode,
+  });
   void pollTriggers();
   window.setInterval(() => void pollTriggers(), TRIGGER_POLL_MS);
 

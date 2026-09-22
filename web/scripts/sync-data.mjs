@@ -108,7 +108,46 @@ const style = {
       // keeps roads and coastline legible on a dark UI; desaturating loses roads
       // and invert is banned. MapLibre raster paint approximates it:
       // brightness-max clamps highlights, contrast is an offset from neutral.
-      paint: { "raster-brightness-max": 0.52, "raster-contrast": 0.12 },
+      //
+      // v0.4: a reference screenshot of World Monitor showed why the overlays
+      // were not popping — its basemap is near-black, so the signal colours are
+      // the ONLY saturated thing on screen. Ours kept a warm grey topo at 0.52
+      // and every overlay had to compete with it.
+      //
+      // Measured, not guessed (scripts/probe-basemap.mjs samples the rendered
+      // screenshot): with brightness-max 0.45 alone the map still rendered at
+      // luma 109-113 — mid-grey, because brightness-max clamps the HIGHLIGHT
+      // end and the topo tiles' midtones never reach it. The pair that actually
+      // darkens the body of the image is the min/max WINDOW: raising min lifts
+      // blacks, so to go dark the window is widened downward via contrast,
+      // which pivots around 0.5. -0.55 saturation is a RELATIVE offset (0 =
+      // unchanged, -1 = greyscale); spread measured 6-12 afterwards, i.e.
+      // neutral grey, which is the intent.
+      // Measured three times over, and the third is the one that matters:
+      //
+      // 1. brightness-max 0.45 alone → luma ~110. The clamp sets a CEILING, and
+      //    the topo tiles' midtones sit far below it, so nothing moves.
+      // 2. Tightening to 0.22 + contrast 0.62 → only luma 87.
+      // 3. A live paint matrix (scripts/probe-basemap-matrix.mjs, rows applied
+      //    via setPaintProperty and measured from screenshots) found the rule:
+      //    raster-brightness-max DOES NOTHING unless raster-contrast is also
+      //    set. Row "brightness-max 0.22 only" = luma 112; the same clamp WITH
+      //    contrast = luma 34. That is the whole reason the first two attempts
+      //    went nowhere.
+      //
+      // Final row: opacity 0.3 + brightness-max 0.35 + contrast 0.3 → luma 35
+      // with coastline and roads still legible. A per-layer probe confirmed the
+      // topo raster is the only light source (hiding it drops the patch to
+      // luma 11 = the background), so darkening it IS darkening the map.
+      // Spread measured ~8 afterwards: near-neutral, so the signal colours
+      // (#ff5d6c / #f59e0b / #22d3ee) are the only saturated things on screen
+      // — the World Monitor property this pass is chasing.
+      paint: {
+        "raster-opacity": 0.3,
+        "raster-brightness-max": 0.35,
+        "raster-contrast": 0.3,
+        "raster-saturation": -0.6,
+      },
     },
     {
       id: "landsd-imagery",
@@ -117,9 +156,13 @@ const style = {
       layout: { visibility: "none" },
       // Aerial at night is too dark to read; the same darkened treatment as the
       // topo keeps it usable without becoming a heatmap blob (DESIGN_BRIEF §0.5).
-      // v0.2.1: 0.6/0.1 → 0.55/0.15 — the plan's tuning pass after a daylight
-      // screenshot review (aerial is only ever a fallback basemap).
-      paint: { "raster-brightness-max": 0.55, "raster-contrast": 0.15 },
+      // Aerial keeps MORE brightness and saturation than the topo because the
+      // photograph is the point of an aerial view; the topo is scaffolding.
+      paint: {
+        "raster-brightness-max": 0.5,
+        "raster-contrast": 0.2,
+        "raster-saturation": -0.2,
+      },
     },
     {
       id: "esri-imagery",
@@ -128,6 +171,9 @@ const style = {
       layout: { visibility: "none" },
       paint: { "raster-brightness-max": 0.6, "raster-contrast": 0.1 },
     },
+    // The label overlay is the recognition source (Traditional Chinese place
+    // names) and stays full-strength in colour: desaturating it would take the
+    // single most "this is Hong Kong" element down with the basemap.
     { id: "landsd-label-tc", type: "raster", source: "landsd-label-tc" },
   ],
 };

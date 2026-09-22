@@ -97,6 +97,28 @@ def main() -> int:
                           f"a free project must not carry a key whose price scales with popularity")
         if METERED_HOSTS.search(s.get("url", "") or ""):
             errors.append(f"source {s['id']}: URL looks like a metered provider — banned (see COST.md)")
+
+    # ---- licence traceability ----
+    # A source with no confirmed licence is a warning, not an error: the field is
+    # deliberately absent when the publisher's terms have not been read, and
+    # blocking the build on that would push people to guess one. The point is
+    # that the gap is VISIBLE.
+    unlicensed = [s["id"] for s in sources["sources"] if not s.get("license")]
+    if unlicensed:
+        warnings.append(f"{len(unlicensed)} source(s) have no confirmed licence: "
+                        + ", ".join(unlicensed[:8]) + ("…" if len(unlicensed) > 8 else ""))
+
+    # ---- timestamped URLs must be templates ----
+    # A committed literal timestamp 404s within minutes and looks like a dead
+    # source (measured: hko_radar). The app substitutes {YYYYMMDDHHMM} at
+    # runtime; a hardcoded date here means someone pasted a probe sample.
+    stampy = re.compile(r"_(20\d{6})\d{4}\.(?:jpg|png|gif)\b")
+    for s in sources["sources"]:
+        url = s.get("url", "") or ""
+        if stampy.search(url):
+            errors.append(f"source {s['id']}: URL carries a literal timestamp — use "
+                          f"{{YYYYMMDDHHMM}} and let the parser substitute it (it 404s within minutes)")
+
     flagged = {s["id"] for s in sources["sources"]
                if s.get("todo") or s.get("status") == "fail"}
 

@@ -63,6 +63,21 @@ export function stamp(at: Date): string {
   return `${dayFmt.format(at)} ${t}`;
 }
 
+/** "2026-09-19 16:00" (HKT wall, as feeds publish) → relative age for a
+    list row ("2 日前" / "3 h ago"); the caller keeps the absolute stamp in a
+    title attribute. Unknown formats pass through unchanged. */
+export function relTime(isoLike: string, now = new Date()): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/.exec(isoLike);
+  if (!m) return isoLike;
+  const at = new Date(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:00+08:00`);
+  if (Number.isNaN(at.getTime())) return isoLike;
+  const s = (now.getTime() - at.getTime()) / 1000;
+  if (s < 0) return lang() === "tc" ? "啱啱" : "just now";
+  if (s < 3600) return lang() === "tc" ? `${Math.max(1, Math.round(s / 60))} 分鐘前` : `${Math.max(1, Math.round(s / 60))} min ago`;
+  if (s < 86400) return lang() === "tc" ? `${Math.round(s / 3600)} 小時前` : `${Math.round(s / 3600)} h ago`;
+  return lang() === "tc" ? `${Math.floor(s / 86400)} 日前` : `${Math.floor(s / 86400)} d ago`;
+}
+
 /** Today's date in HK as YYYY-MM-DD — for sources whose URL carries a date
     (HKIA flights, radar filenames). Using the client clock's local date would
     be wrong for any visitor outside HKT. */

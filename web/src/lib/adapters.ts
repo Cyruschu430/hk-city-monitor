@@ -134,8 +134,11 @@ const ADAPTERS: Record<string, Adapter> = {
 
   async mardep_crossboundary_ferry(src, panel) {
     const max = Number(panel.params?.["max_rows"] ?? 20);
-    const { columns, rows } = P.parseFerry(await text(await get(src)), max);
-    return { data: { kind: "table", columns, rows }, observedAt: null };
+    // Honesty from the ROW dates, not the fetch time (the feed famously lags):
+    // parseFerry returns observedAt = latest 抵達時間 in the payload, so an old
+    // payload immediately degrades to amber even though the request was fresh.
+    const { columns, rows, observedAt } = P.parseFerry(await text(await get(src)), max);
+    return { data: { kind: "table", columns, rows }, observedAt };
   },
 
   async hkia_flights(src, panel) {
@@ -186,11 +189,11 @@ const ADAPTERS: Record<string, Adapter> = {
   async yahoo_hk_quotes(src, panel, _ctx) {
     void src;
     const symbols = (panel.params?.["symbols"] as string[] | undefined) ?? ["^HSI", "^HSCE", "0700.HK", "9988.HK"];
-    const NAMES: Record<string, { tc: string; en: string }> = {
-      "^HSI": { tc: "恒生指數", en: "Hang Seng Index" },
-      "^HSCE": { tc: "國企指數", en: "HSCE Index" },
-      "0700.HK": { tc: "騰訊控股", en: "Tencent" },
-      "9988.HK": { tc: "阿里巴巴", en: "Alibaba" },
+    const NAMES: Record<string, { tc: string; en: string; tag: string }> = {
+      "^HSI": { tc: "恒生指數", en: "Hang Seng Index", tag: "指數" },
+      "^HSCE": { tc: "國企指數", en: "HSCE Index", tag: "指數" },
+      "0700.HK": { tc: "騰訊控股", en: "Tencent", tag: "股份" },
+      "9988.HK": { tc: "阿里巴巴", en: "Alibaba", tag: "股份" },
     };
     const rows: (string | { text: string; cls: string })[][] = [];
     let observedAt: Date | null = null;
@@ -201,12 +204,14 @@ const ADAPTERS: Record<string, Adapter> = {
         const q = P.parseYahooQuote(j);
         if (!q) continue;
         if (q.time && (!observedAt || q.time > observedAt)) observedAt = q.time;
-        const nm = (NAMES[sym] ?? { tc: sym, en: sym })[lang() === "tc" ? "tc" : "en"];
+        const meta = NAMES[sym] ?? { tc: sym, en: sym, tag: "" };
+        const nm = lang() === "tc" ? meta.tc : meta.en;
         const up = q.changePct >= 0;
         // HK convention: red = up, green = down — the CSS class uses the
-        // project tokens (--mkt-up is 紅 for rises).
+        // project tokens (--mkt-up is 紅 for rises). The tiny tag column is
+        // the World-Monitor watch-list grammar (名稱 + 類別 + 價格 + 變幅).
         rows.push([
-          nm,
+          meta.tag ? `${nm} · ${meta.tag}` : nm,
           q.price.toLocaleString("en-US", { maximumFractionDigits: 2 }),
           { text: `${up ? "+" : ""}${q.changePct.toFixed(2)}%`, cls: up ? "mkt-up" : "mkt-down" },
         ]);
@@ -291,13 +296,15 @@ const ADAPTERS: Record<string, Adapter> = {
       return { data: { kind: "image_single", src: "", alt: "" }, observedAt: null };
     }
     const track = P.parseTcTrack(await text(await getAbsolute(first.trackUrl)));
-    const src2 = await ctx.raster.tcTrack({ name: track.name || track.enName, points: track.points });
+    // The XML often omits the Chinese name; never render "DUJUAN DUJUAN".
+    const name = track.name === track.enName ? track.name : `${track.name} ${track.enName}`;
+    const src2 = await ctx.raster.tcTrack({ name, points: track.points });
     return {
       data: {
         kind: "image_single",
         src: src2,
-        alt: `${track.name} 路徑`,
-        note: `${track.name} ${track.enName} · ${track.points.length} 個定位點`,
+        alt: `${name} 路徑`,
+        note: `${name} · ${track.points.length} 個定位點`,
       },
       observedAt: track.bulletinTime,
     };

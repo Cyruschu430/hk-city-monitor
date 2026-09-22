@@ -190,4 +190,40 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log(`✓ 口岸顯示: 0 分鐘 → 「少於 15 分鐘」；25 分鐘 → amber（${cells[1]!.value}）`);
 }
 
+// 19. ImmD 99 sentinel → CLOSED, not a red "99 分鐘" queue (P0-3, measured in
+// the 23:00 screenshot: 香園圍/落馬洲支線/文錦渡 showed red 99-min queues
+// while their crossings were merely shut for the night).
+{
+  const cells = P.parseImmdQueue(
+    { HYW: { arrQueue: 99, depQueue: 99 }, LSC: { arrQueue: 99, depQueue: 0 }, LWS: { arrQueue: 10, depQueue: 8 } },
+    ["HYW", "LSC", "LWS"],
+  );
+  assert.equal(cells[0]!.status, 3, "99 → closed state");
+  assert.ok(cells[0]!.value.includes("已關閉") || cells[0]!.value.includes("Closed"), `value=${cells[0]!.value}`);
+  assert.equal(cells[1]!.status, 3, "one side 99 still means closed");
+  assert.equal(cells[2]!.status, 0, "open crossing unaffected");
+  console.log(`✓ 口岸 99: 已關閉（灰）唔係「99 分鐘」（紅）；開放站正常（${cells[2]!.value}）`);
+}
+
+// 20. Ferry observedAt derives from the ROW dates, not the fetch time (P0-4):
+// a fresh request returning May rows must come out stale already.
+{
+  const { rows, observedAt } = P.parseFerry(
+    "抵達時間|出發地|營運公司|碼頭|泊位|現況\n2026-05-13 09:05|中山|珠江客運|中港碼頭|6|已抵達\n2026-05-13 09:30|澳門|噴射飛航|港澳碼頭|2|已抵達",
+    10,
+  );
+  assert.equal(rows.length, 2);
+  assert.equal(observedAt?.toISOString(), "2026-05-13T01:30:00.000Z", "latest row date, 09:30+08:00");
+  console.log(`✓ 渡輪 observedAt = 最新行日期（${observedAt?.toISOString()}，唔係 fetch 時間）`);
+}
+
+// 21. Relative-time helper: bare ISO stamps → 前 ages; junk passes through.
+{
+  const { relTime } = await import("./format.ts");
+  const now = new Date("2026-09-21T12:00:00+08:00");
+  assert.ok(relTime("2026-09-19 10:00", now).includes("日前"), relTime("2026-09-19 10:00", now));
+  assert.equal(relTime("random string", now), "random string");
+  console.log(`✓ 相對時間: ${relTime("2026-09-19 10:00", now)} / 原格式 pass-through`);
+}
+
 console.log("\nparsers.test.ts: ALL PASS");

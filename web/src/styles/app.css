@@ -57,6 +57,20 @@ a:hover{color:var(--cyan)}
 /* banner (auto-switch / layer-error notices over the map) */
 .banner-detail{margin:0;font-size:11px;color:var(--dim);line-height:1.45}
 
+/* ---------- map placard (instrument head over the map face) ---------- */
+/* World Monitor's map is headed "GLOBAL SITUATION / TUE, 22 SEP 2026 … UTC":
+   upper-case, letter-spaced, scope left, timestamp right. It reads as an
+   instrument marking rather than a page title, which is the register this
+   whole chrome is trying to hit. Pointer-events off so it never eats a map
+   drag — it is a label, not a control. */
+#mapHead{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;
+  align-items:center;gap:12px;padding:7px 12px;pointer-events:none;z-index:9;
+  background:linear-gradient(180deg,rgba(3,6,11,.72),rgba(3,6,11,0))}
+.mh-scope{font-size:10.5px;letter-spacing:.16em;font-weight:600;color:#cfe0f5;
+  text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mh-clock{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;
+  color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+
 /* ---------- map legend (bottom-left, above the scale bar) ---------- */
 .map-legend{position:absolute;left:10px;bottom:52px;display:flex;flex-direction:column;gap:4px;
   padding:7px 9px;background:rgba(5,8,13,.66);border:1px solid var(--hairline);border-radius:8px;

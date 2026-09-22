@@ -347,6 +347,30 @@ try {
   });
   check("P2 GEV focus HUD：Esc 關到", hudClosed === true, `hudHidden=${hudClosed}`);
 
+  // Speed: the marquee duration must be derived from content width (constant
+  // px/s), so the long 全部/交通 lists do not race past. Compare two tabs.
+  const speed = await page.evaluate(async () => {
+    const track = document.querySelector(".ticker-track");
+    const dur = () => track?.style.animationDuration ?? "";
+    const px = () => (track?.scrollWidth ?? 0) / 2;
+    const click = async (label) => {
+      [...document.querySelectorAll(".ticker-tab")].find((b) => b.textContent.trim() === label)?.click();
+      await new Promise((r) => setTimeout(r, 2600));
+    };
+    await click("全部");
+    const all = { dur: dur(), px: px() };
+    await click("RTHK");
+    const rthk = { dur: dur(), px: px() };
+    await click("全部");
+    return { all, rthk };
+  });
+  const parseS = (d) => Number((d || "0s").replace("s", ""));
+  const ppsAll = speed.all.px / parseS(speed.all.dur);
+  const ppsRthk = speed.rthk.px / parseS(speed.rthk.dur);
+  check("Bug ticker：速度改用固定 px/s（全部同 RTHK 同速，唔會長 tab 衝得特别快）",
+    speed.all.dur !== "" && speed.rthk.dur !== "" && Math.abs(ppsAll - ppsRthk) < 12 && ppsAll > 25 && ppsAll < 70,
+    `全部 ${speed.all.px}px/${speed.all.dur}=${ppsAll.toFixed(1)}px/s · RTHK ${speed.rthk.px}px/${speed.rthk.dur}=${ppsRthk.toFixed(1)}px/s`);
+
   // --- 4. the 停水 gate: live WSD data ----------------------------------------
   await page.click(".rail-btn:nth-child(4)").catch(() => {}); // 停水模式 = 4th rail button
   await page.waitForFunction(
@@ -661,6 +685,30 @@ try {
   check("3D 圖層：首屏冇載 deck chunk（lazy）；撳掣後 overlay 掛上",
     threeD.overlay && threeD.lazyFirstPaint,
     `overlay3d=${threeD.overlay} 首屏lazy=${threeD.lazyFirstPaint} 撳後新增script=${threeD.addedAfter}`);
+
+  // 3D is an ON-THE-FLY overlay layer: off must empty it, on must refill it.
+  const threeDCycle = await page.evaluate(async () => {
+    const rail = document.querySelector(".rail-btn:nth-child(11)");
+    const st = () => (window.__overlay3dState ? window.__overlay3dState() : null);
+    const before = st();
+    rail?.setAttribute("aria-pressed", "true");
+    rail?.click(); // → off
+    await new Promise((r) => setTimeout(r, 1200));
+    const off = st();
+    rail?.setAttribute("aria-pressed", "false");
+    rail?.click(); // → on again
+    await new Promise((r) => setTimeout(r, 1500));
+    const on = st();
+    return { before, off, on };
+  });
+  check("3D 圖層：on-the-fly 開關（on → off → on 都跟得住）",
+    threeDCycle.off === false && threeDCycle.on === true,
+    `before=${threeDCycle.before} off=${threeDCycle.off} onAgain=${threeDCycle.on}`);
+  await page.evaluate(() => {
+    // leave the overlay empty so the tile flood stops for the rest of the run
+    window.__overlay3d?.setProps?.({ layers: [] });
+    document.querySelector(".rail-btn:nth-child(11)")?.setAttribute("aria-pressed", "false");
+  });
   await page.click(rail3d); // leave it off
 
   // --- 10. error surface ------------------------------------------------------

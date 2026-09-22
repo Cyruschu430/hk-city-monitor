@@ -13,6 +13,10 @@ import { lang } from "../lib/i18n.ts";
 
 const POLL_MS = 5 * 60_000;
 const SPACER = "　▪　";
+/** Reading speed of the marquee: pixels of headline per second. Chosen so a
+ *  typical 30-character Chinese headline takes ~11s to cross — slow enough to
+ *  read, and identical on every tab regardless of how many headlines it has. */
+const PX_PER_SECOND = 42;
 
 interface Tab {
   id: string;
@@ -92,6 +96,18 @@ export function createTicker(root: HTMLElement, registry: Registry): void {
     }
     const text = [...headlines, ...headlines].join(SPACER);
     track.textContent = `${text}${SPACER}`;
+    // Speed must be CONSTANT, not per-tab. A fixed 60s duration made the long
+    // 全部/交通 lists race past (they are several times longer than RTHK's) —
+    // measure the rendered width and derive the duration from a fixed
+    // pixels-per-second, so every tab scrolls at the same reading speed.
+    // The track is laid out inside .ticker-viewport, so scrollWidth is the
+    // full un-clipped width.
+    requestAnimationFrame(() => {
+      const px = track.scrollWidth / 2; // one copy (content is duplicated)
+      if (px <= 0) return;
+      const seconds = Math.max(30, Math.round(px / PX_PER_SECOND));
+      track.style.animationDuration = `${seconds}s`;
+    });
   }
 
   paintTabs();

@@ -38,6 +38,7 @@ const OVERVIEW = [
   "warnings_list",
   "breaking_news_list",
   "aircraft_status",
+  "wind_status",
   "cameras_wall",
   "hko_cameras_wall",
   "special_traffic_list",
@@ -58,6 +59,7 @@ const RAIL_LAYERS: RailLayer[] = [
   { id: "cameras_td", label: { tc: "運輸署相機", en: "TD cameras" }, on: true },
   { id: "cameras_hko", label: { tc: "天文台相機", en: "HKO cameras" }, on: true },
   { id: "aircraft", label: { tc: "航機（ADS-B）", en: "Aircraft (ADS-B)" } },
+  { id: "wind_field", label: { tc: "風場", en: "Wind field" } },
   { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" } },
   { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
   { id: "buildings3d", label: { tc: "3D 樓宇（載入慢）", en: "3D buildings (heavy)" } },
@@ -410,6 +412,18 @@ async function boot(): Promise<void> {
           if (!on) break;
           const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });
           if (!drawn.includes("aircraft")) throw new Error("航機圖層畫唔出");
+          break;
+        }
+        case "wind_field": {
+          // Wind barbs: only where a station measured it, fading to nothing by
+          // ~15km (ROADMAP B5). The fade is baked into each feature by the
+          // adapter, so the honesty rule is data, not a styling choice.
+          const def = registry.layers.find((l) => l.id === "wind_field");
+          if (!def) throw new Error("layers.json 冇 wind_field");
+          clearVerticalLayers(map, [def]);
+          if (!on) break;
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });
+          if (!drawn.includes("wind_field")) throw new Error("風場圖層畫唔出");
           break;
         }
         case "buildings3d": {

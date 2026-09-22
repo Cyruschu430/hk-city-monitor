@@ -12,7 +12,7 @@ import maplibregl from "maplibre-gl";
 import { fetchUrl, type LayerDefRaw, type PanelDefRaw, type Registry } from "../lib/sources.ts";
 import { adaptPanel, hasAdapter, type AdapterCtx } from "../lib/adapters.ts";
 import { lang } from "../lib/i18n.ts";
-import { registerGlyphs } from "./symbols.ts";
+import { registerBarbs, registerGlyphs } from "./symbols.ts";
 
 const PREFIX = "vl-";
 
@@ -279,6 +279,42 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
         "icon-rotation-alignment": "map",
         "icon-allow-overlap": true,
         "icon-ignore-placement": true,
+      },
+    });
+    return;
+  }
+
+  // Wind barbs: the icon varies PER FEATURE (the speed bucket picks the image),
+  // so this is the one point layer whose icon-image is data-driven rather than
+  // a fixed glyph id.
+  if (glyph === "wind-barb") {
+    registerBarbs(map);
+    map.addLayer({
+      id: `${id}-point`,
+      type: "symbol",
+      source: id,
+      layout: {
+        // `barbId` is written by the converter; a missing one falls back to calm
+        // rather than to a random bucket.
+        "icon-image": ["concat", "barb-", ["coalesce", ["get", "barbId"], "calm"]] as never,
+        // Sized to be READ, not just present: the first pass ran 0.5-0.95 and
+        // the barbs were unreadable specks on the dark basemap (caught in a
+        // screenshot review). Feathers are the information — too small to count
+        // them and the glyph is decoration.
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 8, 0.7, 11, 1.0, 14, 1.35] as never,
+        // Barbs point INTO the wind, so the shaft is rotated by direction + 180.
+        "icon-rotate": ["+", ["get", "dirDeg"], 180] as never,
+        "icon-rotation-alignment": "map",
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
+      },
+      paint: {
+        // The honesty control (ROADMAP B5): a barb only exists where a station
+        // measured it, and confidence falls off with distance from that station.
+        // `fade` is computed per feature from the distance to the nearest
+        // reporting station; nothing is drawn beyond ~15km.
+        // icon-opacity is a PAINT property, not layout (it is data-driven here).
+        "icon-opacity": ["get", "fade"] as never,
       },
     });
     return;

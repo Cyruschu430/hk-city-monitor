@@ -108,6 +108,21 @@
    "filters": {
     "scope": "hk"
    }
+  },
+  {
+   "id": "wind_field",
+   "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
+   "render": "status_grid",
+   "geom": "point",
+   "symbol": "wind-barb",
+   "title": {
+    "tc": "風場（實測站插值）",
+    "en": "Wind field (station IDW)"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   }
   }
  ]
 }

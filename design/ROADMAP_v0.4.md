@@ -131,7 +131,7 @@ UI 一律寫「**同時發生**」，**唔准寫「因為」**（法律＋信譽
 2. **D2**：飛機圖層（adsb.fi + lol，plane glyph + track 旋轉）✅ **完成**
 3. **D3**：Tier 0/1（基線 + 規則引擎 + `data/rules.json` + validator 擴充 + unit test）
 4. **D4**：Tier 2 匯聚（官方 18 區界 + 60 分鐘窗 + score）＋ UI panel（「同時發生」字眼）
-5. **D5**：風場 flow render（IDW + 距離淡出）＋ 氣象站圖層 ← **解析器已完成，剩渲染**
+5. **D5**：風場 flow render（IDW + 距離淡出）＋ 氣象站圖層 ✅ **完成（風羽方案，零新依賴）**
 6. **D6**：Tier 3/4（LLM 敘述 + template fallback + 每日簡報）
 7. **D7**：AIS（待決定）／TomTom（待 key）／RFZ（待 Cyrus 匯出）
 
@@ -154,16 +154,21 @@ UI 一律寫「**同時發生**」，**唔准寫「因為」**（法律＋信譽
 - 圖層加暗底光環：純白色機頭喺暗底圖上係一粒睇唔到嘅點（同相機層當初一樣）。
 - Harness 順手修好兩個真問題：rail 位置 selector（加第 6 個 layer 就全部移位，令 imagery/3D 三個 check 㩒錯掣而假失敗）→ 改為**按 label 揀**；「十三個 panel」硬編 → 由 app 讀返。
 
-### 🟡 D5 一半（解析器 ✅、渲染 ⏳）
-- `hko_10min_wind` 解析器 + `joinWindToStations` 完成，26/30 名稱直接對上。
-- **實測 30 站之中只有 13 站有可用風向量**。呢個數字係**正確**唔係 bug：02:10 平靜嘅夜晚，大部分站報 `Calm` 或 `N/A` 風向。
-  - `Calm` ≠ 0；`N/A` ≠ 正北。當數字處理 = 憑空生成觀測。
-  - 兩個 alias 人手寫（Chek Lap Kok → HKIA、Star Ferry → Star Ferry(Kowloon)），兩個真係冇（North Point、Hong Kong Sea School）→ **丟棄並上報**。
-- **未做**：IDW 插值 + ~15km 淡出 + `geoql/maplibre-gl-wind` 粒子渲染、氣象站圖層。
-- ⚠️ 渲染前要決定：`geoql/maplibre-gl-wind` 係新 runtime dependency，要講明理由（AGENTS.md 硬性規定）。**替代方案**：用 MapLibre 原生 symbol 層畫風羽（wind barb），零新依賴但冇流動感。
+### ✅ D5 完成（風羽方案，零新依賴）
+- **決定（Cyrus 2026-09-23）**：用 MapLibre 原生 symbol 層畫**風羽**，**唔加** `geoql/maplibre-gl-wind`。
+  - 理由：風羽係標準氣象符號（風桿 + 尾羽，半羽 5kt／全羽 10kt），零新 runtime dependency；而且呢個圖層嘅精度**本來就受測站位置限制**，粒子流動反而會遮住呢個限制。
+- 落地：`BARB_BUCKETS` 9 個速度桶 → 每個桶註冊一張圖 → `icon-image` 用 `concat` **逐個 feature 揀圖**（專案第一個 data-driven icon）。
+- **誠實規則用 data 兌現，唔係靠 styling**：每個 feature 帶一個 `fade`（由「最近有讀數測站」嘅距離算出），用 `icon-opacity` 套用；超過 ~15km 嘅格點**根本唔會產生**。
+  - 實測：30 支風羽 · 最遠測站 **14.1km** · fade 由 **0.06 到 1.0**（30 個唔同值）。
+  - Harness 新增兩個 check 鎖住呢條規則：改大 radius 或者移除 fade property 會**直接 FAIL**，唔會靜靜喺無站嘅海面畫風。
+- 睇圖捉到兩個問題（DOM check 捉唔到）：
+  1. `icon-size` 0.5–0.95 嗰陣風羽係睇唔到嘅小點。**尾羽就係資訊**，數唔到就只係裝飾 → 改成 0.7–1.35，加深色外框 + 亮色內線。
+  2. 插值風速 < 2 km/h 會畫一個冇尾羽嘅光點——純噪音。**靜風用「冇嘢」表達**比用一堆點好。
+- Panel 唔靠估：照樣報短缺（19/30 有風數據、11 個冇風向、2 個冇座標所以唔畫）。
 
 ### ⏳ 未開工
 D3（Tier 0/1）、D4（Tier 2）、D6（Tier 3/4）、D7（AIS/TomTom/RFZ — 全部等 Cyrus 決定）。
+另：氣象站圖層（`hko_stations_network`，`station-wind` glyph 已備）可以隨時加，但同風場圖層有重疊，建議併入 D5 之後再諗。
 
 ---
 

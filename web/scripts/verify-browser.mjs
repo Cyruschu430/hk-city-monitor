@@ -172,6 +172,113 @@ try {
     newPanels.liveWall?.state === "live" && (newPanels.liveWall?.text ?? "").length > 0,
     `liveWall=${newPanels.liveWall?.text}`);
 
+  // --- 3c. v0.2.1 refinements (P0 fixes + ⌘K + map chrome) ---------------------
+  // P0-1 layer/mode race: rapid mode switches must not leave orphan layers.
+  await page.click(".rail-btn:nth-child(4)"); // water
+  await page.click(".rail-btn:nth-child(1)"); // overview immediately
+  await page.waitForTimeout(4000);
+  const raceLayers = await page.evaluate(() => {
+    const style = window.__map.getStyle();
+    return {
+      orphanLayers: (style?.layers ?? []).filter((l) => l.id.startsWith("vl-")).map((l) => l.id),
+      orphanSources: Object.keys(style?.sources ?? {}).filter((s) => s.startsWith("vl-")),
+    };
+  });
+  check("P0-1：mode 快速切換唔會殘留孤兒地圖圖層", raceLayers.orphanLayers.length === 0 && raceLayers.orphanSources.length === 0,
+    `orphan layers=[${raceLayers.orphanLayers}] sources=[${raceLayers.orphanSources}]`);
+
+  // P0-2 banner clears on manual mode switch.
+  const bannerGone = await page.evaluate(() => {
+    const banner = document.querySelector("#mapHud .panel");
+    return !banner || banner.style.display === "none";
+  });
+  check("P0-2：人手切 mode 後「自動切換」banner 唔會殘留", bannerGone, `bannerGone=${bannerGone}`);
+
+  // P1 ⌘K palette opens, searches, and jumps to a camera.
+  await page.keyboard.press("Control+k");
+  const paletteOpen = await page.evaluate(() => {
+    const p = document.querySelector(".palette");
+    return p && !p.hidden;
+  });
+  await page.type(".palette-input", "尖沙咀");
+  await page.waitForTimeout(600);
+  const paletteHits = await page.evaluate(() => document.querySelectorAll(".palette-item").length);
+  check("P1 ⌘K：Control+K 開到、搜「尖沙咀」有結果", paletteOpen && paletteHits > 0,
+    `open=${paletteOpen} hits=${paletteHits}`);
+  await page.keyboard.press("Escape");
+
+  // P1 map chrome: scale bar + coordinate readout live on the map.
+  // A REAL mouse move generates the event; fire() with a synthetic payload
+  // trips MapLibre's own handler, not ours.
+  await page.mouse.move(620, 420);
+  await page.mouse.move(640, 430);
+  await page.waitForTimeout(400);
+  const mapChrome = await page.evaluate(() => {
+    const hasScale = !!document.querySelector(".maplibregl-ctrl-scale");
+    const coords = document.querySelector(".map-coords")?.textContent ?? "";
+    return { hasScale, coords };
+  });
+  check("P1 地圖 chrome：比例尺 + 座標 readout", mapChrome.hasScale && /22\.\d+,\s*114\.\d+/.test(mapChrome.coords),
+    `scale=${mapChrome.hasScale} coords="${mapChrome.coords}"`);
+
+  // P1 district labels: in water mode the active districts carry name labels.
+  await page.click(".rail-btn:nth-child(4)"); // water
+  await page.waitForTimeout(2500);
+  const districtLabel = await page.evaluate(() => {
+    const map = window.__map;
+    const active = window.__hkcm.activeDistricts();
+    const hasLabelLayer = !!map.getLayer("vl-water_suspension_districts-label");
+    // covers: the filter's literal list contains every active district.
+    // getFilter returns ["in", ["get","DISTRICT_CHINESE"], ["literal", [...]]]
+    let covers = false;
+    if (hasLabelLayer) {
+      const f = map.getFilter("vl-water_suspension_districts-label") ?? [];
+      const expr = f[2];
+      const list = Array.isArray(expr) && Array.isArray(expr[1]) ? expr[1] : [];
+      covers = active.length > 0 && active.every((d) => list.includes(d));
+    }
+    const fillOp = map.getPaintProperty("vl-water_suspension_districts-fill", "fill-opacity");
+    return { active: active.length, hasLabelLayer, covers, quiet: JSON.stringify(fillOp).includes("0.03") };
+  });
+  check("P1 停水區 label＋非活躍區安靜化", districtLabel.hasLabelLayer && districtLabel.covers && districtLabel.quiet,
+    `active=${districtLabel.active} label=${districtLabel.hasLabelLayer} covers=${districtLabel.covers} quietFill=${districtLabel.quiet}`);
+
+  // P1 rail accent colors applied to the active mode button.
+  const railAccent = await page.evaluate(() => {
+    const active = document.querySelector('.rail-btn[aria-pressed="true"]');
+    return { has: !!active, color: active ? getComputedStyle(active).color : null };
+  });
+  check("P1 rail：active mode 有 accent 色（藍=停水）", railAccent.has && railAccent.color === "rgb(56, 189, 248)",
+    `color=${railAccent.color}`);
+
+  // P1 live tiles render 16:9.
+  await page.click(".rail-btn:nth-child(1)");
+  await page.waitForTimeout(2500);
+  const liveRatio = await page.evaluate(() => {
+    const tile = document.querySelector(".cam.live");
+    return tile ? getComputedStyle(tile).aspectRatio : null;
+  });
+  check("P1 直播 tile 16:9", liveRatio === "16 / 9", `aspect=${liveRatio}`);
+
+  // P1 market watchlist tag column + news relative time.
+  const watchNews = await page.evaluate(() => {
+    const mkt = document.querySelector('[data-panel="hk_market_table"] tbody')?.textContent ?? "";
+    const news = document.querySelector('[data-panel="breaking_news_list"] .plist li .meta')?.textContent ?? "";
+    return { hasTag: /·\s*(指數|股份)/.test(mkt), newsRelative: /[日前|小時前|分鐘前]/.test(news), news };
+  });
+  check("P1 港股 watchlist tag + 新聞相對時間", watchNews.hasTag && watchNews.newsRelative,
+    `tag=${watchNews.hasTag} news="${watchNews.news}"`);
+
+  // P0-6 TC name not doubled (typhoon mode).
+  await page.click(".rail-btn:nth-child(2)"); // typhoon
+  await page.waitForTimeout(5000);
+  const tcName = await page.evaluate(() => {
+    const note = document.querySelector('[data-panel="tc_track_image"] .note, [data-panel="tc_track_image"] .pimg .note')?.textContent ?? "";
+    const re = /([A-Z]+)\s+\1/;
+    return { note: note.trim().slice(0, 40), doubled: re.test(note) };
+  });
+  check("P0-6 熱帶氣旋名唔會重複（DUJUAN DUJUAN）", !tcName.doubled, `note="${tcName.note}"`);
+
   // --- 4. the 停水 gate: live WSD data ----------------------------------------
   await page.click(".rail-btn:nth-child(4)").catch(() => {}); // 停水模式 = 4th rail button
   await page.waitForFunction(
@@ -376,9 +483,13 @@ try {
     innerW: window.innerWidth,
     railBottom: getComputedStyle(document.getElementById("rail")).bottom,
     mapH: Math.round(document.getElementById("mapWrap").getBoundingClientRect().height),
+    // P0-5: the status bar must not overflow at 390px.
+    statusbarW: document.getElementById("statusbar").scrollWidth,
   }));
   check("手機 390px：冇橫向滾動，地圖仍在上方", mobile.scrollW <= mobile.innerW + 1 && mobile.mapH > 200,
     `scrollWidth=${mobile.scrollW} (inner=${mobile.innerW}) mapWrap=${mobile.mapH}px`);
+  check("P0-5 手機 status bar 唔爆格", mobile.statusbarW <= mobile.innerW + 1,
+    `statusbar.scrollWidth=${mobile.statusbarW} (inner=${mobile.innerW})`);
   await page.screenshot({ path: join(outDir, "04-mobile.png") });
   await page.setViewportSize({ width: 1440, height: 900 });
 

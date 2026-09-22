@@ -14,7 +14,7 @@
 
 import { h } from "./dom.ts";
 import { t, lang, type L10n } from "./i18n.ts";
-import { ageText, staleText, stamp } from "./format.ts";
+import { ageText, relTime, staleText, stamp } from "./format.ts";
 import type { Honesty } from "./honesty.ts";
 
 // --- data shapes the panel engine hands over --------------------------------
@@ -46,8 +46,10 @@ export interface Gauge {
 export interface StatusCell {
   label: string;
   value: string;
-  /** 0 nominal, 1 elevated, 2 critical — mirrors the 綠/黃/紅 the sources publish */
-  status: 0 | 1 | 2;
+  /** 0 nominal, 1 elevated, 2 critical, 3 CLOSED — the ImmD 99 sentinel
+      means the crossing is shut, not busy; a grey dot must not be confused
+      with a long queue. */
+  status: 0 | 1 | 2 | 3;
 }
 
 export type TableCell = string | { text: string; cls?: string };
@@ -148,15 +150,21 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
       return h(
         "ul",
         { class: "plist" },
-        ...data.items.map((it) =>
-          h(
+        ...data.items.map((it) => {
+          // A bare "YYYY-MM-DD HH:mm" timestamp reads better as a relative
+          // age at a glance (World Monitor's pulse style); the full stamp is
+          // kept as a hover title so nothing is hidden.
+          const isStamp = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(it.time ?? "");
+          return h(
             "li",
             it.ok ? { class: "ok-line" } : {},
             it.href ? h("a", { href: it.href, target: "_blank", rel: "noopener" }, it.title) : it.title,
             it.sub ? h("span", { class: "meta" }, it.sub) : "",
-            it.time ? h("span", { class: "meta" }, it.time) : "",
-          ),
-        ),
+            it.time
+              ? h("span", { class: "meta", title: it.time }, isStamp ? relTime(it.time!) : it.time)
+              : "",
+          );
+        }),
       );
     }
 
@@ -192,7 +200,8 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
           const tile = h(
             "div",
             {
-              class: `cam${img.dead ? " dead" : ""}`,
+              // Live-stream tiles are 16:9 (video thumbs); camera wall tiles 4:3.
+              class: `cam${img.dead ? " dead" : ""}${img.video ? " live" : ""}`,
               "data-dead": lang() === "tc" ? "暫時未能提供" : "temporarily unavailable",
               role: "button",
               tabindex: "0",

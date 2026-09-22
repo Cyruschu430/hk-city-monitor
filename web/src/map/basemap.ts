@@ -27,10 +27,18 @@ export function createMap(container: HTMLElement): maplibregl.Map {
     minZoom: 8,
     maxZoom: 18,
     attributionControl: false,
+    // Render CJK glyphs from LOCAL fonts instead of pulling them from a glyph
+    // server (the free demotiles server only ships Latin). This is what lets a
+    // map-side symbol layer show 停水區名 without a new font dependency.
+    localIdeographFontFamily: '"PingFang HK", "Noto Sans TC", "Microsoft JhengHei", sans-serif',
     // The dark treatment is a paint property in style.json, not a CSS filter:
     // filters would also darken the camera layers drawn above the basemap.
   });
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+  map.addControl(
+    new maplibregl.ScaleControl({ maxWidth: 120, unit: "metric" }),
+    "bottom-left",
+  );
   map.addControl(
     new maplibregl.AttributionControl({ compact: true, customAttribution: "Map from Lands Department 地政總署" }),
     "bottom-right",

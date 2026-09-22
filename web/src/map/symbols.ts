@@ -22,14 +22,16 @@ export type GlyphId =
 interface GlyphSpec {
   /** draw the glyph centred in a size×size box */
   draw: (ctx: CanvasRenderingContext2D, size: number) => void;
-  /** halo ring drawn behind so the icon survives a busy basemap */
-  ring?: { color: string; width: number };
+  /** solid agency-coloured disc behind the glyph — high contrast at any zoom,
+      and the colour still encodes which agency the symbol belongs to */
+  disc?: string;
 }
 
 const S = 44; // icon box; map icons are drawn at 44px and scaled by icon-size
 
+/** Ink for glyphs that sit on a coloured disc (dark reads best on cyan/violet). */
 function stroke(ctx: CanvasRenderingContext2D) {
-  ctx.strokeStyle = "#e9f2ff";
+  ctx.strokeStyle = "rgba(6,10,18,.92)";
   ctx.lineWidth = 2.4;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
@@ -200,13 +202,13 @@ function drawWater(ctx: CanvasRenderingContext2D, size: number): void {
 }
 
 const GLYPHS: Record<GlyphId, GlyphSpec> = {
-  "cam-td": { draw: drawCamera, ring: { color: "#22d3ee", width: 2 } },
-  "cam-hko": { draw: drawStation, ring: { color: "#a855f7", width: 2 } },
-  "station-wind": { draw: drawStation, ring: { color: "#38bdf8", width: 2 } },
-  aqhi: { draw: drawAqhi, ring: { color: "#34d399", width: 2 } },
-  plane: { draw: drawPlane, ring: { color: "#fbbf24", width: 2 } },
-  ferry: { draw: drawFerry, ring: { color: "#38bdf8", width: 2 } },
-  water: { draw: drawWater, ring: { color: "#22d3ee", width: 2 } },
+  "cam-td": { draw: drawCamera, disc: "#22d3ee" },
+  "cam-hko": { draw: drawStation, disc: "#a855f7" },
+  "station-wind": { draw: drawStation, disc: "#38bdf8" },
+  aqhi: { draw: drawAqhi, disc: "#34d399" },
+  plane: { draw: drawPlane },
+  ferry: { draw: drawFerry, disc: "#38bdf8" },
+  water: { draw: drawWater, disc: "#22d3ee" },
 };
 
 /** Render one glyph to an ImageData at the canonical icon size. */
@@ -219,19 +221,22 @@ function renderGlyph(id: GlyphId, scale = 2): ImageData {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("canvas 2d unavailable for map glyphs");
   ctx.scale(scale, scale);
-  if (spec.ring) {
-    // halo: a filled dark disc + coloured ring so the icon stays legible on
-    // both the dark topo and the bright aerial basemap
+  if (spec.disc) {
+    // Solid agency-coloured disc + thin dark edge: the symbol stays legible on
+    // both the dark topo and the bright aerial basemap, and the colour encodes
+    // the agency (cyan = 運輸署, violet = 天文台).
     const c = S / 2;
     ctx.beginPath();
-    ctx.arc(c, c, c - 2, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(5,7,13,.78)";
+    ctx.arc(c, c, c - 3, 0, Math.PI * 2);
+    ctx.fillStyle = spec.disc;
     ctx.fill();
-    ctx.lineWidth = spec.ring.width;
-    ctx.strokeStyle = spec.ring.color;
+    ctx.lineWidth = 1.6;
+    ctx.strokeStyle = "rgba(6,10,18,.9)";
     ctx.stroke();
+    spec.draw(ctx, S * 0.82);
+  } else {
+    spec.draw(ctx, S);
   }
-  spec.draw(ctx, S);
   return ctx.getImageData(0, 0, px, px);
 }
 
@@ -245,3 +250,31 @@ export function registerGlyphs(map: maplibregl.Map): void {
 }
 
 export const GLYPH_SIZE = S;
+
+/** Draw a glyph into an existing canvas (the map legend uses this so the
+    legend can never drift from the symbol actually drawn on the map). */
+export function drawGlyphInto(canvas: HTMLCanvasElement, id: GlyphId, size = 16): void {
+  const spec = GLYPHS[id];
+  if (!spec) return;
+  const scale = 2;
+  canvas.width = size * scale;
+  canvas.height = size * scale;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  // The glyphs are authored on a 44px grid; the legend draws them small.
+  const k = (size * scale) / S;
+  ctx.scale(k, k);
+  if (spec.disc) {
+    const c = S / 2;
+    ctx.beginPath();
+    ctx.arc(c, c, c - 3, 0, Math.PI * 2);
+    ctx.fillStyle = spec.disc;
+    ctx.fill();
+    ctx.lineWidth = 1.6;
+    ctx.strokeStyle = "rgba(6,10,18,.9)";
+    ctx.stroke();
+    spec.draw(ctx, S * 0.82);
+  } else {
+    spec.draw(ctx, S);
+  }
+}

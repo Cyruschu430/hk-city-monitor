@@ -382,6 +382,30 @@ try {
     { timeout: 20_000 },
   ).catch(() => {});
   await page.waitForTimeout(1500);
+
+  // UI 圖例 + 圖層符號 (checked here, where the water mode's layers are drawn).
+  const legend = await page.evaluate(() => {
+    const el = document.querySelector(".map-legend");
+    return {
+      hidden: el?.hidden ?? true,
+      rows: [...(el?.querySelectorAll(".legend-row") ?? [])].map((r) => r.textContent.trim()),
+    };
+  });
+  check("UI 圖例：有圖層嘅模式會顯示圖例，文字對得住個層",
+    !legend.hidden && legend.rows.some((t) => t.includes("停水")),
+    `rows=[${legend.rows}]`);
+  const icons = await page.evaluate(() => {
+    const map = window.__map;
+    return {
+      tdIcon: map.hasImage("cam-td"),
+      hkoIcon: map.hasImage("cam-hko"),
+      iconImage: map.getLayoutProperty("cameras-td-point", "icon-image") ?? null,
+      type: map.getLayer("cameras-td-point")?.type ?? null,
+    };
+  });
+  check("UI 圖層符號：相機層用相機 glyph（唔係純圓點）",
+    icons.tdIcon && icons.hkoIcon && icons.type === "symbol" && String(icons.iconImage).includes("cam-td"),
+    `type=${icons.type} icon-image=${icons.iconImage} cam-td=${icons.tdIcon} cam-hko=${icons.hkoIcon}`);
   const water = await page.evaluate(() => {
     const p = document.querySelector('[data-panel="water_suspension_list"]');
     if (!p) return { found: false };

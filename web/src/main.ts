@@ -203,7 +203,28 @@ async function boot(): Promise<void> {
         if (currentLayerIds.includes("water_suspension_districts")) void applyModeLayers(currentLayerIds);
       }
     }
+    // Coverage line follows panel health. Called from emit() because a panel
+    // reporting its trigger state is exactly the moment its honesty changed.
+    paintCoverage();
   };
+
+  /** Honest coverage readout. `total` counts the SOURCES behind the mounted
+      panels (the engine dedupes by source), so the figure describes what is on
+      screen right now rather than a fixed promise about the catalog. */
+  function paintCoverage(): void {
+    const s = engine.stats();
+    statusbar.setCoverage({
+      live: s.live,
+      total: s.total,
+      error: s.error,
+      stale: s.stale,
+      catalog: registry.sources.length,
+    });
+  }
+  // Staleness is a function of time, so the coverage line needs its own tick —
+  // otherwise a source that dies quietly keeps reading "healthy" until some
+  // unrelated panel happens to refresh.
+  window.setInterval(paintCoverage, 30_000);
 
   const engine = createPanelEngine({
     root: panelsEl,

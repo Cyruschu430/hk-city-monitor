@@ -59,6 +59,9 @@ export interface LayerDefRaw {
   title: { tc: string; en: string };
   popup: string | null;
   filters?: Record<string, string>;
+  /** Glyph id from map/symbols.ts. A point layer picks its symbology here, so
+      "the camera layer uses camera symbols" is a config fact, not a code fact. */
+  symbol?: string;
 }
 
 /** Some probed URLs embed a sample date ("date=2026-09-18"); the app always

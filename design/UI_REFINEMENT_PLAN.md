@@ -156,3 +156,59 @@ node scripts/verify-browser.mjs http://localhost:4173/   # 目標 36/36+
 - worldmonitor.app 官網（2026-09-21 fetch）：「⌘K」「first 5 min」「lens 一鍵切」「live right now 底欄＋每項附來源」「markets watchlist 格式」
 - DESIGN_BRIEF §0.5 已錄嘅 WM/GEV 語法（hero map + rail + dense sub-panels + ticker；GEV：tethered HUD labels + bottom mode bar + teal identity）
 - 冇用 vision model 做判斷（modlens 喺本區 400）——以上全部係 Ctrl 實測 DOM/screenshot 或官方文字
+
+---
+
+## 9. v0.4 — 對照 World Monitor **真圖** 嘅 UI/UX pass（2026-09-23）
+
+之前所有 WM 判斷都係靠官網文字同記憶。今次用 headless Chromium **真係 cap 咗 dashboard**：
+
+```
+node scripts/capture-worldmonitor.mjs
+→ web/test/artifacts/reference/wm-dashboard.png
+→ web/test/artifacts/reference/wm-dashboard-finance.png
+```
+
+睇完真圖，差距唔喺「靚唔靚」，喺**資訊架構**。四點係之前完全冇做對嘅：
+
+### 9.1 LAYERS 面板（WM 左下）— 我哋完全冇
+WM 左下有個真 control：每行 = ☑ checkbox ＋ 該層自己嘅小 icon ＋ 大寫層名（`INTEL HOTSPOTS`、`CONFLICT ZONES`、`UNDERSEA CABLES`…），右邊一個 `ⓘ`（來源／attribution）＋一個 `⤢`（展開）。tick 就出圖，untick 就收。
+我哋而家只有一條**被動**嘅 `.map-legend` 文字——睇得，但撳唔到。
+**做法**：`paintLegend` 由「列出已畫 layers」升級成 **layer control**：每行有 checkbox、glyph、雙語層名、`ⓘ` 開該層來源／更新時間。tick/untick → `setLayoutProperty(visibility)`（唔重新 fetch）。底部保留一條真 legend（色標 + 符號）。
+**驗收**：`#layers` 內 checkbox 可 toggle，`visibility` 真變，`window.__hkcm.drawnLayers` 反映狀態。
+
+### 9.2 底圖要暗到訊號色係「唯一飽和嘅嘢」
+WM 地圖近乎黑，所以橙色／紅色訊號一彈出就搶眼。我哋 LandsD topo 加暗 0.52/1.12 仍然偏暖灰、飽和度唔低，overlay 要「爭」先睇得到。
+**做法**：topo 層加 `raster-saturation: -0.55` ＋ `raster-contrast: 0.12` ＋ 再壓 `raster-brightness-max`；保留繁中 label 層唔郁（辨識度來源）。訊號色（`#ff5d6c` 停水、`#f59e0b` 警告、`#22d3ee` 相機）加一層暗底之後會自己彈出。
+**驗收**：screenshot 目測 overlay 對比提升；`__hkcm` 提供 `basemapTint()` 俾 verify 讀實際 paint 值。
+
+### 9.3 Panel 密度：數字優先，唔係 iframe 優先
+WM 每個 market row ≈ 76px：細 label ＋ ticker ＋ **大數字** ＋ inline sparkline。我哋 overview 右欄 ~40% 高度係一個 YouTube 卡牆，panel 又高又鬆，一屏睇到 3–4 個。
+**做法**：
+- `image_wall` 嘅直播卡由「大卡」改**縮圖列**（16:9，一行兩張，72px 高），LIVE badge 縮細。
+- panel 內 gap／padding 收窄，`.panel-body` 由鬆散行距改密行。
+- overview 右欄容許 2 欄 grid（`grid-template-columns: repeat(auto-fill, minmax(240px,1fr))`），`big_number`／`table` 撐滿。
+**驗收**：overview 一屏見到 panel 數由 ~4 升到 ≥6（verify 數 `#panels .panel` 嘅 `getBoundingClientRect` 可見數）。
+
+### 9.4 標題列係「儀器抬頭」，唔係標題
+WM：`GLOBAL SITUATION`（左）＋ `TUE, 22 SEP 2026 16:47:45 UTC`（右），大寫 letter-spaced，似面板銘牌。
+**做法**：地圖頂加一條 `.map-head`：左「香港即時態勢 / HONG KONG SITUATION」，右 `HKT + 日期`（live clock）。同 status bar 分工——status bar 講系統狀態，map-head 講「你而家睇緊乜、幾點」。
+**驗收**：`#mapHead` 存在、時間每秒跳、手機縮成一行。
+
+### 9.5 底部誠實覆蓋率句（WM 最值得抄嘅一點）
+WM 底欄寫：`Digest coverage: complete — 116 publishers, 295 items, feeds 234/245, categories 17/17`。
+呢句正是我哋嘅誠實原則，但做咗喺 **chrome** 度而唔係 panel 角。我哋而家有 176 個源但只有 ~21 個 panel 出到街——**唔講出嚟就係誤導**。
+**做法**：status bar 底加一行 `.coverage`：`覆蓋：21/176 源上線 · 12 個源今輪錯誤 · 更新 00:42:10 HKT`，並提供展開列出錯誤源。數字由 runtime 真實統計（成功／失敗／過期），唔可以硬編。
+**驗收**：verify 檢查 coverage 文字含「源上線」且數字 ＝ `__hkcm.sourceStats()` 回報值；斷網後錯誤數上升。
+
+---
+
+## 10. v0.4 執行次序
+
+1. 9.4 map-head（細、獨立）
+2. 9.2 底圖色調（細、影響之後所有目測）
+3. 9.1 LAYERS control（中，要改 `main.ts` legend 路徑）
+4. 9.5 coverage 句（中，要加 runtime 統計）
+5. 9.3 panel 密度（最大，最後做，因為前面幾樣會改變版面比例）
+
+每步後：`npm run typecheck` → `npm test` → `validate_config.py` → `build` → `verify-browser.mjs`（50 項，唔可以跌）→ `capture-v3.mjs` → **親眼睇**。

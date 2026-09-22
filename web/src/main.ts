@@ -14,7 +14,7 @@ import { browserRasterizer } from "./map/raster.ts";
 import { activeVertical, type State, type VerticalDef } from "./lib/trigger.ts";
 import { adaptPanel } from "./lib/adapters.ts";
 import { h, clear } from "./lib/dom.ts";
-import { lang, t } from "./lib/i18n.ts";
+import { lang, onLangChange, t } from "./lib/i18n.ts";
 import { loadRegistry, clearDataCache, type VerticalDefRaw } from "./lib/sources.ts";
 import { createMap, landsdBadge, setBasemap } from "./map/basemap.ts";
 import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./map/cameras.ts";
@@ -26,6 +26,7 @@ import { createDrawer } from "./ui/drawer.ts";
 import { createPanelEngine } from "./ui/panels.ts";
 import { createRail, type RailLayer } from "./ui/rail.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
+import { createMapHead, relabelMapHead } from "./ui/maphead.ts";
 import { createTicker } from "./ui/ticker.ts";
 import { createPalette } from "./ui/palette.ts";
 import { createFocusHud } from "./ui/focushud.ts";
@@ -62,6 +63,9 @@ const RAIL_LAYERS: RailLayer[] = [
 
 async function boot(): Promise<void> {
   const statusbar = createStatusBar(document.getElementById("statusbar")!);
+  const mapHeadEl = document.getElementById("mapHead")!;
+  const mapHead = createMapHead(mapHeadEl);
+  onLangChange(() => relabelMapHead(mapHeadEl));
   const tickerEl = document.getElementById("ticker")!;
   const railEl = document.getElementById("rail")!;
   const panelsEl = document.getElementById("panels")!;
@@ -273,7 +277,10 @@ async function boot(): Promise<void> {
     }
     rail.setActive(id);
     const v = registry.verticals.find((x) => x.id === id);
-    statusbar.setMode(v ? (lang() === "tc" ? v.name.tc : v.name.en) : lang() === "tc" ? "總覽" : "Overview");
+    statusbar.setMode(
+      v ? (lang() === "tc" ? v.name.tc : v.name.en) : lang() === "tc" ? "總覽" : "Overview",
+    );
+    mapHead.setScope(v ? v.name.tc : "香港即時態勢", v ? v.name.en : "HONG KONG SITUATION");
     engine.setPanels(v ? v.order : OVERVIEW);
     void applyModeLayers(v ? v.layers : []);
     if (manual && pendingVertical?.id === id) {

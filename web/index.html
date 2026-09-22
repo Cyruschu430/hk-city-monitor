@@ -16,6 +16,14 @@
   <nav id="rail" aria-label="modes"></nav>
   <div id="mapWrap">
     <div id="map" role="application" aria-label="map"></div>
+    <!-- Instrument placard, not a page title: World Monitor's map face is
+         headed by WHAT you are looking at and WHEN, in the same letter-spaced
+         register as a panel铭牌. The status bar above answers "is the system
+         healthy"; this answers "what am I looking at, as of when". -->
+    <div id="mapHead" aria-hidden="true">
+      <span class="mh-scope" data-tc="香港即時態勢" data-en="HONG KONG SITUATION">香港即時態勢</span>
+      <span class="mh-clock"></span>
+    </div>
     <div id="mapHud"></div>
   </div>
   <aside id="panels" aria-label="panels"></aside>

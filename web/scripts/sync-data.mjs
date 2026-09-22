@@ -117,7 +117,9 @@ const style = {
       layout: { visibility: "none" },
       // Aerial at night is too dark to read; the same darkened treatment as the
       // topo keeps it usable without becoming a heatmap blob (DESIGN_BRIEF §0.5).
-      paint: { "raster-brightness-max": 0.6, "raster-contrast": 0.1 },
+      // v0.2.1: 0.6/0.1 → 0.55/0.15 — the plan's tuning pass after a daylight
+      // screenshot review (aerial is only ever a fallback basemap).
+      paint: { "raster-brightness-max": 0.55, "raster-contrast": 0.15 },
     },
     {
       id: "esri-imagery",

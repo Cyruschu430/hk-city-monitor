@@ -80,20 +80,29 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
     id: `${id}-fill`,
     type: "fill",
     source: id,
+    // Only the affected districts are drawn at all. The first version painted
+    // the other 17 at fill-opacity 0.03 with a 0.5px violet line "for context",
+    // and at 18 districts that reads as a wireframe mesh over the whole
+    // territory (caught twice in screenshot reviews — once with no active
+    // districts, and again with 9, where the mesh survived around the edges).
+    // Context comes from the basemap, not from outlines of places nothing is
+    // happening.
+    filter: ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]],
     paint: {
       "fill-color": matchExpr as never,
       // 0.22 keeps the district readable while the basemap still shows through
       // (0.30 read as a solid blob in a screenshot review).
-      "fill-opacity": ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 0.22, 0.03] as never,
+      "fill-opacity": 0.22,
     },
   });
   map.addLayer({
     id: `${id}-line`,
     type: "line",
     source: id,
+    filter: ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]],
     paint: {
       "line-color": matchExpr as never,
-      "line-width": ["case", ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]], 2, 0.5] as never,
+      "line-width": 2,
       "line-opacity": 0.95,
     },
   });

@@ -19,7 +19,7 @@ import { loadRegistry, clearDataCache, type VerticalDefRaw } from "./lib/sources
 import { createMap, landsdBadge, setBasemap } from "./map/basemap.ts";
 import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./map/cameras.ts";
 import { applyVerticalLayers, clearVerticalLayers } from "./map/overlays.ts";
-import { drawGlyphInto, type GlyphId } from "./map/symbols.ts";
+import { createLayerControl, relabelLayerControl, type LayerRow } from "./ui/layercontrol.ts";
 import { toggle3d } from "./map/overlays3d.ts";
 import type { LayerDefRaw } from "./lib/sources.ts";
 import { createDrawer } from "./ui/drawer.ts";
@@ -65,7 +65,10 @@ async function boot(): Promise<void> {
   const statusbar = createStatusBar(document.getElementById("statusbar")!);
   const mapHeadEl = document.getElementById("mapHead")!;
   const mapHead = createMapHead(mapHeadEl);
-  onLangChange(() => relabelMapHead(mapHeadEl));
+  onLangChange(() => {
+    relabelMapHead(mapHeadEl);
+    relabelLayerControl(layerEl, currentLayerRows);
+  });
   const tickerEl = document.getElementById("ticker")!;
   const railEl = document.getElementById("rail")!;
   const panelsEl = document.getElementById("panels")!;
@@ -112,40 +115,50 @@ async function boot(): Promise<void> {
   const banner = h("div", { class: "panel", style: "position:absolute;left:12px;top:12px;max-width:420px;display:none" });
   hudEl.append(banner);
 
-  // Map legend — an instrument needs to say what its symbols mean. Reads from
-  // the SAME registry the layers do, so a legend entry cannot describe
-  // something that is not drawn (and vice versa).
-  const legendEl = h("div", { class: "map-legend" });
-  hudEl.append(legendEl);
+  // LAYERS control — replaces the old passive legend. Same registry, so a row
+  // cannot describe a layer that is not drawable; unlike the legend it can be
+  // toggled, which is what makes the map face an instrument rather than a
+  // caption (World Monitor grammar, plan §9.1).
+  const layerEl = h("div", { class: "layer-control" });
+  hudEl.append(layerEl);
+  const layerControl = createLayerControl(layerEl, (row, on) => {
+    // Visibility only: the mode still owns WHICH layers exist, the user owns
+    // which are shown. No re-fetch, no mutation of the vertical's layer set.
+    for (const id of row.mapLayerIds) {
+      if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
+    }
+  });
+
+  /** The MapLibre layer ids a single registry layer owns once drawn. */
+  function mapIdsFor(def: LayerDefRaw): string[] {
+    if (def.geom === "polygon") return [`vl-${def.id}-fill`, `vl-${def.id}-line`, `vl-${def.id}-label`];
+    if (def.geom === "point" && (def.source.includes("td_camera") || def.source.includes("hko_webcam"))) {
+      const prefix = def.source.includes("hko") ? "cameras-hko" : "cameras-td";
+      return [`${prefix}-cluster`, `${prefix}-count`, `${prefix}-point`];
+    }
+    if (def.geom === "point") return [`vl-${def.id}-circle`, `vl-${def.id}-count`, `vl-${def.id}-point`];
+    if (def.geom === "raster") return [`vl-${def.id}-fill`];
+    return [];
+  }
+
+  // Kept so a language switch can relabel the control without rebuilding it —
+  // a rebuild would silently reset every toggle to "on".
+  let currentLayerRows: LayerRow[] = [];
   function paintLegend(layerIds: string[]): void {
-    clear(legendEl);
-    const rows: HTMLElement[] = [];
-    for (const lid of layerIds) {
-      const def = registry.layers.find((l) => l.id === lid);
-      if (!def || def.geom === "none") continue;
-      const glyph =
-        def.id === "cameras_all" ? "cam-td" : def.id === "hko_cameras" ? "cam-hko" : def.id === "rain_nowcast" ? "water" : null;
-      rows.push(
-        h(
-          "div",
-          { class: "legend-row" },
-          glyph ? h("canvas", { class: `legend-glyph g-${glyph}`, width: "16", height: "16" }) : h("span", { class: `legend-swatch sw-${def.geom}` }),
-          h("span", { class: "legend-label" }, lang() === "tc" ? def.title.tc : def.title.en),
-        ),
-      );
-    }
-    if (rows.length === 0) {
-      legendEl.hidden = true;
-      return;
-    }
-    legendEl.hidden = false;
-    legendEl.append(...rows);
-    // Render the same runtime glyphs the map uses, so the legend can never
-    // drift from the symbol on the map.
-    for (const cv of legendEl.querySelectorAll("canvas")) {
-      const glyph = cv.className.replace("legend-glyph g-", "") as GlyphId;
-      drawGlyphInto(cv as HTMLCanvasElement, glyph, 16);
-    }
+    const rows: LayerRow[] = layerIds
+      .map((lid) => registry.layers.find((l) => l.id === lid))
+      .filter((d): d is LayerDefRaw => !!d && d.geom !== "none")
+      .map((def) => {
+        const src = registry.byId.get(def.source);
+        return {
+          def,
+          mapLayerIds: mapIdsFor(def),
+          sourceName: src?.name ?? def.source,
+          sourceUrl: src?.url,
+        };
+      });
+    currentLayerRows = rows;
+    layerControl.setRows(rows);
   }
 
   const ctx = { registry, raster: browserRasterizer };

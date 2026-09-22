@@ -226,4 +226,13 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log(`✓ 相對時間: ${relTime("2026-09-19 10:00", now)} / 原格式 pass-through`);
 }
 
+// 22. RTHK RSS — the ticker's third channel, real capture via the proxy.
+{
+  const { items, observedAt } = P.parseRss(fx("rthk_local.xml").toString("utf8"), 25);
+  assert.ok(items.length >= 5, `${items.length} rthk items`);
+  assert.ok(items.every((i) => i.title.length > 4), "real titles");
+  assert.ok(observedAt !== null && observedAt.getFullYear() === 2026, "pubDate parsed");
+  console.log(`✓ RTHK RSS: ${items.length} 則，最新 ${observedAt?.toISOString()}；首則「${items[0]!.title.slice(0, 30)}」`);
+}
+
 console.log("\nparsers.test.ts: ALL PASS");

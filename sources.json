@@ -557,7 +557,7 @@
       "cadence": "1 minute",
       "notes": "Free tier is rate-limited but keyless.",
       "kind": "api",
-      "fetch": "browser",
+      "fetch": "proxy",
       "cors_note": "ACAO=*",
       "cost": "free"
     },

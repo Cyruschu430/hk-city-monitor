@@ -16,12 +16,38 @@ a:hover{color:var(--cyan)}
   display:flex;overflow:hidden;z-index:25}
 #ticker[hidden]{display:none}
 .ticker-frame{display:flex;align-items:center;gap:0;width:100%}
-.ticker-tag{flex:0 0 auto;margin:0 10px;padding:2px 9px;border-radius:var(--radius-pill);
-  background:var(--alert);color:#fff;font-size:10px;font-weight:600;letter-spacing:.12em;z-index:1}
+.ticker-tag{flex:0 0 auto;margin:0 8px 0 10px;padding:2px 9px;border-radius:var(--radius-pill);
+  background:var(--alert);color:#fff;font-size:10px;font-weight:600;letter-spacing:.12em}
+.ticker-tabs{flex:0 0 auto;display:flex;gap:2px;margin-right:10px}
+.ticker-tab{padding:2px 9px;border-radius:var(--radius-pill);font-size:10px;color:var(--dim);
+  border:1px solid transparent;letter-spacing:.06em}
+.ticker-tab:hover{color:var(--txt)}
+.ticker-tab[aria-selected="true"]{color:var(--cyan);border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.1)}
 .ticker-frame .ticker-track{white-space:nowrap;overflow:hidden;
   font-family:var(--font-mono);font-size:11px;color:var(--txt);line-height:26px;
   animation:ticker-scroll 60s linear infinite}
 @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- GEV-style focus HUD (tethered box + leader line) ---------- */
+.focus-hud{position:absolute;z-index:9;width:260px;pointer-events:auto;
+  animation:hud-in .2s ease-out}
+.focus-hud[hidden]{display:none}
+@keyframes hud-in{from{opacity:0;translate:0 6px}to{opacity:1;translate:none}}
+.focus-box{display:flex;gap:10px;align-items:flex-start;background:var(--shade);
+  border:1px solid var(--hairline-hi);border-radius:10px;padding:9px 11px;
+  backdrop-filter:var(--glass);box-shadow:var(--shadow)}
+.focus-thumb{width:76px;height:57px;object-fit:cover;border-radius:6px;border:1px solid var(--hairline);
+  background:#0a1220;flex:0 0 auto}
+.focus-thumb-dead{background:var(--void);display:grid;place-items:center;color:var(--faint);font-size:9px}
+.focus-meta{min-width:0;display:flex;flex-direction:column;gap:2px;flex:1 1 auto}
+.focus-meta b{font-size:12px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.focus-coords{font-family:var(--font-mono);font-size:9.5px;color:var(--faint)}
+.focus-district{font-size:10px;color:var(--dim)}
+.focus-close{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:1px solid var(--hairline);
+  color:var(--dim);font-size:13px;line-height:1}
+.focus-close:hover{color:var(--txt);border-color:var(--hairline-hi)}
+.focus-leader{position:absolute;height:1px;background:var(--hairline-hi);transform-origin:0 50%;
+  z-index:8;pointer-events:none}
 
 /* ---------- market (HK convention: red = up, green = down) ---------- */
 .mkt-up{color:var(--mkt-up)}.mkt-down{color:var(--mkt-down)}

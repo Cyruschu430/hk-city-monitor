@@ -127,8 +127,19 @@ a:hover{color:var(--cyan)}
 .brand{display:flex;align-items:baseline;gap:10px;min-width:0}
 .brand h1{margin:0;font-size:13px;font-weight:600;letter-spacing:.18em;white-space:nowrap}
 .brand .sub{font-size:10px;color:var(--faint);letter-spacing:.24em;white-space:nowrap}
-#statusbar .meta{display:flex;align-items:center;gap:14px;font-size:10.5px;color:var(--dim);
+#statusbar .meta{display:flex;align-items:center;gap:0;font-size:10.5px;color:var(--dim);
   font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* discrete instrument readouts: label above value, hairline separated */
+.stat{display:flex;flex-direction:column;gap:1px;padding:0 11px;line-height:1.15;
+  border-left:1px solid var(--hairline)}
+.stat:first-child{border-left:0}
+.stat-label{font-family:var(--font-ui);font-size:8.5px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+.stat-value{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt)}
+.stat-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:0 0 auto}
+.stat-fresh[data-fresh="warn"] .stat-dot{background:var(--amber)}
+.stat-fresh[data-fresh="bad"] .stat-dot{background:var(--alert)}
+.stat-fresh[data-fresh="warn"] .stat-value{color:var(--amber)}
+.stat-fresh[data-fresh="bad"] .stat-value{color:var(--alert)}
 .live-pulse{width:7px;height:7px;border-radius:50%;background:var(--cyan);flex:0 0 auto;
   box-shadow:0 0 0 0 rgba(34,211,238,.7);animation:pulse 2.4s ease-in-out infinite}
 .live-pulse.off{background:var(--faint);animation:none}

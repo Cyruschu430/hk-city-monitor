@@ -163,6 +163,15 @@ async function boot(): Promise<void> {
 
   const emit = (sourceId: string, value: unknown) => {
     triggerState[sourceId] = value;
+    // Status-bar freshness cell: report the age the trigger engine is acting
+    // on, using the same 30-min barrier the 停水 trigger uses.
+    if (sourceId === "wsd_water_suspension") {
+      const fresh = (value as { records_fresh?: unknown[] } | undefined)?.records_fresh ?? [];
+      const recs = (value as { records?: unknown[] } | undefined)?.records ?? [];
+      if (recs.length > 0 && fresh.length > 0) statusbar.setFreshness(lang() === "tc" ? "資料新鮮" : "fresh", "ok");
+      else if (recs.length > 0) statusbar.setFreshness(lang() === "tc" ? "資料過期" : "stale", "warn");
+      else statusbar.setFreshness(lang() === "tc" ? "無事件" : "clear", "ok");
+    }
     if (sourceId === "wsd_water_suspension") {
       // `records` lists what the panel is already showing (with timestamps);
       // `records_fresh` is what the trigger reads. The map highlights the
@@ -264,10 +273,7 @@ async function boot(): Promise<void> {
     }
     rail.setActive(id);
     const v = registry.verticals.find((x) => x.id === id);
-    statusbar.setMode(
-      v ? `${lang() === "tc" ? v.name.tc : v.name.en}` : lang() === "tc" ? "總覽" : "Overview",
-      v ? (lang() === "tc" ? v.question.tc : v.question.en) : "",
-    );
+    statusbar.setMode(v ? (lang() === "tc" ? v.name.tc : v.name.en) : lang() === "tc" ? "總覽" : "Overview");
     engine.setPanels(v ? v.order : OVERVIEW);
     void applyModeLayers(v ? v.layers : []);
     if (manual && pendingVertical?.id === id) {

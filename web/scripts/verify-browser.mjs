@@ -662,6 +662,34 @@ try {
     `scrollWidth=${mobile.scrollW} (inner=${mobile.innerW}) mapWrap=${mobile.mapH}px`);
   check("P0-5 手機 status bar 唔爆格", mobile.statusbarW <= mobile.innerW + 1,
     `statusbar.scrollWidth=${mobile.statusbarW} (inner=${mobile.innerW})`);
+
+  // --- 9b1b. panel density ---------------------------------------------------
+  // Density regressed silently once already (one list panel grew to 1304px in a
+  // 910px column). Assert the two properties that actually matter: no single
+  // panel is taller than the viewport, and a long list is capped with a visible
+  // disclosure rather than rendered in full.
+  await page.setViewportSize({ width: 1600, height: 1000 });
+  await page.waitForTimeout(1500);
+  const density = await page.evaluate(() => {
+    const host = document.getElementById("panels");
+    const colH = host.getBoundingClientRect().height;
+    const panels = [...host.querySelectorAll(".panel[data-panel]")].map((p) => ({
+      id: p.dataset.panel,
+      h: Math.round(p.getBoundingClientRect().height),
+    }));
+    const tallest = panels.reduce((a, b) => (b.h > a.h ? b : a), { id: "", h: 0 });
+    const more = [...host.querySelectorAll(".p-more")].map((b) => b.textContent?.trim() ?? "");
+    return { colH: Math.round(colH), tallest, scroll: host.scrollHeight, panelCount: panels.length, more };
+  });
+  check("密度：冇單一 panel 高過成欄（唔會一個 panel 撐爆一屏）",
+    density.tallest.h <= density.colH,
+    `最高=${density.tallest.id}:${density.tallest.h}px 欄高=${density.colH}px`);
+  // A truncated list MUST advertise the hidden count — clamping without saying
+  // so would make a partial panel look complete.
+  const anyLong = density.more.length > 0 || density.scroll <= density.colH * 5;
+  check("密度：長清單有「另外 N 項」披露，唔會扮晒全部", anyLong,
+    `揭露=${density.more.join(" / ") || "(無長清單)"} 總捲動=${density.scroll}px（欄高 ${density.colH}px）`);
+
   await page.screenshot({ path: join(outDir, "04-mobile.png") });
   await page.setViewportSize({ width: 1440, height: 900 });
 

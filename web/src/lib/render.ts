@@ -80,6 +80,11 @@ export interface RenderOpts {
   /** text for a live-but-empty panel, e.g. 現時無生效警告 */
   emptyText?: L10n;
   onImageClick?: (img: WallImage) => void;
+  /** Collapse a long list/table to this many rows. Comes from panels.json
+      `params.max`, so the cap is config, not a hardcoded opinion. Measured
+      need: special_traffic_list rendered 1304px tall in a 910px column, i.e.
+      one panel taller than the screen and 7 screens of total scroll. */
+  maxRows?: number;
 }
 
 const DEFAULT_EMPTY: L10n = { tc: "現時無相關資料", en: "Nothing to report right now" };
@@ -132,6 +137,36 @@ function errorBox(note: string | undefined, sourceName: string | undefined, onRe
   );
 }
 
+/** Cap a long list/table at `maxRows`, collapsed behind an explicit disclosure.
+ *
+ * The cap exists because a single unbounded list can be taller than the screen
+ * (measured: special_traffic_list at 1304px in a 910px column, total column
+ * scroll 6316px — seven screens, two panels fully visible). But hiding rows is
+ * exactly the kind of thing this project must not do quietly, so the button
+ * states the real count of hidden items and expands in place. Nothing is
+ * discarded, and the user is TOLD the panel is truncated rather than left to
+ * assume it shows everything.
+ *
+ * Returns the disclosure to append after the container (a <ul> appends it as a
+ * sibling; a <table> needs it outside the table, hence the return value).
+ */
+function collapseRows(container: HTMLElement, rows: HTMLElement[], maxRows: number | undefined): HTMLElement | null {
+  if (!maxRows || rows.length <= maxRows) return null;
+  const hidden = rows.slice(maxRows);
+  for (const r of hidden) r.remove();
+
+  const more = h(
+    "button",
+    { class: "p-more", type: "button" },
+    lang() === "tc" ? `另外 ${hidden.length} 項 ▾` : `${hidden.length} more ▾`,
+  );
+  more.addEventListener("click", () => {
+    for (const r of hidden) container.append(r);
+    more.remove();
+  });
+  return more;
+}
+
 // --- the eight bodies --------------------------------------------------------
 
 function body(data: PanelData, opts: RenderOpts): HTMLElement {
@@ -147,36 +182,45 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
 
     case "list": {
       if (data.items.length === 0) return emptyBox(opts.emptyText ?? DEFAULT_EMPTY);
-      return h(
-        "ul",
-        { class: "plist" },
-        ...data.items.map((it) => {
-          // A bare "YYYY-MM-DD HH:mm" timestamp reads better as a relative
-          // age at a glance (World Monitor's pulse style); the full stamp is
-          // kept as a hover title so nothing is hidden.
-          const isStamp = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(it.time ?? "");
-          return h(
-            "li",
-            it.ok ? { class: "ok-line" } : {},
-            it.href ? h("a", { href: it.href, target: "_blank", rel: "noopener" }, it.title) : it.title,
-            it.sub ? h("span", { class: "meta" }, it.sub) : "",
-            it.time
-              ? h("span", { class: "meta", title: it.time }, isStamp ? relTime(it.time!) : it.time)
-              : "",
-          );
-        }),
-      );
+      const rows = data.items.map((it) => {
+        // A bare "YYYY-MM-DD HH:mm" timestamp reads better as a relative
+        // age at a glance (World Monitor's pulse style); the full stamp is
+        // kept as a hover title so nothing is hidden.
+        const isStamp = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(it.time ?? "");
+        return h(
+          "li",
+          // The row is visually clamped to two lines for density, so the full
+          // text goes in a tooltip: clamping without a way to read the whole
+          // thing would be hiding content, not tightening layout.
+          { ...(it.ok ? { class: "ok-line" } : {}), title: it.title },
+          it.href ? h("a", { href: it.href, target: "_blank", rel: "noopener" }, it.title) : it.title,
+          it.sub ? h("span", { class: "meta" }, it.sub) : "",
+          it.time
+            ? h("span", { class: "meta", title: it.time }, isStamp ? relTime(it.time!) : it.time)
+            : "",
+        );
+      });
+      const list = h("ul", { class: "plist" }, ...rows);
+      const more = collapseRows(list, rows, opts.maxRows);
+      return more ? h("div", { class: "p-collapsed" }, list, more) : list;
     }
 
     case "table": {
       if (data.rows.length === 0) return emptyBox(opts.emptyText ?? DEFAULT_EMPTY);
       const cell = (c: TableCell) => (typeof c === "string" ? h("td", {}, c) : h("td", c.cls ? { class: c.cls } : {}, c.text));
-      return h(
+      const trs = data.rows.map((r) => h("tr", {}, ...r.map(cell)));
+      const tbody = h("tbody", {}, ...trs);
+      // A table collapses by moving <tr> nodes, so the shared helper is handed
+      // the tbody as its "append target" rather than a <ul>. The disclosure
+      // has to live OUTSIDE <table>, hence the wrapper.
+      const more = collapseRows(tbody, trs, opts.maxRows);
+      const table = h(
         "table",
         { class: "ptable" },
         h("thead", {}, h("tr", {}, ...data.columns.map((c) => h("th", {}, c)))),
-        h("tbody", {}, ...data.rows.map((r) => h("tr", {}, ...r.map(cell)))),
+        tbody,
       );
+      return more ? h("div", { class: "p-collapsed" }, table, more) : table;
     }
 
     case "image_single":

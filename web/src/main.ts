@@ -15,7 +15,7 @@ import { activeVertical, type State, type VerticalDef } from "./lib/trigger.ts";
 import { adaptPanel } from "./lib/adapters.ts";
 import { h, clear } from "./lib/dom.ts";
 import { lang, t } from "./lib/i18n.ts";
-import { loadRegistry, type VerticalDefRaw } from "./lib/sources.ts";
+import { loadRegistry, clearDataCache, type VerticalDefRaw } from "./lib/sources.ts";
 import { createMap, landsdBadge, setBasemap } from "./map/basemap.ts";
 import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./map/cameras.ts";
 import { applyVerticalLayers, clearVerticalLayers } from "./map/overlays.ts";
@@ -27,6 +27,7 @@ import { createRail, type RailLayer } from "./ui/rail.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
 import { createTicker } from "./ui/ticker.ts";
 import { createPalette } from "./ui/palette.ts";
+import { createFocusHud } from "./ui/focushud.ts";
 
 /** The vertical-free default view. Ordered as a World-Monitor-style dense
     wall: imagery heads the column, then life-safety and civic reads. */
@@ -83,7 +84,15 @@ async function boot(): Promise<void> {
   (window as unknown as Record<string, unknown>)["__map"] = map;
 
   const drawer = createDrawer(drawerEl);
-  addCameraLayers(map, cameras, { onSelect: (cam: Camera) => drawer.openCamera(cam) });
+  // GEV grammar: clicking a camera tethers a compact HUD label to the point
+  // (name + coords + thumbnail) while the full drawer opens beneath.
+  const focusHud = createFocusHud(map, mapEl.parentElement ?? mapEl);
+  addCameraLayers(map, cameras, {
+    onSelect: (cam: Camera) => {
+      focusHud.show(cam);
+      drawer.openCamera(cam);
+    },
+  });
   hudEl.append(landsdBadge());
 
   // GEV-style constant readout: the pointer's position on the map, bottom-left
@@ -354,6 +363,9 @@ async function boot(): Promise<void> {
         instead of guessing from a screenshot */
     activeDistricts: () => [...activeDistricts],
     drawnLayers: () => [...currentLayerIds],
+    /** drop the 30s payload memo — QA uses this to force a true refetch
+        (e.g. the offline / source-down honesty checks) */
+    clearDataCache: () => clearDataCache(),
     refreshAll: () => engine.refreshAll(),
     hasWorker: hasWorker(),
     workerBase: WORKER_BASE,

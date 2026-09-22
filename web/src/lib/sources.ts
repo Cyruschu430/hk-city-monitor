@@ -82,8 +82,25 @@ export function fetchUrl(src: SourceDef): string {
   throw new Error(`source ${src.id} is marked n/a — it is not fetchable at runtime`);
 }
 
+/** Memoize proxied payloads 30s by URL. The layer engine and the panel engine
+    both fetch the SAME sources (the nowcast CSV is 2.7MB) — without this a
+    mode activation issues two concurrent big downloads, which both wastes
+    bytes and (measured) trips a content-length mismatch in local workerd. */
+const memo = new Map<string, { at: number; response: Response }>();
+const MEMO_MS = 30_000;
+
+export function clearDataCache(): void {
+  memo.clear();
+}
+
 export async function fetchSource(src: SourceDef): Promise<Response> {
-  const res = await fetch(fetchUrl(src), { signal: AbortSignal.timeout(20_000) });
+  const url = fetchUrl(src);
+  const hit = memo.get(url);
+  if (hit && Date.now() - hit.at < MEMO_MS) return hit.response.clone();
+  const res = await fetch(url, { signal: AbortSignal.timeout(25_000) });
+  // The 60s worker edge cache already collapses clients; the 30s memo is only
+  // about the same-tab double-fetch (panel + layer), so ttl can be short.
+  if (res.ok && src.fetch === "proxy") memo.set(url, { at: Date.now(), response: res.clone() });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res;
 }

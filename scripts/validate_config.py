@@ -41,6 +41,10 @@ METERED_HOSTS = re.compile(r"googleapis\.com/maps|maps\.google|bingmaps|mapbox\.
                            r"api\.openai\.com|anthropic\.com/v1|azure\.com|aws\.amazon", re.I)
 GEOMS = {"point", "polygon", "line", "raster", "none"}
 OPS = {"exists", ">=", "<=", "==", "in"}
+# Tier 1 rule ops. A superset of the trigger ops: rules also support strict
+# comparisons and the baseline-aware ops.
+OPS_RULES = {">=", "<=", ">", "<", "==", "!=", ">baseline", "<baseline"}
+BASELINE_OPS = {">baseline", "<baseline"}
 WINDOWS = {"now", "today", "7d", "season", "year"}
 SCOPES = {"hk", "district", "route"}
 CJK = re.compile(r"[\u3400-\u9fff]")
@@ -84,6 +88,7 @@ def main() -> int:
     panels = load("panels.json")
     layers = load("layers.json")
     verticals = load("verticals.json")
+    rules = load("rules.json")
     if errors:
         print("\n".join(errors))
         return 1
@@ -206,9 +211,56 @@ def main() -> int:
                 if not c.get("field"):
                     errors.append(f"{where}: trigger condition has no 'field'")
 
+    # ---- Tier 1 rules ----
+    # A rule is executable config: a typo'd source or op would silently never
+    # fire, and a silently-dead rule is worse than a missing one because it
+    # looks like coverage.
+    seen_r = set()
+    rule_domains = set()
+    for r in rules.get("rules") or []:
+        rid = r.get("id")
+        where_r = f"rule {rid}"
+        if not rid or rid in seen_r:
+            errors.append(f"rule id missing or duplicated: {rid!r}")
+        seen_r.add(rid)
+
+        dom = r.get("domain")
+        if not dom:
+            errors.append(f"{where_r}: no 'domain' — Tier 2 groups by domain")
+        else:
+            rule_domains.add(dom)
+
+        if r.get("severity") not in (1, 2, 3):
+            errors.append(f"{where_r}: severity {r.get('severity')!r} must be 1, 2 or 3")
+
+        check_bilingual(r.get("headline"), f"{where_r} headline")
+
+        w = r.get("when") or {}
+        check_source(w.get("source"), where_r)
+        if w.get("op") not in OPS_RULES:
+            errors.append(f"{where_r}: op {w.get('op')!r} not in {sorted(OPS_RULES)}")
+        if not w.get("field"):
+            errors.append(f"{where_r}: 'when.field' is required")
+        # Threshold ops need a number; without one the rule compares against 0,
+        # which fires constantly and looks like a sensitivity setting.
+        if w.get("op") in OPS_RULES and w.get("op") not in ("==", "!=", ">baseline", "<baseline") and "value" not in w:
+            errors.append(f"{where_r}: op {w.get('op')!r} needs a numeric 'value'")
+        if "value" in w and not isinstance(w["value"], (int, float)):
+            errors.append(f"{where_r}: 'value' must be numeric, got {type(w['value']).__name__}")
+        # A baseline rule with value 0 would fire on every observation.
+        if w.get("op") in BASELINE_OPS and isinstance(w.get("value"), (int, float)) and w["value"] <= 0:
+            errors.append(f"{where_r}: baseline op needs a positive SD threshold, got {w['value']}")
+
+    # Tier 2 needs at least two domains to ever produce a convergence, so a
+    # rule set confined to one domain is a configuration that cannot work.
+    if len(rule_domains) < 2:
+        warnings.append(f"rules.json declares {len(rule_domains)} domain(s) — Tier 2 convergence "
+                        f"needs at least 2 distinct domains to ever fire")
+
     # ---- report ----
     if not quiet:
-        print(f"sources {len(src_ids)} (cost=free) · panels {len(seen)} · layers {len(seen_l)} · verticals {len(seen_v)}")
+        print(f"sources {len(src_ids)} (cost=free) · panels {len(seen)} · layers {len(seen_l)} · "
+              f"verticals {len(seen_v)} · rules {len(seen_r)} ({len(rule_domains)} domains)")
         for w in warnings:
             print(f"  ⚠️  {w}")
         for v in verticals["verticals"]:

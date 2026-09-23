@@ -40,7 +40,7 @@ export interface AnalysisOutput {
  * would produce a baseline that says "warnings are usually 0", which fires an
  * anomaly on every single warning — technically correct, useless in practice.
  */
-const BASELINE_SIGNALS: { source: string; field: string }[] = [
+export const BASELINE_SIGNALS: { source: string; field: string }[] = [
   { source: "ha_ae_waiting", field: "longestWaitMin" },
   { source: "immd_cp_queue", field: "maxQueueMin" },
   { source: "aqhi_city_dashboard", field: "maxAqhi" },

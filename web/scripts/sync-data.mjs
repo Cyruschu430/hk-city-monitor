@@ -43,8 +43,23 @@ const files = [
   ["data/live_streams.json", "live_streams.json"],
   ["sources.json", "sources.json"],
 ];
+
+// Optional collector output. Absent on a fresh clone before the collector has run,
+// and that must not fail the build: the app falls back to an empty baseline store
+// and the brief says 「累積中 0/14 日」, which is the honest state. Kept in a SEPARATE
+// list on purpose — a missing entry in `files` above is a typo, and it must still
+// throw rather than ship a registry the app silently loads nothing from.
+const optional = [["data/baselines.json", "baselines.json"]];
+
 for (const [src, dst] of files) {
   copyFileSync(join(root, src), join(out, dst));
+}
+for (const [src, dst] of optional) {
+  try {
+    copyFileSync(join(root, src), join(out, dst));
+  } catch {
+    console.warn(`sync-data: no ${src} yet — the app will use an empty baseline store`);
+  }
 }
 
 // --- basemap style -----------------------------------------------------------

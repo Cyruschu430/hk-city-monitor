@@ -4,7 +4,12 @@
 // configured" — proxy-only sources then fail loudly into their error state
 // instead of silently trying an open relay.
 
-export const WORKER_BASE = (import.meta.env.VITE_WORKER_BASE ?? "").replace(/\/+$/, "");
+// `import.meta.env` is Vite's, not JavaScript's. scripts/collect_baselines.mjs runs
+// the same modules under plain Node, where reading it throws before anything else
+// can load — so the read is guarded. Vite still inlines the literal at build time.
+export const WORKER_BASE = (
+  (import.meta as { env?: Record<string, string | undefined> }).env?.VITE_WORKER_BASE ?? ""
+).replace(/\/+$/, "");
 
 export function hasWorker(): boolean {
   return WORKER_BASE.length > 0;

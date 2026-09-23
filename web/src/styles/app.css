@@ -207,7 +207,7 @@ a:hover{color:var(--cyan)}
 #langSwitch button[aria-pressed="true"]{background:rgba(34,211,238,.14);color:var(--cyan)}
 
 /* ---------- layout ---------- */
-#layout{flex:1 1 auto;display:grid;grid-template-columns:56px 1fr 340px;min-height:0}
+#layout{flex:1 1 auto;display:grid;grid-template-columns:56px 1fr minmax(340px,44%);min-height:0}
 #mapWrap{position:relative;min-height:0;min-width:0}
 #map{position:absolute;inset:0;background:var(--void)}
 #mapHud{position:absolute;inset:0;pointer-events:none;z-index:5}
@@ -251,13 +251,28 @@ a:hover{color:var(--cyan)}
 .landsd-badge a:hover{color:var(--txt)}
 
 /* ---------- panels column (340px) ---------- */
-#panels{overflow-y:auto;overscroll-behavior:contain;border-left:1px solid var(--hairline);
-  background:linear-gradient(180deg,rgba(9,15,26,.9),rgba(6,10,18,.94));
-  padding:12px;display:flex;flex-direction:column;gap:10px;min-height:0}
+/* Panel column = category tabs + the scrollable panel grid. The tabs are a
+   sibling of the scroller (not a child) so they stay put while the grid
+   scrolls. Border and background live here, not on #panels, so the tab strip
+   sits on the same surface as the panels it filters. */
+#panelCol{display:grid;grid-template-rows:auto 1fr;min-height:0;min-width:0;
+  border-left:1px solid var(--hairline);
+  background:linear-gradient(180deg,rgba(9,15,26,.9),rgba(6,10,18,.94))}
+#panelTabs{display:flex;flex-wrap:wrap;gap:4px;padding:9px 10px 8px;
+  border-bottom:1px solid var(--hairline)}
+#panelTabs[hidden]{display:none}
+.ptab{font-family:var(--font-ui);font-size:11px;letter-spacing:.06em;color:var(--dim);
+  background:transparent;border:1px solid var(--hairline);border-radius:var(--radius-pill);
+  padding:3px 9px;cursor:pointer;transition:color .16s,border-color .16s,background .16s}
+.ptab:hover{color:var(--txt);border-color:var(--hairline-hi)}
+.ptab[aria-selected="true"]{color:var(--void);background:var(--cyan);border-color:var(--cyan)}
+.ptab .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
+#panels{overflow-y:auto;overscroll-behavior:contain;
+   padding:12px;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-content:start;gap:10px}
 #panels::-webkit-scrollbar{width:8px}
 #panels::-webkit-scrollbar-thumb{background:rgba(140,190,255,.18);border-radius:8px}
 
-.panel{border:1px solid var(--hairline);border-radius:var(--radius);padding:11px 12px;
+.panel{border:1px solid var(--hairline);border-radius:var(--radius);padding:11px 12px;min-width:0;
   background:var(--panel);backdrop-filter:var(--glass);
   animation:panel-in .18s ease-out;transition:border-color .16s}
 @keyframes panel-in{from{opacity:0;translate:0 4px}to{opacity:1;translate:none}}
@@ -444,7 +459,8 @@ a:hover{color:var(--cyan)}
   .rail-btn .tip{display:none}
   .rail-sep{width:1px;height:26px;margin:0 6px}
   #mapWrap{grid-row:1}
-  #panels{grid-row:2;border-left:0;border-top:1px solid var(--hairline)}
+  #panelCol{grid-row:2;border-left:0;border-top:1px solid var(--hairline)}
+  #panels{grid-template-columns:1fr}
   #drawer{top:auto;left:0;width:auto;height:70vh;border-left:0;border-top:1px solid var(--hairline-hi)}
   /* measured P0-5: 390px was overflowing — brand text, mode, camera count,
      tile route and clock all fought for one line. Hide the secondary meta

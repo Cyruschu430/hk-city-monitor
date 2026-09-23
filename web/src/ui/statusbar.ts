@@ -5,7 +5,8 @@
 
 import { clear, h } from "../lib/dom.ts";
 import { clockNow } from "../lib/format.ts";
-import { lang, setLang, type Lang } from "../lib/i18n.ts";
+import { lang, setLang, onLangChange, type Lang } from "../lib/i18n.ts";
+import { onThemeChange, setTheme, theme, type Theme } from "../lib/theme.ts";
 
 export interface StatusBar {
   setCameras(td: number, hko: number): void;
@@ -46,6 +47,32 @@ export function createStatusBar(root: HTMLElement): StatusBar {
   };
   syncPressed();
 
+  // Theme switch — the same pill, one row up from the language switch it sits
+  // beside. Labels ARE translated (unlike 繁中/EN, which are language names and
+  // conventionally written in their own language).
+  const THEME_LABELS: Record<Theme, { tc: string; en: string }> = {
+    system: { tc: "自動", en: "Auto" },
+    light: { tc: "淺色", en: "Light" },
+    dark: { tc: "深色", en: "Dark" },
+  };
+  const themeBox = h("div", { id: "themeSwitch", role: "group", "aria-label": "theme" });
+  const themeButtons = new Map<Theme, HTMLElement>();
+  for (const code of ["system", "light", "dark"] as Theme[]) {
+    const b = h("button", { type: "button", onclick: () => setTheme(code) }, "");
+    themeButtons.set(code, b);
+    themeBox.append(b);
+  }
+  const syncTheme = () => {
+    const tc = lang() === "tc";
+    for (const [code, b] of themeButtons) {
+      b.textContent = tc ? THEME_LABELS[code].tc : THEME_LABELS[code].en;
+      b.setAttribute("aria-pressed", String(theme() === code));
+    }
+  };
+  syncTheme();
+  onThemeChange(syncTheme);
+  onLangChange(syncTheme);
+
   const freshStat = stat("狀態", h("span", {}, freshDot, freshEl), "stat-fresh");
 
   // Coverage strip. World Monitor's footer reads "Digest coverage: complete —
@@ -70,6 +97,7 @@ export function createStatusBar(root: HTMLElement): StatusBar {
         stat("底圖", tilesEl, "hide-s"),
         stat("HKT", clockEl),
         langBox,
+        themeBox,
       ),
     ),
     coverWrap,

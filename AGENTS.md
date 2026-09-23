@@ -396,3 +396,24 @@ cd web && set VITE_WORKER_BASE=http://localhost:8787&& npm run build
 
 (No space before `&&`, or the value keeps a trailing space.) The Worker must be running:
 `cd worker && npx wrangler dev`.
+
+### Pitfall 18 — a fixture captured with different parameters HIDES the bug it exists to catch
+
+The market sparkline never drew. The adapter asked Yahoo for `interval=1d&range=1d`, which
+returns exactly **one** close value, so the parser produced a one-point "series" and the cell
+rendered nothing — while `parsers.test.ts` passed the whole time, because `yahoo_hsi.json` had
+been captured with a different interval and carried 5 points. The test was measuring the fixture,
+not the adapter.
+
+Measured on the same endpoint: `interval=1d&range=1d` → 1 point; `interval=5m&range=1d` → 70.
+
+What follows from it:
+- **Capture a fixture with the adapter's own URL**, never a hand-typed one. `mtr_schedule.json`
+  and `kmb_stop_eta.json` were captured by requesting the adapter's exact URL — keep doing that.
+- **Assert a volume the real query guarantees**, not the loosest bound that passes. The sparkline
+  assertion went from `>= 2` to `>= 20` (a 5-minute intraday series is ~70 points), which fails
+  loudly if the query ever reverts to a daily interval.
+- **A geometry test is not a wiring test.** `sparkPath()` can be perfect while the renderer never
+  calls it. Render the panel and assert the element is in the tree.
+- Two fixtures are currently referenced by no test (`rhrread.json`, `warninginfo.json`). An
+  unreferenced fixture cannot fail, so it drifts in silence — either test it or delete it.

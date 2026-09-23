@@ -115,6 +115,25 @@ export function evaluate(rules: readonly RuleDef[], opts: EvaluateOpts): RuleRes
 
   for (const rule of rules) {
     const payload = opts.state[rule.when.source];
+
+    // A baseline-aware rule reports its MATURITY before anything else, and does
+    // so even when the source is silent. Reporting it only after a value
+    // resolves made the "累積中 X/14 日" list unreachable in exactly the case it
+    // exists for: a signal that is still accumulating is usually one whose
+    // source has few observations, so requiring a value first hid the message
+    // when it mattered (measured — the panel showed an empty accumulating list
+    // while four signals sat at 1/14 days).
+    if (BASELINE_OPS.has(rule.when.op)) {
+      const key = signalKey(rule);
+      const m = maturity(opts.store, key);
+      if (!m.mature) {
+        // THE GATE. Not mature → this rule cannot fire, and the caller is told
+        // so it can render "累積中 · 已 X 日 / 14 日" instead of silence.
+        immature.push({ ruleId: rule.id, source: rule.when.source, maturity: m });
+        continue;
+      }
+    }
+
     if (payload === undefined || payload === null) continue;
 
     const observed = numericAt(payload, rule.when.field);
@@ -128,8 +147,8 @@ export function evaluate(rules: readonly RuleDef[], opts: EvaluateOpts): RuleRes
     if (BASELINE_OPS.has(rule.when.op)) {
       const b = baselineFor(opts.store, signalKey(rule), opts.now);
       if (b === null) {
-        // THE GATE. Not mature → this rule cannot fire, and the caller is told
-        // so it can render "累積中 · 已 X 日 / 14 日" instead of silence.
+        // Mature per the day count but no bucket for THIS hour, which is normal
+        // at the start: the store only has observations for hours already seen.
         immature.push({ ruleId: rule.id, source: rule.when.source, maturity: maturity(opts.store, signalKey(rule)) });
         continue;
       }

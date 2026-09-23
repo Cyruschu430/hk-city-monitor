@@ -42,7 +42,7 @@ Version  : 61276d1d-3c0a-4158-a393-eaea9d1bf12f
 
 ## 10 個非 200 源嘅分類（**冇一個係新壞嘅**）
 
-### A. 上游封鎖數據中心 IP（2 個）—— 部署**之後**才出現
+### A. 上游封鎖數據中心 IP（4 個）—— 部署**之後**才出現
 
 ```
 adsb_fi_hk     403   上游擋 Cloudflare 出口 IP
@@ -55,15 +55,29 @@ opensky_hk     504   匿名限流
 
 - 飛機圖層喺**本地**（`wrangler dev`，你屋企 IP）完全正常，59 架。
 - 喺**生產**（Cloudflare 出口）兩個 ADS-B 源都俾人擋。
-- 實測：`adsb.lol` 直接喺你部機都返 403 → 呢啲服務**普遍封鎖雲端 IP**。
 
-**影響**：部署之後，`aircraft_status` panel 同航機圖層**會出 error 態**。
-**唔係我哋嘅 bug**，Worker 正確咁 pass through 上游狀態碼，而且**冇 cache 錯誤**。
+**逐個實測（2026-09-23）：**
 
-**三個選項**：
-1. **接受**：飛機圖層只喺本地開發睇到，生產環境顯示誠實 error。
-2. **Worker 加 proxy 中轉**：經第三個 provider（要 key／要錢）→ 違反 US$0。
-3. **改用其他免費源**：例如 `opensky_hk`（但要處理限流），或者搵一個唔擋雲端嘅 mirror。
+| 源 | 你部 PC | Cloudflare Worker |
+|---|---|---|
+| **adsb.fi** | **10/10 = 200** ✅ | **403**（所有請求） |
+| **adsb.lol** | **3/10 = 200，7/10 = 429** ❌ | **429**（所有 endpoint） |
+
+adsb.lol 補測過 3 個 endpoint（`/v2/point`、`/v2/hex`、`/v2/closest`），
+**全部都係 429**，就算冷卻 60 秒之後**單一個**請求都係 429 —— 即係佢限流嘅係
+**共享數據中心 IP**，唔係我哋嘅突發量。返嘅 header 係 `X-HKCM-Upstream-Status: 429`，
+證明係上游俾嘅，唔係 Worker 自己。
+
+**結論**：
+- **adsb.lol 唔可以當後備** —— 生產唔得，本地連續請求都唔穩定。
+- **adsb.fi 喺本地 10/10 成功**，係唯一可行嘅 collector 來源。
+
+**影響**：部署之後，`aircraft_status` panel 同航機圖層**已經撤回**（唔會出 error 態）。
+**唔係我哋嘅 bug** —— Worker 正確咁 pass through 上游狀態碼，而且**冇 cache 錯誤**。
+
+**可行方案（推薦）**：用 **PC-side collector**（同 `build_water_suspension.py` 同一個模式）：
+你部機定時抓 adsb.fi（10/10 實測成功）→ 寫 static JSON → 前端讀。
+零成本、零 key，而且係實測過得嘅路。
 
 ### B. 已知嘅源頭問題（6 個）—— 部署前已經係咁
 
@@ -88,12 +102,15 @@ coingecko  429   免費層限流，keyless。app 有 fallback。
 
 ## 要跟進
 
-1. **🔴 飛機圖層生產環境**：決定上面 3 個選項邊個。
+1. **🟢 飛機圖層**：已撤回（唔會出 error 態）。要復活就用 **PC-side collector + adsb.fi**
+   （本地 10/10 實測成功）。詳見上面同 `sources.json` 兩條 ADS-B 條目嘅註解。
 2. **`hko_radar` / `hko_satellite`**：app 應該用 template 路徑（`radarCandidates()` 已經係咁做），
    但 `sources.json` 嗰條 URL 仲係 template，sweep 會 404 —— **expected，唔使修**。
 3. **8 個 400/422 源**：值得逐個查係唔係 URL 寫法問題（`lcsd_leisure_prog` 嘅 http→https、
    `sunferry_eta` 嘅 route 參數）。
-4. 本地 `.env` 已指向 production Worker；要返本地開發就改成 `http://localhost:8787`。
+4. **CoinGecko 429**：共享免費層被 Cloudflare 出口 IP 觸發限流。Panel 誠實報錯。
+   要決定係保留（誠實 error）定換源。
+5. 本地 `.env` 已指向 production Worker；要返本地開發就改成 `http://localhost:8787`。
 
 ---
 

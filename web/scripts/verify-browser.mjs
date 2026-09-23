@@ -1246,9 +1246,15 @@ try {
   // refuses datacenter traffic. Failing the harness for these would train people
   // to ignore red output — the real signal is whether the error is REPORTED,
   // which the honesty checks cover.
+  //
+  // adsb.lol deserves its own note: it 429s EVERY endpoint through the Worker
+  // (including a single request after a 60s cooldown) and is ALSO unreliable
+  // from a home connection under load ({200:3, 429:7} over 10 sequential
+  // fetches). adsb.fi by contrast is 10/10 from a home IP but 403 from the
+  // Worker. Both are therefore absent from the shipped UI, not merely degraded.
   const UPSTREAM_BLOCKS_CLOUD = [
-    "opendata.adsb.fi",    // 403 to Cloudflare, 200 from a home IP
-    "api.adsb.lol",        // 429 to Cloudflare, 200 from a home IP
+    "opendata.adsb.fi",    // 403 to Cloudflare, 200 from a home IP (10/10)
+    "api.adsb.lol",        // 429 to Cloudflare on all endpoints; unreliable from home too
     "api.coingecko.com",   // 429 on the shared free tier
     "opensky-network.org", // 504 / rate-limited anonymously
   ];

@@ -328,6 +328,13 @@ a:hover{color:var(--cyan)}
 .panel-foot .src{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .panel-foot time{font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 
+/* Editorial notice. Legible rather than whispered: a disclaimer the reader
+   cannot read is decoration. Sits above the footer, below the content it
+   qualifies. */
+.panel-disclaimer{margin:8px 0 0;padding:6px 8px;border-radius:5px;
+  background:rgba(120,160,220,.07);border-left:2px solid var(--hairline);
+  font-size:10px;line-height:1.5;color:var(--dim)}
+
 /* honesty bodies */
 .sk{display:flex;flex-direction:column;gap:7px}
 .sk i{display:block;height:12px;border-radius:4px;background:var(--hairline);opacity:.4;
@@ -386,8 +393,7 @@ a:hover{color:var(--cyan)}
   color:var(--dim);font:500 10px/1.4 var(--font-ui);cursor:pointer}
 .p-more:hover{color:var(--txt);border-color:var(--dim);background:rgba(120,160,220,.14)}
 
-/* ---------- analysis panel (Tier 0-4 brief) ---------- */
-/* Not a source-backed panel: it is a conclusion drawn FROM the other panels, so
+/* ---------- analysis panel (Tier 0-4 brief) ---------- *//* Not a source-backed panel: it is a conclusion drawn FROM the other panels, so
    its styling deliberately differs — no source footer link, a rule id on every
    line instead, and the wording mode stated in the chip. */
 .an-body{display:flex;flex-direction:column;gap:9px}

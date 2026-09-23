@@ -172,6 +172,46 @@ D3（Tier 0/1）、D4（Tier 2）、D6（Tier 3/4）、D7（AIS/TomTom/RFZ — �
 
 ---
 
+## PART F — D3/D4/D6 完成紀錄（2026-09-23）
+
+**全部 Tier 0–4 已落地並且上咗畫面**，`analytics.test.ts` 8 組斷言、harness **61 項**全綠。
+
+| 層 | 檔案 | 做咗乜 |
+|---|---|---|
+| Tier 0 | `analytics/baseline.ts` | signal × hour × dow 分桶（每訊號 168 桶），running n/sum/sumSq/min/max |
+| Tier 1 | `analytics/rules.ts` + `data/rules.json` | 12 條規則、5 個領域，封閉 op 集 |
+| Tier 2 | `analytics/convergence.ts` | 同區 + 60 分鐘定窗 + ≥2 領域，score = 領域×3 + 嚴重×2 + 宗數 |
+| Tier 3/4 | `analytics/narrative.ts` | 範本敘述（**主要路徑**）＋ LLM prompt（離線跑） |
+| 編排 | `analytics/index.ts` | 唯一接駁點；`updateBaselines()` 只折有意義嘅連續值 |
+
+### 關鍵設計：閘要做成「唔可能忘記」
+
+- `baselineFor()` 未夠 14 日係**回 null**，唔係回 baseline 加個 flag。咁樣呼叫者**物理上計唔到**異常分數——分別在於「規則要記得檢查」同「規則冇得唔記得」。
+- 數**唔同日子**，唔係數觀測次數。500 次同一日嘅 poll 仍然只算 1 日，唔可以用一個下午扮成熟。
+- **缺值唔等於 0**。折 0 會拉低基線均值，下一次正常讀數就變成「異常」——一個純粹由量度行為製造出嚟嘅假異常。已直接寫成斷言。
+- 規則讀唔到值係 **skip**，唔係當 0。否則 `>= 0` 類規則會喺每個未回應嘅源上面觸發。
+
+### 措辭：同時發生，唔講因為
+
+`describeConvergence()` 係**唯一**嘅措辭函數，出「同一時段內同時發生」。單元測試同 harness 都**逐個字檢查**因果詞（因為／導致／造成／because／caused／due to），所以將來有人改範本都會喺 CI 撞板，唔係等到睇圖才發現。
+
+### 要記低嘅兩個錯
+
+1. **`rules.json` 出咗街但 app 載入 0 條規則。** `sync-data.mjs` 用**手寫清單**複製 registry 檔案，新檔案冇加落去。管線照跑、靜靜哋乜都唔出。已加 harness check 斷言規則真係載入到。
+2. **Tier 0 分桶測試喺未夠 14 日嘅 store 上面斷言 baseline**，即係乜都冇斷言到——直到佢失敗為止。教訓：Tier 0 測試要先滿足 Tier 0 閘，否則測唔到嘢。
+
+### 實測畫面
+
+AE 輪候 panel 顯示廣華醫院 **2 小時**，規則引擎獨立報 `讀數 120（門檻 120）` rule `ae_wait_long`——兩者讀同一份數據，證明規則同顯示唔會各講各。
+
+### 仲未做（要 Cyrus 決定）
+- **AIS 船**：接受「Cron Trigger 每 N 分鐘收 30–60 秒」？定先用海事處抵港／離港頂住？
+- **TomTom**：申唔申請？（**切記唔好加信用卡**）
+- **RFZ 禁飛區**：係唔係指 eSUA 個「匯出」掣？需要你人手匯出 GeoJSON。
+- **baselines 持久化**：而家 store 只喺 session 內存在，所以永遠顯示「累積中 0/14 日」。要真正有基線就要一個 cron collector 寫 `data/baselines.json`。**呢個係分析層由「有得睇」變成「有用」嘅關鍵一步**。
+
+---
+
 ## PART E — 驗收（每項都要）
 
 - `npm run typecheck` 0 錯、`npm test` 全 PASS、`python scripts/validate_config.py` exit 0

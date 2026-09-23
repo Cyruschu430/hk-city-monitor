@@ -1,0 +1,104 @@
+{
+  "_comment": "Tier 1 anomaly rules (ANALYTICS.md §3). CONFIG, not code: adding a rule is a data change. Every rule is a deterministic threshold or a baseline deviation — no LLM ever decides whether a rule fires. The `headline` is what a person reads; `observed`/`threshold` are what the engine computed, and both are kept on the event so any claim on screen can be traced to a number.",
+  "_schema": {
+    "id": "stable rule id",
+    "domain": "weather | water | traffic | health | border | air | environment — Tier 2 groups by this",
+    "severity": "1 elevated, 2 high, 3 critical",
+    "when.source": "registry source id",
+    "when.field": "dot path into that source's trigger state, supports .length",
+    "when.op": ">= | <= | > | < | == | != | >baseline | <baseline",
+    "when.value": "numeric threshold, or number of SDs for the baseline ops",
+    "district_field": "optional dot path to the district name, for Tier 2 convergence",
+    "converge": "false to exclude this rule from Tier 2 grouping (default true)"
+  },
+  "ops": [">=", "<=", ">", "<", "==", "!=", ">baseline", "<baseline"],
+  "baseline_ops": [">baseline", "<baseline"],
+  "rules": [
+    {
+      "id": "water_active",
+      "domain": "water",
+      "severity": 2,
+      "when": { "source": "wsd_water_suspension", "field": "records_fresh.length", "op": ">=", "value": 1 },
+      "headline": { "tc": "有臨時停水通知", "en": "Temporary water suspension in force" },
+      "district_field": "records_fresh.0.district"
+    },
+    {
+      "id": "water_widespread",
+      "domain": "water",
+      "severity": 3,
+      "when": { "source": "wsd_water_suspension", "field": "records_fresh.length", "op": ">=", "value": 5 },
+      "headline": { "tc": "多區同時停水", "en": "Suspensions across multiple districts" },
+      "district_field": "records_fresh.0.district"
+    },
+    {
+      "id": "warning_tc8",
+      "domain": "weather",
+      "severity": 3,
+      "when": { "source": "hko_warnsum", "field": "TC8", "op": ">=", "value": 1 },
+      "headline": { "tc": "八號或以上熱帶氣旋警告生效", "en": "Tropical cyclone signal 8 or above in force" }
+    },
+    {
+      "id": "warning_tc3",
+      "domain": "weather",
+      "severity": 2,
+      "when": { "source": "hko_warnsum", "field": "TC3", "op": ">=", "value": 1 },
+      "headline": { "tc": "三號強風信號生效", "en": "Strong wind signal 3 in force" }
+    },
+    {
+      "id": "warning_rainstorm",
+      "domain": "weather",
+      "severity": 2,
+      "when": { "source": "hko_warnsum", "field": "WRAIN", "op": ">=", "value": 1 },
+      "headline": { "tc": "暴雨警告生效", "en": "Rainstorm warning in force" }
+    },
+    {
+      "id": "ae_wait_long",
+      "domain": "health",
+      "severity": 2,
+      "when": { "source": "ha_ae_waiting", "field": "longestWaitMin", "op": ">=", "value": 120 },
+      "headline": { "tc": "急症室輪候超過兩小時", "en": "A&E wait over two hours" }
+    },
+    {
+      "id": "ae_wait_very_long",
+      "domain": "health",
+      "severity": 3,
+      "when": { "source": "ha_ae_waiting", "field": "longestWaitMin", "op": ">=", "value": 240 },
+      "headline": { "tc": "急症室輪候超過四小時", "en": "A&E wait over four hours" }
+    },
+    {
+      "id": "border_queue_long",
+      "domain": "border",
+      "severity": 2,
+      "when": { "source": "immd_cp_queue", "field": "maxQueueMin", "op": ">=", "value": 45 },
+      "headline": { "tc": "口岸輪候時間偏長", "en": "Long queue at a control point" }
+    },
+    {
+      "id": "border_queue_severe",
+      "domain": "border",
+      "severity": 3,
+      "when": { "source": "immd_cp_queue", "field": "maxQueueMin", "op": ">=", "value": 90 },
+      "headline": { "tc": "口岸輪候時間嚴重", "en": "Severe queue at a control point" }
+    },
+    {
+      "id": "aqhi_poor",
+      "domain": "environment",
+      "severity": 2,
+      "when": { "source": "aqhi_city_dashboard", "field": "maxAqhi", "op": ">=", "value": 7 },
+      "headline": { "tc": "空氣質素健康指數偏高", "en": "AQHI high at one or more stations" }
+    },
+    {
+      "id": "aqhi_very_poor",
+      "domain": "environment",
+      "severity": 3,
+      "when": { "source": "aqhi_city_dashboard", "field": "maxAqhi", "op": ">=", "value": 10 },
+      "headline": { "tc": "空氣質素健康指數甚高", "en": "AQHI very high at one or more stations" }
+    },
+    {
+      "id": "wind_strong",
+      "domain": "weather",
+      "severity": 1,
+      "when": { "source": "ck_hk_hko_rss_latest_ten_minute_wind_info", "field": "maxSpeedKmh", "op": ">=", "value": 40 },
+      "headline": { "tc": "有測站錄得強風", "en": "Strong wind recorded at a station" }
+    }
+  ]
+}

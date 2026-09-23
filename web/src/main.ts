@@ -33,6 +33,7 @@ import { createMapHead, relabelMapHead } from "./ui/maphead.ts";
 import { createTicker } from "./ui/ticker.ts";
 import { createPalette } from "./ui/palette.ts";
 import { createFocusHud } from "./ui/focushud.ts";
+import { createGroupTabs, labelFor, type GroupTab } from "./ui/grouptabs.ts";
 
 /** The vertical-free default view. Ordered as a World-Monitor-style dense
     wall: imagery heads the column, then life-safety and civic reads. */
@@ -89,6 +90,7 @@ async function boot(): Promise<void> {
   const mapEl = document.getElementById("map")!;
   const hudEl = document.getElementById("mapHud")!;
   const drawerEl = document.getElementById("drawer")!;
+  const panelTabsEl = document.getElementById("panelTabs")!;
 
   const [registry, cameras, manifest] = await Promise.all([
     loadRegistry(),
@@ -258,6 +260,55 @@ async function boot(): Promise<void> {
     onState: emit,
   });
 
+  // --- category tabs ------------------------------------------------------------
+  // The tab set is the `group` field of the SOURCES behind the panels the current
+  // mode mounted — derived, never a second hand-kept list. A mode that mounts no
+  // transport panel simply has no transport tab.
+  let currentTab: string | null = new URLSearchParams(location.search).get("tab");
+
+  function writeTab(): void {
+    const url = new URL(location.href);
+    if (currentTab === null) url.searchParams.delete("tab");
+    else url.searchParams.set("tab", currentTab);
+    history.replaceState(null, "", url);
+  }
+
+  const groupTabs = createGroupTabs(panelTabsEl, (id) => {
+    currentTab = id;
+    applyTab();
+  });
+
+  /** One place where a tab change becomes visible: the filter, the chip state,
+      the shareable URL and the coverage line all move together. The coverage
+      repaint is not cosmetic — the number describes what is on screen, so
+      leaving it at the unfiltered figure would overstate the system's health
+      exactly while the user is looking at two panels. */
+  function applyTab(): void {
+    engine.setGroupFilter(currentTab);
+    groupTabs.setActive(currentTab);
+    writeTab();
+    paintCoverage();
+  }
+
+  function refreshTabs(): void {
+    const counts = new Map<string, number>();
+    for (const id of engine.currentIds()) {
+      const panel = registry.panels.find((p) => p.id === id);
+      const g = panel ? registry.byId.get(panel.source)?.group : undefined;
+      if (g) counts.set(g, (counts.get(g) ?? 0) + 1);
+    }
+    const tabs: GroupTab[] = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([id, count]) => ({ id, label: labelFor(id), count }));
+    // A tab this mode does not have must not stay selected, or the panels would
+    // be filtered by a category the user can no longer see or clear.
+    if (currentTab !== null && !counts.has(currentTab)) currentTab = null;
+    groupTabs.setTabs(tabs, currentTab);
+    applyTab();
+    // One tab is not a choice; hide the strip rather than show a fake control.
+    panelTabsEl.hidden = tabs.length < 2;
+  }
+
   // --- Tier 0-4 analytics ------------------------------------------------------
   // A VIEW over the trigger state the panels have already produced, not a data
   // source of its own. Deterministic rules only — there is no LLM in the browser
@@ -409,6 +460,7 @@ async function boot(): Promise<void> {
     );
     mapHead.setScope(v ? v.name.tc : "香港即時態勢", v ? v.name.en : "HONG KONG SITUATION");
     engine.setPanels(v ? v.order : OVERVIEW);
+    refreshTabs();
     void applyModeLayers(v ? v.layers : []);
     if (manual && pendingVertical?.id === id) {
       pendingVertical = null;
@@ -609,6 +661,11 @@ async function boot(): Promise<void> {
     /** layers the user currently has ON — QA reads this instead of guessing
         from the rail's aria-pressed state */
     layersOn: () => RAIL_LAYERS.map((l) => l.id).filter((id) => layerOn.has(id)),
+    /** the selected category tab, or null for 全部 */
+    currentTab: () => currentTab,
+    /** the tabs the current mode offers — QA reads this instead of counting
+        chips in a screenshot */
+    tabs: () => [...panelTabsEl.querySelectorAll(".ptab")].map((b) => (b as HTMLElement).dataset["group"] ?? ""),
     layerDefaults: () => RAIL_LAYERS.filter((l) => l.on).map((l) => l.id),
     /** the panels the overview mode shows — QA compares against this instead of
         a hardcoded count, so adding a panel is not reported as a failure */

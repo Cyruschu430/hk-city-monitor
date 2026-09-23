@@ -39,3 +39,4 @@ web/preview.log
 .cmsg
 cmsg.tmp
 commit-msg.tmp
+msg.tmp

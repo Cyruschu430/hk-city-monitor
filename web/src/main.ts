@@ -141,8 +141,24 @@ async function boot(): Promise<void> {
   const layerEl = h("div", { class: "layer-control" });
   hudEl.append(layerEl);
   const layerControl = createLayerControl(layerEl, (row, on) => {
-    // Visibility only: the mode still owns WHICH layers exist, the user owns
-    // which are shown. No re-fetch, no mutation of the vertical's layer set.
+    // A rail row is driven by CLICKING the rail's own button, not by calling
+    // toggleLayer directly. Setting aria-pressed and calling the toggle bypasses
+    // the rail's onclick, so the button's own next-click calculation
+    // (`next = aria-pressed !== "true"`) then computes the OPPOSITE of what the
+    // user expects — clicking the row turned the layer on, and the next click on
+    // the rail button turned it on again instead of off (measured: wind reported
+    // 0 features inside the harness while working in isolation).
+    //
+    // One implementation of "on": the button owns the state, and both controls
+    // press it.
+    if (row.kind === "rail" && row.railId) {
+      const btn = rail.layerButton(row.railId);
+      const isOn = btn?.getAttribute("aria-pressed") === "true";
+      if (btn && isOn !== on) btn.click();
+      return;
+    }
+    // A vertical row: visibility only. The mode still owns WHICH layers exist,
+    // the user owns which are shown. No re-fetch, no mutation of the layer set.
     for (const id of row.mapLayerIds) {
       if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
     }
@@ -163,7 +179,41 @@ async function boot(): Promise<void> {
   // Kept so a language switch can relabel the control without rebuilding it —
   // a rebuild would silently reset every toggle to "on".
   let currentLayerRows: LayerRow[] = [];
+
+  /** MapLibre layer ids owned by a RAIL toggle.
+   *
+   * The rail carries two kinds of toggle. Most correspond to a layers.json
+   * definition (aircraft, wind_field, weather_stations, rain_nowcast). Two do
+   * not: `imagery` swaps the BASEMAP raster, and `buildings3d` is deck.gl, so
+   * neither has a `vl-` layer of its own. They are listed here anyway because
+   * the control's job is to describe what the USER can switch, not only what
+   * layers.json happens to define. */
+  function railMapIds(id: string): string[] {
+    switch (id) {
+      case "cameras_td":
+        return ["cameras-td-cluster", "cameras-td-count", "cameras-td-point"];
+      case "cameras_hko":
+        return ["cameras-hko-cluster", "cameras-hko-count", "cameras-hko-point"];
+      case "imagery":
+        return ["landsd-imagery"];
+      case "buildings3d":
+        return []; // deck.gl overlay, not a MapLibre layer — visibility handled by toggle3d
+      default: {
+        const def = registry.layers.find((l) => l.id === id);
+        return def ? mapIdsFor(def) : [];
+      }
+    }
+  }
+
+  /** The RAIL's own label for a layer id, falling back to layers.json's title.
+   *  The rail label is the one the user just read on the button, so reusing it
+   *  keeps the two in step. */
+  function railLabel(id: string, fallback: { tc: string; en: string }): { tc: string; en: string } {
+    return RAIL_LAYERS.find((l) => l.id === id)?.label ?? fallback;
+  }
+
   function paintLegend(layerIds: string[]): void {
+    // 1. The vertical's OWN layers (drawn because the mode asked for them).
     const rows: LayerRow[] = layerIds
       .map((lid) => registry.layers.find((l) => l.id === lid))
       .filter((d): d is LayerDefRaw => !!d && d.geom !== "none")
@@ -174,10 +224,41 @@ async function boot(): Promise<void> {
           mapLayerIds: mapIdsFor(def),
           sourceName: src?.name ?? def.source,
           sourceUrl: src?.url,
+          kind: "vertical" as const,
         };
       });
+
+    // 2. The RAIL's toggles. Without these the control is a vertical-layer list
+    //    wearing the name of a layer control: a user who turns 風場 on from the
+    //    rail had no way to see or switch it off from the map's own control
+    //    (measured — the panel showed only 停水受影響地區 while four other
+    //    layers were on).
+    for (const rl of RAIL_LAYERS) {
+      if (rows.some((r) => r.def.id === rl.id)) continue; // already listed above
+      const def = registry.layers.find((l) => l.id === rl.id);
+      const src = def ? registry.byId.get(def.source) : undefined;
+      const synthetic: LayerDefRaw = def ?? {
+        id: rl.id,
+        source: "",
+        render: "",
+        geom: "raster",
+        title: rl.label,
+        popup: null,
+      };
+      rows.push({
+        def: synthetic,
+        mapLayerIds: railMapIds(rl.id),
+        sourceName: src?.name ?? rl.label.tc,
+        sourceUrl: src?.url,
+        kind: "rail",
+        railId: rl.id,
+        label: railLabel(rl.id, synthetic.title),
+      });
+    }
+
     currentLayerRows = rows;
     layerControl.setRows(rows);
+    layerControl.syncRail(railOn());
   }
 
   const ctx = { registry, raster: browserRasterizer };
@@ -446,9 +527,17 @@ async function boot(): Promise<void> {
         else layerOn.delete(id);
         writeLayerState();
         void toggleLayer(id, on);
+        // Mirror onto the LAYERS control so the two never disagree about what is
+        // switched on — a user reading either one sees the same answer.
+        layerControl.syncRail([...layerOn]);
       },
     },
   );
+
+  /** Layer ids the rail currently has on, read from its own buttons. */
+  function railOn(): string[] {
+    return rail.layersOn();
+  }
 
   /** Banner: a bold one-line title (what happened) plus an optional dim detail
     line (why it matters). The trigger banner used to cram the whole vertical

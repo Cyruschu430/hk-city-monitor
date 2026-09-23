@@ -140,7 +140,28 @@ const ADAPTERS: Record<string, Adapter> = {
   async immd_cp_queue(src, panel) {
     const payload = (await json(await get(src))) as Record<string, { arrQueue: number; depQueue: number }>;
     const stations = (panel.params?.["stations"] as string[] | undefined) ?? Object.keys(payload);
-    return { data: { kind: "status_grid", cells: P.parseImmdQueue(payload, stations) }, observedAt: null };
+    // The rule engine reads thresholds off the trigger state, so publish the
+    // raw queues here too. The ImD 99 sentinel is normalised to null: it means
+    // "closed", and a rule comparing it as a number would see a 99-minute queue
+    // at a shut border crossing — the exact misreading parseImmdQueue exists to
+    // prevent.
+    const queues: Record<string, { arr: number | null; dep: number | null }> = {};
+    let maxQueueMin: number | null = null;
+    for (const [k, v] of Object.entries(payload)) {
+      const arr = v?.arrQueue >= 98 ? null : (v?.arrQueue ?? null);
+      const dep = v?.depQueue >= 98 ? null : (v?.depQueue ?? null);
+      queues[k] = { arr, dep };
+      // Highest queue across all OPEN crossings. Closed ones are already null,
+      // so they cannot masquerade as a 99-minute wait.
+      for (const n of [arr, dep]) {
+        if (typeof n === "number" && (maxQueueMin === null || n > maxQueueMin)) maxQueueMin = n;
+      }
+    }
+    return {
+      data: { kind: "status_grid", cells: P.parseImmdQueue(payload, stations) },
+      observedAt: null,
+      state: { queues, records: queues, maxQueueMin },
+    };
   },
 
   async mardep_crossboundary_ferry(src, panel) {
@@ -162,7 +183,18 @@ const ADAPTERS: Record<string, Adapter> = {
   async ha_ae_waiting(src) {
     const payload = (await json(await get(src))) as { waitTime: P.AeRow[]; updateTime?: string };
     const { cells, observedAt } = P.parseAeWaiting(payload);
-    return { data: { kind: "gauge_grid", cells }, observedAt };
+    // Publish the longest A&E wait so a rule can threshold it without
+    // re-parsing. The source's value is a Chinese duration string ("1 小時 30
+    // 分鐘"), so it goes through the SAME zhDurationMinutes the panel uses —
+    // re-deriving it here would let the rule and the panel disagree.
+    const mins = (payload.waitTime ?? [])
+      .map((r) => P.zhDurationMinutes(r.t45p50))
+      .filter((n) => Number.isFinite(n) && n >= 0);
+    return {
+      data: { kind: "gauge_grid", cells },
+      observedAt,
+      state: { longestWaitMin: mins.length ? Math.max(...mins) : null, hospitals: mins.length },
+    };
   },
 
   async hk_public_holidays(_src, panel) {
@@ -198,6 +230,11 @@ const ADAPTERS: Record<string, Adapter> = {
 
     const joined = P.joinWindToStations(stations, network);
     const cells = P.windStatus(stations);
+    // Highest measured wind speed across located stations — the number a
+    // "strong wind" rule thresholds on. Null when nothing is reporting, which
+    // the rule engine treats as "skip", never as zero.
+    const speeds = joined.located.map((s) => s.speedKmh).filter((v): v is number => typeof v === "number");
+    const maxSpeedKmh = speeds.length ? Math.max(...speeds) : null;
     if (network.features.length === 0) {
       cells.push({
         label: lang() === "tc" ? "測站座標" : "Station coords",
@@ -221,7 +258,7 @@ const ADAPTERS: Record<string, Adapter> = {
     return {
       data: { kind: "status_grid", cells },
       observedAt,
-      state: { records: joined.located, records_fresh: joined.located },
+      state: { records: joined.located, records_fresh: joined.located, maxSpeedKmh },
       geo: P.windToGeoJson(joined.located),
     };
   },
@@ -325,7 +362,16 @@ const ADAPTERS: Record<string, Adapter> = {
   async aqhi_city_dashboard(src) {
     const j = (await json(await get(src))) as unknown;
     const { cells, observedAt } = P.parseAqhiDashboard(j);
-    return { data: { kind: "gauge_grid", cells }, observedAt };
+    // Publish the worst station reading for rules. AQHI is a 1-10+ index where
+    // 7+ is "high" and 10+ "very high", so the max is the number that matters
+    // for a city-wide alert; the mean would hide a single bad district.
+    const list = (j as { aqhi?: number }[] | undefined) ?? [];
+    const values = list.map((s) => s.aqhi).filter((v): v is number => typeof v === "number");
+    return {
+      data: { kind: "gauge_grid", cells },
+      observedAt,
+      state: { maxAqhi: values.length ? Math.max(...values) : null, stations: values.length },
+    };
   },
 
   async td_carpark_vacancy(src, panel, ctx) {

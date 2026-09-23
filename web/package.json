@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node src/lib/trigger.test.ts && node src/lib/context.test.ts && node src/lib/render.test.ts && node src/lib/parsers.test.ts"
+    "test": "node src/lib/trigger.test.ts && node src/lib/context.test.ts && node src/lib/render.test.ts && node src/lib/parsers.test.ts && node src/lib/analytics.test.ts"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1"

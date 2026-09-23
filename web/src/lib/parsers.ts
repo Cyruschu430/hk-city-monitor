@@ -114,22 +114,58 @@ export function decodeBig5(bytes: Uint8Array): string {
   return new TextDecoder("big5").decode(bytes);
 }
 
+/** Minimum pipe-separated columns in a well-formed WSD row. Used both as the
+ *  validity check and to detect continuation lines (see parseWsd). */
+const MIN_WSD_COLS = 15;
+
 export function parseWsd(text: string): { records: WsdRecord[]; active: WsdRecord[]; items: ListItem[] } {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim());
+  // A record can be split across lines by a CRLF *inside a field* — the upstream
+  // data really contains this (CSDI publishes the district as "深水埗區\r\n"), and
+  // because the CSV is pipe-delimited while lines are newline-delimited, such a
+  // field is indistinguishable from a row break by splitting alone.
+  //
+  // The recovery is to rejoin FORWARD: a fragment that is short of the 15 fields
+  // is the BEGINNING of the row that continues on the next line, because the
+  // split happened mid-row. Joining backwards instead (onto the previous,
+  // complete line) glues the fragment to the header and destroys both.
+  const rawLines = text.split(/\r?\n/);
+  const lines: string[] = [];
+  let pending = "";
+  for (const line of rawLines) {
+    if (!line.trim() && !pending) continue;
+    const joined = pending + line;
+    if (joined.split("|").length < MIN_WSD_COLS) {
+      // Still short — this row continues on the next line.
+      pending = joined;
+      continue;
+    }
+    lines.push(joined);
+    pending = "";
+  }
+  // A trailing fragment means the file ended mid-row; it cannot be a record.
   const records: WsdRecord[] = [];
   for (const line of lines.slice(1)) {
     const c = line.split("|");
-    if (c.length < 15) continue;
+    if (c.length < MIN_WSD_COLS) continue;
+    // A rejoined line has had its CRLF removed by the split, but any other
+    // control character from upstream would land inside a value; strip them so
+    // the district matches the polygon layer by exact equality.
+    const field = (i: number): string => (c[i] ?? "").replace(/[\r\n\t]+/g, " ").trim();
     records.push({
-      id: c[0] ?? "",
-      waterType: c[2] ?? "",
-      district: c[4] ?? "",
-      nature: c[6] ?? "",
+      id: field(0),
+      waterType: field(2),
+      // Trimmed at the parse boundary. The district is joined against the CSDI
+      // polygon layer by exact string equality, and BOTH sides have been seen
+      // carrying stray whitespace — CSDI publishes 深水埗區 with a trailing CRLF
+      // (measured). Without this the map silently fails to highlight an affected
+      // district, which reads as "no outage here" rather than as an error.
+      district: field(4),
+      nature: field(6),
       suspendAt: parseHkDmY(c[7] ?? ""),
       resumeAt: c[8] ? parseHkDmY(c[8]) : null,
-      address: (c[10] ?? "").replace(/,\s*$/, ""),
-      cause: c[12] ?? "",
-      status: c[14] ?? "",
+      address: field(10).replace(/,\s*$/, ""),
+      cause: field(12),
+      status: field(14),
     });
   }
   // 「現正停水」is the live state; 「供水已恢復」stays in the feed for a while

@@ -66,6 +66,33 @@ export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): v
   }
 }
 
+/** Trim whitespace from a district name.
+ *
+ * MEASURED upstream defect: CSDI publishes 深水埗區 with a trailing CRLF —
+ * `"深水埗區\r\n"` (feature OBJECTID 6 of the WSD district layer). Every match
+ * below is exact string equality, so a clean name from a WSD notice would never
+ * match that polygon and the district would silently never highlight.
+ *
+ * Normalising at the boundary (once, when the data arrives) rather than at each
+ * comparison means the match, the filter, the paint expression and the label all
+ * agree by construction — and the popup shows a clean name. */
+function cleanDistrict(v: unknown): string {
+  return typeof v === "string" ? v.replace(/[\r\n\t]+/g, " ").trim() : "";
+}
+
+/** Normalise every feature's district name in place-safe fashion (returns new). */
+function normaliseDistricts(fc: GeoJSON.FeatureCollection): GeoJSON.FeatureCollection {
+  return {
+    ...fc,
+    features: (fc.features ?? []).map((f) => {
+      const props = f.properties ?? {};
+      const name = cleanDistrict(props["DISTRICT_CHINESE"]);
+      if (!name || name === props["DISTRICT_CHINESE"]) return f;
+      return { ...f, properties: { ...props, DISTRICT_CHINESE: name } };
+    }),
+  };
+}
+
 async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs): Promise<void> {
   const src = args.registry.byId.get(def.source);
   if (!src) throw new Error(`layer ${def.id}: source ${def.source} 唔存在`);
@@ -73,7 +100,8 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
   const res = await fetch(fetchUrl(src), { signal: AbortSignal.timeout(25_000) });
   if (stale(args, gen)) throw new Error("obsolete layer request"); // mode switched mid-fetch
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = (await res.json()) as GeoJSON.FeatureCollection;
+  const raw = (await res.json()) as GeoJSON.FeatureCollection;
+  const data = normaliseDistricts(raw);
 
   const id = `${PREFIX}${def.id}`;
   if (stale(args, gen)) throw new Error("obsolete layer request");

@@ -85,7 +85,37 @@ async function radarFrame(src: SourceDef): Promise<AdapterResult> {
 
 type Adapter = (src: SourceDef, panel: PanelDefRaw, ctx: AdapterCtx) => Promise<AdapterResult>;
 
+/** A source whose URL depends on panel params (the MTR line/station, the KMB
+    stop). It keeps the registry's own `fetch` route on purpose: both hosts send
+    ACAO:*, so forcing them through the Worker would make two keyless,
+    browser-reachable panels depend on a deployed Worker for nothing. */
+function withUrl(src: SourceDef, url: string): SourceDef {
+  return { ...src, url };
+}
+
 const ADAPTERS: Record<string, Adapter> = {
+  async mtr_next_train(src, panel) {
+    const line = String(panel.params?.["line"] ?? "ISL");
+    const sta = String(panel.params?.["sta"] ?? "ADM");
+    const url = `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=${encodeURIComponent(line)}&sta=${encodeURIComponent(sta)}`;
+    const payload = await json(await fetchSource(withUrl(src, url)));
+    const { items, observedAt } = P.parseMtrSchedule(payload);
+    return { data: { kind: "list", items }, observedAt };
+  },
+
+  async kmb_eta(src, panel) {
+    const stopId = panel.params?.["stop_id"];
+    // Loud failure, never an empty table: an empty table says "no buses are
+    // coming", which is a different claim from "this panel is misconfigured".
+    if (typeof stopId !== "string" || stopId.length === 0) {
+      throw new Error("kmb_eta panel 要有 params.stop_id");
+    }
+    const url = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${encodeURIComponent(stopId)}`;
+    const payload = await json(await fetchSource(withUrl(src, url)));
+    const { columns, rows, observedAt } = P.parseKmbStopEta(payload);
+    return { data: { kind: "table", columns, rows }, observedAt };
+  },
+
   async hko_warnsum(src) {
     const payload = (await json(await get(src))) as Record<string, P.WarnEntry>;
     const { items, observedAt } = P.parseWarnsum(payload);

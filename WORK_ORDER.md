@@ -7,6 +7,40 @@
 
 ---
 
+## 0.6 Baseline collector —— 要你設一次排程（agent 做唔到）
+
+`scripts/collect_baselines.mjs` 已經寫好並實測（4 個 signal 全部拿到真值，
+`data/baselines.json` 已生成，app 由 `0/14` 變 `1/14` 日）。**但要有人定時跑佢。**
+
+### 為咩要每小時跑，唔係每日
+`baseline.ts` 用 `(day-of-week, hour-of-day)` 分桶 —— 每個 signal 7×24 = 168 個桶。
+每日跑一次只會填 1/24 個鐘數嘅桶，其他鐘數搵唔到 baseline，規則會永遠 immature。
+每小時跑 = 每日 24 個桶、14 日就夠，成本係每日 96 次免 key fetch。
+
+### 設定（Windows 工作排程器，每小時）
+```
+node C:\hk-city-monitor\scripts\collect_baselines.mjs
+```
+跟住（要出街先要推上去，因為 Pages 由 git 部署）：
+```
+git -C C:\hk-city-monitor add data/baselines.json
+git -C C:\hk-city-monitor commit -m "chore(data): hourly baseline collection"
+git -C C:\hk-city-monitor push
+```
+⚠️ 只 `add data/baselines.json` —— 唔好 `git add -A`，會夾埋其他未 ready 嘅改動。
+
+### 驗證
+```
+node scripts/collect_baselines.mjs --dry-run
+```
+應該見到 4 行 signal + `X/14 days`。第一次跑會寫檔；同日再跑會改變（第二個樣本
+refine 同一小時嘅桶），但 `days` 唔會增加 —— 14 日 gate 數嘅係**日數**，唔係樣本數。
+
+### 唔好做
+- ❌ 唔好改 `data/baselines.json` 嘅 `version`（app 會拒絕載入並用空 store）
+- ❌ 唔好刪 `data/baselines.json` 入 git（`sync-data.mjs` 會警告但唔會爆，
+  app 會退回「累積中 0/14 日」—— 誠實但無用）
+
 ## 0.5 只有 Cyrus 可以做嘅兩步（agent 做唔到，唔好等）
 
 呢兩步要瀏覽器授權／註冊，agent 冇辦法代做。未做之前以下工作**唔會完成**：

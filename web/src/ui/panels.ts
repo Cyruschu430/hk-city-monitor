@@ -40,6 +40,10 @@ export interface PanelEngineDeps {
 
 export interface PanelEngine {
   setPanels(ids: string[]): void;
+  /** Category tab filter (source `group`). null = 全部.
+      Visibility ONLY: nothing is unmounted and nothing is re-fetched, so
+      switching tabs costs zero requests and a panel keeps its last reading. */
+  setGroupFilter(group: string | null): void;
   currentIds(): string[];
   refreshAll(): void;
   /** Live health tally over the panels currently MOUNTED. Feeds the coverage
@@ -79,6 +83,12 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
 
   const defOf = (id: string): PanelDefRaw | undefined => registry.panels.find((p) => p.id === id);
 
+  let groupFilter: string | null = null;
+  /** A panel's category comes from its SOURCE, never from a field on the panel:
+      one registry, so a tab cannot disagree with sources.json. */
+  const groupOf = (entry: Entry): string => registry.byId.get(entry.panel.source)?.group ?? "";
+  const passes = (entry: Entry): boolean => groupFilter === null || groupOf(entry) === groupFilter;
+
   function wallData(panel: PanelDefRaw): { data: PanelData; observedAt: Date } {
     const isHko = panel.source === "hko_webcam";
     const list = isHko ? cameras.hko : cameras.td;
@@ -104,6 +114,10 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
   }
 
   function mount(id: string, node: HTMLElement): void {
+    // A panel that mounts after a tab was picked must honour the filter, or a
+    // slow source would pop into the wrong tab when its fetch lands.
+    const pending = entries.get(id);
+    if (pending && !passes(pending)) node.hidden = true;
     const existing = root.querySelector(`[data-panel="${id}"]`);
     if (existing) existing.replaceWith(node);
     else {
@@ -225,6 +239,13 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
 
   return {
     setPanels,
+    setGroupFilter(group) {
+      groupFilter = group;
+      for (const [id, entry] of entries) {
+        const el = root.querySelector<HTMLElement>(`[data-panel="${id}"]`);
+        if (el) el.hidden = !passes(entry);
+      }
+    },
     currentIds: () => [...order],
     refreshAll() {
       for (const id of order) void refresh(id);
@@ -237,6 +258,10 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       for (const id of order) {
         const entry = entries.get(id);
         if (!entry) continue;
+        // The coverage line describes what is ON SCREEN, so a panel hidden by
+        // the tab filter is not counted — otherwise hiding a broken panel would
+        // silently improve the number.
+        if (!passes(entry)) continue;
         const prev = bySource.get(entry.panel.source);
         // Worst state wins, so one broken panel is never masked by a sibling.
         const rank = { error: 3, stale: 2, loading: 1, live: 0 } as const;

@@ -15,6 +15,8 @@ import assert from "node:assert/strict";
 const B = await import("./analytics/baseline.ts");
 const R = await import("./analytics/rules.ts");
 const C = await import("./analytics/convergence.ts");
+const N = await import("./analytics/narrative.ts");
+const A = await import("./analytics/index.ts");
 
 // Types must come from a static import: a dynamic `await import()` binding is a
 // value, not a namespace, so `R.RuleDef` as a type annotation does not typecheck.
@@ -242,6 +244,118 @@ const HK = (iso: string) => new Date(iso);
 
   console.log(`\u2713 Tier 2 匯聚：3 領域同區 → score ${conv[0]!.score}（3×3+3×2+3）· 單一領域唔算 · 60 分鐘窗外唔算`);
   console.log(`    措辭：${textTc}`);
+}
+
+// --- Tier 3/4: the template fallback is the primary path ----------------------
+{
+  const events: Event[] = [
+    {
+      ruleId: "ae_wait_long",
+      domain: "health",
+      severity: 2,
+      headline: { tc: "急症室輪候超過兩小時", en: "A&E wait over two hours" },
+      observed: 180,
+      threshold: 120,
+      district: "沙田區",
+      at: HK("2026-09-23T10:00:00+08:00"),
+      baselineAware: false,
+      z: null,
+    },
+  ];
+  const conv = C.findConvergence([
+    { ...events[0]!, domain: "health" },
+    { ...events[0]!, ruleId: "water_active", domain: "water", severity: 2 },
+  ]);
+  const immature = [{ ruleId: "spike", source: "wsd_water_suspension", maturity: { mature: false, days: 5, required: 14 } }];
+
+  // The brief must exist with NO LLM present. That is the whole contract: the
+  // feature works when the narrative provider is dead.
+  const brief = N.templateBrief(events, conv, immature, HK("2026-09-23T10:05:00+08:00"), "tc");
+  assert.equal(brief.mode, "template", "no LLM -> template mode");
+  assert.equal(brief.facts.length, 1, "one fact from one event");
+  assert.ok(brief.facts[0]!.text.tc.includes("180"), "the observed number is carried verbatim");
+  assert.ok(brief.facts[0]!.text.tc.includes("120"), "the threshold is carried verbatim");
+  assert.equal(brief.facts[0]!.ruleId, "ae_wait_long", "every fact traces to a rule id");
+  assert.equal(brief.accumulating.length, 1, "the immature signal is disclosed");
+  assert.equal(brief.accumulating[0]!.days, 5, "days accumulated is reported");
+
+  // A fact must never carry causal wording either — the LLM is instructed not
+  // to, but the TEMPLATE is what ships when it fails, so it must be clean too.
+  const allText = [
+    ...brief.facts.map((f) => f.text.tc + f.text.en),
+    ...brief.convergences.map((c) => c.text.tc + c.text.en),
+  ].join(" ");
+  for (const causal of ["因為", "導致", "造成", "because", "caused", "due to"]) {
+    assert.ok(!allText.includes(causal), `template carries no causal wording (${causal})`);
+  }
+
+  // The prompt's prohibitions are testable, so a future edit that drops one
+  // fails here rather than silently loosening the LLM's brief.
+  const prompt = N.narrativePrompt(brief.facts);
+  for (const must of ["Do not infer causation", "Do not add context", "co-occurred", "Only restate"]) {
+    assert.ok(prompt.includes(must), `prompt states: ${must}`);
+  }
+  assert.ok(prompt.includes("180"), "prompt carries the real numbers");
+
+  const summary = N.briefSummary(brief, "tc");
+  assert.ok(summary.includes("範本敘述"), `summary says template when there is no LLM: ${summary}`);
+  assert.ok(summary.includes("累積中"), "summary discloses what is still accumulating");
+
+  console.log(`\u2713 Tier 3/4：冇 LLM 都出到簡報（mode=${brief.mode}）· 數字原樣保留 · 累積中 ${brief.accumulating[0]!.days}/14 日`);
+  console.log(`    範本：${brief.facts[0]!.text.tc}`);
+  console.log(`    摘要：${summary}`);
+}
+
+// --- the orchestrator: null is not an observation of zero ---------------------
+{
+  // THE SUBTLE ONE. A missing reading (station closed, feed silent) must not be
+  // folded as 0. Folding zeros drags the baseline mean down, and the next
+  // ordinary reading then looks like a spike — a manufactured anomaly, produced
+  // entirely by the act of measuring.
+  const store = B.emptyStore();
+  const withNull = A.updateBaselines(store, { ha_ae_waiting: { longestWaitMin: null } }, HK("2026-09-23T10:00:00+08:00"));
+  assert.deepEqual(withNull, store, "a null reading folds nothing");
+
+  const withAbsent = A.updateBaselines(store, { ha_ae_waiting: { hospitals: 3 } }, HK("2026-09-23T10:00:00+08:00"));
+  assert.deepEqual(withAbsent, store, "an absent field folds nothing");
+
+  const withValue = A.updateBaselines(store, { ha_ae_waiting: { longestWaitMin: 90 } }, HK("2026-09-23T10:00:00+08:00"));
+  assert.equal(B.daysObserved(withValue, "ha_ae_waiting.longestWaitMin"), 1, "a real reading folds");
+  // Derive the bucket key from the same helper the module uses, rather than
+  // hardcoding "dow|hour" — a wrong literal here would silently pass by
+  // asserting against the wrong bucket (it did, on the first run).
+  const parts = B.hkParts(HK("2026-09-23T10:00:00+08:00"));
+  const b = B.summarise(withValue.signals["ha_ae_waiting.longestWaitMin"]![B.bucketKey(parts.dow, parts.hour)]);
+  assert.equal(b?.mean, 90, "the folded mean is the real reading, not 90 averaged with zeros");
+
+  // End-to-end: analyse() produces a brief from live-shaped state, with no LLM
+  // anywhere in the path.
+  const rules: RuleDef[] = [
+    { id: "ae", domain: "health", severity: 2, when: { source: "ha_ae_waiting", field: "longestWaitMin", op: ">=", value: 120 }, headline: { tc: "急症室輪候長", en: "A&E long" }, district_field: "district" },
+    { id: "aq", domain: "environment", severity: 1, when: { source: "aqhi_city_dashboard", field: "maxAqhi", op: ">=", value: 7 }, headline: { tc: "空氣差", en: "AQHI high" }, district_field: "district" },
+  ];
+  const out = A.analyse({
+    state: {
+      ha_ae_waiting: { longestWaitMin: 200, district: "沙田區" },
+      aqhi_city_dashboard: { maxAqhi: 9, district: "沙田區" },
+    },
+    rules,
+    store: B.emptyStore(),
+    now: HK("2026-09-23T10:00:00+08:00"),
+    lang: "tc",
+  });
+  assert.equal(out.events.length, 2, "two rules fire");
+  // Both are in 沙田區, so Tier 2 should converge them (2 domains).
+  assert.equal(out.convergences.length, 1, "same district + 2 domains -> convergence");
+  assert.equal(out.convergences[0]!.domains.length, 2, "two domains");
+  // score = 2*3 + 2*2 + 2 = 12
+  assert.equal(out.convergences[0]!.score, 12, `2 domains sev2 x2 events -> 12 (got ${out.convergences[0]!.score})`);
+  assert.equal(out.brief.mode, "template", "no LLM in the runtime path");
+  assert.equal(out.brief.convergences.length, 1, "the convergence reaches the brief");
+  assert.ok(out.store.signals["ha_ae_waiting.longestWaitMin"], "baselines were updated by the run");
+
+  console.log(`\u2713 編排：兩個規則觸發 → 同區 2 領域匯聚 score ${out.convergences[0]!.score} · mode=${out.brief.mode}`);
+  console.log(`    缺值唔會當 0 折入基線（否則會製造假異常）`);
 }
 
 console.log("\nanalytics.test.ts: ALL PASS");

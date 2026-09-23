@@ -28,3 +28,7 @@ Thumbs.db
 .env.*
 !.env.example
 *.bak-*
+
+# Runtime logs from local dev servers (must never be committed)
+worker-dev.log
+web/preview.log

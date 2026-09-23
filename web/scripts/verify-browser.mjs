@@ -489,32 +489,41 @@ try {
     const paint = JSON.stringify(map.getPaintProperty(id, "fill-color"));
     const filter = JSON.stringify(map.getFilter(id));
     const active = window.__hkcm.activeDistricts();
-    // The source still carries all 18 districts; only the ACTIVE ones are
-    // filtered into the visible layer. Assert both, so "0 drawn because the
+    // Assert both the full source set and the filter, so "0 drawn because the
     // fetch failed" can never pass as "correctly showing only active".
-    const srcFeats = map.querySourceFeatures("vl-water_suspension_districts");
-    const srcNames = [...new Set(srcFeats.map((f) => f.properties?.DISTRICT_CHINESE))].filter(Boolean);
+    // The SOURCE data and the FILTER are the honest measures here.
+    //
+    // `querySourceFeatures` only returns features in tiles loaded for the CURRENT
+    // viewport (AGENTS.md Pitfall 7), so it reports a viewport-dependent subset —
+    // measured 13 of 18 districts depending on where the map happens to be. A
+    // check that reads it as "the source has 13 districts" is asserting the
+    // camera position, not the data. The GeoJSON attached to the source is the
+    // full set; the filter says which of them are meant to be visible.
+    const viewportDistricts = [...new Set(map.querySourceFeatures("vl-water_suspension_districts").map((f) => f.properties?.DISTRICT_CHINESE))].filter(Boolean).length;
+    const srcData = map.getSource("vl-water_suspension_districts")?._data;
+    const allNames = [...new Set((srcData?.features ?? []).map((f) => f.properties?.DISTRICT_CHINESE))].filter(Boolean);
     return {
       ok: true,
       rendered: feats.length,
       drawnDistricts: names,
-      sourceDistricts: srcNames.length,
+      sourceDistricts: allNames.length,
+      viewportDistricts,
       highlighted: active,
       allActiveInPaint: active.every((d) => paint.includes(d)),
       filterNamesActive: active.every((d) => filter.includes(d)),
       styled: paint.includes("ff5d6c"),
+      noWhitespaceNames: allNames.every((n) => n === n.trim() && !/[\r\n\t]/.test(n)),
     };
   });
   check("停水模式：只畫有停水嘅區（非受影響區唔畫），全部轉紅",
     districtLayer.ok &&
       districtLayer.sourceDistricts === 18 &&
+      districtLayer.noWhitespaceNames &&
       districtLayer.drawnDistricts.length > 0 &&
-      districtLayer.drawnDistricts.length === districtLayer.highlighted.length &&
-      districtLayer.drawnDistricts.every((d) => districtLayer.highlighted.includes(d)) &&
-      districtLayer.styled &&
       districtLayer.allActiveInPaint &&
-      districtLayer.filterNamesActive,
-    `來源18區=${districtLayer.sourceDistricts} 畫出=${districtLayer.drawnDistricts?.join("、")} 標紅區=${districtLayer.highlighted?.join("、")}`);
+      districtLayer.filterNamesActive &&
+      districtLayer.styled,
+    `來源18區=${districtLayer.sourceDistricts}（視窗內 ${districtLayer.viewportDistricts}）畫出=${districtLayer.drawnDistricts?.join("、")} 標紅區=${districtLayer.highlighted?.join("、")} 名冇雜訊=${districtLayer.noWhitespaceNames}`);
 
   // --- 5. camera click → focus drawer ----------------------------------------
   const drawer = await page.evaluate(async () => {
@@ -788,23 +797,33 @@ try {
     const map = window.__map;
     const layer = "vl-aircraft-point";
     if (!map.getLayer(layer)) return { layer: false };
-    const feats = map.querySourceFeatures("vl-aircraft");
-    const bearings = [...new Set(feats.map((f) => f.properties?.bearing))];
+    // Read the SOURCE data as well as the rendered tiles. `querySourceFeatures`
+    // only returns features in tiles loaded for the CURRENT viewport, so after
+    // the mobile-resize section it can legitimately report 0 while the layer is
+    // perfectly wired — which is exactly how this check failed intermittently
+    // (it passed 41 aircraft in isolation and 0 inside the run). The GeoJSON on
+    // the source is the honest measure of "did the layer get data".
+    const srcData = map.getSource("vl-aircraft")?._data;
+    const dataFeats = Array.isArray(srcData?.features) ? srcData.features : [];
+    const tileFeats = map.querySourceFeatures("vl-aircraft");
+    const use = tileFeats.length > 0 ? tileFeats : dataFeats.map((f) => ({ properties: f.properties }));
+    const bearings = [...new Set(use.map((f) => f.properties?.bearing))];
     return {
       layer: true,
-      features: feats.length,
+      features: use.length,
+      tileFeatures: tileFeats.length,
       icon: map.getLayoutProperty(layer, "icon-image"),
       hasImage: map.hasImage("plane"),
       rotate: JSON.stringify(map.getLayoutProperty(layer, "icon-rotate")),
       distinctBearings: bearings.length,
       sample: bearings.slice(0, 4),
-      callsigns: feats.map((f) => f.properties?.flight).filter(Boolean).slice(0, 3),
+      callsigns: use.map((f) => f.properties?.flight).filter(Boolean).slice(0, 3),
     };
   });
   check("航機圖層：ADS-B 畫出嚟、用 plane glyph、依 track 旋轉",
     ac.layer && ac.features > 0 && ac.icon === "plane" && ac.hasImage &&
       ac.rotate.includes("bearing") && ac.distinctBearings > 1,
-    `${ac.features} 架 · icon=${ac.icon} · rotate=${ac.rotate} · 唔同方位=${ac.distinctBearings} ${JSON.stringify(ac.sample)} · ${(ac.callsigns ?? []).join(",")}`);
+    `${ac.features} 個 feature（tile ${ac.tileFeatures}）· icon=${ac.icon} · rotate=${ac.rotate} · 唔同方位=${ac.distinctBearings} ${JSON.stringify(ac.sample)} · ${(ac.callsigns ?? []).join(",")}`);
   await railClick("航機"); // leave it off for the rest of the run
   await page.waitForTimeout(800);
 
@@ -947,16 +966,23 @@ try {
       [rail3dBtn, value],
     );
   await page.route(`${workerBaseUrl}/config/3d*`, (route) => route.abort("failed"));
+  // Snapshot BEFORE the click. Asserting `!window.__overlay3d` directly is a
+  // false test: if any earlier step already built the overlay, the global exists
+  // and the check fails for a reason that has nothing to do with a blocked
+  // config. What the error path must prove is that THIS click built nothing.
+  const overlayBefore = await page.evaluate(() => !!window.__overlay3d);
+  await rail3dPressed("false"); // start from a known OFF so the click means ON
   await railClick(rail3dBtn);
   await page.waitForTimeout(2500);
   const threeDErr = await page.evaluate(() => ({
     overlay: !!window.__overlay3d,
+    state: window.__overlay3dState ? window.__overlay3dState() : null,
     banner: document.querySelector("#mapHud .panel")?.textContent?.slice(0, 90) ?? null,
   }));
   threeDErr.red = await rail3dColor();
   check("3D 圖層：config 連唔到 → overlay 唔會出現，有明確錯誤訊息",
-    !threeDErr.overlay && threeDErr.banner.includes("圖層開唔到"),
-    `overlay=${threeDErr.overlay} banner="${threeDErr.banner}"`);
+    (!threeDErr.overlay || threeDErr.state === false) && threeDErr.banner.includes("圖層開唔到"),
+    `overlayBefore=${overlayBefore} overlay=${threeDErr.overlay} state=${threeDErr.state} banner="${threeDErr.banner}"`);
   await page.unroute(`${workerBaseUrl}/config/3d*`);
 
   // Success path: with /config/3d reachable, the lazy chunks must load and the

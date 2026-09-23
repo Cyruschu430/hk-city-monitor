@@ -49,6 +49,32 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log(`✓ 停水: ${records.length} 記錄，${active.length} 現正停水`);
   console.log(`    首宗：${a.district} ${a.address.slice(0, 40)}（${a.waterType}·${a.nature}）`);
   console.log(`    時間：${items[0]!.time}`);
+
+  // Every district name must be TRIMMED. The district is joined against the CSDI
+  // polygon layer by exact string equality, and CSDI itself publishes 深水埗區
+  // with a trailing CRLF (measured on feature OBJECTID 6). An untrimmed name on
+  // either side means the affected district silently never highlights on the map
+  // — a failure that looks like "no water outage here" rather than an error.
+  const untrimmed = records.filter((r) => r.district !== r.district.trim());
+  assert.equal(untrimmed.length, 0, `all district names trimmed (found ${untrimmed.length})`);
+  assert.ok(records.every((r) => !/[\r\n\t]/.test(r.district)), "no control chars in district names");
+  // And the synthetic case, since the real fixture may happen to be clean: a CRLF
+  // inside a field must not split the record. The upstream data really contains
+  // this (CSDI publishes 深水埗區 as "深水埗區\r\n"), and a naive split-on-newline
+  // turned one record into two short lines that both failed the 15-column check,
+  // so the record disappeared with no error at all.
+  //
+  // The header must be a WELL-FORMED 15-column row, otherwise the rejoin logic
+  // (correctly) treats the header itself as a continuation and swallows it.
+  const hdr = Array.from({ length: 15 }, (_, i) => `h${i}`).join("|");
+  const cols = Array.from({ length: 15 }, (_, i) => `c${i}`);
+  cols[4] = "深水埗區\r\n";
+  cols[14] = "現正停水";
+  const dirty = P.parseWsd(`${hdr}\n${cols.join("|")}\n`);
+  assert.equal(dirty.records.length, 1, "a CRLF inside a field does not split the record");
+  assert.equal(dirty.records[0]?.district, "深水埗區", "CRLF stripped from district");
+  assert.equal(dirty.records[0]?.status, "現正停水", "status survives the rejoin");
+  console.log(`    分區名全部 trimmed（${records.length} 筆），CRLF 會剝走`);
 }
 
 // 4. ImmD queues — 6 stations from panel params.

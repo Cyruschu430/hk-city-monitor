@@ -42,6 +42,7 @@ const OVERVIEW = [
   "breaking_news_list",
   "aircraft_status",
   "wind_status",
+  "stations_status",
   "cameras_wall",
   "hko_cameras_wall",
   "special_traffic_list",
@@ -68,6 +69,7 @@ const RAIL_LAYERS: RailLayer[] = [
   { id: "cameras_hko", label: { tc: "天文台相機", en: "HKO cameras" }, on: true },
   { id: "aircraft", label: { tc: "航機（ADS-B）", en: "Aircraft (ADS-B)" } },
   { id: "wind_field", label: { tc: "風場", en: "Wind field" } },
+  { id: "weather_stations", label: { tc: "氣象站", en: "Weather stations" } },
   { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" } },
   { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
   { id: "buildings3d", label: { tc: "3D 樓宇（載入慢）", en: "3D buildings (heavy)" } },
@@ -459,6 +461,17 @@ async function boot(): Promise<void> {
           if (!on) break;
           const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });
           if (!drawn.includes("wind_field")) throw new Error("風場圖層畫唔出");
+          break;
+        }
+        case "weather_stations": {
+          // A STATIC reference layer (CSDI snapshot), so it follows the same
+          // config path as everything else rather than a bespoke branch.
+          const def = registry.layers.find((l) => l.id === "weather_stations");
+          if (!def) throw new Error("layers.json 冇 weather_stations");
+          clearVerticalLayers(map, [def]);
+          if (!on) break;
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });
+          if (!drawn.includes("weather_stations")) throw new Error("氣象站圖層畫唔出");
           break;
         }
         case "buildings3d": {

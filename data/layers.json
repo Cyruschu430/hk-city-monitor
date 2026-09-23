@@ -123,6 +123,21 @@
    "filters": {
     "scope": "hk"
    }
+  },
+  {
+   "id": "weather_stations",
+   "source": "hko_stations_network",
+   "render": "status_grid",
+   "geom": "point",
+   "symbol": "station-wind",
+   "title": {
+    "tc": "氣象站位置",
+    "en": "Weather stations"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   }
   }
  ]
 }

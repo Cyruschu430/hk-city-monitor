@@ -378,6 +378,20 @@
     "tc": "每 10 分鐘",
     "en": "Every 10 minutes"
    }
+  },
+  {
+   "id": "stations_status",
+   "source": "hko_stations_network",
+   "render": "status_grid",
+   "title": {
+    "tc": "氣象站網絡（CSDI）",
+    "en": "Weather station network (CSDI)"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "官方靜態參考圖層",
+    "en": "Official static reference layer"
+   }
   }
  ]
 }

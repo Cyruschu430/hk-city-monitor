@@ -36,6 +36,10 @@ What is in `web/` right now:
 Still true and worth reading as reference: `legacy/index.html` (v0.1 prototype, live, do
 not delete) and `scripts/build_cameras.py` (idempotent, has `--check`).
 
+**Where the remaining work is written down:** `WORK_ORDER.md` (the full ordered
+backlog with per-item verification), `PRODUCTION_CHECKLIST.md` (the P0 defects), and the
+two `SPEC_*.md` files. Read those before planning anything new.
+
 **A claim about the UI is verified in the DOM, not from a screenshot** — see
 `## Verification`. A screenshot review has already called a two-column grid
 single-column and reported a fixed build as still broken.

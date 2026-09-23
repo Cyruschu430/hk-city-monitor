@@ -36,3 +36,4 @@ web/preview.log
 .msg
 .commit-msg*
 *.tmp
+.cmsg

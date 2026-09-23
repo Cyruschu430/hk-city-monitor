@@ -1,7 +1,9 @@
 {
-  "_comment": "CURATED COMMUNITY LIST (not official open data): 16 Hong Kong live cam / live TV YouTube streams the project owner chose for the 直播 panel. Every tile is labelled 第三方直播 / third-party, and each stream's live state is resolved at runtime (probeLive) — an off-air tile says 現時無直播 instead of playing a black rectangle. If any channel dies, remove its row here.",
+  "_comment": "CURATED COMMUNITY LIST (not official open data): 18 Hong Kong live cam / live TV YouTube streams the project owner chose for the 直播 panel. Every tile is labelled 第三方直播 / third-party, and each stream's live state is resolved at runtime (probeLive) — an off-air tile says 現時無直播 instead of playing a black rectangle. If any channel dies, remove its row here.",
   "source_name": "第三方 YouTube 香港直播",
   "streams": [
+    { "id": "GxMB-EH_lJs", "title": "香港電台 RTHK 直播", "channel": "RTHK 香港電台" },
+    { "id": "gjN3_AIowt8", "title": "HOY TV 直播", "channel": "HOY 媒體網絡" },
     { "id": "XN-ArdUrqtc", "title": "實時東九龍維港 Live", "channel": "Country & Folk bgm" },
     { "id": "cmGz913hKFI", "title": "太子景觀 24/7", "channel": "語音天氣報告｜減壓音樂" },
     { "id": "jmwM1hA3JE0", "title": "TST 尖沙咀 Live", "channel": "陪您休閒上班看風景" },

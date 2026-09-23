@@ -343,11 +343,15 @@ const ADAPTERS: Record<string, Adapter> = {
       "0700.HK": { tc: "騰訊控股", en: "Tencent", tag: "股份" },
       "9988.HK": { tc: "阿里巴巴", en: "Alibaba", tag: "股份" },
     };
-    const rows: (string | { text: string; cls: string })[][] = [];
+    const rows: (string | { text: string; cls: string; spark?: number[] })[][] = [];
     let observedAt: Date | null = null;
     for (const sym of symbols) {
       try {
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`;
+        // interval=5m&range=1d, NOT interval=1d: measured, `interval=1d&range=1d`
+        // returns exactly ONE close value, so the sparkline had nothing to draw
+        // (70 points at 5m — one HK trading day). The parser always computed
+        // `spark`; it was the query that made it a single point.
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=5m&range=1d`;
         const j = (await json(await getAbsolute(url))) as unknown;
         const q = P.parseYahooQuote(j);
         if (!q) continue;
@@ -361,7 +365,7 @@ const ADAPTERS: Record<string, Adapter> = {
         rows.push([
           meta.tag ? `${nm} · ${meta.tag}` : nm,
           q.price.toLocaleString("en-US", { maximumFractionDigits: 2 }),
-          { text: `${up ? "+" : ""}${q.changePct.toFixed(2)}%`, cls: up ? "mkt-up" : "mkt-down" },
+          { text: `${up ? "+" : ""}${q.changePct.toFixed(2)}%`, cls: up ? "mkt-up" : "mkt-down", spark: q.spark },
         ]);
       } catch {
         // One symbol failing must not kill the whole market panel.

@@ -142,7 +142,11 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   const q = P.parseYahooQuote(j);
   assert.ok(q && q.symbol === "^HSI", "symbol parsed");
   assert.ok(q.price > 0 && Number.isFinite(q.changePct), `price=${q.price} chg=${q.changePct}%`);
-  assert.ok(q.spark.length >= 2, `sparkline ${q.spark.length} points`);
+  // >= 20, not >= 2. The old bound passed on a fixture with 5 points while the
+  // adapter's real query returned 1 — the fixture hid the bug. An intraday
+  // series at 5-minute bars is ~70 points; anything near single digits means the
+  // query changed back to a daily interval and the sparkline cannot draw.
+  assert.ok(q.spark.length >= 20, `sparkline ${q.spark.length} points（5 分鐘 bar 應該有幾十點）`);
   console.log(`✓ 港股報價: ${q.symbol} ${q.price}（${q.changePct >= 0 ? "+" : ""}${q.changePct.toFixed(2)}%）、spark ${q.spark.length} 點`);
 }
 

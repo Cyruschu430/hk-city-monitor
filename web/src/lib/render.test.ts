@@ -54,6 +54,9 @@ class StubEl {
 };
 (globalThis as Record<string, unknown>)["document"] = {
   createElement: (tag: string) => new StubEl(tag),
+  // SVG needs the namespace: createElement yields an HTMLUnknownElement for SVG
+  // tags and the browser draws nothing.
+  createElementNS: (_ns: string, tag: string) => new StubEl(tag),
   documentElement: { lang: "" },
 };
 
@@ -187,5 +190,48 @@ const footEl = renderPanel(def("list"), fixtures["list"], live(new Date("2026-09
 const time = footEl.walk((e) => e.tagName === "TIME")[0]!;
 assert.ok(time.textContent.includes("21:45"), `footer carries 更新時間, got: ${time.textContent}`);
 console.log("✓ 每個 panel footer 有更新時間");
+
+// 6. Sparkline geometry is a pure function — assert on the path, not a picture.
+{
+  const { sparkPath } = await import("./render.ts");
+  const up = sparkPath([1, 2, 3, 4], 56, 14);
+  const down = sparkPath([4, 3, 2, 1], 56, 14);
+  assert.ok(up.startsWith("M0.00 "), `path starts at x=0, got ${up.slice(0, 14)}`);
+  const yUp = Number(up.trim().split(" ").pop());
+  const yDown = Number(down.trim().split(" ").pop());
+  assert.ok(yUp < yDown, `a rising series must end HIGHER on screen (smaller y): up=${yUp} down=${yDown}`);
+  assert.equal(sparkPath([5], 56, 14), "", "one point is not a line");
+  const flat = sparkPath([5, 5, 5], 56, 14);
+  assert.ok(!/NaN/.test(flat), `flat series must not divide by zero: ${flat}`);
+  console.log(`✓ Sparkline: 上升線結束 y=${yUp} < 下降線 y=${yDown}（SVG y 向下 → 上升 = y 細）`);
+}
+
+// 7. A spark cell must actually REACH the DOM. Test 6 asserts the geometry, which
+//    would pass even if the renderer never called sparkSvg — and that is not
+//    hypothetical: the market panel drew no sparkline at all while both the
+//    geometry test and the parser test passed (the adapter was asking Yahoo for
+//    one data point, so `spark` had length 1 and the cell rendered nothing).
+{
+  const el = renderPanel(
+    def("table"),
+    { kind: "table", columns: ["A", "B"], rows: [["x", { text: "+1.0%", cls: "mkt-up", spark: [1, 3, 2, 5] }]] },
+    live(new Date()),
+  ) as unknown as StubEl;
+  const svgs = el.walk((e) => e.tagName === "SVG");
+  assert.equal(svgs.length, 1, `spark cell must render exactly one svg, got ${svgs.length}`);
+  const paths = svgs[0]!.walk((e) => e.tagName === "PATH");
+  const d = paths[0]?.getAttribute("d") ?? "";
+  assert.equal(paths.length, 1, `svg must carry one path, got ${paths.length}`);
+  assert.ok(d.length > 10 && d.startsWith("M"), `path has a real d: ${JSON.stringify(d.slice(0, 30))}`);
+  assert.equal(svgs[0]!.getAttribute("class"), "spark", "svg carries the .spark class for styling");
+  // A cell WITHOUT a spark must stay a plain cell — no empty svg scaffolding.
+  const plain = renderPanel(
+    def("table"),
+    { kind: "table", columns: ["A"], rows: [["x"]] },
+    live(new Date()),
+  ) as unknown as StubEl;
+  assert.equal(plain.walk((e) => e.tagName === "SVG").length, 0, "no spark -> no svg");
+  console.log(`✓ Spark cell 落到 DOM：1 個 svg.spark + 1 條 path（d 長度 ${d.length}）；無 spark 嘅 cell 唔會多個空 svg`);
+}
 
 console.log("\nrender.test.ts: ALL PASS");

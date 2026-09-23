@@ -115,6 +115,13 @@ a:hover{color:var(--cyan)}
 
 /* ---------- market (HK convention: red = up, green = down) ---------- */
 .mkt-up{color:var(--mkt-up)}.mkt-down{color:var(--mkt-down)}
+/* Specificity: `.ptable td` sets `color:var(--txt)` at (0,1,1), which beats a bare
+   `.mkt-up` at (0,1,0) — so the HK convention (red = up, green = down) never
+   actually painted. Measured: every change cell in the market table computed to
+   --txt. Scoped to the table so the class still works anywhere else, and it also
+   colours the sparkline beneath the figure, which draws with currentColor. */
+.ptable td.mkt-up{color:var(--mkt-up)}
+.ptable td.mkt-down{color:var(--mkt-down)}
 
 /* ---------- raster legend / empty ---------- */
 .praster-empty{padding:8px 2px;display:flex;flex-direction:column;gap:6px}
@@ -207,6 +214,12 @@ a:hover{color:var(--cyan)}
 #langSwitch,#themeSwitch{display:flex;border:1px solid var(--hairline);border-radius:var(--radius-pill);overflow:hidden}
 #langSwitch button,#themeSwitch button{padding:3px 10px;font-size:10.5px;color:var(--dim);letter-spacing:.08em}
 #langSwitch button[aria-pressed="true"],#themeSwitch button[aria-pressed="true"]{background:var(--cyan-tint);color:var(--cyan)}
+
+/* Sparkline: hand-rolled SVG (AGENTS.md — no charting library). Sits under the
+   change figure in the same cell so the market table keeps its three columns in
+   a 295px panel. */
+.spark{display:block;margin-top:3px;overflow:visible}
+.spark path{vector-effect:non-scaling-stroke}
 
 /* ---------- layout ---------- */
 #layout{flex:1 1 auto;display:grid;grid-template-columns:56px 1fr minmax(340px,44%);min-height:0}

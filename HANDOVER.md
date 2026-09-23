@@ -58,7 +58,7 @@ npx @deepseek-ai/dsh web          # local web UI; already running as of 2026-09-
 
 **Start a NEW session rather than resuming the 4.6 MB one.** That session carries the
 pre-work plan ("v0.2 is a rebuild") as live context; a new session reads the current
-`AGENTS.md` instead, and the 16 commits above are already summarised in it.
+`AGENTS.md` instead, and the commits listed above are already summarised in it.
 
 ## The paste-in brief for a new session
 

@@ -106,6 +106,28 @@
     "severity": 2,
     "when": { "source": "ha_ae_waiting", "field": "longestWaitMin", "op": ">baseline", "value": 2 },
     "headline": { "tc": "\u6025\u75c7\u5ba4\u8f2a\u5019\u8f03\u540c\u671f\u7570\u5e38\u504f\u9ad8", "en": "A&E wait unusually high for this hour" }
+  },
+  {
+    "_comment": "The three rules below exist so every collected baseline signal is CONSUMED. collect_baselines.mjs folds four signals hourly; before these were added only longestWaitMin had a rule, so three quarters of the collection fed nothing — wasted work and a silent coverage gap. Each is aware of the (weekday, hour) bucket, which is the point: a queue that is normal at 08:00 Monday is not normal at 03:00 Sunday.",
+    "id": "border_queue_anomalous",
+    "domain": "border",
+    "severity": 2,
+    "when": { "source": "immd_cp_queue", "field": "maxQueueMin", "op": ">baseline", "value": 2 },
+    "headline": { "tc": "\u53e3\u5cb8\u8f2a\u5019\u8f03\u540c\u671f\u7570\u5e38\u9577", "en": "Border queue unusually long for this hour" }
+  },
+  {
+    "id": "aqhi_anomalous",
+    "domain": "environment",
+    "severity": 2,
+    "when": { "source": "aqhi_city_dashboard", "field": "maxAqhi", "op": ">baseline", "value": 2 },
+    "headline": { "tc": "\u7a7a\u6c23\u8cea\u7d20\u8f03\u540c\u671f\u7570\u5e38\u5dee", "en": "Air quality unusually poor for this hour" }
+  },
+  {
+    "id": "wind_anomalous",
+    "domain": "weather",
+    "severity": 1,
+    "when": { "source": "ck_hk_hko_rss_latest_ten_minute_wind_info", "field": "maxSpeedKmh", "op": ">baseline", "value": 2 },
+    "headline": { "tc": "\u98a8\u5229\u8f03\u540c\u671f\u7570\u5e38\u5f37", "en": "Wind unusually strong for this hour" }
   }
   ]
 }

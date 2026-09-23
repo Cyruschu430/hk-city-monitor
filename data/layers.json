@@ -95,21 +95,7 @@
    }
   },
   {
-   "id": "aircraft",
-   "source": "adsb_fi_hk",
-   "render": "status_grid",
-   "geom": "point",
-   "symbol": "plane",
-   "title": {
-    "tc": "航機（ADS-B）",
-    "en": "Aircraft (ADS-B)"
-   },
-   "popup": null,
-   "filters": {
-    "scope": "hk"
-   }
-  },
-  {
+   "_comment": "The 'aircraft' layer definition was withdrawn from the SHIPPED set 2026-09-23 because adsb.fi/adsb.lol block Cloudflare egress IPs, so it could only ever error in production. Kept out of layers.json rather than left in and unreferenced, because an unreferenced layer is not validated by any vertical and would rot silently. To restore: re-add { id: 'aircraft', source: 'adsb_fi_hk', render: 'status_grid', geom: 'point', symbol: 'plane', ... } and the rail entry in main.ts. The generic point renderer, the adapter and registerGlyphs('plane') are all untouched.",
    "id": "wind_field",
    "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
    "render": "status_grid",

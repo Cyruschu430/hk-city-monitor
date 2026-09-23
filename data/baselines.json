@@ -17,6 +17,22 @@
     "min": 330,
     "max": 360,
     "lastUpdated": "2026-09-23T14:50:44.871Z"
+   },
+   "3|23": {
+    "n": 1,
+    "sum": 480,
+    "sumSq": 230400,
+    "min": 480,
+    "max": 480,
+    "lastUpdated": "2026-09-23T15:50:45.804Z"
+   },
+   "4|0": {
+    "n": 1,
+    "sum": 420,
+    "sumSq": 176400,
+    "min": 420,
+    "max": 420,
+    "lastUpdated": "2026-09-23T16:50:46.092Z"
    }
   },
   "immd_cp_queue.maxQueueMin": {
@@ -35,6 +51,22 @@
     "min": 0,
     "max": 0,
     "lastUpdated": "2026-09-23T14:50:44.871Z"
+   },
+   "3|23": {
+    "n": 1,
+    "sum": 0,
+    "sumSq": 0,
+    "min": 0,
+    "max": 0,
+    "lastUpdated": "2026-09-23T15:50:45.804Z"
+   },
+   "4|0": {
+    "n": 1,
+    "sum": 0,
+    "sumSq": 0,
+    "min": 0,
+    "max": 0,
+    "lastUpdated": "2026-09-23T16:50:46.092Z"
    }
   },
   "aqhi_city_dashboard.maxAqhi": {
@@ -53,6 +85,22 @@
     "min": 5,
     "max": 5,
     "lastUpdated": "2026-09-23T14:50:44.871Z"
+   },
+   "3|23": {
+    "n": 1,
+    "sum": 5,
+    "sumSq": 25,
+    "min": 5,
+    "max": 5,
+    "lastUpdated": "2026-09-23T15:50:45.804Z"
+   },
+   "4|0": {
+    "n": 1,
+    "sum": 5,
+    "sumSq": 25,
+    "min": 5,
+    "max": 5,
+    "lastUpdated": "2026-09-23T16:50:46.092Z"
    }
   },
   "ck_hk_hko_rss_latest_ten_minute_wind_info.maxSpeedKmh": {
@@ -71,21 +119,41 @@
     "min": 24,
     "max": 24,
     "lastUpdated": "2026-09-23T14:50:44.871Z"
+   },
+   "3|23": {
+    "n": 1,
+    "sum": 22,
+    "sumSq": 484,
+    "min": 22,
+    "max": 22,
+    "lastUpdated": "2026-09-23T15:50:45.804Z"
+   },
+   "4|0": {
+    "n": 1,
+    "sum": 21,
+    "sumSq": 441,
+    "min": 21,
+    "max": 21,
+    "lastUpdated": "2026-09-23T16:50:46.092Z"
    }
   }
  },
  "days": {
   "ha_ae_waiting.longestWaitMin": [
-   "2026-09-23"
+   "2026-09-23",
+   "2026-09-24"
   ],
   "immd_cp_queue.maxQueueMin": [
-   "2026-09-23"
+   "2026-09-23",
+   "2026-09-24"
   ],
   "aqhi_city_dashboard.maxAqhi": [
-   "2026-09-23"
+   "2026-09-23",
+   "2026-09-24"
   ],
   "ck_hk_hko_rss_latest_ten_minute_wind_info.maxSpeedKmh": [
-   "2026-09-23"
+   "2026-09-23",
+   "2026-09-24"
   ]
  }
 }

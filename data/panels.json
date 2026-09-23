@@ -303,6 +303,10 @@
    "cadence_note": {
     "tc": "即時",
     "en": "Live"
+   },
+   "disclaimer": {
+    "tc": "只轉載政府新聞網原文，不代表本項目立場。本項目與香港特區政府無關，亦非其轄下系統。",
+    "en": "Official government releases reprinted verbatim. This does not represent the project's position; the project is not affiliated with the HKSAR Government."
    }
   },
   {

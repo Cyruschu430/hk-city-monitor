@@ -152,6 +152,18 @@ def main() -> int:
             errors.append(f"panel {pid}: render {p.get('render')!r} is not one of the 8 closed types")
         check_bilingual(p.get("title"), f"panel {pid} title")
         check_bilingual(p.get("cadence_note"), f"panel {pid} cadence_note")
+        # A disclaimer is an editorial promise, so it is validated like one:
+        # bilingual, and long enough to actually say something. A one-word
+        # notice ("官方") would satisfy a presence check while telling the
+        # reader nothing, which is the failure mode worth blocking.
+        if "disclaimer" in p:
+            d = p.get("disclaimer")
+            check_bilingual(d, f"panel {pid} disclaimer")
+            if isinstance(d, dict):
+                for k in ("tc", "en"):
+                    if len(str(d.get(k, "")).strip()) < 20:
+                        errors.append(f"panel {pid} disclaimer.{k} is too short to be a "
+                                      f"meaningful notice ({len(str(d.get(k, '')).strip())} chars, need 20+)")
         sub = (p.get("params") or {}).get("list_source") or (p.get("params") or {}).get("expand")
         if sub:
             check_source(sub, f"panel {pid} params")

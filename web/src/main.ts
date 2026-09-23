@@ -47,6 +47,8 @@ const OVERVIEW = [
   "cameras_wall",
   "hko_cameras_wall",
   "special_traffic_list",
+  "mtr_next_train_list",
+  "kmb_eta_table",
   "tp_queue_grid",
   "hk_market_table",
   "crypto_prices",

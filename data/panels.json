@@ -392,6 +392,39 @@
     "tc": "官方靜態參考圖層",
     "en": "Official static reference layer"
    }
+  },
+  {
+   "id": "mtr_next_train_list",
+   "source": "mtr_next_train",
+   "render": "list",
+   "title": {
+    "tc": "港鐵 下一班列車",
+    "en": "MTR Next Train"
+   },
+   "params": {
+    "line": "ISL",
+    "sta": "ADM"
+   },
+   "cadence_note": {
+    "tc": "實時（每 30 秒）",
+    "en": "Real-time (30s)"
+   }
+  },
+  {
+   "id": "kmb_eta_table",
+   "source": "kmb_eta",
+   "render": "table",
+   "title": {
+    "tc": "九巴 到站時間",
+    "en": "KMB Arrivals"
+   },
+   "params": {
+    "stop_id": "18492910339410B1",
+    "max": 10
+   },
+   "cadence_note": {
+    "tc": "每 1 分鐘",
+    "en": "Every minute"
+   }
   }
- ]
-}
+ ]}

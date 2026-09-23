@@ -373,3 +373,35 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
 }
 
 console.log("\nparsers.test.ts: ALL PASS");
+
+
+// --- transport panels (fixtures captured from the live endpoints) ----------------
+
+// MTR next train: 4 UP + 4 DOWN on ISL at ADM; sys_time carries no T, no timezone.
+{
+  const j = jx("mtr_schedule.json");
+  const { items, observedAt } = P.parseMtrSchedule(j);
+  assert.equal(items.length, 8, `8 班（4 UP + 4 DOWN），實得 ${items.length}`);
+  assert.ok(items.every((i) => i.title.startsWith("往") || i.title.startsWith("to ")), "每班都有目的地");
+  assert.ok(items.some((i) => /\d+ 分鐘/.test(i.time ?? "") || i.time === "即將"), "有到站分鐘");
+  assert.ok(observedAt instanceof Date, "sys_time 解析到（無 T、無時區）");
+  console.log(`✓ 港鐵下一班: ${items.length} 班；首班 ${items[0]!.title} · ${items[0]!.time}`);
+}
+
+// KMB arrivals at one stop. The 備註 column is the honesty point of this panel.
+{
+  const j = jx("kmb_stop_eta.json");
+  const { columns, rows, observedAt } = P.parseKmbStopEta(j);
+  assert.ok(rows.length > 0, `${rows.length} 行`);
+  assert.equal(columns.length, 4, "4 欄（路線／目的地／到站／備註）");
+  assert.ok(rows.every((r) => r.length === 4), "每行 4 格");
+  assert.ok(observedAt instanceof Date, "generated_timestamp 解析到（ISO +08:00）");
+  const gen = new Date(j.generated_timestamp).getTime();
+  const want = Math.round((new Date(j.data[0].eta).getTime() - gen) / 60000);
+  assert.equal(rows[0]![2], want <= 0 ? "即將" : String(want), `到站分鐘 = eta − generated（期望 ${want}）`);
+  // The fixture itself must carry a remark, or this test proves nothing.
+  const rmkCount = j.data.filter((d: { rmk_tc?: string }) => d.rmk_tc).length;
+  assert.ok(rmkCount > 0, "fixture 要有 rmk 值，否則呢個測試測唔到嘢");
+  assert.ok(rows.some((r) => r[3] && r[3]!.length > 0), "rmk 有顯示，冇被 drop");
+  console.log(`✓ 九巴到站: ${rows.length} 行；備註有顯示（例：${rows.find((r) => r[3])?.[3]}）`);
+}

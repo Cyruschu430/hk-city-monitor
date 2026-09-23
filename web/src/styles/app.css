@@ -335,6 +335,29 @@ a:hover{color:var(--cyan)}
   color:var(--dim);font:500 10px/1.4 var(--font-ui);cursor:pointer}
 .p-more:hover{color:var(--txt);border-color:var(--dim);background:rgba(120,160,220,.14)}
 
+/* ---------- analysis panel (Tier 0-4 brief) ---------- */
+/* Not a source-backed panel: it is a conclusion drawn FROM the other panels, so
+   its styling deliberately differs — no source footer link, a rule id on every
+   line instead, and the wording mode stated in the chip. */
+.an-body{display:flex;flex-direction:column;gap:9px}
+.an-sec{display:flex;flex-direction:column;gap:4px}
+.an-h{font-size:9px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+.an-conv{padding:6px 8px;border-left:2px solid var(--amber);background:rgba(245,158,11,.07);
+  border-radius:0 5px 5px 0;font-size:11.5px;line-height:1.45;color:var(--txt)}
+.an-fact{display:flex;align-items:flex-start;gap:6px;font-size:11.5px;line-height:1.45;
+  padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.an-fact:last-child{border-bottom:0}
+.an-dot{width:6px;height:6px;border-radius:50%;flex:0 0 auto;margin-top:5px;background:var(--dim)}
+.an-fact.s1 .an-dot{background:var(--amber)}
+.an-fact.s2 .an-dot{background:#fb923c}
+.an-fact.s3 .an-dot{background:var(--alert)}
+/* The rule id is the traceability handle: it names WHICH deterministic rule
+   produced this line, so a claim can be traced to its threshold. */
+.an-rule{margin-left:auto;flex:0 0 auto;font-family:var(--font-mono);font-size:9px;
+  color:var(--faint);padding-left:6px;white-space:nowrap}
+.an-acc{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;color:var(--dim)}
+.an-days{font-family:var(--font-mono);color:var(--faint);white-space:nowrap}
+
 /* image_wall */
 /* v0.4 density pass: the wall used to be 2-up at 4:3 with a 4px label bar and
    a full-size LIVE chip, which ate ~40% of the right column and pushed every

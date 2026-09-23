@@ -590,6 +590,42 @@ try {
     overviewAgain.join(" "),
   );
 
+  // --- Tier 0-4 analysis -----------------------------------------------------
+  // The pipeline is only real if it produces a rendered brief from live state.
+  // Assert the chain: rules LOADED (a registry that silently gets 0 rules was a
+  // real bug — rules.json was missing from the build's copy list), a brief
+  // exists, and every fact carries the rule id that produced it.
+  await page.waitForSelector('.panel[data-panel="analysis_brief"]', { timeout: 60_000 }).catch(() => {});
+  const analysis = await page.evaluate(() => {
+    const hk = window.__hkcm;
+    const p = document.querySelector('.panel[data-panel="analysis_brief"]');
+    const rules = hk?.registry?.rules ?? [];
+    return {
+      rulesLoaded: Array.isArray(rules) ? rules.length : -1,
+      panel: !!p,
+      mode: p?.querySelector(".chip")?.textContent?.trim() ?? null,
+      facts: [...(p?.querySelectorAll(".an-fact") ?? [])].map((e) => e.textContent?.trim() ?? ""),
+      ruleTags: [...(p?.querySelectorAll(".an-rule") ?? [])].map((e) => e.textContent?.trim() ?? ""),
+      empty: p?.querySelector(".p-empty")?.textContent?.trim() ?? null,
+      foot: p?.querySelector(".panel-foot .src")?.textContent?.trim() ?? null,
+    };
+  });
+  check("分析層：rules.json 真係載入到（唔係 0 條規則）",
+    analysis.rulesLoaded > 0, `rules=${analysis.rulesLoaded}`);
+  check("分析層：Tier 0-4 出到簡報，每條事件帶規則 id（可溯源）",
+    analysis.panel && (analysis.facts.length > 0 || analysis.empty !== null) &&
+      analysis.facts.every((_, i) => (analysis.ruleTags[i] ?? "").length > 0) &&
+      analysis.mode !== null,
+    `mode=${analysis.mode} 事件=${analysis.facts.length} 規則=${JSON.stringify(analysis.ruleTags)} · ${analysis.facts[0] ?? analysis.empty ?? ""}`);
+
+  // The wording must never assert causation (ANALYTICS.md). Checked on the
+  // RENDERED panel, not just in the unit test, so a template edit is caught.
+  const causal = ["因為", "導致", "造成", "because", "caused", "due to"];
+  const analysisText = [...analysis.facts, analysis.empty ?? ""].join(" ");
+  check("分析層：措辭冇因果字眼（只講同時發生）",
+    !causal.some((c) => analysisText.includes(c)),
+    `"${analysisText.slice(0, 90)}"`);
+
   // --- 7. honesty when the data cannot arrive ---------------------------------
   // Two things are being tested and they are different:
   //   (a) a source that CANNOT answer must show its error state, not a blank

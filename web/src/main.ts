@@ -24,6 +24,9 @@ import { toggle3d } from "./map/overlays3d.ts";
 import type { LayerDefRaw } from "./lib/sources.ts";
 import { createDrawer } from "./ui/drawer.ts";
 import { createPanelEngine } from "./ui/panels.ts";
+import { analyse } from "./lib/analytics/index.ts";
+import { emptyStore } from "./lib/analytics/baseline.ts";
+import type { RuleDef } from "./lib/analytics/rules.ts";
 import { createRail, type RailLayer } from "./ui/rail.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
 import { createMapHead, relabelMapHead } from "./ui/maphead.ts";
@@ -54,6 +57,11 @@ const OVERVIEW = [
 /** Trigger polling: two sources, 3 minutes. The Worker edge-caches 60s, so a
     faster loop would buy nothing. */
 const TRIGGER_POLL_MS = 3 * 60_000;
+
+/** How often the Tier 0-4 pipeline re-runs over current state. Faster than the
+    trigger poll because this is pure computation over data already in memory —
+    a rule can fire the moment a panel reports, without waiting for a fetch. */
+const ANALYSIS_INTERVAL_MS = 30_000;
 
 const RAIL_LAYERS: RailLayer[] = [
   { id: "cameras_td", label: { tc: "運輸署相機", en: "TD cameras" }, on: true },
@@ -247,6 +255,33 @@ async function boot(): Promise<void> {
     },
     onState: emit,
   });
+
+  // --- Tier 0-4 analytics ------------------------------------------------------
+  // A VIEW over the trigger state the panels have already produced, not a data
+  // source of its own. Deterministic rules only — there is no LLM in the browser
+  // path, so the brief is always the template wording (Tier 3/4 narrative runs
+  // in the offline collector and is read back from data/analysis.json).
+  //
+  // The baseline store starts EMPTY and is folded from real readings, so on a
+  // fresh load it honestly reports "累積中 0/14 日" until a collector persists
+  // baselines across days. That is the real state, not a placeholder.
+  let baselineStore = emptyStore();
+
+  function runAnalysis(): void {
+    const rules = (registry.rules ?? []) as unknown as RuleDef[];
+    if (rules.length === 0) return;
+    const out = analyse({
+      state: triggerState,
+      rules,
+      store: baselineStore,
+      now: new Date(),
+      lang: lang(),
+      convergence: { windowMinutes: 60, minDomains: 2, maxGroups: 5 },
+    });
+    baselineStore = out.store;
+    engine.setAnalysis(out.brief);
+  }
+  window.setInterval(runAnalysis, ANALYSIS_INTERVAL_MS);
 
   // verticals.json is validated to the closed trigger syntax by
   // scripts/validate_config.py; the cast is the JSON→type boundary.

@@ -257,12 +257,27 @@ a:hover{color:var(--cyan)}
    sibling of the scroller (not a child) so they stay put while the grid
    scrolls. Border and background live here, not on #panels, so the tab strip
    sits on the same surface as the panels it filters. */
-#panelCol{display:grid;grid-template-rows:auto 1fr;min-height:0;min-width:0;
+#panelCol{display:grid;grid-template-rows:auto auto 1fr;min-height:0;min-width:0;
   border-left:1px solid var(--hairline);
   background:var(--surface-grad)}
 #panelTabs{display:flex;flex-wrap:wrap;gap:4px;padding:9px 10px 8px;
   border-bottom:1px solid var(--hairline)}
-#panelTabs[hidden]{display:none}
+#panelTabs[hidden],#panelRestore[hidden]{display:none}
+/* The way back from a hidden panel. Without it, hiding is a one-way door and the
+   × would be a trap — and "hidden" must never look like "broken". */
+#panelRestore{display:flex;align-items:center;gap:8px;padding:6px 10px;
+  border-bottom:1px solid var(--hairline);font-size:11px;color:var(--dim)}
+#panelRestore button{font-size:11px;color:var(--cyan);border:1px solid var(--hairline);
+  border-radius:var(--radius-pill);padding:2px 9px;background:transparent;
+  transition:border-color .16s}
+#panelRestore button:hover{border-color:var(--hairline-hi)}
+/* Muted until the panel is hovered: a wall of panels must not read as a wall of
+   close buttons. Touch has no hover, so the control stays faintly visible. */
+.p-hide{opacity:0;margin-left:auto;font-size:14px;line-height:1;color:var(--faint);
+  padding:0 4px;border-radius:var(--radius-sm);transition:opacity .16s,color .16s}
+.panel:hover .p-hide,.p-hide:focus-visible{opacity:1}
+.p-hide:hover{color:var(--alert)}
+@media (hover:none){.p-hide{opacity:.55}}
 .ptab{font-family:var(--font-ui);font-size:11px;letter-spacing:.06em;color:var(--dim);
   background:transparent;border:1px solid var(--hairline);border-radius:var(--radius-pill);
   padding:3px 9px;cursor:pointer;transition:color .16s,border-color .16s,background .16s}

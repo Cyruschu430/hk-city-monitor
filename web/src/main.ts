@@ -91,6 +91,7 @@ async function boot(): Promise<void> {
   const hudEl = document.getElementById("mapHud")!;
   const drawerEl = document.getElementById("drawer")!;
   const panelTabsEl = document.getElementById("panelTabs")!;
+  const panelRestoreEl = document.getElementById("panelRestore")!;
 
   const [registry, cameras, manifest] = await Promise.all([
     loadRegistry(),
@@ -244,6 +245,7 @@ async function boot(): Promise<void> {
 
   const engine = createPanelEngine({
     root: panelsEl,
+    onHiddenChange: (ids) => paintRestore(ids),
     registry,
     ctx,
     cameras,
@@ -259,6 +261,30 @@ async function boot(): Promise<void> {
     },
     onState: emit,
   });
+
+  /** The way back from a hidden panel. A preference with no visible way to undo
+      it is a trap, and "hidden" must never be indistinguishable from "broken". */
+  function paintRestore(ids: string[]): void {
+    clear(panelRestoreEl);
+    panelRestoreEl.hidden = ids.length === 0;
+    // Coverage counts what is ON SCREEN, so it has to be repainted from here —
+    // this is the single place both a change and the boot state come through.
+    paintCoverage();
+    if (ids.length === 0) return;
+    panelRestoreEl.append(
+      h("span", {}, lang() === "tc" ? `已隱藏 ${ids.length} 個面板` : `${ids.length} panel(s) hidden`),
+      h(
+        "button",
+        {
+          type: "button",
+          onclick: () => {
+            for (const id of engine.hiddenIds()) engine.setPanelHidden(id, false);
+          },
+        },
+        lang() === "tc" ? "還原全部" : "Restore all",
+      ),
+    );
+  }
 
   // --- category tabs ------------------------------------------------------------
   // The tab set is the `group` field of the SOURCES behind the panels the current
@@ -617,6 +643,9 @@ async function boot(): Promise<void> {
 
   // --- go ---------------------------------------------------------------------
   activateMode("overview", false);
+  // Paint the hidden state from storage: without this a reload shows the hidden
+  // panels gone and no restore chip, which makes hiding a one-way door.
+  paintRestore(engine.hiddenIds());
   // Replay the remembered state now the map exists.
   // addCameraLayers() has ALREADY drawn both camera layers as visible, so a
   // remembered state that excludes one has to say so explicitly: replaying only
@@ -663,6 +692,7 @@ async function boot(): Promise<void> {
     layersOn: () => RAIL_LAYERS.map((l) => l.id).filter((id) => layerOn.has(id)),
     /** the selected category tab, or null for 全部 */
     currentTab: () => currentTab,
+    hiddenPanels: () => engine.hiddenIds(),
     /** the tabs the current mode offers — QA reads this instead of counting
         chips in a screenshot */
     tabs: () => [...panelTabsEl.querySelectorAll(".ptab")].map((b) => (b as HTMLElement).dataset["group"] ?? ""),

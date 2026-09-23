@@ -36,6 +36,8 @@ export interface PanelEngineDeps {
   onWallImage?(img: WallImage): void;
   /** trigger-engine state contributions, keyed by source id */
   onState?(sourceId: string, value: unknown): void;
+  /** the set of user-hidden panels changed — the host repaints its restore chip */
+  onHiddenChange?(ids: string[]): void;
 }
 
 export interface PanelEngine {
@@ -44,6 +46,11 @@ export interface PanelEngine {
       Visibility ONLY: nothing is unmounted and nothing is re-fetched, so
       switching tabs costs zero requests and a panel keeps its last reading. */
   setGroupFilter(group: string | null): void;
+  /** A panel the USER hid. Unlike the tab filter this also stops the poll loop:
+      "I don't watch this" should not keep paying for a source, and the last
+      reading is kept in memory so restoring shows it immediately. */
+  setPanelHidden(id: string, hidden: boolean): void;
+  hiddenIds(): string[];
   currentIds(): string[];
   refreshAll(): void;
   /** Live health tally over the panels currently MOUNTED. Feeds the coverage
@@ -84,6 +91,29 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
   const defOf = (id: string): PanelDefRaw | undefined => registry.panels.find((p) => p.id === id);
 
   let groupFilter: string | null = null;
+
+  // User-hidden panels. A global preference, not per-mode: hiding the ferry
+  // table because you never take the ferry must not undo itself the moment a
+  // trigger switches the vertical.
+  const HIDDEN_KEY = "hkcm.panelsHidden";
+  const userHidden = new Set<string>(
+    ((): string[] => {
+      try {
+        const raw = localStorage.getItem(HIDDEN_KEY);
+        if (raw) return (JSON.parse(raw) as unknown[]).filter((x): x is string => typeof x === "string");
+      } catch {
+        /* private mode — start with nothing hidden */
+      }
+      return [];
+    })(),
+  );
+  function writeHidden(): void {
+    try {
+      localStorage.setItem(HIDDEN_KEY, JSON.stringify([...userHidden]));
+    } catch {
+      /* non-persistent is acceptable; the choice still holds for the session */
+    }
+  }
   /** A panel's category comes from its SOURCE, never from a field on the panel:
       one registry, so a tab cannot disagree with sources.json. */
   const groupOf = (entry: Entry): string => registry.byId.get(entry.panel.source)?.group ?? "";
@@ -113,11 +143,34 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     return adaptPanel(panel, ctx);
   }
 
+  /** The × on the panel head. Built here rather than in render.ts so the
+      renderer stays a pure function of the data and knows nothing about
+      preferences. */
+  function hideButton(id: string): HTMLElement {
+    return h(
+      "button",
+      {
+        class: "p-hide",
+        type: "button",
+        title: lang() === "tc" ? "隱藏此面板" : "Hide this panel",
+        "aria-label": lang() === "tc" ? "隱藏此面板" : "Hide this panel",
+        onclick: (e: Event) => {
+          e.stopPropagation();
+          api.setPanelHidden(id, true);
+        },
+      },
+      "×",
+    );
+  }
+
   function mount(id: string, node: HTMLElement): void {
     // A panel that mounts after a tab was picked must honour the filter, or a
     // slow source would pop into the wrong tab when its fetch lands.
     const pending = entries.get(id);
     if (pending && !passes(pending)) node.hidden = true;
+    if (userHidden.has(id)) node.hidden = true;
+    const head = node.querySelector(".panel-head");
+    if (head && !head.querySelector(".p-hide")) head.append(hideButton(id));
     const existing = root.querySelector(`[data-panel="${id}"]`);
     if (existing) existing.replaceWith(node);
     else {
@@ -237,8 +290,37 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     }
   });
 
-  return {
+  // `api` is named before the × in mount() can reach it: createPanelEngine
+  // returns before any host calls setPanels, so the reference is always live by
+  // the time a button exists to be clicked.
+  const api: PanelEngine = {
     setPanels,
+    setPanelHidden(id, hidden) {
+      if (hidden) userHidden.add(id);
+      else userHidden.delete(id);
+      writeHidden();
+      const entry = entries.get(id);
+      const el = root.querySelector<HTMLElement>(`[data-panel="${id}"]`);
+      if (el) el.hidden = hidden || (entry ? !passes(entry) : false);
+      if (entry) {
+        if (hidden) {
+          if (entry.timer !== null) {
+            window.clearTimeout(entry.timer);
+            entry.timer = null;
+          }
+        } else if (entry.timer === null) {
+          // Restore: show the cached reading at once, then refresh. Stopping the
+          // poll is the reason hiding is worth doing, so un-hiding must restart it.
+          paint(id);
+          void refresh(id).then(() => {
+            const e = entries.get(id);
+            if (e) schedule(e);
+          });
+        }
+      }
+      deps.onHiddenChange?.([...userHidden]);
+    },
+    hiddenIds: () => [...userHidden],
     setGroupFilter(group) {
       groupFilter = group;
       for (const [id, entry] of entries) {
@@ -262,6 +344,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
         // the tab filter is not counted — otherwise hiding a broken panel would
         // silently improve the number.
         if (!passes(entry)) continue;
+        if (userHidden.has(id)) continue;
         const prev = bySource.get(entry.panel.source);
         // Worst state wins, so one broken panel is never masked by a sibling.
         const rank = { error: 3, stale: 2, loading: 1, live: 0 } as const;
@@ -345,6 +428,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       mount(id, node);
     },
   };
+  return api;
 }
 
 export { t as panelTitle };

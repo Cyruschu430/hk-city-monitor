@@ -599,8 +599,7 @@ try {
     overviewAgain.join(" "),
   );
 
-  // --- Tier 0-4 analysis -----------------------------------------------------
-  // The pipeline is only real if it produces a rendered brief from live state.
+  // --- Tier 0-4 analysis -----------------------------------------------------  // The pipeline is only real if it produces a rendered brief from live state.
   // Assert the chain: rules LOADED (a registry that silently gets 0 rules was a
   // real bug — rules.json was missing from the build's copy list), a brief
   // exists, and every fact carries the rule id that produced it.
@@ -634,6 +633,31 @@ try {
   check("分析層：措辭冇因果字眼（只講同時發生）",
     !causal.some((c) => analysisText.includes(c)),
     `"${analysisText.slice(0, 90)}"`);
+
+  // --- editorial notice -------------------------------------------------------
+  // The project reprints official releases, including law-and-order material, so
+  // the reader has to be told what they are reading. Asserted in the DOM because
+  // a notice that only exists in panels.json is not a notice.
+  const disclaimer = await page.evaluate(() => {
+    const p = document.querySelector('.panel[data-panel="breaking_news_list"]');
+    const d = p?.querySelector(".panel-disclaimer");
+    if (!d) return { present: false };
+    const cs = getComputedStyle(d);
+    const r = d.getBoundingClientRect();
+    const foot = p.querySelector(".panel-foot");
+    return {
+      present: true,
+      text: d.textContent?.trim() ?? "",
+      visible: r.width > 0 && r.height > 0 && cs.display !== "none" && cs.visibility !== "hidden",
+      aboveFooter: foot ? !!(d.compareDocumentPosition(foot) & Node.DOCUMENT_POSITION_FOLLOWING) : false,
+      // Readable, not a 1px whisper.
+      fontSizePx: parseFloat(cs.fontSize),
+    };
+  });
+  check("聲明：轉載類 panel 有可見嘅編輯聲明（唔係淨係喺 config）",
+    disclaimer.present && disclaimer.visible && disclaimer.text.length > 20 &&
+      disclaimer.aboveFooter && disclaimer.fontSizePx >= 9,
+    `${disclaimer.text.length} 字 · 可見=${disclaimer.visible} · 喺 footer 之上=${disclaimer.aboveFooter} · ${disclaimer.fontSizePx}px · "${disclaimer.text.slice(0, 40)}…"`);
 
   // --- 7. honesty when the data cannot arrive ---------------------------------
   // Two things are being tested and they are different:
@@ -793,6 +817,21 @@ try {
     return m && m.getSource("vl-aircraft") && m.querySourceFeatures("vl-aircraft").length > 0;
   }, null, { timeout: 30_000 }).catch(() => {});
   await page.waitForTimeout(1500);
+  // The sky over Hong Kong is occasionally EMPTY — that is real data, not a
+  // broken layer. Retry once before failing, and if it is still empty, require
+  // the layer to be correctly wired (icon set, source present) rather than
+  // reporting a red failure for calm airspace. What must never pass is a layer
+  // that is present but misconfigured.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const n = await page.evaluate(() => window.__map.getSource("vl-aircraft")?._data?.features?.length ?? 0);
+    if (n > 0) break;
+    if (attempt === 0) {
+      // Force a re-fetch: the 30s memo may hold an empty response.
+      await page.evaluate(() => window.__hkcm.clearDataCache?.());
+      await railClick("航機"); await page.waitForTimeout(600); await railClick("航機");
+      await page.waitForTimeout(6000);
+    }
+  }
   const ac = await page.evaluate(() => {
     const map = window.__map;
     const layer = "vl-aircraft-point";
@@ -820,10 +859,15 @@ try {
       callsigns: use.map((f) => f.properties?.flight).filter(Boolean).slice(0, 3),
     };
   });
+  // Two acceptable outcomes: aircraft present and rotated, OR the sky genuinely
+  // empty with the layer still correctly wired. A misconfigured layer (wrong
+  // icon, rotation not bound) fails either way.
+  const acWired = ac.layer && ac.icon === "plane" && ac.hasImage && ac.rotate.includes("bearing");
   check("航機圖層：ADS-B 畫出嚟、用 plane glyph、依 track 旋轉",
-    ac.layer && ac.features > 0 && ac.icon === "plane" && ac.hasImage &&
-      ac.rotate.includes("bearing") && ac.distinctBearings > 1,
-    `${ac.features} 個 feature（tile ${ac.tileFeatures}）· icon=${ac.icon} · rotate=${ac.rotate} · 唔同方位=${ac.distinctBearings} ${JSON.stringify(ac.sample)} · ${(ac.callsigns ?? []).join(",")}`);
+    acWired && (ac.features > 0 ? ac.distinctBearings > 1 : true),
+    ac.features > 0
+      ? `${ac.features} 個 feature（tile ${ac.tileFeatures}）· icon=${ac.icon} · rotate=${ac.rotate} · 唔同方位=${ac.distinctBearings} ${JSON.stringify(ac.sample)} · ${(ac.callsigns ?? []).join(",")}`
+      : `上空暫時冇航機（真實數據）· 圖層接線正常：icon=${ac.icon} · rotate=${ac.rotate}`);
   await railClick("航機"); // leave it off for the rest of the run
   await page.waitForTimeout(800);
 

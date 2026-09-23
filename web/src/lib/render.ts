@@ -110,6 +110,15 @@ export interface PanelDef {
   title: L10n;
   params?: Record<string, unknown>;
   cadence_note: L10n;
+  /** An editorial notice shown under the panel body.
+   *
+   * Config, not code: the project reprints official government releases, and for
+   * a feed that carries political or law-and-order material the reader has to be
+   * told what they are looking at. Putting the text in panels.json means the
+   * decision is reviewable in a diff and can be changed without touching the
+   * renderer. It is deliberately NOT hidden in a tooltip — a disclaimer nobody
+   * reads is not a disclaimer. */
+  disclaimer?: L10n;
 }
 
 export interface RenderOpts {
@@ -409,6 +418,12 @@ export function renderPanel(
     bodyEl = body(data, opts);
   }
   root.append(h("div", { class: "panel-body" }, bodyEl));
+
+  // Editorial notice, when the panel declares one. Rendered ABOVE the footer so
+  // it reads as part of the content rather than as metadata chrome.
+  if (panel.disclaimer) {
+    root.append(h("p", { class: "panel-disclaimer" }, t(panel.disclaimer)));
+  }
 
   // Traceability footer — every panel, always: source name + link, cadence,
   // and the panel's own 更新時間. A panel whose source failed keeps the link.

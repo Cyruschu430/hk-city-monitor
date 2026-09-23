@@ -27,6 +27,8 @@ export interface Registry {
   layers: LayerDefRaw[];
   sources: SourceDef[];
   byId: Map<string, SourceDef>;
+  /** Tier 1 rules from data/rules.json; empty when that file cannot load. */
+  rules?: unknown[];
 }
 
 export interface PanelDefRaw {
@@ -109,11 +111,18 @@ export async function fetchSource(src: SourceDef): Promise<Response> {
 }
 
 export async function loadRegistry(): Promise<Registry> {
-  const [panelsJ, verticalsJ, layersJ, sourcesJ] = await Promise.all([
+  const [panelsJ, verticalsJ, layersJ, sourcesJ, rulesJ] = await Promise.all([
     fetch("data/panels.json").then((r) => r.json()),
     fetch("data/verticals.json").then((r) => r.json()),
     fetch("data/layers.json").then((r) => r.json()),
     fetch("data/sources.json").then((r) => r.json()),
+    // Tier 1 rules are config, like every other registry. A failure here must
+    // NOT take the dashboard down: analysis is a view over data, and losing it
+    // should cost the analysis panel, not the map. So it degrades to an empty
+    // rule set and the pipeline simply produces nothing.
+    fetch("data/rules.json")
+      .then((r) => r.json())
+      .catch(() => ({ rules: [] })),
   ]);
   const sources: SourceDef[] = sourcesJ.sources;
   return {
@@ -122,5 +131,6 @@ export async function loadRegistry(): Promise<Registry> {
     layers: layersJ.layers,
     sources,
     byId: new Map(sources.map((s) => [s.id, s])),
+    rules: rulesJ.rules ?? [],
   };
 }

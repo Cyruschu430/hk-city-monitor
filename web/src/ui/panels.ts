@@ -46,6 +46,21 @@ export interface PanelEngine {
       line in the status bar — the number has to come from what actually
       happened at runtime, never from a hardcoded total. */
   stats(): { total: number; live: number; stale: number; error: number; loading: number };
+  /** Push a Tier 0-4 brief. The analysis panel is not a source-backed panel —
+      it is a conclusion drawn from the other panels — so it is fed rather than
+      fetched, and it renders only when analysis has actually produced one. */
+  setAnalysis(brief: AnalysisBrief | null): void;
+}
+
+/** The shape this file needs from a Brief. Declared structurally so ui/ does
+    not import the analytics module (the renderer must stay independent of the
+    pipeline that feeds it). */
+export interface AnalysisBrief {
+  generatedAt: string;
+  mode: "template" | "llm";
+  facts: { text: { tc: string; en: string }; ruleId?: string; severity?: 1 | 2 | 3 }[];
+  convergences: { text: { tc: string; en: string }; sources: string[] }[];
+  accumulating: { signal: string; days: number; required: number }[];
 }
 
 const EMPTY_TEXT: Record<string, { tc: string; en: string }> = {
@@ -230,6 +245,79 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       const tally = { total: bySource.size, live: 0, stale: 0, error: 0, loading: 0 };
       for (const st of bySource.values()) tally[st] += 1;
       return tally;
+    },
+    setAnalysis(brief) {
+      const id = "analysis_brief";
+      // The panel exists only once analysis has run. Showing an empty shell
+      // before that would imply "no events", which is a different claim from
+      // "not computed yet".
+      if (!brief) return;
+
+      const body = h("div", { class: "an-body" });
+
+      if (brief.convergences.length > 0) {
+        body.append(
+          h("div", { class: "an-sec" },
+            h("div", { class: "an-h" }, lang() === "tc" ? "同時發生" : "Co-occurring"),
+            ...brief.convergences.map((c) =>
+              h("div", { class: "an-conv" }, lang() === "tc" ? c.text.tc : c.text.en),
+            ),
+          ),
+        );
+      }
+
+      if (brief.facts.length > 0) {
+        body.append(
+          h("div", { class: "an-sec" },
+            h("div", { class: "an-h" }, lang() === "tc" ? "事件" : "Events"),
+            ...brief.facts.map((f) =>
+              h("div", { class: `an-fact s${f.severity ?? 1}` },
+                h("span", { class: "an-dot" }),
+                h("span", {}, lang() === "tc" ? f.text.tc : f.text.en),
+                f.ruleId ? h("span", { class: "an-rule" }, f.ruleId) : "",
+              ),
+            ),
+          ),
+        );
+      }
+
+      if (brief.facts.length === 0 && brief.convergences.length === 0) {
+        body.append(h("p", { class: "p-empty" }, lang() === "tc" ? "現時無異常事件" : "No anomalies right now"));
+      }
+
+      // What could NOT be said yet. This is the honest counterpart to the events
+      // list: an empty list usually means "accumulating", not "all clear".
+      if (brief.accumulating.length > 0) {
+        body.append(
+          h("div", { class: "an-sec" },
+            h("div", { class: "an-h" }, lang() === "tc" ? "基線累積中" : "Baselines accumulating"),
+            ...brief.accumulating.map((a) =>
+              h("div", { class: "an-acc" },
+                h("span", {}, a.signal),
+                h("span", { class: "an-days" }, `${a.days}/${a.required}${lang() === "tc" ? " 日" : "d"}`),
+              ),
+            ),
+          ),
+        );
+      }
+
+      const node = h(
+        "section",
+        { class: "panel", "data-panel": id, "data-state": "live" },
+        h("div", { class: "panel-head" },
+          h("h2", {}, lang() === "tc" ? "異常與匯聚" : "Anomalies & convergence"),
+          // Honest provenance: the reader is told whether a machine wrote the
+          // wording, so "AI-written" is never mistaken for "computed".
+          h("span", { class: `chip${brief.mode === "llm" ? "" : " stale"}` },
+            brief.mode === "llm" ? (lang() === "tc" ? "AI 敘述" : "AI wording") : (lang() === "tc" ? "範本" : "template")),
+        ),
+        h("div", { class: "panel-body" }, body),
+        h("div", { class: "panel-foot" },
+          h("span", { class: "src" }, lang() === "tc" ? "規則引擎（確定性）" : "Rule engine (deterministic)"),
+          h("time", {}, brief.generatedAt.slice(11, 19)),
+        ),
+      );
+      mount(id, node);
     },
   };
 }

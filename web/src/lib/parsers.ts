@@ -400,6 +400,101 @@ function stripCdata(s: string): string {
   return m ? m[1]! : s.trim();
 }
 
+// --- MTR next train (rt.data.gov.hk mirror; keyless) ------------------------------
+
+/** A timestamp that is either ISO-with-offset (KMB: "2026-09-23T15:53:00+08:00")
+    or bare local with no T and no timezone (MTR: "2026-09-23 15:45:18"). Both
+    shapes are MEASURED from the live payloads, not assumed. */
+function parseStamp(s: string | undefined | null): Date | null {
+  if (!s) return null;
+  const d = new Date(s.includes("T") ? s : s.replace(" ", "T"));
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** MTR destination codes → names. A code that is NOT in this table is shown AS
+    the code: inventing a Chinese name for an unverified code is exactly the
+    plausible-looking fabrication this project must not do.
+    ponytail: ISL only, the configured default. Extend as lines are configured. */
+export const MTR_DEST: Record<string, { tc: string; en: string }> = {
+  CHW: { tc: "柴灣", en: "Chai Wan" },
+  KET: { tc: "堅尼地城", en: "Kennedy Town" },
+};
+
+/** `data` is keyed "<line>-<sta>"; UP and DOWN are separate lists of at most 4
+    trains each. `valid: "N"` means the train is NOT in passenger service — it is
+    shown and marked rather than dropped, because a silently shorter list reads
+    as "these are all the trains there are". */
+export function parseMtrSchedule(j: {
+  sys_time?: string;
+  data?: Record<string, { UP?: unknown[]; DOWN?: unknown[] }>;
+}): { items: ListItem[]; observedAt: Date | null } {
+  const tc = lang() === "tc";
+  const key = j.data ? Object.keys(j.data)[0] : undefined;
+  const block = key ? j.data?.[key] : undefined;
+  const rows: { r: Record<string, unknown>; up: boolean }[] = [];
+  for (const dir of ["UP", "DOWN"] as const) {
+    for (const r of (block?.[dir] ?? []) as Record<string, unknown>[]) rows.push({ r, up: dir === "UP" });
+  }
+  const items: ListItem[] = rows
+    .map(({ r, up }) => {
+      const ttnt = Number(r["ttnt"]);
+      const code = String(r["dest"] ?? "");
+      const nm = MTR_DEST[code] ?? { tc: code, en: code };
+      const plat = String(r["plat"] ?? "");
+      const inService = String(r["valid"] ?? "Y") !== "N";
+      const dirText = tc ? (up ? "上行" : "下行") : up ? "Up" : "Down";
+      return {
+        ttnt: Number.isFinite(ttnt) ? ttnt : Number.MAX_SAFE_INTEGER,
+        item: {
+          title: `${tc ? "往" : "to "}${tc ? nm.tc : nm.en} · ${plat}${tc ? " 號月台" : ""}`,
+          sub: inService ? dirText : `${dirText} · ${tc ? "不載客" : "not in service"}`,
+          time: Number.isFinite(ttnt) ? (ttnt <= 0 ? (tc ? "即將" : "due") : `${ttnt} ${tc ? "分鐘" : "min"}`) : "—",
+        } satisfies ListItem,
+      };
+    })
+    .sort((a, b) => a.ttnt - b.ttnt)
+    .map((x) => x.item);
+  return { items, observedAt: parseStamp(j.sys_time) };
+}
+
+/** KMB arrivals at ONE stop, every route at once (`/stop-eta/{stop_id}`).
+    🔴 `rmk` is displayed, never dropped. The live capture contains "原定班次" /
+    "Scheduled Bus", which means the time is PREDICTED FROM THE TIMETABLE, not a
+    GPS-tracked bus. A panel that hides that claims precision it has not got. */
+export function parseKmbStopEta(j: {
+  generated_timestamp?: string;
+  data?: {
+    route?: string;
+    dest_tc?: string;
+    dest_en?: string;
+    eta?: string | null;
+    rmk_tc?: string;
+    rmk_en?: string;
+  }[];
+}): { columns: string[]; rows: string[][]; observedAt: Date | null } {
+  const tc = lang() === "tc";
+  const gen = parseStamp(j.generated_timestamp);
+  const rows = (j.data ?? []).map((d) => {
+    const eta = parseStamp(d.eta);
+    let mins = "—";
+    if (eta && gen) {
+      const m = Math.round((eta.getTime() - gen.getTime()) / 60_000);
+      mins = m <= 0 ? (tc ? "即將" : "due") : String(m);
+    }
+    return [
+      String(d.route ?? ""),
+      (tc ? d.dest_tc : d.dest_en || d.dest_tc) ?? "",
+      mins,
+      (tc ? d.rmk_tc : d.rmk_en) || "",
+    ];
+  });
+  return {
+    columns: [tc ? "路線" : "Route", tc ? "目的地" : "Destination", tc ? "到站" : "Arrival", tc ? "備註" : "Remark"],
+    rows,
+    observedAt: gen,
+  };
+}
+
 // --- Yahoo Finance chart (proxy; keyless) -----------------------------------------
 export interface QuoteRow {
   symbol: string;

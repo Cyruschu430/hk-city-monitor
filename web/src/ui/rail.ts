@@ -51,12 +51,22 @@ export interface RailLayer {
   on?: boolean;
 }
 
+export interface RailHandle {
+  setActive(id: string): void;
+  setLayerError(id: string, message: string | null): void;
+  /** the rail's button for a layer id — lets the LAYERS control drive the same
+      toggle path rather than reimplementing it */
+  layerButton(id: string): HTMLElement | null;
+  /** which layer toggles are currently on, read from the buttons */
+  layersOn(): string[];
+}
+
 export function createRail(
   root: HTMLElement,
   verticals: VerticalDefRaw[],
   layers: RailLayer[],
   cb: RailCallbacks,
-): { setActive(id: string): void; setLayerError(id: string, message: string | null): void } {
+): RailHandle {
   const modeButtons = new Map<string, HTMLElement>();
   const layerButtons = new Map<string, HTMLElement>();
 
@@ -129,6 +139,19 @@ export function createRail(
       } else {
         b.style.color = "";
       }
+    },
+    /** The rail's own button for a layer, so the LAYERS control can drive the
+     *  identical toggle path instead of duplicating what "on" means. */
+    layerButton(id) {
+      return layerButtons.get(id) ?? null;
+    },
+    /** Which layer toggles are currently ON, read from the buttons themselves.
+     *  The rail button IS the state — `aria-pressed` is set by the same click
+     *  handler that flips it, so reading it here cannot go stale. */
+    layersOn() {
+      const out: string[] = [];
+      for (const [id, b] of layerButtons) if (b.getAttribute("aria-pressed") === "true") out.push(id);
+      return out;
     },
   };
 }

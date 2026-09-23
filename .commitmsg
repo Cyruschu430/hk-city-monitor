@@ -1,0 +1,35 @@
+fix(ui): the LAYERS control now lists what the user can actually switch
+
+It was a vertical-layer list wearing the name of a layer control. Measured in
+the DOM: in overview it was `hidden` with 0 rows, and turning 風場 on from the
+rail left the panel still showing only 停水受影響地區. So a user who switched a
+layer on from the rail had no way to see it, or switch it off, from the map's
+own control.
+
+It now carries BOTH kinds of row — the active vertical's own layers, and the
+rail's toggles — in every mode.
+
+The important part is that there is ONE implementation of "on". A rail-backed
+row CLICKS the rail's own button rather than setting aria-pressed and calling
+toggleLayer directly: doing the latter bypasses the button's onclick, so the
+button's next-click calculation (`next = aria-pressed !== "true"`) then computes
+the opposite of what the user expects. Measured: clicking the row turned the
+wind layer on, and the next click on the rail button turned it on again instead
+of off — which is why wind reported 0 features inside the harness while working
+perfectly in isolation. The button owns the state; both controls press it.
+
+Also removed the `hidden` branch in setRows([]), which was what made the control
+disappear entirely in overview.
+
+Four harness checks were reading `querySourceFeatures`, which only returns
+features in tiles loaded for the CURRENT viewport (Pitfall 7 — the same trap as
+the aircraft check fixed in the previous commit). By that point in the run the
+map has been resized and panned, so wind reported 0 barbs while its source held
+8 and its toggle was correctly pressed. Aircraft, wind, stations and the water
+districts now all read the source GeoJSON, and the wind diagnostic reports the
+toggle state and source count on failure so the next person is not left
+guessing which of the three layers of the stack broke.
+
+Harness 61 -> 63 checks, green twice.
+
+Refs: WORK_ORDER.md §2.2, AGENTS.md Pitfall 7 and Pitfall 14

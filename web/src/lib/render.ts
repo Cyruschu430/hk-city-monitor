@@ -52,7 +52,47 @@ export interface StatusCell {
   status: 0 | 1 | 2 | 3;
 }
 
-export type TableCell = string | { text: string; cls?: string };
+export type TableCell = string | { text: string; cls?: string; spark?: number[] };
+
+/** A hand-rolled SVG sparkline path — AGENTS.md: "Charts: hand-rolled SVG
+    sparklines. No charting library."
+    Normalised to the series' OWN min/max: an absolute scale would flatten a
+    quiet day to a straight line and say nothing. A flat series draws at
+    mid-height instead of dividing by zero.
+    SVG y grows downward, so a rising series ends at a SMALLER y. */
+export function sparkPath(values: number[], w = 56, h = 14): string {
+  const vals = values.filter((v) => Number.isFinite(v));
+  if (vals.length < 2) return "";
+  const min = Math.min(...vals);
+  const max = Math.max(...vals);
+  const span = max - min;
+  const pad = 1; // keep a 1.2px stroke inside the viewBox
+  const x = (i: number) => (i / (vals.length - 1)) * w;
+  const y = (v: number) => (span === 0 ? h / 2 : h - pad - ((v - min) / span) * (h - 2 * pad));
+  return vals.map((v, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(2)} ${y(v).toFixed(2)}`).join(" ");
+}
+
+/** Inline SVG must be built with createElementNS — `h()` uses createElement,
+    which yields an HTMLUnknownElement for SVG tags and the browser draws
+    nothing (the same reason dom.ts's icon() uses the namespace). */
+function sparkSvg(values: number[], w = 56, hgt = 14): SVGElement {
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("class", "spark");
+  svg.setAttribute("viewBox", `0 0 ${w} ${hgt}`);
+  svg.setAttribute("width", String(w));
+  svg.setAttribute("height", String(hgt));
+  svg.setAttribute("aria-hidden", "true");
+  const p = document.createElementNS(NS, "path");
+  p.setAttribute("d", sparkPath(values, w, hgt));
+  p.setAttribute("fill", "none");
+  p.setAttribute("stroke", "currentColor");
+  p.setAttribute("stroke-width", "1.2");
+  p.setAttribute("stroke-linejoin", "round");
+  p.setAttribute("stroke-linecap", "round");
+  svg.append(p);
+  return svg;
+}
 export type PanelData =
   | { kind: "big_number"; value: string; unit?: string; sub?: string }
   | { kind: "list"; items: ListItem[] }
@@ -207,7 +247,18 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
 
     case "table": {
       if (data.rows.length === 0) return emptyBox(opts.emptyText ?? DEFAULT_EMPTY);
-      const cell = (c: TableCell) => (typeof c === "string" ? h("td", {}, c) : h("td", c.cls ? { class: c.cls } : {}, c.text));
+      // A cell may carry a sparkline under its text. It inherits currentColor,
+      // so the cell's mkt-up / mkt-down class colours the line too and the
+      // direction reads twice — as a number and as a shape.
+      const cell = (c: TableCell) =>
+        typeof c === "string"
+          ? h("td", {}, c)
+          : h(
+              "td",
+              c.cls ? { class: c.cls } : {},
+              c.text,
+              c.spark && c.spark.length > 1 ? sparkSvg(c.spark) : undefined,
+            );
       const trs = data.rows.map((r) => h("tr", {}, ...r.map(cell)));
       const tbody = h("tbody", {}, ...trs);
       // A table collapses by moving <tr> nodes, so the shared helper is handed

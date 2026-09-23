@@ -41,7 +41,6 @@ const OVERVIEW = [
   "live_cams_wall",
   "warnings_list",
   "breaking_news_list",
-  "aircraft_status",
   "wind_status",
   "stations_status",
   "cameras_wall",
@@ -70,7 +69,16 @@ const ANALYSIS_INTERVAL_MS = 30_000;
 const RAIL_LAYERS: RailLayer[] = [
   { id: "cameras_td", label: { tc: "運輸署相機", en: "TD cameras" }, on: true },
   { id: "cameras_hko", label: { tc: "天文台相機", en: "HKO cameras" }, on: true },
-  { id: "aircraft", label: { tc: "航機（ADS-B）", en: "Aircraft (ADS-B)" } },
+  // 航機（ADS-B）withdrawn from the shipped UI 2026-09-23.
+  //
+  // MEASURED: adsb.fi and adsb.lol both answer 200 from a home IP but return
+  // 403/429 to Cloudflare's egress — they block datacenter ranges. Deployed, the
+  // layer therefore cannot load, and a permanently-erroring toggle is worse than
+  // no toggle. The code path is intact (layers.json entry, adapter, plane glyph,
+  // rotation): re-add the rail entry and the overview panel when a source that
+  // tolerates cloud egress is found, or when a PC-side collector publishes a
+  // static JSON the front end can read (the water-suspension pattern).
+  // { id: "aircraft", label: { tc: "航機（ADS-B）", en: "Aircraft (ADS-B)" } },
   { id: "wind_field", label: { tc: "風場", en: "Wind field" } },
   { id: "weather_stations", label: { tc: "氣象站", en: "Weather stations" } },
   { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" } },
@@ -691,11 +699,14 @@ async function boot(): Promise<void> {
           break;
         }
         case "aircraft": {
-          // Same layers.json definition the aircraft panel uses: one definition,
-          // one renderer, whether the user or a vertical asked for it. The
-          // adapter feeds both, so the map and the panel cannot disagree.
+          // UNREACHABLE while the rail entry is commented out (see RAIL_LAYERS).
+          // Kept deliberately: the toggle path is the non-obvious half of this
+          // feature, and deleting it would mean re-deriving it from layers.json
+          // when a source that tolerates cloud egress is found. It throws
+          // loudly rather than silently no-op'ing, so a mistaken re-enable is
+          // caught rather than half-working.
           const def = registry.layers.find((l) => l.id === "aircraft");
-          if (!def) throw new Error("layers.json 冇 aircraft");
+          if (!def) throw new Error("layers.json 冇 aircraft（圖層已撤回，見 RAIL_LAYERS 註解）");
           clearVerticalLayers(map, [def]);
           if (!on) break;
           const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });

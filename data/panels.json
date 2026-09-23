@@ -356,20 +356,7 @@
    }
   },
   {
-   "id": "aircraft_status",
-   "source": "adsb_fi_hk",
-   "render": "status_grid",
-   "title": {
-    "tc": "區內航機（ADS-B）",
-    "en": "Aircraft in range (ADS-B)"
-   },
-   "params": {},
-   "cadence_note": {
-    "tc": "約 10 秒",
-    "en": "~10 seconds"
-   }
-  },
-  {
+   "_comment": "aircraft_status WITHDRAWN 2026-09-23. adsb.fi and adsb.lol both block Cloudflare egress IPs (200 from a home IP, 403/429 from the Worker), so the panel could only ever show an error once deployed. The layers.json entry, the adapter and the plane glyph all remain: restore a panel block here and add 'aircraft_status' back to OVERVIEW in main.ts when a source that tolerates cloud egress exists, or when a PC-side collector publishes static JSON (the water-suspension pattern).",
    "id": "wind_status",
    "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
    "render": "status_grid",

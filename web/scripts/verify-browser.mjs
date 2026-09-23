@@ -74,6 +74,21 @@ page.on("request", (r) => {
 });
 
 try {
+  // Clear persisted UI state BEFORE the app boots, so a previous run cannot
+  // change what this one measures. Measured: the layer-state sync writes to
+  // localStorage, so a run that left 3D switched ON made the NEXT run boot with
+  // the overlay already built — the error-path test then clicked the toggle OFF
+  // instead of ON, found no banner, and reported a red failure for a feature
+  // that works. Keys verified against their definitions: hkcm.layers
+  // (main.ts LAYER_KEY), hkcm.panelsHidden (panels.ts), hkcm.theme,
+  // hkcm.lang (i18n.ts).
+  await page.addInitScript(() => {
+    try {
+      for (const k of ["hkcm.layers", "hkcm.panelsHidden", "hkcm.theme", "hkcm.lang"]) {
+        localStorage.removeItem(k);
+      }
+    } catch { /* first run has nothing to clear */ }
+  });
   await page.goto(base, { waitUntil: "domcontentloaded", timeout: 45_000 });
   await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45_000 });
   // let the first round of panels resolve
@@ -177,8 +192,16 @@ try {
 // is "real numbers, correct ages", not "always green".
   const mktOk = ["live", "stale"].includes(newPanels.market?.state) && (newPanels.market?.text ?? "").length > 10;
   const newsOk = ["live", "stale"].includes(newPanels.news?.state) && (newPanels.news?.text ?? "").length > 8;
-  check("新面板 #5：港股（延遲報價）＋加密貨幣出到真數字、紅升綠跌", mktOk && newPanels.crypto?.state === "live" && newPanels.mktUpClass,
-    `market=${newPanels.market?.state}:${newPanels.market?.text?.slice(0, 40)} crypto=${newPanels.crypto?.text} 有 mkt class=${newPanels.mktUpClass}`);
+  // Crypto: CoinGecko rate-limits the shared free tier from Cloudflare's egress
+  // (429, measured), so once the build points at the deployed Worker this panel
+  // can legitimately be in its error state. The honesty contract is that it says
+  // so clearly — NOT that it is always green. A silently empty panel still fails.
+  const cryptoState = newPanels.crypto?.state;
+  const cryptoHonest = cryptoState === "live" ||
+    (cryptoState === "error" && (newPanels.crypto?.text ?? "").includes("CoinGecko"));
+  check("新面板 #5：港股（延遲報價）出真數字、紅升綠跌；加密貨幣 live 或誠實報錯",
+    mktOk && cryptoHonest && newPanels.mktUpClass,
+    `market=${newPanels.market?.state}:${newPanels.market?.text?.slice(0, 40)} crypto=${cryptoState}:${newPanels.crypto?.text?.slice(0, 50)} 有 mkt class=${newPanels.mktUpClass}`);
   check("新面板 #6：突發新聞（官方治安 RSS）有真標題", newsOk,
     `news=${newPanels.news?.state}:${newPanels.news?.text?.slice(0, 60)}`);
   check("新面板：AQHI 18 站 + 停車場空位", 
@@ -806,70 +829,41 @@ try {
   const backTopo = await page.evaluate(() => window.__map.getLayoutProperty("landsd-imagery", "visibility"));
   check("航拍底圖：撳走後返 topo", backTopo === "none", `landsd-imagery=${backTopo}`);
 
-  // --- 9b1. aircraft layer (ADS-B) -------------------------------------------
-  // The plane glyph is rotated from the feature's `bearing`; if the parser stops
-  // emitting it, every aircraft silently points north and still looks plausible.
-  // So assert (a) features exist, (b) the icon is the plane glyph, and (c) the
-  // bearings are VARIED — one constant value means the rotation is not wired.
-  await railClick("航機");
-  await page.waitForFunction(() => {
-    const m = window.__map;
-    return m && m.getSource("vl-aircraft") && m.querySourceFeatures("vl-aircraft").length > 0;
-  }, null, { timeout: 30_000 }).catch(() => {});
-  await page.waitForTimeout(1500);
-  // The sky over Hong Kong is occasionally EMPTY — that is real data, not a
-  // broken layer. Retry once before failing, and if it is still empty, require
-  // the layer to be correctly wired (icon set, source present) rather than
-  // reporting a red failure for calm airspace. What must never pass is a layer
-  // that is present but misconfigured.
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const n = await page.evaluate(() => window.__map.getSource("vl-aircraft")?._data?.features?.length ?? 0);
-    if (n > 0) break;
-    if (attempt === 0) {
-      // Force a re-fetch: the 30s memo may hold an empty response.
-      await page.evaluate(() => window.__hkcm.clearDataCache?.());
-      await railClick("航機"); await page.waitForTimeout(600); await railClick("航機");
-      await page.waitForTimeout(6000);
-    }
-  }
-  const ac = await page.evaluate(() => {
+  // --- 9b1. aircraft layer: WITHDRAWN, and that is asserted -------------------
+  // adsb.fi and adsb.lol both answer 200 from a home IP but return 403/429 to
+  // Cloudflare's egress (measured: all 103 proxy sources swept through the
+  // DEPLOYED Worker — those two were blocked by upstream IP reputation, and the
+  // resulting panel could only ever show an error in production). The layer was
+  // therefore withdrawn from the shipped UI.
+  //
+  // This check asserts the ABSENCE in every place that matters. A silently
+  // re-added toggle would ship a permanently-red control to users, which is the
+  // failure worth catching. The code path (layers.json entry, adapter, plane
+  // glyph) is kept — see RAIL_LAYERS in main.ts for how to restore it.
+  const aircraftWithdrawn = await page.evaluate(() => {
+    const railHasToggle = [...document.querySelectorAll("#rail .rail-btn")].some((x) =>
+      (x.querySelector(".tip")?.textContent ?? "").includes("航機"));
     const map = window.__map;
-    const layer = "vl-aircraft-point";
-    if (!map.getLayer(layer)) return { layer: false };
-    // Read the SOURCE data as well as the rendered tiles. `querySourceFeatures`
-    // only returns features in tiles loaded for the CURRENT viewport, so after
-    // the mobile-resize section it can legitimately report 0 while the layer is
-    // perfectly wired — which is exactly how this check failed intermittently
-    // (it passed 41 aircraft in isolation and 0 inside the run). The GeoJSON on
-    // the source is the honest measure of "did the layer get data".
-    const srcData = map.getSource("vl-aircraft")?._data;
-    const dataFeats = Array.isArray(srcData?.features) ? srcData.features : [];
-    const tileFeats = map.querySourceFeatures("vl-aircraft");
-    const use = tileFeats.length > 0 ? tileFeats : dataFeats.map((f) => ({ properties: f.properties }));
-    const bearings = [...new Set(use.map((f) => f.properties?.bearing))];
     return {
-      layer: true,
-      features: use.length,
-      tileFeatures: tileFeats.length,
-      icon: map.getLayoutProperty(layer, "icon-image"),
-      hasImage: map.hasImage("plane"),
-      rotate: JSON.stringify(map.getLayoutProperty(layer, "icon-rotate")),
-      distinctBearings: bearings.length,
-      sample: bearings.slice(0, 4),
-      callsigns: use.map((f) => f.properties?.flight).filter(Boolean).slice(0, 3),
+      railHasToggle,
+      hasLayer: !!map.getLayer("vl-aircraft-point"),
+      hasSource: !!map.getSource("vl-aircraft"),
+      planeGlyphStillRegistered: map.hasImage("plane"),
+      overviewHasPanel: (window.__hkcm?.overviewIds?.() ?? []).includes("aircraft_status"),
     };
   });
-  // Two acceptable outcomes: aircraft present and rotated, OR the sky genuinely
-  // empty with the layer still correctly wired. A misconfigured layer (wrong
-  // icon, rotation not bound) fails either way.
-  const acWired = ac.layer && ac.icon === "plane" && ac.hasImage && ac.rotate.includes("bearing");
-  check("航機圖層：ADS-B 畫出嚟、用 plane glyph、依 track 旋轉",
-    acWired && (ac.features > 0 ? ac.distinctBearings > 1 : true),
-    ac.features > 0
-      ? `${ac.features} 個 feature（tile ${ac.tileFeatures}）· icon=${ac.icon} · rotate=${ac.rotate} · 唔同方位=${ac.distinctBearings} ${JSON.stringify(ac.sample)} · ${(ac.callsigns ?? []).join(",")}`
-      : `上空暫時冇航機（真實數據）· 圖層接線正常：icon=${ac.icon} · rotate=${ac.rotate}`);
-  await railClick("航機"); // leave it off for the rest of the run
-  await page.waitForTimeout(800);
+  check("航機圖層：已撤回（上游擋 Cloudflare IP），確認冇 rail 掣同冇圖層",
+    !aircraftWithdrawn.railHasToggle && !aircraftWithdrawn.hasLayer &&
+      !aircraftWithdrawn.hasSource && !aircraftWithdrawn.overviewHasPanel &&
+      // The glyph stays registered so restoring the layer is a config change.
+      aircraftWithdrawn.planeGlyphStillRegistered,
+    [
+      `rail掣=${aircraftWithdrawn.railHasToggle}`,
+      `圖層=${aircraftWithdrawn.hasLayer}`,
+      `來源=${aircraftWithdrawn.hasSource}`,
+      `overview panel=${aircraftWithdrawn.overviewHasPanel}`,
+      `plane glyph 仍在=${aircraftWithdrawn.planeGlyphStillRegistered}`,
+    ].join(" · "));
 
   // --- 9b1b. wind barbs, and the honesty rule that shapes them ---------------
   // ROADMAP B5: wind is never shown where no station measured it. That is
@@ -1072,7 +1066,12 @@ try {
     proxyWorked.slice(0, 3).join(" | ") || "（冇）");
 
   // --- 9c. 3D: lazy layer, and an honest error state when it cannot load ------
-  const workerBaseUrl = "http://127.0.0.1:8787";
+  // Route on the PATTERN, not on a hardcoded origin. This was pinned to
+  // http://127.0.0.1:8787, so once the build pointed at the DEPLOYED Worker the
+  // block never matched: the overlay built successfully and the error-path test
+  // reported a failure that had nothing to do with the code. The origin is read
+  // from the app rather than guessed.
+  const config3dGlob = "**/config/3d*";
   // Selected by LABEL: this used nth-child(11) with the comment "5 modes, sep,
   // 5 layers", and adding the aircraft toggle shifted it to 12 — the three 3D
   // checks then drove the wrong button and failed for no real reason.
@@ -1097,13 +1096,23 @@ try {
       },
       [rail3dBtn, value],
     );
-  await page.route(`${workerBaseUrl}/config/3d*`, (route) => route.abort("failed"));
+  await page.route(config3dGlob, (route) => route.abort("failed"));
   // Snapshot BEFORE the click. Asserting `!window.__overlay3d` directly is a
   // false test: if any earlier step already built the overlay, the global exists
   // and the check fails for a reason that has nothing to do with a blocked
   // config. What the error path must prove is that THIS click built nothing.
   const overlayBefore = await page.evaluate(() => !!window.__overlay3d);
   await rail3dPressed("false"); // start from a known OFF so the click means ON
+  // Verify the OFF state actually took before clicking: the rail button computes
+  // `next = aria-pressed !== "true"`, so if something re-pressed it the click
+  // would mean OFF and no error path would run at all.
+  const pressedBefore = await page.evaluate(
+    (needle) =>
+      [...document.querySelectorAll("#rail .rail-btn")]
+        .find((x) => (x.querySelector(".tip")?.textContent ?? "").includes(needle))
+        ?.getAttribute("aria-pressed") ?? null,
+    rail3dBtn,
+  );
   await railClick(rail3dBtn);
   await page.waitForTimeout(2500);
   const threeDErr = await page.evaluate(() => ({
@@ -1113,9 +1122,10 @@ try {
   }));
   threeDErr.red = await rail3dColor();
   check("3D 圖層：config 連唔到 → overlay 唔會出現，有明確錯誤訊息",
-    (!threeDErr.overlay || threeDErr.state === false) && threeDErr.banner.includes("圖層開唔到"),
-    `overlayBefore=${overlayBefore} overlay=${threeDErr.overlay} state=${threeDErr.state} banner="${threeDErr.banner}"`);
-  await page.unroute(`${workerBaseUrl}/config/3d*`);
+    pressedBefore === "false" && (!threeDErr.overlay || threeDErr.state === false) &&
+      (threeDErr.banner ?? "").includes("圖層開唔到"),
+    `pressedBefore=${pressedBefore} overlayBefore=${overlayBefore} overlay=${threeDErr.overlay} state=${threeDErr.state} banner="${threeDErr.banner}"`);
+  await page.unroute(config3dGlob);
 
   // Success path: with /config/3d reachable, the lazy chunks must load and the
   // overlay attach. The failed click above left the toggle's aria-pressed
@@ -1219,9 +1229,37 @@ try {
         // not exhibit this; the app already heals via its next retry cycle.
         !u.includes("ERR_CONTENT_LENGTH_MISMATCH"),
     );
-  const realBadStatus = badStatus.filter((u) => !u.includes("rad_256_png") && !u.includes("data.map.gov.hk") && !u.includes("/config/3d"));
-  check("網絡：上線期間冇失敗請求", realFailures.length === 0 && realBadStatus.length === 0,
-    [...realFailures.slice(0, 3), ...realBadStatus.slice(0, 3)].join(" | ") || "（無）");
+  // The radar probe URL is percent-ENCODED inside /proxy?url=..., so a naive
+  // substring test for "rad_256_png" never matches and the fallback probes get
+  // reported as failures. Decode before filtering.
+  const isRadarProbe = (u) => {
+    const d = decodeURIComponent(u);
+    return d.includes("rad_256_png") || d.includes("/wxinfo/radar") || d.includes("intersat/satellite");
+  };
+  const realBadStatus = badStatus.filter(
+    (u) => !isRadarProbe(u) && !u.includes("data.map.gov.hk") && !u.includes("/config/3d"),
+  );
+
+  // Upstreams that block Cloudflare's egress IPs. MEASURED 2026-09-23 by sweeping
+  // all 103 proxy sources through the DEPLOYED Worker: the app behaves correctly
+  // (it reports the error honestly and does not cache it), but the source itself
+  // refuses datacenter traffic. Failing the harness for these would train people
+  // to ignore red output — the real signal is whether the error is REPORTED,
+  // which the honesty checks cover.
+  const UPSTREAM_BLOCKS_CLOUD = [
+    "opendata.adsb.fi",    // 403 to Cloudflare, 200 from a home IP
+    "api.adsb.lol",        // 429 to Cloudflare, 200 from a home IP
+    "api.coingecko.com",   // 429 on the shared free tier
+    "opensky-network.org", // 504 / rate-limited anonymously
+  ];
+  const upstreamBlocked = realBadStatus.filter((u) => UPSTREAM_BLOCKS_CLOUD.some((h) => u.includes(h)));
+  const ourFailures = realBadStatus.filter((u) => !UPSTREAM_BLOCKS_CLOUD.some((h) => u.includes(h)));
+
+  check("網絡：上線期間冇失敗請求（上游封鎖數據中心 IP 除外）",
+    realFailures.length === 0 && ourFailures.length === 0,
+    [...realFailures.slice(0, 3), ...ourFailures.slice(0, 3)].join(" | ") ||
+      `（無）· 已知上游封鎖 ${upstreamBlocked.length} 次：` +
+        [...new Set(upstreamBlocked.map((u) => UPSTREAM_BLOCKS_CLOUD.find((h) => u.includes(h))))].join(", "));
 
   console.log(`\nWorker 代理命中 ${workerHits.length} 次，例如：`);
   for (const u of [...new Set(workerHits)].slice(0, 6)) console.log(`  · ${u}`);

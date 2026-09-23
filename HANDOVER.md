@@ -18,7 +18,11 @@ them without either one redoing the other's work or re-learning its pitfalls.
 ## Handing over from DSH to the VPS-side agent
 
 DSH's last commit was `e2fa015` (`docs: record D3/D4/D6 completion...`, touching only
-`design/ROADMAP_v0.4.md`). **16 commits have landed since**, made by the VPS-side agent:
+`design/ROADMAP_v0.4.md`). **A series of commits has landed since**, made by the
+VPS-side agent. The count is deliberately not written here — it was wrong the moment it
+was typed (17, not the 16 written first) and goes stale on the next commit. Run
+`git log --oneline e2fa015..HEAD` for the live list; it is reproduced below as of
+2026-09-23:
 
 ```
 beaab0e docs: the collector schedule and how it publishes
@@ -59,8 +63,9 @@ pre-work plan ("v0.2 is a rebuild") as live context; a new session reads the cur
 ## The paste-in brief for a new session
 
 ```
-You are taking over C:\hk-city-monitor. Another agent landed 16 commits since your
-last one (e2fa015, a ROADMAP docs commit). Do not re-do any of it.
+You are taking over C:\hk-city-monitor. Another agent has landed a series of commits
+since your last one (e2fa015, a ROADMAP docs commit) — run
+`git log --oneline e2fa015..HEAD` to see them. Do not re-do any of it.
 
 Before you plan anything:
 1. Read AGENTS.md, starting at "## Current state (as of 2026-09-23)". The "Run

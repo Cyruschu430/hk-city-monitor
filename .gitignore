@@ -32,3 +32,5 @@ Thumbs.db
 # Runtime logs from local dev servers (must never be committed)
 worker-dev.log
 web/preview.log
+.commitmsg
+*.tmp

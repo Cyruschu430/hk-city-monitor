@@ -25,7 +25,7 @@ import type { LayerDefRaw } from "./lib/sources.ts";
 import { createDrawer } from "./ui/drawer.ts";
 import { createPanelEngine } from "./ui/panels.ts";
 import { analyse } from "./lib/analytics/index.ts";
-import { emptyStore } from "./lib/analytics/baseline.ts";
+import { emptyStore, BASELINE_VERSION, type BaselineStore } from "./lib/analytics/baseline.ts";
 import type { RuleDef } from "./lib/analytics/rules.ts";
 import { createRail, type RailLayer } from "./ui/rail.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
@@ -372,6 +372,23 @@ async function boot(): Promise<void> {
     engine.setAnalysis(out.brief);
   }
   window.setInterval(runAnalysis, ANALYSIS_INTERVAL_MS);
+
+  // Persisted baselines, when a collector has produced them
+  // (scripts/collect_baselines.mjs → data/baselines.json). baseline.ts stores plane
+  // JSON keyed "signalId|dow|hour", so this is a read, not a migration.
+  // Every failure path keeps the empty store, which the brief then reports honestly
+  // as 「累積中 0/14 日」: the one thing a missing file must never do is read as
+  // "no anomalies today".
+  void fetch("data/baselines.json")
+    .then((r) => (r.ok ? (r.json() as Promise<Partial<BaselineStore>>) : null))
+    .then((j) => {
+      if (!j || j.version !== BASELINE_VERSION || !j.signals || !j.days) return;
+      baselineStore = j as BaselineStore;
+      runAnalysis();
+    })
+    .catch(() => {
+      /* no collector has run yet — the empty store is the honest state */
+    });
 
   // verticals.json is validated to the closed trigger syntax by
   // scripts/validate_config.py; the cast is the JSON→type boundary.

@@ -99,6 +99,13 @@
       "severity": 1,
       "when": { "source": "ck_hk_hko_rss_latest_ten_minute_wind_info", "field": "maxSpeedKmh", "op": ">=", "value": 40 },
       "headline": { "tc": "有測站錄得強風", "en": "Strong wind recorded at a station" }
-    }
+    },
+  {
+    "id": "ae_wait_anomalous",
+    "domain": "health",
+    "severity": 2,
+    "when": { "source": "ha_ae_waiting", "field": "longestWaitMin", "op": ">baseline", "value": 2 },
+    "headline": { "tc": "\u6025\u75c7\u5ba4\u8f2a\u5019\u8f03\u540c\u671f\u7570\u5e38\u504f\u9ad8", "en": "A&E wait unusually high for this hour" }
+  }
   ]
 }

@@ -29,6 +29,12 @@ import os
 import re
 import sys
 
+# This script prints Chinese and warning glyphs. On a Windows cp1252 console
+# the print() that reports a warning raised UnicodeEncodeError, so the
+# validator crashed instead of validating. Measured, not theoretical.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 RENDERS = {"big_number", "list", "table", "image_single", "image_wall",

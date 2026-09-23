@@ -7,6 +7,26 @@
 
 ---
 
+## 0.5 只有 Cyrus 可以做嘅兩步（agent 做唔到，唔好等）
+
+呢兩步要瀏覽器授權／註冊，agent 冇辦法代做。未做之前以下工作**唔會完成**：
+
+1. **Cloudflare 登入**（解鎖 Worker 部署 → 解鎖 103/175 個 proxy 源）
+   ```
+   cd C:\hk-city-monitor\worker
+   npx wrangler login
+   ```
+   登入後：`npx wrangler deploy`。
+   驗證：`curl "https://<worker>.workers.dev/proxy?url=<一個 proxy 源 url>"` 要 HTTP 200。
+
+2. **AISStream 免費 key**（解鎖船舶圖層）
+   - `aisstream.io/account` → 用 GitHub 登入 → Create key
+   - 寫入 `C:\Users\cyrus\.aisstream_key`（**唔好**貼公開頻道、唔好 commit）
+   - 官方條款：*"The API key belongs in a server-side environment variable"* → **唔可以放前端**
+   - Collector 已寫好：VPS `/home/admin/ais/ais_collector.py`（自檢 + WS transport 已測通）
+
+**唔使做**：`airplanes_live`（已知 403，已用 adsb.lol 代替）；MTR／九巴／HKMA／YouTube／Google Maps 全部免 key。
+
 ## 0. 已完成（唔使做）
 
 | 項 | 狀態 |

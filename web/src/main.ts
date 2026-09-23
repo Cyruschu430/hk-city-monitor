@@ -288,10 +288,62 @@ async function boot(): Promise<void> {
   // verticals.json is validated to the closed trigger syntax by
   // scripts/validate_config.py; the cast is the JSON→type boundary.
   const verticals = registry.verticals as unknown as VerticalDef[];
-  const rail = createRail(railEl, registry.verticals, RAIL_LAYERS, {
-    onMode: (id) => activateMode(id, true),
-    onToggleLayer: (id, on) => void toggleLayer(id, on),
-  });
+
+  // --- layer state: the map, the shareable URL and the next visit agree --------
+  // World Monitor's rule (its map-layers feature doc): toggling one layer must
+  // change the map, update the shareable URL and be remembered next visit.
+  // Precedence URL > localStorage > the RAIL_LAYERS defaults, so a shared link
+  // always beats the recipient's own saved settings.
+  const LAYER_KEY = "hkcm.layers";
+  const DEFAULT_ON = RAIL_LAYERS.filter((l) => l.on).map((l) => l.id).sort().join(",");
+  const isRailLayer = (id: string): boolean => RAIL_LAYERS.some((l) => l.id === id);
+
+  function readLayerState(): Set<string> {
+    const fromUrl = new URLSearchParams(location.search).get("layers");
+    // A URL is a trust boundary: unknown ids are dropped here rather than
+    // reaching toggleLayer and raising a banner about a layer that cannot exist.
+    if (fromUrl !== null) return new Set(fromUrl.split(",").filter(isRailLayer));
+    try {
+      const raw = localStorage.getItem(LAYER_KEY);
+      if (raw) return new Set((JSON.parse(raw) as string[]).filter(isRailLayer));
+    } catch {
+      /* private mode — fall through to the defaults */
+    }
+    return new Set(RAIL_LAYERS.filter((l) => l.on).map((l) => l.id));
+  }
+
+  function writeLayerState(): void {
+    const on = RAIL_LAYERS.map((l) => l.id).filter((id) => layerOn.has(id)).sort();
+    try {
+      localStorage.setItem(LAYER_KEY, JSON.stringify(on));
+    } catch {
+      /* non-persistent is acceptable; the toggle still works for the session */
+    }
+    const url = new URL(location.href);
+    // A clean URL stays clean: serialise only when it differs from the default.
+    if (on.join(",") === DEFAULT_ON) url.searchParams.delete("layers");
+    // An empty set needs a word: `?layers=` reads as a truncated link, and a
+    // shared URL that looks broken gets edited by hand. "none" parses back to
+    // the empty set for free (the isRailLayer filter drops it).
+    else url.searchParams.set("layers", on.length > 0 ? on.join(",") : "none");
+    history.replaceState(null, "", url);
+  }
+
+  const layerOn = readLayerState();
+  const rail = createRail(
+    railEl,
+    registry.verticals,
+    RAIL_LAYERS.map((l) => ({ ...l, on: layerOn.has(l.id) })),
+    {
+      onMode: (id) => activateMode(id, true),
+      onToggleLayer: (id, on) => {
+        if (on) layerOn.add(id);
+        else layerOn.delete(id);
+        writeLayerState();
+        void toggleLayer(id, on);
+      },
+    },
+  );
 
   /** Banner: a bold one-line title (what happened) plus an optional dim detail
     line (why it matters). The trigger banner used to cram the whole vertical
@@ -417,12 +469,16 @@ async function boot(): Promise<void> {
       switch (id) {
         case "cameras_td":
           for (const suffix of ["cluster", "count", "point"]) {
-            map.setLayoutProperty(`${TD_SRC}-${suffix}`, "visibility", on ? "visible" : "none");
+            // Guarded: a click in the first second after boot, before the style
+            // has landed, must be a no-op rather than a layer error banner.
+            const lid = `${TD_SRC}-${suffix}`;
+            if (map.getLayer(lid)) map.setLayoutProperty(lid, "visibility", on ? "visible" : "none");
           }
           break;
         case "cameras_hko":
           for (const suffix of ["cluster", "count", "point"]) {
-            map.setLayoutProperty(`${HKO_SRC}-${suffix}`, "visibility", on ? "visible" : "none");
+            const lid = `${HKO_SRC}-${suffix}`;
+            if (map.getLayer(lid)) map.setLayoutProperty(lid, "visibility", on ? "visible" : "none");
           }
           break;
         case "imagery":
@@ -509,6 +565,24 @@ async function boot(): Promise<void> {
 
   // --- go ---------------------------------------------------------------------
   activateMode("overview", false);
+  // Replay the remembered state now the map exists.
+  // addCameraLayers() has ALREADY drawn both camera layers as visible, so a
+  // remembered state that excludes one has to say so explicitly: replaying only
+  // the ON layers leaves an un-asked-for layer on the map (measured — the URL
+  // said ?layers=aircraft while cameras-hko-point was still "visible").
+  // Only the default-ON layers are replayed as OFF; imagery / 3D are left alone
+  // so a boot can never fire a layer error banner for something never asked for.
+  const replayLayerState = (): void => {
+    for (const l of RAIL_LAYERS) {
+      const want = layerOn.has(l.id);
+      if (want || l.on) void toggleLayer(l.id, want);
+    }
+  };
+  // The camera layers attach on the map's `load` event (cameras.ts — the `load`
+  // event is the only honest signal that the style has landed), so replaying
+  // before it asks for layers that do not exist yet.
+  if (map.getStyle()) replayLayerState();
+  else map.once("load", replayLayerState);
   drawer.close();
   // ⌘K command palette — jump to any mode / panel / camera.
   createPalette({
@@ -532,6 +606,10 @@ async function boot(): Promise<void> {
         instead of guessing from a screenshot */
     activeDistricts: () => [...activeDistricts],
     drawnLayers: () => [...currentLayerIds],
+    /** layers the user currently has ON — QA reads this instead of guessing
+        from the rail's aria-pressed state */
+    layersOn: () => RAIL_LAYERS.map((l) => l.id).filter((id) => layerOn.has(id)),
+    layerDefaults: () => RAIL_LAYERS.filter((l) => l.on).map((l) => l.id),
     /** the panels the overview mode shows — QA compares against this instead of
         a hardcoded count, so adding a panel is not reported as a failure */
     overviewIds: () => [...OVERVIEW],

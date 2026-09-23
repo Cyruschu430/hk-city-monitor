@@ -1,4 +1,4 @@
-# dependencies / build output
+﻿# dependencies / build output
 node_modules/
 web/dist/
 web/node_modules/
@@ -6,10 +6,10 @@ web/.vite/
 dist/
 worker/.wrangler/
 
-# browser verification artifacts (screenshots + logs) — regenerated on demand
+# browser verification artifacts (screenshots + logs) â€” regenerated on demand
 web/test/artifacts/
 
-# generated at build/dev time by web/scripts/sync-data.mjs — the canonical
+# generated at build/dev time by web/scripts/sync-data.mjs â€” the canonical
 # copies of these registries live at the repo root (data/*.json, sources.json)
 web/public/data/
 web/public/basemap/
@@ -23,7 +23,7 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# local secrets — never commit keys
+# local secrets â€” never commit keys
 .env
 .env.*
 !.env.example
@@ -33,4 +33,6 @@ Thumbs.db
 worker-dev.log
 web/preview.log
 .commitmsg
+.msg
+.commit-msg*
 *.tmp

@@ -28,6 +28,15 @@ export interface LayerRow {
   /** Attribution shown behind the ⓘ. */
   sourceName: string;
   sourceUrl?: string;
+  /** Where the row came from. A `vertical` row exists because the active mode
+      asked for it; a `rail` row is a toggle the user controls directly. */
+  kind?: "vertical" | "rail";
+  /** For rail rows: the rail's own layer id, so the control mirrors the rail
+      button's state rather than keeping a second copy of it. */
+  railId?: string;
+  /** Display label; falls back to def.title. The rail label is what the user
+      just read on the button, so reusing it keeps the two in step. */
+  label?: { tc: string; en: string };
 }
 
 export interface LayerControl {
@@ -35,6 +44,9 @@ export interface LayerControl {
   setRows(rows: LayerRow[]): void;
   /** Hide the whole control (no drawable layers in this mode). */
   hide(): void;
+  /** Mirror the rail's on/off state onto the rail-kind rows, so the button and
+      the row can never disagree about what is switched on. */
+  syncRail(on: string[]): void;
 }
 
 /** Layer id → the runtime glyph that represents it. Config-first: a layer that
@@ -66,29 +78,34 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
 
     for (const row of rows) {
       const glyph = glyphFor(row.def);
-      const on = { value: true };
+      const label = row.label ?? row.def.title;
 
       const box = h("span", { class: "lyr-box", "aria-hidden": "true" });
       const btn = h(
         "button",
         {
-          class: "lyr-row",
+          // `rail` marks a row the user drives from the rail too, so the two
+          // controls can be kept in step and QA can tell them apart.
+          class: `lyr-row${row.kind === "rail" ? " rail" : ""}`,
           type: "button",
           role: "switch",
           "aria-checked": "true",
+          ...(row.railId ? { "data-rail": row.railId } : {}),
           title: lang() === "tc" ? "顯示／隱藏此圖層" : "Show / hide this layer",
         },
         box,
         glyph
           ? h("canvas", { class: `lyr-glyph g-${glyph}`, width: "14", height: "14" })
           : h("span", { class: `lyr-swatch sw-${row.def.geom}` }),
-        h("span", { class: "lyr-label" }, lang() === "tc" ? row.def.title.tc : row.def.title.en),
+        h("span", { class: "lyr-label" }, lang() === "tc" ? label.tc : label.en),
       );
       btn.addEventListener("click", () => {
-        on.value = !on.value;
-        btn.setAttribute("aria-checked", on.value ? "true" : "false");
-        btn.classList.toggle("off", !on.value);
-        onToggle(row, on.value);
+        const next = btn.getAttribute("aria-checked") !== "true";
+        btn.setAttribute("aria-checked", next ? "true" : "false");
+        btn.classList.toggle("off", !next);
+        // A rail row delegates to the SAME callback the rail button uses, so
+        // there is one toggle implementation rather than two that can drift.
+        onToggle(row, next);
       });
 
       // ⓘ — attribution. The project rule is that every claim on screen is
@@ -137,14 +154,22 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
   return {
     setRows(next: LayerRow[]) {
       rows = next;
-      if (next.length === 0) {
-        el.hidden = true;
-        return;
-      }
+      // No longer hides on an empty set: the control now always carries the
+      // rail's toggles, so it has content in every mode. Hiding it was what made
+      // it look absent entirely in overview (measured: hidden=true, rows=0).
       build();
     },
     hide() {
       el.hidden = true;
+    },
+    syncRail(on: string[]) {
+      const set = new Set(on);
+      for (const btn of el.querySelectorAll<HTMLElement>(".lyr-row[data-rail]")) {
+        const id = btn.dataset["rail"] ?? "";
+        const isOn = set.has(id);
+        btn.setAttribute("aria-checked", isOn ? "true" : "false");
+        btn.classList.toggle("off", !isOn);
+      }
     },
   };
 }
@@ -154,7 +179,9 @@ export function relabelLayerControl(el: HTMLElement, rows: LayerRow[]): void {
   const items = el.querySelectorAll<HTMLElement>(".lyr-item");
   rows.forEach((row, i) => {
     const label = items[i]?.querySelector<HTMLElement>(".lyr-label");
-    if (label) label.textContent = lang() === "tc" ? row.def.title.tc : row.def.title.en;
+    if (!label) return;
+    const text = row.label ?? row.def.title;
+    label.textContent = lang() === "tc" ? text.tc : text.en;
   });
   const title = el.querySelector<HTMLElement>(".lyr-title");
   if (title) title.textContent = lang() === "tc" ? "圖層" : "LAYERS";

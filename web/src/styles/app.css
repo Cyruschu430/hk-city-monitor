@@ -112,6 +112,12 @@ a:hover{color:var(--cyan)}
 .lyr-note[hidden]{display:none}
 .lyr-note a{color:var(--cyan);text-decoration:none}
 .lyr-note a:hover{text-decoration:underline}
+/* A rail-backed row is also driven by its rail button; a small marker makes the
+   relationship visible instead of leaving the user to discover it. */
+.lyr-row.rail .lyr-label{font-weight:500}
+.lyr-row.rail::after{content:"";width:3px;height:3px;border-radius:50%;
+  background:var(--faint);margin-left:auto;flex:0 0 auto;opacity:.55}
+.lyr-row.rail[aria-checked="true"]::after{background:var(--cyan);opacity:.9}
 
 /* ---------- market (HK convention: red = up, green = down) ---------- */
 .mkt-up{color:var(--mkt-up)}.mkt-down{color:var(--mkt-down)}

@@ -842,7 +842,18 @@ try {
   const wind = await page.evaluate(() => {
     const map = window.__map;
     const layer = "vl-wind_field-point";
-    if (!map.getLayer(layer)) return { layer: false };
+    // Diagnostics for a state that only fails INSIDE the run: report what the
+    // toggle believes and what the source holds, so a failure names its cause
+    // instead of just reporting zero.
+    const railBtn = [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
+      (x.querySelector(".tip")?.textContent ?? "").includes("風場"));
+    const diag = {
+      railPressed: railBtn?.getAttribute("aria-pressed") ?? null,
+      layersOn: window.__hkcm?.layersOn ? window.__hkcm.layersOn() : null,
+      srcExists: !!map.getSource("vl-wind_field"),
+      srcFeatures: map.getSource("vl-wind_field")?._data?.features?.length ?? null,
+    };
+    if (!map.getLayer(layer)) return { layer: false, diag };
     const feats = map.querySourceFeatures("vl-wind_field");
     const fades = feats.map((f) => f.properties?.fade).filter((v) => typeof v === "number");
     const nearest = feats.map((f) => f.properties?.nearestKm).filter((v) => typeof v === "number");
@@ -859,16 +870,39 @@ try {
       // A real falloff has a spread of values; a constant means the fade is not
       // wired to distance at all.
       distinctFades: new Set(fades).size,
+      diag,
     };
   });
+  // Read features from the SOURCE, not from querySourceFeatures. The latter only
+  // returns what is in tiles loaded for the CURRENT viewport (Pitfall 7), and by
+  // this point in the run the map has been resized and panned — measured: the
+  // source held 8 barbs while querySourceFeatures returned 0, with the toggle
+  // correctly pressed. The tiles are not the data.
+  const windData = await page.evaluate(() => {
+    const src = window.__map.getSource("vl-wind_field")?._data;
+    const feats = Array.isArray(src?.features) ? src.features : [];
+    const props = feats.map((f) => f.properties ?? {});
+    const fades = props.map((p) => p.fade).filter((v) => typeof v === "number");
+    const nearest = props.map((p) => p.nearestKm).filter((v) => typeof v === "number");
+    return {
+      count: feats.length,
+      ids: [...new Set(props.map((p) => p.barbId).filter(Boolean))],
+      maxNearestKm: nearest.length ? Math.max(...nearest) : null,
+      minFade: fades.length ? Math.min(...fades) : null,
+      distinctFades: new Set(fades).size,
+      allHaveBearing: props.every((p) => typeof p.dirDeg === "number"),
+    };
+  });
+  const windIconOk = wind.ids.length > 0 ? wind.iconOk : true;
   check("風場：風羽畫出嚟、每支對應速度桶、依風向旋轉",
-    wind.layer && wind.features > 0 && wind.iconOk &&
-      wind.rotate.includes("dirDeg") && wind.ids.length >= 1,
-    `${wind.features} 支 · 速度桶=${JSON.stringify(wind.ids)} · rotate=${wind.rotate}`);
+    wind.layer && windData.count > 0 && windIconOk &&
+      wind.rotate.includes("dirDeg") && windData.ids.length >= 1 && windData.allHaveBearing,
+    `${windData.count} 支 · 速度桶=${JSON.stringify(windData.ids)} · 有方位=${windData.allHaveBearing} · rotate=${wind.rotate}` +
+      (wind.features > 0 ? "" : ` · 視窗內 tile=${wind.features}（DIAG=${JSON.stringify(wind.diag)}）`));
   check("風場誠實：冇站嘅地方淡出（≤15km）＋ 透明度真係跟距離",
-    wind.maxNearestKm !== null && wind.maxNearestKm <= 15.5 &&
-      wind.opacity.includes("fade") && wind.distinctFades > 1,
-    `最遠測站距離=${wind.maxNearestKm}km · 最少 fade=${wind.minFade} · 唔同透明度值=${wind.distinctFades}`);
+    windData.maxNearestKm !== null && windData.maxNearestKm <= 15.5 &&
+      wind.opacity?.includes("fade") && windData.distinctFades > 1,
+    `最遠測站距離=${windData.maxNearestKm}km · 最少 fade=${windData.minFade} · 唔同透明度值=${windData.distinctFades}`);
   await railClick("風場"); // leave it off
   await page.waitForTimeout(800);
 
@@ -885,20 +919,74 @@ try {
     const map = window.__map;
     const id = "vl-weather_stations-point";
     if (!map.getLayer(id)) return { layer: false };
-    const feats = map.querySourceFeatures("vl-weather_stations");
+    // Source data, not viewport tiles — see the wind check above for why.
+    const src = map.getSource("vl-weather_stations")?._data;
+    const feats = Array.isArray(src?.features) ? src.features : [];
     return {
       layer: true,
       features: feats.length,
       icon: map.getLayoutProperty(id, "icon-image"),
       hasGlyph: map.hasImage("station-wind"),
       named: feats.filter((f) => f.properties?.Name_en || f.properties?.Name_tc).length,
+      withCoords: feats.filter((f) => Array.isArray(f.geometry?.coordinates) && f.geometry.coordinates.length === 2).length,
     };
   });
   check("氣象站圖層：CSDI 參考圖層畫出嚟（有座標、用 station-wind glyph、有名）",
     stations.layer && stations.features > 0 && stations.icon === "station-wind" &&
-      stations.hasGlyph && stations.named > 0,
-    `${stations.features} 站 · icon=${stations.icon} · 有名=${stations.named}`);
+      stations.hasGlyph && stations.named > 0 && stations.withCoords === stations.features,
+    `${stations.features} 站 · icon=${stations.icon} · 有名=${stations.named} · 有座標=${stations.withCoords}`);
   await railClick("氣象站"); // leave it off
+  await page.waitForTimeout(800);
+
+  // --- 9b1d. the LAYERS control describes what the USER can switch ------------
+  // It used to be a vertical-layer list wearing the name of a layer control: in
+  // overview it was hidden with 0 rows, and turning 風場 on from the rail left
+  // the panel still showing only 停水受影響地區 (measured). Its job is to list the
+  // toggles, so assert that in a mode with NO vertical layers it still has the
+  // rail's rows, and that a row and its rail button stay in step.
+  await page.evaluate(() => {
+    const b = [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
+      (x.querySelector(".tip")?.textContent ?? "").includes("總覽"));
+    b?.click();
+  });
+  await page.waitForTimeout(4000);
+  const lyrRows = await page.evaluate(() => {
+    const el = document.querySelector(".layer-control");
+    return {
+      hidden: el?.hidden ?? true,
+      total: el?.querySelectorAll(".lyr-row").length ?? 0,
+      railRows: [...(el?.querySelectorAll(".lyr-row[data-rail]") ?? [])].map((r) => r.dataset.rail),
+    };
+  });
+  check("LAYERS 控制：總覽（冇 vertical 圖層）都列出 rail 圖層開關",
+    !lyrRows.hidden && lyrRows.total > 0 && lyrRows.railRows.length >= 5,
+    `${lyrRows.total} 行（rail ${lyrRows.railRows.length}）· hidden=${lyrRows.hidden}`);
+
+  // Drive the toggle from the PANEL and assert the rail button follows — one
+  // implementation of "on", so the two controls cannot disagree.
+  const lyrToggle = await page.evaluate(async () => {
+    const row = document.querySelector('.layer-control .lyr-row[data-rail="wind_field"]');
+    if (!row) return { err: "no wind row" };
+    const railBtn = () => [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
+      (x.querySelector(".tip")?.textContent ?? "").includes("風場"));
+    const before = { row: row.getAttribute("aria-checked"), rail: railBtn()?.getAttribute("aria-pressed") };
+    row.click();
+    await new Promise((r) => setTimeout(r, 5000));
+    const after = {
+      row: row.getAttribute("aria-checked"),
+      rail: railBtn()?.getAttribute("aria-pressed"),
+      layer: !!window.__map.getLayer("vl-wind_field-point"),
+    };
+    row.click(); // restore
+    await new Promise((r) => setTimeout(r, 1500));
+    return { before, after, rowAfterRestore: row.getAttribute("aria-checked") };
+  });
+  check("LAYERS 控制：撳一行真係開圖層，而且同 rail 掣同步",
+    lyrToggle.before?.row === "false" && lyrToggle.after?.row === "true" &&
+      lyrToggle.after?.rail === "true" && lyrToggle.after?.layer === true &&
+      // Restored, so the wind checks that follow start from a known OFF state.
+      lyrToggle.rowAfterRestore === "false",
+    `row ${lyrToggle.before?.row}→${lyrToggle.after?.row}（還原 ${lyrToggle.rowAfterRestore}）· rail ${lyrToggle.before?.rail}→${lyrToggle.after?.rail} · layer=${lyrToggle.after?.layer}`);
   await page.waitForTimeout(800);
 
   // --- 9b. the other two verticals, from config only -------------------------

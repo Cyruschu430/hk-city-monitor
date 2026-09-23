@@ -199,15 +199,6 @@ async function boot(): Promise<void> {
 
   const emit = (sourceId: string, value: unknown) => {
     triggerState[sourceId] = value;
-    // Status-bar freshness cell: report the age the trigger engine is acting
-    // on, using the same 30-min barrier the 停水 trigger uses.
-    if (sourceId === "wsd_water_suspension") {
-      const fresh = (value as { records_fresh?: unknown[] } | undefined)?.records_fresh ?? [];
-      const recs = (value as { records?: unknown[] } | undefined)?.records ?? [];
-      if (recs.length > 0 && fresh.length > 0) statusbar.setFreshness(lang() === "tc" ? "資料新鮮" : "fresh", "ok");
-      else if (recs.length > 0) statusbar.setFreshness(lang() === "tc" ? "資料過期" : "stale", "warn");
-      else statusbar.setFreshness(lang() === "tc" ? "無事件" : "clear", "ok");
-    }
     if (sourceId === "wsd_water_suspension") {
       // `records` lists what the panel is already showing (with timestamps);
       // `records_fresh` is what the trigger reads. The map highlights the
@@ -230,8 +221,26 @@ async function boot(): Promise<void> {
   /** Honest coverage readout. `total` counts the SOURCES behind the mounted
       panels (the engine dedupes by source), so the figure describes what is on
       screen right now rather than a fixed promise about the catalog. */
+  /** The 狀態 cell reports the SYSTEM, which is what its label says.
+      It used to be driven by one source (wsd_water_suspension): a single 停水
+      notice whose records were all older than the trigger's 30-minute barrier
+      made the whole dashboard read 「資料過期」 while every other source was
+      healthy — measured, and the most misleading thing on the screen.
+      Per-source freshness is not lost: it is in that source's own panel, in its
+      panel footer timestamp, and in the coverage line, which counts it per source. */
+  function paintStatus(): void {
+    const s = engine.stats();
+    if (s.error > 0) statusbar.setFreshness(lang() === "tc" ? `${s.error} 個源出錯` : `${s.error} failing`, "bad");
+    else if (s.stale > 0) statusbar.setFreshness(lang() === "tc" ? `${s.stale} 個源過期` : `${s.stale} stale`, "warn");
+    else if (s.total === 0) statusbar.setFreshness(lang() === "tc" ? "載入中" : "loading", "ok");
+    else statusbar.setFreshness(lang() === "tc" ? "正常" : "nominal", "ok");
+  }
+
   function paintCoverage(): void {
     const s = engine.stats();
+    // Painted together on purpose: the status cell and the coverage line are two
+    // views of the same tally, so they must never be able to disagree.
+    paintStatus();
     statusbar.setCoverage({
       live: s.live,
       total: s.total,

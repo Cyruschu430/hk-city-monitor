@@ -13,7 +13,7 @@ import * as P from "./parsers.ts";
 import { lang } from "./i18n.ts";
 import { liveThumb, probeLive } from "./live.ts";
 import { hkToday } from "./format.ts";
-import type { PanelData } from "./render.ts";
+import type { PanelData, StatusCell } from "./render.ts";
 
 export interface AdapterResult {
   data: PanelData;
@@ -357,6 +357,37 @@ const ADAPTERS: Record<string, Adapter> = {
     // backbone (TECH_SPEC §3.7). RSS, through the proxy (CORS-closed).
     const { items, observedAt } = P.parseRss(await text(await get(src)), 25);
     return { data: { kind: "list", items }, observedAt };
+  },
+
+  async hko_stations_network(src) {
+    // CSDI FeatureServer GeoJSON: 49 official weather stations with coordinates.
+    // This is a STATIC reference layer (cadence: snapshot), not a live feed —
+    // it says WHERE the instruments are, which is what makes the wind barbs
+    // legible ("that reading came from a station on that island").
+    const fc = (await json(await get(src))) as GeoJSON.FeatureCollection;
+    const features = (fc.features ?? []).filter((f) => {
+      const g = f.geometry as GeoJSON.Point | null;
+      return g?.type === "Point" && Number.isFinite(g.coordinates?.[0]) && Number.isFinite(g.coordinates?.[1]);
+    });
+    const byType: Record<string, number> = {};
+    for (const f of features) {
+      const t = String((f.properties ?? {})["TypesofWeatherStation_en"] ?? "OTHER");
+      byType[t] = (byType[t] ?? 0) + 1;
+    }
+    const auto = byType["AUTOMATIC WEATHER STATION"] ?? 0;
+    const cells: StatusCell[] = [
+      { label: lang() === "tc" ? "測站總數" : "Stations", value: String(features.length), status: 0 },
+    ];
+    if (auto) cells.push({ label: lang() === "tc" ? "自動氣象站" : "Automatic", value: String(auto), status: 0 });
+    const other = features.length - auto;
+    if (other > 0) cells.push({ label: lang() === "tc" ? "其他類型" : "Other types", value: String(other), status: 1 });
+
+    return {
+      data: { kind: "status_grid", cells },
+      observedAt: new Date(),
+      state: { records: features.length },
+      geo: { type: "FeatureCollection", features },
+    };
   },
 
   async aqhi_city_dashboard(src) {

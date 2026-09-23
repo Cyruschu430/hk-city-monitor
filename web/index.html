@@ -8,6 +8,14 @@
      error in every verification run and trains people to ignore red text. -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2305070d'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%2322d3ee' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%2322d3ee'/%3E%3C/svg%3E">
 <meta name="description" content="香港本土實時態勢儀表板 — 全部數據來自香港官方開放數據，每個數字可溯源。開源專案，非政府系統。">
+<script>
+/* Pre-paint theme. Applying it from main.ts paints the dark default first, so a
+   light-theme user sees a black flash on every load. Four lines here remove
+   that; src/lib/theme.ts reads the same key and re-applies it once the app is
+   up (belt and braces, and it keeps the OS listener in one place). */
+try{var t=localStorage.getItem("hkcm.theme")||"system";
+document.documentElement.dataset.theme=(t==="light"||(t==="system"&&!matchMedia("(prefers-color-scheme: dark)").matches))?"light":"dark";}catch(e){}
+</script>
 </head>
 <body>
 <header id="statusbar"></header>

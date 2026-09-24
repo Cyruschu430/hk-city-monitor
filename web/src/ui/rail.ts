@@ -14,16 +14,20 @@ export interface RailCallbacks {
   onToggleLayer(id: string, on: boolean): void;
 }
 
+// Icons are keyed by VERTICAL ID. `leave` was removed 2026-09-24 with the
+// 請假攻略 mode (Cyrus); its calendar icon and green accent went with it. Both
+// maps degrade gracefully for an unknown id (a generic glyph, the default
+// accent), so removing an entry here is safe — but leaving a dead one invites
+// the next reader to think the mode still exists.
 const ICONS: Record<string, string> = {
   overview: "M4 12h16M12 4v16|M12 3a9 9 0 100 18 9 9 0 000-18z",
   typhoon: "M12 12c0-4 3-7 7-7-1 4-3 7-7 7zM12 12c0 4-3 7-7 7 1-4 3-7 7-7z",
   border: "M4 8h16M4 16h16M9 4v16M15 4v16",
   water: "M12 3c3 4 6 6.5 6 10a6 6 0 11-12 0c0-3.5 3-6 6-10z",
-  leave: "M7 3v4M17 3v4M4 8h16M5 5h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z",
 };
 
 /** Per-mode accent — keyed by the VERTICAL ID (verticals.json), so a mode is
-    identifiable by colour before its glyph (颱風=紅, 口岸=青, 停水=藍, 假期=綠,
+    identifiable by colour before its glyph (颱風=紅, 口岸=青, 停水=藍,
     總覽=中性). Applied on the active state only; idle stays muted so a wall
     of colour never competes with the map. */
 const ACCENTS: Record<string, string> = {
@@ -31,7 +35,6 @@ const ACCENTS: Record<string, string> = {
   typhoon: "#ff5d6c",
   border: "#22d3ee",
   water_supply: "#38bdf8",
-  leave: "#34d399",
 };
 
 const LAYER_ICONS: Record<string, string> = {

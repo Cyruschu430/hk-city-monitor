@@ -121,27 +121,6 @@
    "order": [
     "water_suspension_list"
    ]
-  },
-  {
-   "id": "leave",
-   "name": {
-    "tc": "請假攻略",
-    "en": "Leave Planner"
-   },
-   "question": {
-    "tc": "點樣用最少年假換最長連續假期？",
-    "en": "What is the cheapest way to buy the longest run of days off?"
-   },
-   "trigger": null,
-   "panels": [
-    "holiday_leave_table"
-   ],
-   "layers": [],
-   "window": "year",
-   "location_scope": "hk",
-   "order": [
-    "holiday_leave_table"
-   ]
   }
  ]
 }

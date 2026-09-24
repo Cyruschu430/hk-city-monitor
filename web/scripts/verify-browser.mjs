@@ -470,13 +470,31 @@ try {
     () => {
       const el = document.querySelector(".layer-control");
       if (!el || el.hidden) return false;
-      const labels = [...el.querySelectorAll(".lyr-label")].map((r) => r.textContent.trim());
-      // 停水受影響地區 is the water vertical's own layer, so its presence is
-      // proof the control was rebuilt for THIS mode rather than the last one.
-      return labels.some((t) => t.includes("停水"));
+      // The control must be showing THE WATER MODE'S OWN LAYER AND NOTHING ELSE.
+      //
+      // MEASURED 2026-09-24, and the first two attempts at this predicate were
+      // both wrong, which is why the check stayed intermittent:
+      //   attempt 1 — wait for 停水 to APPEAR. Not enough: during a transition the
+      //     control can hold a MIX of rows and the predicate passes a stale frame.
+      //     Caught on a real failing run:
+      //       mode="water_supply" rail=6 vertical=2
+      //       rows=[交通快拍相機, 降雨臨近預報, 運輸署相機, …]   <- no 停水 at all
+      //     交通快拍相機 is cameras_all, which belongs to 口岸模式.
+      //   attempt 2 — reject named "foreign" labels. Also wrong: 降雨臨近預報 is a
+      //     RAIL layer present in EVERY mode, so naming labels as foreign made the
+      //     predicate unsatisfiable and it burned its whole budget every run.
+      //
+      // The DOM already distinguishes the two kinds: rail rows carry `.rail`,
+      // vertical rows do not (layercontrol.ts writes that class from `row.kind`).
+      // So assert on the STRUCTURE rather than on label text: exactly one vertical
+      // row, and it is the water layer.
+      const vertical = [...el.querySelectorAll(".lyr-row:not(.rail) .lyr-label")].map((r) =>
+        r.textContent.trim(),
+      );
+      return vertical.length === 1 && vertical[0].includes("停水");
     },
     30_000,
-    "LAYERS control rebuilt for water mode",
+    "LAYERS control showing exactly the water mode's own layer",
   );
   await settle(
     () => {
@@ -686,6 +704,7 @@ try {
     const rows = [...(el?.querySelectorAll(".lyr-label") ?? [])].map((r) => r.textContent.trim());
     const map = window.__map;
     return {
+      ctlExists: !!el,
       hidden: el?.hidden ?? true,
       rows,
       switches: el?.querySelectorAll('.lyr-row[role="switch"]').length ?? 0,
@@ -703,7 +722,8 @@ try {
   check("UI 圖層控制：有圖層嘅模式會顯示，文字對得住個層",
     !legend.hidden && legend.rows.some((t) => t.includes("停水")),
     `rows=[${legend.rows}] · mode=${JSON.stringify(legend.mode)} rail=${legend.railRows} vertical=${legend.verticalRows} ` +
-      `switches=${legend.switches} panelCount=${legend.panelCount} styleReady=${legend.mapStyleReady}`);
+      `switches=${legend.switches} panelCount=${legend.panelCount} styleReady=${legend.mapStyleReady} ` +
+      `ctlHidden=${legend.hidden} ctlExists=${legend.ctlExists}`);
 
   // The control is only real if ticking it changes the map. Assert the actual
   // MapLibre layout property before and after — a DOM-only check would pass on
@@ -900,37 +920,72 @@ try {
     overviewAgain.join(" "),
   );
 
-  // --- Tier 0-4 analysis -----------------------------------------------------  // The pipeline is only real if it produces a rendered brief from live state.
-  // Assert the chain: rules LOADED (a registry that silently gets 0 rules was a
-  // real bug — rules.json was missing from the build's copy list), a brief
-  // exists, and every fact carries the rule id that produced it.
-  await page.waitForSelector('.panel[data-panel="analysis_brief"]', { timeout: 60_000 }).catch(() => {});
+  // --- Tier 0-4 analysis -----------------------------------------------------
+  // The pipeline is only real if the rules actually LOAD. A registry that
+  // silently gets 0 rules was a real bug (rules.json was missing from the
+  // build's manual copy list), and nothing else catches it.
+  //
+  // The "異常與匯聚" PANEL was withdrawn 2026-09-24 (Cyrus) — see
+  // ANALYSIS_PANEL_ENABLED in ui/panels.ts. What follows from that is important:
+  // the ENGINE is unchanged and must stay verified. So these checks assert the
+  // engine's output through window.__hkcm rather than through a panel that no
+  // longer exists. Asserting on the removed DOM would have been a check that
+  // passes by finding nothing.
+  // The engine runs on an interval (ANALYSIS_INTERVAL_MS), so the brief is not
+  // there the instant the page boots. Wait for a predicate rather than sampling
+  // once — a single read here is a race, and it produced a false failure.
+  await settle(() => window.__hkcm?.analysisBrief?.() != null, 60_000, "first analysis brief");
   const analysis = await page.evaluate(() => {
     const hk = window.__hkcm;
-    const p = document.querySelector('.panel[data-panel="analysis_brief"]');
     const rules = hk?.registry?.rules ?? [];
+    const briefFn = hk?.analysisBrief;
+    // Guard the CALL itself: if the hook is missing or throws, say so rather than
+    // reporting the downstream symptom (facts=0) and sending the next reader
+    // looking in the wrong place.
+    let brief = null;
+    let hookError = null;
+    try {
+      brief = typeof briefFn === "function" ? briefFn() : null;
+    } catch (err) {
+      hookError = err instanceof Error ? err.message : String(err);
+    }
     return {
       rulesLoaded: Array.isArray(rules) ? rules.length : -1,
-      panel: !!p,
-      mode: p?.querySelector(".chip")?.textContent?.trim() ?? null,
-      facts: [...(p?.querySelectorAll(".an-fact") ?? [])].map((e) => e.textContent?.trim() ?? ""),
-      ruleTags: [...(p?.querySelectorAll(".an-rule") ?? [])].map((e) => e.textContent?.trim() ?? ""),
-      empty: p?.querySelector(".p-empty")?.textContent?.trim() ?? null,
-      foot: p?.querySelector(".panel-foot .src")?.textContent?.trim() ?? null,
+      hookType: typeof briefFn,
+      hookError,
+      panelPresent: !!document.querySelector('.panel[data-panel="analysis_brief"]'),
+      hasBrief: !!brief,
+      facts: brief?.facts?.length ?? 0,
+      convergences: brief?.convergences?.length ?? 0,
+      accumulating: brief?.accumulating?.length ?? 0,
+      mode: brief?.mode ?? null,
+      ruleIds: (brief?.facts ?? []).map((f) => f.ruleId).filter(Boolean),
+      text: [
+        ...(brief?.facts ?? []).map((f) => (typeof f.text === "string" ? f.text : `${f.text?.tc ?? ""} ${f.text?.en ?? ""}`)),
+        ...(brief?.convergences ?? []).map((c) => `${c.text?.tc ?? ""} ${c.text?.en ?? ""}`),
+      ].join(" "),
     };
   });
   check("分析層：rules.json 真係載入到（唔係 0 條規則）",
     analysis.rulesLoaded > 0, `rules=${analysis.rulesLoaded}`);
-  check("分析層：Tier 0-4 出到簡報，每條事件帶規則 id（可溯源）",
-    analysis.panel && (analysis.facts.length > 0 || analysis.empty !== null) &&
-      analysis.facts.every((_, i) => (analysis.ruleTags[i] ?? "").length > 0) &&
-      analysis.mode !== null,
-    `mode=${analysis.mode} 事件=${analysis.facts.length} 規則=${JSON.stringify(analysis.ruleTags)} · ${analysis.facts[0] ?? analysis.empty ?? ""}`);
+  // The engine still produces a brief; the panel that narrated it is gone.
+  // `facts` may legitimately be 0 (nothing is anomalous this minute), so the
+  // assertion is: a brief EXISTS, it declares how it was worded, and ANY fact
+  // that is present carries the rule id that produced it. Asserting
+  // ruleIds.length === facts when facts is 0 would have been vacuous, and
+  // asserting facts > 0 would fail on a quiet minute — neither is the contract.
+  const factsHaveRuleIds = analysis.facts === 0 || analysis.ruleIds.length === analysis.facts;
+  check("分析層：Tier 0-4 引擎照跑（brief 有 mode；有事件時每條帶 rule id）",
+    analysis.hasBrief && analysis.mode !== null && factsHaveRuleIds,
+    `hook=${analysis.hookType} err=${analysis.hookError} hasBrief=${analysis.hasBrief} mode=${analysis.mode} ` +
+      `事件=${analysis.facts} 匯聚=${analysis.convergences} 累積中=${analysis.accumulating} ` +
+      `ruleIds=${JSON.stringify(analysis.ruleIds.slice(0, 6))} · panelPresent=${analysis.panelPresent}（已撤回，預期 false）`);
 
   // The wording must never assert causation (ANALYTICS.md). Checked on the
-  // RENDERED panel, not just in the unit test, so a template edit is caught.
+  // ENGINE's rendered text, not just in the unit test, so a template edit is
+  // caught wherever the text ends up being shown.
   const causal = ["因為", "導致", "造成", "because", "caused", "due to"];
-  const analysisText = [...analysis.facts, analysis.empty ?? ""].join(" ");
+  const analysisText = analysis.text;
   check("分析層：措辭冇因果字眼（只講同時發生）",
     !causal.some((c) => analysisText.includes(c)),
     `"${analysisText.slice(0, 90)}"`);
@@ -996,7 +1051,17 @@ try {
   await page.context().setOffline(true);
   await page.evaluate(() => window.__hkcm.clearDataCache());
   await page.evaluate(() => window.__hkcm.refreshAll());
-  await page.waitForTimeout(4000);
+  // Wait for the panels to actually FAIL rather than for 4 seconds. MEASURED
+  // 2026-09-24: a flat 4000ms was not always enough for every panel to resolve
+  // its fetch failure, and the COVERAGE check below then read a still-healthy
+  // line — an intermittent false failure whose cause was the harness's patience,
+  // not the app. Gate on the state the next check depends on.
+  await settle(
+    () => [...document.querySelectorAll(".panel[data-state]")].every((p) => p.dataset.state !== "loading"),
+    30_000,
+    "panels settled after going offline",
+  );
+  await page.waitForTimeout(1000);
   const offline = await page.evaluate(() =>
     [...document.querySelectorAll(".panel[data-panel]")].map((p) => ({
       id: p.dataset.panel,
@@ -1013,6 +1078,12 @@ try {
   // The coverage line must degrade with the data, not stay green. A "healthy"
   // coverage sentence while every panel is failing would be worse than no
   // coverage line at all — it would be the dashboard lying about itself.
+  // Wait for the line to reflect the failures before asserting it does.
+  await settle(
+    () => document.querySelector(".coverage")?.getAttribute("data-health") === "bad",
+    20_000,
+    "coverage line went bad offline",
+  );
   const coverOffline = await page.evaluate(() => {
     const el = document.querySelector(".coverage");
     return { text: el?.textContent?.trim() ?? "", health: el?.getAttribute("data-health") ?? "" };

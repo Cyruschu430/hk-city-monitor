@@ -84,6 +84,16 @@ a:hover{color:var(--cyan)}
 .lyr-title{font-size:9.5px;letter-spacing:.16em;font-weight:600;color:#cfe0f5;text-transform:uppercase}
 .lyr-count{font-family:var(--font-mono);font-size:9px;color:var(--faint)}
 .lyr-body{display:flex;flex-direction:column;padding:3px 0}
+/* Map key. Sits inside the LAYERS body because the cluster number is a map
+   symbol, and a symbol explained nowhere is a number the user has to guess at.
+   Muted and small so it reads as a caption to the map, not another control. */
+.lyr-key{display:flex;align-items:center;gap:7px;padding:5px 9px 6px;
+  border-bottom:1px solid var(--hairline);margin-bottom:2px}
+.lyr-key-n{flex:0 0 auto;display:grid;place-items:center;min-width:22px;height:22px;
+  padding:0 5px;border-radius:999px;border:1.5px solid var(--cyan);
+  background:rgba(34,211,238,.16);color:#dff6ff;
+  font-family:var(--font-mono);font-size:9.5px;font-variant-numeric:tabular-nums}
+.lyr-key-t{font-size:9.5px;line-height:1.35;color:var(--faint);min-width:0}
 .lyr-item{display:flex;flex-direction:column}
 .lyr-line{display:flex;align-items:center;gap:2px}
 .lyr-row{display:flex;align-items:center;gap:7px;flex:1 1 auto;min-width:0;
@@ -304,9 +314,24 @@ a:hover{color:var(--cyan)}
 .ptab[aria-selected="true"]{color:var(--void);background:var(--cyan);border-color:var(--cyan)}
 .ptab .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
 #panels{overflow-y:auto;overscroll-behavior:contain;
-   padding:12px;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-content:start;gap:10px}
+   padding:8px;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+   align-content:start;align-items:start;gap:6px}
 #panels::-webkit-scrollbar{width:8px}
 #panels::-webkit-scrollbar-thumb{background:rgba(140,190,255,.18);border-radius:8px}
+
+/* PADDING IS THE NEIGHBOURHOOD, NOT THE CARD.
+   Measured against World Monitor's /dashboard at the same 1600x1000 viewport:
+   its .panels-grid uses gap:4px and 311px columns in a 634px box, and varies
+   card heights freely (200 / 380 / 404 / 764) because `align-items` is not
+   stretch. Ours was gap:10px + 12px padding with every row pair stretched to
+   its taller cell, which is why two short panels (天氣警告, 風勢) each carried
+   hundreds of pixels of dead space beside breaking_news_list.
+   `align-items:start` is the fix, and it is deliberately the SAFE one: the
+   column-count approach fails in this codebase for the three reasons recorded
+   in AGENTS.md Pitfall 12 (no-op on a flex container; extra columns sideways
+   inside a definite-height scroller; 1fr cannot shrink below min-content).
+   Keeping the two-column grid and simply not stretching the cells gets the
+   same varied-height result without re-entering that minefield. */
 
 .panel{border:1px solid var(--hairline);border-radius:var(--radius);padding:11px 12px;min-width:0;
   background:var(--panel);backdrop-filter:var(--glass);

@@ -1,11 +1,45 @@
 # PRODUCTION_STATUS.md — Worker 部署後實測
 
-> 2026-09-23。Worker 已部署：`https://hk-city-monitor.cyrus738.workers.dev`
+> 2026-09-23 起，2026-09-24 更新。Worker 已部署：`https://hk-city-monitor.cyrus738.workers.dev`
 > 全部數字係**喺 production 實測**，唔係估算。
 
 ---
 
-## 部署結果
+## 前端已經上線（2026-09-24）
+
+之前只有 Worker 上線，**前端本身冇 served 喺任何地方**。現已部署到 Cloudflare Pages：
+
+```
+Site     : https://hk-city-monitor.pages.dev
+Deployment: https://6f392b5d.hk-city-monitor.pages.dev
+Project  : hk-city-monitor（新建，production branch = main）
+Upload   : 26 files / 3.27 MB
+```
+
+**喺 production URL 上跑嘅驗收（唔係本地）**：
+
+| 項目 | 結果 |
+|---|---|
+| `verify-browser.mjs https://hk-city-monitor.pages.dev/` | **66/66 PASS** |
+| 冷啟動 panel 數 | **17 / 17**，`mode=overview`，冇 banner |
+| 冷啟動狀態分佈 | 14 live · 3 stale · **0 error** |
+| `/` · `/data/panels.json` · `/data/verticals.json` · `/data/water_suspension.json` | 全部 HTTP 200 |
+
+重新部署：
+
+```powershell
+cd web
+$env:VITE_WORKER_BASE='https://hk-city-monitor.cyrus738.workers.dev'
+npm run build
+npx wrangler pages deploy dist --project-name hk-city-monitor --branch main
+```
+
+> `VITE_WORKER_BASE` 係 **build-time**（Pitfall 17）。漏咗佢唔會報錯，只會令 7 個 panel
+> 靜靜哋變成「需要 Worker 代理」。
+
+---
+
+## 部署結果（Worker）
 
 ```
 Upload   : 8.31 KiB / gzip 3.07 KiB

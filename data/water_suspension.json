@@ -3,11 +3,11 @@
  "source_name": "水務署 臨時停水通知",
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
- "generated": "2026-09-24T11:29:36+08:00",
+ "generated": "2026-09-24T18:49:37+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
-  "records": 156,
-  "active": 16
+  "records": 172,
+  "active": 14
  },
  "districts": [
   "中西區",
@@ -168,11 +168,11 @@
    "district_en": "Southern",
    "nature": "計劃停水",
    "suspend_at": "2026-09-24T12:00:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T16:39:00+08:00",
    "address": "港麗豪園 備注: 只有消防水受影響",
    "address_en": "Waterfront South Remark : Fire service water is affected only",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "供水已恢復"
   },
   {
    "id": "2026091113146",
@@ -272,11 +272,11 @@
    "district_en": "Central & Western",
    "nature": "計劃停水",
    "suspend_at": "2026-09-24T10:00:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T11:13:00+08:00",
    "address": "俊威閣",
    "address_en": "CHARMVIEW COURT; 73 POK FU LAM ROAD",
    "cause": "更換及修復水管計劃",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026091413234",
@@ -285,11 +285,11 @@
    "district_en": "North",
    "nature": "計劃停水",
    "suspend_at": "2026-09-24T10:00:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T12:00:00+08:00",
    "address": "粉嶺花園  ***只有消防水受影響***",
    "address_en": "Fanling Garden **ONLY FIRE SERVICE SUPPLY IS SUSPENDED***",
    "cause": "更換及修復水管計劃",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026091413243",
@@ -376,11 +376,11 @@
    "district_en": "Kowloon City",
    "nature": "計劃停水",
    "suspend_at": "2026-09-24T09:00:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T16:05:00+08:00",
    "address": "紅磡 馬頭圍道89-93號 (消防供水系統)",
    "address_en": "89-93 Ma Tau Wai Road (Fire Service), Hung Hom",
    "cause": "水管改善工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026091613348",
@@ -467,11 +467,11 @@
    "district_en": "Sai Kung",
    "nature": "計劃停水",
    "suspend_at": "2026-09-24T10:00:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T11:37:00+08:00",
    "address": "騰龍臺1, 2, 3, 4 號  備註: 沖廁用食水亦同時受影響",
    "address_en": "1, 2, 3, 4 Denon Terrace Remarks: Fresh water for flushing purpose is also affected",
    "cause": "更換及修復水管計劃",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026091813425",
@@ -1521,8 +1521,8 @@
    "nature": "緊急停水",
    "suspend_at": "2026-09-23T03:30:00+08:00",
    "resume_at": null,
-   "address": "伊利近街,士丹頓街,堅道47-71號,卑利街66號,普慶坊, 贊善里, 必列者士街",
-   "address_en": "ELGIN STREET,STAUNTON STREET,41-71 CAINE ROAD,66 PEEL STREET,PO HING FONG, CHANCERY LANE, BRIDGES STREET",
+   "address": "伊利近街,士丹頓街,堅道21-23, 41-71號,卑利街66號,普慶坊, 贊善里, 必列者士街, 四方街",
+   "address_en": "ELGIN STREET,STAUNTON STREET, 23-23, 41-71 CAINE ROAD,66 PEEL STREET,PO HING FONG, CHANCERY LANE, BRIDGES STREET, SQUARE STREET",
    "cause": "緊急維修水管工程",
    "status": "現正停水"
   },
@@ -1923,11 +1923,11 @@
    "district_en": "Sham Shui Po",
    "nature": "緊急停水",
    "suspend_at": "2026-09-23T22:55:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T17:17:00+08:00",
    "address": "荔枝角道700號",
    "address_en": "700 LAI CHI KOK ROAD",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026092413676",
@@ -1936,11 +1936,11 @@
    "district_en": "Central & Western",
    "nature": "緊急停水",
    "suspend_at": "2026-09-24T00:45:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T16:31:00+08:00",
    "address": "帝后華庭第三座",
    "address_en": "QUEEN'S TERRACE TOWER 3",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026092413677",
@@ -2001,11 +2001,11 @@
    "district_en": "Tuen Mun",
    "nature": "緊急停水",
    "suspend_at": "2026-09-24T09:30:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T14:23:00+08:00",
    "address": "部分新力街, 新平街, 新益里",
    "address_en": "PART OF SAN LIK STREET, SAN PING CIRCUIT, SAN YICK LANE",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026092413684",
@@ -2027,11 +2027,11 @@
    "district_en": "Sai Kung",
    "nature": "緊急停水",
    "suspend_at": "2026-09-24T09:45:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T12:00:00+08:00",
    "address": "北港凹村 一帶",
    "address_en": "AREA AROUND PAK KONG AU VILLAGE",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026092413687",
@@ -2040,11 +2040,11 @@
    "district_en": "North",
    "nature": "緊急停水",
    "suspend_at": "2026-09-24T10:05:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T11:37:00+08:00",
    "address": "粉嶺圍 近燈柱VG2325 一帶",
    "address_en": "AREA AROUND LAMP POST VG2325 AT  FANLING WAI",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "供水已恢復"
   },
   {
    "id": "2026092413688",
@@ -2058,24 +2058,230 @@
    "address_en": "NOS 2-8 HOLLY ROAD, NOS 74-80 SING WOO ROAD",
    "cause": "水掣測試工作",
    "status": "供水已恢復"
+  },
+  {
+   "id": "2026092413689",
+   "water_type": "食水",
+   "district": "灣仔區",
+   "district_en": "Wan Chai",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T22:00:00+08:00",
+   "resume_at": null,
+   "address": "畢拉山道111號",
+   "address_en": "NOS 111 MOUNT BUTLER ROAD",
+   "cause": "緊急維修水管工程",
+   "status": "停水仍未開始"
+  },
+  {
+   "id": "2026092413690",
+   "water_type": "食水",
+   "district": "西貢區",
+   "district_en": "Sai Kung",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T13:47:00+08:00",
+   "resume_at": "2026-09-24T15:26:00+08:00",
+   "address": "徑棚下一帶",
+   "address_en": "AREA AROUND KENG PANG HA",
+   "cause": "緊急維修水管工程",
+   "status": "供水已恢復"
+  },
+  {
+   "id": "2026092413691",
+   "water_type": "鹹水",
+   "district": "葵青區",
+   "district_en": "Kwai Tsing",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T13:53:00+08:00",
+   "resume_at": null,
+   "address": "長宏邨",
+   "address_en": "CHEUNG WANG ESTATE",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413692",
+   "water_type": "食水",
+   "district": "北區",
+   "district_en": "North",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T14:00:00+08:00",
+   "resume_at": "2026-09-24T15:55:00+08:00",
+   "address": "大埔田",
+   "address_en": "TAI PO TIN",
+   "cause": "水掣測試工作",
+   "status": "供水已恢復"
+  },
+  {
+   "id": "2026092413693",
+   "water_type": "食水",
+   "district": "北區",
+   "district_en": "North",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T14:08:00+08:00",
+   "resume_at": null,
+   "address": "莆上村2巷16號",
+   "address_en": "NO.16 PO SHEUNG TSUEN LANE NO.2",
+   "cause": "水掣測試工作",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413694",
+   "water_type": "食水",
+   "district": "中西區",
+   "district_en": "Central & Western",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T23:00:00+08:00",
+   "resume_at": null,
+   "address": "荷李活道20-50號 (雙數), 些利街2-12號 (雙數)",
+   "address_en": "NOS 20-50 HOLLYWOOD ROAD (EVEN NOS), NOS 2-12 SHELLEY STREET (EVEN NOS)",
+   "cause": "緊急維修水管工程",
+   "status": "停水仍未開始"
+  },
+  {
+   "id": "2026092413695",
+   "water_type": "鹹水",
+   "district": "九龍城區",
+   "district_en": "Kowloon City",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T14:13:00+08:00",
+   "resume_at": null,
+   "address": "雅息士道1,3,5號, 林肯道1,3,5號",
+   "address_en": "NO.1,3,5 ESSEX CRESCENT, NO.1,3,5 LINCOLN ROAD",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413697",
+   "water_type": "鹹水",
+   "district": "屯門區",
+   "district_en": "Tuen Mun",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T14:25:00+08:00",
+   "resume_at": "2026-09-24T15:56:00+08:00",
+   "address": "青海圍 近燈柱H3706一帶",
+   "address_en": "AREA AROUND LAMP POST H3706 TSING HOI CIRCUIT",
+   "cause": "水掣測試工作",
+   "status": "供水已恢復"
+  },
+  {
+   "id": "2026092413698",
+   "water_type": "鹹水",
+   "district": "東區",
+   "district_en": "Eastern",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T14:15:00+08:00",
+   "resume_at": null,
+   "address": "興民街26-54號, 筲箕灣道143-179號",
+   "address_en": "NO.26-54 SHAU KEI WAN ROAD, NO.143-179 SHAU KEI WAN ROAD",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413702",
+   "water_type": "食水",
+   "district": "北區",
+   "district_en": "North",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T14:51:00+08:00",
+   "resume_at": "2026-09-24T15:58:00+08:00",
+   "address": "恐龍坑近燈柱EB0584附近",
+   "address_en": "AREA AROUND HUNG LUNG HANG NEARBY LAMP POST EB0584",
+   "cause": "緊急維修水管工程",
+   "status": "供水已恢復"
+  },
+  {
+   "id": "2026092413704",
+   "water_type": "食水",
+   "district": "中西區",
+   "district_en": "Central & Western",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T22:00:00+08:00",
+   "resume_at": null,
+   "address": "南里1-25號 (單數)",
+   "address_en": "NOS.1-25 SOUTH LANE (ODDS.)",
+   "cause": "緊急維修水管工程",
+   "status": "停水仍未開始"
+  },
+  {
+   "id": "2026092413705",
+   "water_type": "食水",
+   "district": "元朗區",
+   "district_en": "Yuen Long",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T14:59:00+08:00",
+   "resume_at": "2026-09-24T16:20:00+08:00",
+   "address": "東匯路 近燈柱AD7105一帶",
+   "address_en": "AREA AROUND LAMP POST AD7105 TUNG WUI ROAD",
+   "cause": "緊急維修水管工程",
+   "status": "供水已恢復"
+  },
+  {
+   "id": "2026092413707",
+   "water_type": "鹹水",
+   "district": "中西區",
+   "district_en": "Central & Western",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T15:07:00+08:00",
+   "resume_at": null,
+   "address": "亞畢諾道8,10號, 亞畢諾道公廁",
+   "address_en": "NO.8,10 ARBUTHNOT ROAD, ARBUTHNOT ROAD PUBLIC TOILET",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413713",
+   "water_type": "鹹水",
+   "district": "屯門區",
+   "district_en": "Tuen Mun",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T16:00:00+08:00",
+   "resume_at": null,
+   "address": "屯盛街，青海圍，青善街，青匯街，顯發里，富發里，屯興路，部份青山公路 - 青山灣段",
+   "address_en": "TUEN SHING STREET, TSING HOI CIRCUIT, TSING SIN STREET, TSING WUI STREET, HIN FAT LANE, FU FAT LANE, TUEN HING ROAD, PART OF CASTLE PEAK ROAD - CASTLE PEAK BAY",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413716",
+   "water_type": "鹹水",
+   "district": "東區",
+   "district_en": "Eastern",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T16:30:00+08:00",
+   "resume_at": null,
+   "address": "水弱/無: 英皇道 632-880(雙)號，七姊妹道160-208號，健康東街21-29((單)號，百福道21號",
+   "address_en": "WEAK/ NO: 632-880( (EVEN) KIND'S ROAD, 160-208 TSAT TSZ MUI ROAD, 21-29((ODD) HEALTHY STREET EAST, 21 PAK FUK ROAD",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413717",
+   "water_type": "鹹水",
+   "district": "元朗區",
+   "district_en": "Yuen Long",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T16:53:00+08:00",
+   "resume_at": "2026-09-24T17:47:00+08:00",
+   "address": "大窩村一帶",
+   "address_en": "AREA AROUND TAI WO TSUEN",
+   "cause": "水掣測試工作",
+   "status": "供水已恢復"
   }
  ],
  "active_ids": [
   "2026091413231",
-  "2026091413233",
-  "2026091413234",
-  "2026091613342",
   "2026091813414",
-  "2026091813424",
   "2026092313611",
   "2026092313669",
-  "2026092313675",
-  "2026092413676",
   "2026092413679",
   "2026092413680",
   "2026092413682",
-  "2026092413683",
-  "2026092413686",
-  "2026092413687"
+  "2026092413691",
+  "2026092413693",
+  "2026092413695",
+  "2026092413698",
+  "2026092413707",
+  "2026092413713",
+  "2026092413716"
  ]
 }

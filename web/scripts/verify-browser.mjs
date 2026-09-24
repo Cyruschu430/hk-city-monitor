@@ -45,6 +45,44 @@ const railClick = async (label) => {
 
 const browser = await chromium.launch({ executablePath: exe, headless: !headed });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, locale: "zh-HK" });
+
+/**
+ * Wait for the app to SETTLE, not for a fixed number of milliseconds.
+ *
+ * MEASURED 2026-09-24: running `npm test` and this harness back to back in one
+ * command dropped the score from 66/66 to 63/66, reproducibly — the test suite
+ * competes for CPU and a fixed `waitForTimeout(3000)` was no longer long enough
+ * for the mode switch to draw. Running this harness alone always gave 66/66.
+ * A gate that only passes on an idle machine will fail on a loaded CI runner,
+ * and a flaky gate is worse than no gate: it teaches people to re-run until
+ * green. So the waits that GATE a check now wait on a predicate and poll for it.
+ *
+ * The predicate is deliberately generous (it keeps polling for the full budget)
+ * because being slow is fine and being wrong is not.
+ */
+const settle = async (fn, budgetMs = 30_000, label = "condition") => {
+  try {
+    await page.waitForFunction(fn, null, { timeout: budgetMs, polling: 250 });
+    return true;
+  } catch {
+    console.warn(`  [settle] timed out after ${budgetMs}ms: ${label}`);
+    return false;
+  }
+};
+
+/** The mode has switched AND every panel on screen has left the loading state. */
+const settled = (budgetMs = 30_000, label = "mode settled") =>
+  settle(
+    () => {
+      const ps = [...document.querySelectorAll(".panel[data-panel]")].filter(
+        (p) => p.getBoundingClientRect().height > 0 && getComputedStyle(p).display !== "none",
+      );
+      return ps.length > 0 && ps.every((p) => p.dataset.state && p.dataset.state !== "loading");
+    },
+    budgetMs,
+    label,
+  );
+
 // This run generates hundreds of resource entries (tiles, proxies, images);
 // the default 250-entry PerformanceResourceTiming buffer evicts the oldest,
 // which would hide the 3D chunk loads near the end of the run.
@@ -301,7 +339,26 @@ try {
 
   // P1 district labels: in water mode the active districts carry name labels.
   await page.click(".rail-btn:nth-child(4)"); // water
-  await page.waitForTimeout(3000);
+  // Two independent things must finish, and neither is a fixed duration:
+  //   1. the mode switch re-mounts panels (settled())
+  //   2. applyModeLayers() fetches the district polygons and draws them
+  // Waiting only for (1) still failed the layer checks when the machine was
+  // busy, because the fill/label layers appear from a second async step.
+  await settled(30_000, "water mode settled");
+  await settle(
+    () => {
+      const map = window.__map;
+      if (!map) return false;
+      // Draw only happens when there ARE active districts (the layer is
+      // deliberately not drawn otherwise — see the rule asserted below), so
+      // treat "no districts" as already-settled rather than waiting forever.
+      const active = window.__hkcm?.activeDistricts?.() ?? [];
+      if (active.length === 0) return true;
+      return !!map.getLayer("vl-water_suspension_districts-fill");
+    },
+    30_000,
+    "district layer drawn",
+  );
   const districtLabel = await page.evaluate(() => {
     const map = window.__map;
     const active = window.__hkcm.activeDistricts();

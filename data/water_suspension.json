@@ -3,11 +3,11 @@
  "source_name": "水務署 臨時停水通知",
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
- "generated": "2026-09-24T09:39:37+08:00",
+ "generated": "2026-09-24T10:29:36+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
-  "records": 150,
-  "active": 6
+  "records": 154,
+  "active": 14
  },
  "districts": [
   "中西區",
@@ -289,7 +289,7 @@
    "address": "粉嶺花園  ***只有消防水受影響***",
    "address_en": "Fanling Garden **ONLY FIRE SERVICE SUPPLY IS SUSPENDED***",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "現正停水"
   },
   {
    "id": "2026091413243",
@@ -380,7 +380,7 @@
    "address": "紅磡 馬頭圍道89-93號 (消防供水系統)",
    "address_en": "89-93 Ma Tau Wai Road (Fire Service), Hung Hom",
    "cause": "水管改善工程",
-   "status": "停水仍未開始"
+   "status": "現正停水"
   },
   {
    "id": "2026091613348",
@@ -445,7 +445,7 @@
    "address": "甘苑 備註: 沖廁用食水亦同時暫停",
    "address_en": "Kenville Building Remark: temporary mains water for flushing is also suspended",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "現正停水"
   },
   {
    "id": "2026091813420",
@@ -471,7 +471,7 @@
    "address": "騰龍臺1, 2, 3, 4 號  備註: 沖廁用食水亦同時受影響",
    "address_en": "1, 2, 3, 4 Denon Terrace Remarks: Fresh water for flushing purpose is also affected",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "現正停水"
   },
   {
    "id": "2026091813425",
@@ -1980,14 +1980,74 @@
    "address_en": "195-231 TIN SAM TSUEN",
    "cause": "緊急維修水管工程",
    "status": "現正停水"
+  },
+  {
+   "id": "2026092413682",
+   "water_type": "食水",
+   "district": "元朗區",
+   "district_en": "Yuen Long",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T09:35:00+08:00",
+   "resume_at": null,
+   "address": "瓦瑤頭 近 燈柱V7196一帶",
+   "address_en": "AREA AROUND LMAP POST V7196 AT NGA YIU TAU",
+   "cause": "水掣測試工作",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413683",
+   "water_type": "鹹水",
+   "district": "屯門區",
+   "district_en": "Tuen Mun",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T09:30:00+08:00",
+   "resume_at": null,
+   "address": "部分新力街",
+   "address_en": "PART OF SAN LIK STREET",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413684",
+   "water_type": "食水",
+   "district": "離島區",
+   "district_en": "Islands",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T09:45:00+08:00",
+   "resume_at": null,
+   "address": "部份 貝澳老圍村",
+   "address_en": "PART OF PUI O LO WAI TSUEN",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水"
+  },
+  {
+   "id": "2026092413686",
+   "water_type": "食水",
+   "district": "西貢區",
+   "district_en": "Sai Kung",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T09:45:00+08:00",
+   "resume_at": null,
+   "address": "北港凹村 一帶",
+   "address_en": "AREA AROUND PAK KONG AU VILLAGE",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水"
   }
  ],
  "active_ids": [
+  "2026091413234",
+  "2026091613342",
+  "2026091813414",
+  "2026091813424",
   "2026092313611",
   "2026092313669",
   "2026092313675",
   "2026092413676",
   "2026092413679",
-  "2026092413680"
+  "2026092413680",
+  "2026092413682",
+  "2026092413683",
+  "2026092413684",
+  "2026092413686"
  ]
 }

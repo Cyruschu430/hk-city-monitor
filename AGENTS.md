@@ -478,3 +478,42 @@ What follows from it:
   collision and the `snapshot`/`continuous` collision were both caught.
 - **A visual cluster of panels is not a dashboard.** `analysis_brief` has no source by design
   (appended by `setAnalysis()`), so a probe printing a cadence for it invents a clock.
+
+### Pitfall 21 — a hidden element is still in the DOM, so a DOM count is not a user-visible count
+
+MEASURED 2026-09-24. The category tabs FILTER panels by hiding them, they do not unmount them:
+on 交通 the DOM holds **17** `.panel[data-panel]` nodes while only **5** are painted. Every probe
+that counted `querySelectorAll(".panel[data-panel]").length` — including `probe-firstpaint.mjs`
+and the cold-boot gate — was therefore reporting a number no user ever sees. `probe-uiux.mjs`
+caught it by cross-checking `scrollHeight` per tab (which *did* change) against the panel count
+(which did not).
+
+Count what is painted:
+```js
+const shown = [...document.querySelectorAll(".panel[data-panel]")]
+  .filter(p => p.getBoundingClientRect().height > 0 && getComputedStyle(p).display !== "none");
+```
+This is the same lesson as Pitfall 19 from the other direction: there, the harness measured its
+own setup; here, it measured the DOM instead of the screen. **Both are a probe agreeing with
+itself rather than checking the product.**
+
+### Pitfall 22 — compare against the real reference, not a description of it
+
+The UI/UX pass started by fetching koala73/worldmonitor's README and the screenshot it ships —
+and then measured **`worldmonitor.app/dashboard` itself** at the same 1600×1000 viewport. That
+last step is what made the work correct, because it killed two confident hypotheses:
+
+| Assumption | Measured reality |
+|---|---|
+| "Our page scrolls, theirs is a fixed shell" | Both are fixed: `docScroll = 1600×1000`, `body{overflow-y:hidden}` |
+| "We are less dense / our column is bloated" | Our type scale already reaches 8px; waste inside panel bodies was **3px total (0.1%)** |
+| — | The real gaps were `gap: 10px` vs `4px`, and uniform card heights vs varied ones |
+
+Note also that the first URL tried, `worldmonitor.app/`, is a **marketing landing page 11,882px
+tall** — measuring it would have produced a completely wrong "they scroll a lot" conclusion.
+The app is at `/dashboard`. **Find the app route and confirm you are on it before measuring.**
+
+The two fixes that survived: `align-items:start` (so a 2-line card no longer stretches to match a
+505px neighbour — 14 distinct card heights replaced uniform pairs) and a **map key** explaining
+the cluster numbers. The `column-count` approach was rejected on purpose: AGENTS.md Pitfall 12
+already records its three failure modes in this codebase.

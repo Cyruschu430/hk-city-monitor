@@ -76,6 +76,29 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
     );
     const body = h("div", { class: "lyr-body" });
 
+    // A KEY, not a caption. Taken from World Monitor's bottom-centre legend bar,
+    // which explains every dot colour on the map face.
+    // MEASURED 2026-09-24: our camera clusters draw a bare number (101, 77, 56)
+    // via `point_count_abbreviated` and NOTHING on screen said those are camera
+    // counts. A first-time user sees unexplained integers floating over the
+    // territory. Only shown when a camera row is actually present, so the key
+    // never describes something that is not drawn.
+    const hasClusters = rows.some((r) => r.mapLayerIds.some((id) => /cluster/.test(id)));
+    if (hasClusters) {
+      body.append(
+        h(
+          "div",
+          { class: "lyr-key" },
+          h("span", { class: "lyr-key-n" }, "101"),
+          h(
+            "span",
+            { class: "lyr-key-t" },
+            lang() === "tc" ? "圓圈數字＝該區鏡頭數目，撳一下會展開" : "Circle number = cameras in that area; click to expand",
+          ),
+        ),
+      );
+    }
+
     for (const row of rows) {
       const glyph = glyphFor(row.def);
       const label = row.label ?? row.def.title;

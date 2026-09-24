@@ -33,6 +33,27 @@ a:hover{color:var(--cyan)}
   animation-name:ticker-scroll;animation-timing-function:linear;animation-iteration-count:infinite}
 @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
+/* Headline classification, inline in the marquee.
+   The category comes from the publisher's own feed (RTHK's section feeds and
+   news.gov.hk's category feeds), so it is a checkable fact about the source, not
+   a keyword guess. It has to be inline because 全部 is the DEFAULT view and is
+   where a reader otherwise cannot tell a sports result from a traffic closure.
+   Colours are the same accent family as the map layers so a reader learns one
+   palette: cyan = RTHK editorial sections, violet = government, amber = traffic
+   (the one that is time-critical and should catch the eye first). */
+.tk-item{display:inline-flex;align-items:center;gap:6px}
+.tk-cat{display:inline-block;padding:1px 6px;border-radius:3px;
+  font-size:9.5px;font-weight:600;letter-spacing:.06em;line-height:1.5;
+  border:1px solid transparent;vertical-align:middle}
+.tk-title{vertical-align:middle}
+.tk-cat.c-local,
+.tk-cat.c-world,
+.tk-cat.c-china,
+.tk-cat.c-finance,
+.tk-cat.c-sport{color:#8fd8ea;border-color:rgba(34,211,238,.35);background:rgba(34,211,238,.08)}
+.tk-cat.c-gov{color:#cbb2f5;border-color:rgba(168,85,247,.4);background:rgba(168,85,247,.1)}
+.tk-cat.c-traffic{color:#ffd48a;border-color:rgba(251,191,36,.45);background:rgba(251,191,36,.1)}
+
 /* ---------- GEV-style focus HUD (tethered box + leader line) ---------- */
 .focus-hud{position:absolute;z-index:9;width:260px;pointer-events:auto;
   animation:hud-in .2s ease-out}

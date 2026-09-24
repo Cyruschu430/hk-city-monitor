@@ -1,8 +1,9 @@
 {
-  "_comment": "CURATED COMMUNITY LIST (not official open data): 18 Hong Kong live cam / live TV YouTube streams the project owner chose for the 直播 panel. Every tile is labelled 第三方直播 / third-party, and each stream's live state is resolved at runtime (probeLive) — an off-air tile says 現時無直播 instead of playing a black rectangle. If any channel dies, remove its row here.",
+  "_comment": "CURATED COMMUNITY LIST (not official open data): 17 Hong Kong live cam streams the project owner chose for the 直播 panel. Every tile is labelled 第三方直播 / third-party, and each stream's live state is resolved at runtime (probeLive) — an off-air tile says 現時無直播 instead of playing a black rectangle. If any channel dies, remove its row here.",
+  "_verification": "Run `node web/scripts/probe-livestreams.mjs` to audit every id. It distinguishes a REMOVED video (404 on hqdefault_live.jpg AND hqdefault.jpg AND maxresdefault.jpg) from one that is merely not streaming right now (standard thumbnail still 200). MEASURED 2026-09-24: 17/18 live, 1 dead.",
+  "_removed": "GxMB-EH_lJs (香港電台 RTHK 直播) was REMOVED 2026-09-24: all three thumbnail variants 404 and YouTube's oEmbed returns Forbidden, so the video is gone. It surfaced as an intermittent harness failure — a 404 on i.ytimg.com that looked like a flaky request but was a dead entry. NOT replaced, deliberately: RTHK's youtube.com/@RTHK/live resolves to whatever is CURRENTLY streaming, and on the day of this check that was a one-off event feed (【特朗普為習近平舉行歡迎儀式】現場直播, id UL31CyRcu0w). Hardcoding that would 404 again as soon as the event ended, recreating this exact bug. The remaining 17 are stable 24/7 cams, which is a stronger list than one transient channel id. To re-add RTHK: pick the id at the moment you ship, and expect to maintain it.",
   "source_name": "第三方 YouTube 香港直播",
   "streams": [
-    { "id": "GxMB-EH_lJs", "title": "香港電台 RTHK 直播", "channel": "RTHK 香港電台" },
     { "id": "gjN3_AIowt8", "title": "HOY TV 直播", "channel": "HOY 媒體網絡" },
     { "id": "XN-ArdUrqtc", "title": "實時東九龍維港 Live", "channel": "Country & Folk bgm" },
     { "id": "cmGz913hKFI", "title": "太子景觀 24/7", "channel": "語音天氣報告｜減壓音樂" },

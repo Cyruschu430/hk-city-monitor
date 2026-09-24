@@ -189,25 +189,40 @@ try {
     const all = [...document.querySelectorAll(".panel[data-panel]")];
     const shown = all.filter((p) => p.getBoundingClientRect().height > 0 && getComputedStyle(p).display !== "none");
     const visibleOverview = shown.filter((p) => !p.hidden).length;
+    const water = window.__hkcm?.triggerState?.wsd_water_suspension ?? {};
     return {
       mode: window.__hkcm?.currentMode?.() ?? null,
       mounted: visibleOverview,
       inDom: all.length,
-      // Derive the expectation from the app rather than hardcoding a number: a
-      // panel withdrawal (crypto_prices, 2026-09-24) then does not require editing
-      // the test, and a panel that silently fails to mount still fails the check.
       expected: window.__hkcm?.overviewIds?.().length ?? 0,
       banner: document.querySelector(".banner")?.textContent?.trim().slice(0, 80) ?? null,
-      drinkingNow: window.__hkcm?.triggerState?.wsd_water_suspension?.drinking_now ?? null,
-      saltOnly: window.__hkcm?.triggerState?.wsd_water_suspension?.salt_only_now ?? null,
+      drinkingNow: water.drinking_now ?? null,
+      saltOnly: water.salt_only_now ?? null,
     };
   });
+  // THE APP MUST LAND ON 總覽 — *unless a real drinking-water emergency is in
+  // force*, in which case auto-hoisting 停水模式 is the CORRECT behaviour and the
+  // whole point of the trigger. MEASURED 2026-09-24 11:00: this check failed
+  // with mode="water_supply" drinking_now=7 — and the data confirmed 7 genuine
+  // tap-water suspensions (粉嶺花園, 紅磡馬頭圍道, 甘苑, 騰龍臺, 瓦瑤頭, 貝澳老圍村,
+  // 北港凹村). The app was right; the assertion was wrong for demanding it
+  // ignore a real outage. So assert the INVARIANT instead, which holds either way:
+  //   drinking_now > 0  -> the app is in 停水模式 showing that panel
+  //   drinking_now == 0 -> the app is on 總覽 showing every overview panel
+  // Both branches still fail loudly on the original bug (the old trigger fired
+  // with drinking_now=0 and collapsed to 1 panel with no emergency at all).
+  const emergency = (landing.drinkingNow ?? 0) > 0;
+  const ok = emergency
+    ? landing.mode === "water_supply" && landing.mounted >= 1
+    : landing.mode === "overview" && landing.expected > 0 && landing.mounted >= landing.expected;
   check(
-    "冷啟動：未撳任何嘢之前，app 自己落喺總覽而且開齊全部 panel",
-    landing.mode === "overview" && landing.expected > 0 && landing.mounted >= landing.expected,
-    `mode=${JSON.stringify(landing.mode)}（"overview"=總覽）visible=${landing.mounted}/${landing.expected} ` +
-      `inDOM=${landing.inDom} drinking_now=${landing.drinkingNow} salt_only_now=${landing.saltOnly} ` +
-      `banner=${JSON.stringify(landing.banner)}`,
+    emergency
+      ? "冷啟動：有真實食水停水 → app 自動入停水模式（正確行為），而且唔係空白"
+      : "冷啟動：冇食水停水 → app 自己落喺總覽而且開齊全部 panel",
+    ok,
+    `mode=${JSON.stringify(landing.mode)} drinking_now=${landing.drinkingNow} ` +
+      `salt_only_now=${landing.saltOnly} visible=${landing.mounted}/${landing.expected} ` +
+      `inDOM=${landing.inDom} banner=${JSON.stringify(landing.banner)}`,
   );
 
   // --- 3. panels: config-driven, honesty states, footers ----------------------
@@ -357,7 +372,13 @@ try {
     `scale=${mapChrome.hasScale} coords="${mapChrome.coords}"`);
 
   // P1 district labels: in water mode the active districts carry name labels.
-  await page.click(".rail-btn:nth-child(4)"); // water
+  // Enter water mode IDEMPOTENTLY. MEASURED 2026-09-24: when a real drinking-
+  // water outage is in force the app boots ALREADY in water mode (correctly), so
+  // a blind click on the water rail button is a no-op at best and, if the rail
+  // ever became a toggle, would exit the mode these checks need. Assert the mode
+  // is water and only click when it is not.
+  const alreadyWater = await page.evaluate(() => (window.__hkcm?.currentMode?.() ?? null) === "water_supply");
+  if (!alreadyWater) await page.click(".rail-btn:nth-child(4)"); // water
   // THREE independent async steps must finish, and none is a fixed duration.
   // MEASURED 2026-09-24: waiting on the panels alone was still intermittent
   // (63/66 in 1 run of 4). The diagnostics showed why — the LAYERS control had

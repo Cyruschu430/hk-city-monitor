@@ -119,6 +119,15 @@ export interface PanelDef {
    * renderer. It is deliberately NOT hidden in a tooltip — a disclaimer nobody
    * reads is not a disclaimer. */
   disclaimer?: L10n;
+  /** Ask for the full panel-column width.
+   *
+   * Config, not a rule, because whether a panel benefits is a judgement about its
+   * content: a 4-column table gains from the extra room, a 2-row status grid
+   * looks sparse stretched across 700px. Taken from World Monitor, whose cards
+   * declare `.panel-wide` (626px = both columns) in a `grid-auto-flow: dense`
+   * grid — measured on worldmonitor.app/dashboard, and the mechanism by which it
+   * packs 41 cards into 8.39 screens against our 17 in 3.95. */
+  wide?: boolean;
 }
 
 export interface RenderOpts {
@@ -414,7 +423,7 @@ export function renderPanel(
   const root = h(
     "section",
     {
-      class: `panel${honesty.state === "stale" ? " is-stale" : ""}${honesty.state === "error" ? " is-error" : ""}`,
+      class: `panel${panel.wide ? " wide" : ""}${honesty.state === "stale" ? " is-stale" : ""}${honesty.state === "error" ? " is-error" : ""}`,
       "data-panel": panel.id,
       "data-state": honesty.state,
     },

@@ -277,7 +277,8 @@
    "cadence_note": {
     "tc": "延遲報價，唔係即時",
     "en": "Delayed, not real-time"
-   }
+   },
+   "wide": true
   },
   {
    "id": "breaking_news_list",
@@ -324,6 +325,7 @@
    "params": {
     "max_rows": 12
    },
+   "wide": true,
    "cadence_note": {
     "tc": "即時",
     "en": "Real-time"
@@ -403,6 +405,7 @@
     "stop_id": "18492910339410B1",
     "max": 10
    },
+   "wide": true,
    "cadence_note": {
     "tc": "每 1 分鐘",
     "en": "Every minute"

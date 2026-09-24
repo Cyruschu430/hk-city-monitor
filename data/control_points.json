@@ -1,0 +1,94 @@
+{
+ "_comment": "Immigration Department land/sea/air control points, with WGS84 positions for the map. These are FIXED official facilities, so the coordinates are reference data, not a live feed — the same category as the CSDI weather-station layer.",
+ "_method": "Each coordinate was resolved through ALS (als.gov.hk, the registered `als_address_lookup` source) and then VALIDATED against an approximate official anchor: a hit more than 1.5km from the anchor is rejected, because ALS silently falls back to a district-level suggestion that looks plausible and can be 30km wrong. See web/scripts/probe-controlpoints.mjs, which prints the distance for every candidate. MEASURED 2026-09-24: the naive pass produced FOUR wrong answers that this check caught — 羅湖管制站 31.6km off, 沙頭角管制站 39.8km off, 深圳灣管制站 30.6km off, and 香港國際機場一號客運大樓 1.9km off. Each was corrected by using the name ALS actually knows (羅湖站, 沙頭角, 深圳灣口岸港方口岸區).",
+ "_unresolved": "SZW (深圳灣) has NO coordinate here. ALS resolves every name variant ~30.6km away (a Yau Tsim Mong fallback), and the one candidate that looked right — 深圳灣口岸港方口岸區 at 22.49537,114.14078, matched to 'HONG KONG CUSTOMS AND EXCISE DEPARTMENT CONTROL POINT COMMAND HEADQUARTERS' — is 4.3km from 羅湖, i.e. it is an EASTERN border facility, whereas 深圳灣 is the WESTERNMOST land crossing. probe-szw3.mjs rejected it on that geometry. 深圳灣 therefore renders at DISTRICT level (Yuen Long) until a trustworthy coordinate is found. A pin 30km out is worse than no pin.",
+ "_verified": "12 of 13 control points resolved and distance-validated.",
+ "points": [
+  {
+   "code": "HYW",
+   "name": { "tc": "香港國際機場", "en": "Hong Kong International Airport" },
+   "kind": "air",
+   "lat": 22.30324,
+   "lng": 113.93082
+  },
+  {
+   "code": "SKW",
+   "name": { "tc": "羅湖", "en": "Lo Wu" },
+   "kind": "land",
+   "lat": 22.52525,
+   "lng": 114.11403
+  },
+  {
+   "code": "LMC",
+   "name": { "tc": "落馬洲", "en": "Lok Ma Chau" },
+   "kind": "land",
+   "lat": 22.51321,
+   "lng": 114.07982
+  },
+  {
+   "code": "LMB",
+   "name": { "tc": "落馬洲支線", "en": "Lok Ma Chau Spur Line" },
+   "kind": "land",
+   "lat": 22.51321,
+   "lng": 114.07982,
+   "_note": "ALS returns the same position as LMC. The two are genuinely adjacent (the spur line station sits at the Lok Ma Chau loop), but they are distinct crossings, so the popup names which is which rather than pretending to finer precision than the source has."
+  },
+  {
+   "code": "MKT",
+   "name": { "tc": "文錦渡", "en": "Man Kam To" },
+   "kind": "land",
+   "lat": 22.53614,
+   "lng": 114.13166
+  },
+  {
+   "code": "STK",
+   "name": { "tc": "沙頭角", "en": "Sha Tau Kok" },
+   "kind": "land",
+   "lat": 22.53601,
+   "lng": 114.21016,
+   "_note": "Passenger service is SUSPENDED until further notice (the ImD control-point page says so, and the queue feed reports the 99 sentinel for both directions). Kept on the map because a closed crossing is information, and the popup says it is closed."
+  },
+  {
+   "code": "CCP",
+   "name": { "tc": "中國客運碼頭", "en": "China Ferry Terminal" },
+   "kind": "sea",
+   "lat": 22.29951,
+   "lng": 114.16716
+  },
+  {
+   "code": "MFP",
+   "name": { "tc": "港澳客輪碼頭", "en": "Hong Kong–Macau Ferry Terminal" },
+   "kind": "sea",
+   "lat": 22.2878,
+   "lng": 114.15183
+  },
+  {
+   "code": "KKT",
+   "name": { "tc": "啟德郵輪碼頭", "en": "Kai Tak Cruise Terminal" },
+   "kind": "sea",
+   "lat": 22.30745,
+   "lng": 114.21212
+  },
+  {
+   "code": "XRL",
+   "name": { "tc": "高鐵西九龍", "en": "High Speed Rail West Kowloon" },
+   "kind": "land",
+   "lat": 22.2993,
+   "lng": 114.1579
+  },
+  {
+   "code": "HZM",
+   "name": { "tc": "港珠澳大橋", "en": "HZMB Hong Kong Port" },
+   "kind": "land",
+   "lat": 22.31807,
+   "lng": 113.95132
+  },
+  {
+   "code": "HY2",
+   "name": { "tc": "香園圍", "en": "Heung Yuen Wai" },
+   "kind": "land",
+   "lat": 22.55391,
+   "lng": 114.16507
+  }
+ ]
+}

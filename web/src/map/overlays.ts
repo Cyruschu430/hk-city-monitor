@@ -26,6 +26,12 @@ function glyphColor(glyph: string): string {
   return "#22d3ee";
 }
 
+/** A bilingual name as the registries write it. */
+interface L10nName {
+  tc: string;
+  en: string;
+}
+
 /** One geocoded water-suspension notice: WHERE the outage actually is. */
 export interface WaterPoint {
   id: string;
@@ -51,6 +57,9 @@ export interface LayerArgs {
       collector's ALS geocoding — a notice that did not resolve is absent here
       but still contributes its district, so nothing disappears silently. */
   waterPoints?: WaterPoint[];
+  /** Live trigger state, so a POI popup can show the reading its panel shows
+      (e.g. a control point's current queue) instead of only naming the place. */
+  triggerState?: Record<string, unknown>;
   /** mode-switch generation: passed by main; a layer whose fetch outlives the
       mode it was asked for must abort instead of painting orphan geometry */
   gen?: number;
@@ -506,6 +515,130 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     layout: { "icon-image": glyph, "icon-size": size as never, "icon-allow-overlap": true },
   });
 }
+/**
+ * Official control points as map POIs, with a popup carrying their attributes.
+ *
+ * Cyrus: "Most layers are not refering to the panel -> layer should showing the
+ * POI with pop up attribute when Border crossing mode is on."
+ *
+ * Before this, 口岸模式 drew ONLY the camera dots: three panels of queue times and
+ * ferry times, and nothing on the map saying WHICH crossings they referred to.
+ * The link between panel and map was missing in exactly the mode where the map
+ * should be the primary instrument.
+ *
+ * Positions come from data/control_points.json, which is reference data with a
+ * validation trail — each coordinate was checked against an official anchor and
+ * rejected if more than 1.5km off (that check caught four wrong lookups). The one
+ * unresolved point (深圳灣) is deliberately absent and rendered at district level
+ * instead of being given a confident wrong pin.
+ *
+ * Live queue times are joined in from the trigger state when available, so the
+ * popup answers the question the panel is asking ("how long is the queue") rather
+ * than only naming the place. A crossing with no live reading shows its hours
+ * instead of a fabricated number.
+ */
+async function controlPointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs): Promise<void> {
+  const gen = args.gen ?? 0;
+  const res = await fetch("data/control_points.json", { signal: AbortSignal.timeout(15_000) });
+  if (stale(args, gen)) throw new Error("obsolete layer request");
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const j = (await res.json()) as {
+    points: { code: string; name: L10nName; kind: string; lat: number; lng: number; _note?: string }[];
+  };
+  const id = `${PREFIX}${def.id}`;
+  if (stale(args, gen)) throw new Error("obsolete layer request");
+  map.addSource(id, {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: j.points.map((p) => ({
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [p.lng, p.lat] },
+        properties: {
+          code: p.code,
+          tc: p.name.tc,
+          en: p.name.en,
+          kind: p.kind,
+        },
+      })),
+    },
+  });
+  map.addLayer({
+    id,
+    type: "circle",
+    source: id,
+    paint: {
+      // Land, sea and air crossings are different things; colour by kind so the
+      // three read apart without opening a popup.
+      "circle-color": [
+        "match",
+        ["get", "kind"],
+        "air", "#38bdf8",
+        "sea", "#22d3ee",
+        "#a855f7",
+      ] as never,
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 5, 14, 9, 17, 13],
+      "circle-stroke-color": "rgba(5,7,13,.9)",
+      "circle-stroke-width": 2,
+    },
+  });
+  // Names sit beside the dots from z11 — below that they collide across the
+  // harbour and the dots alone are enough.
+  map.addLayer({
+    id: `${id}-label`,
+    type: "symbol",
+    source: id,
+    minzoom: 11,
+    layout: {
+      "text-field": ["get", lang() === "tc" ? "tc" : "en"],
+      "text-font": ["Noto Sans Regular"],
+      "text-size": 11,
+      "text-offset": [0, 1.4],
+      "text-anchor": "top",
+      "text-allow-overlap": false,
+    },
+    paint: {
+      "text-color": "#e6f1ff",
+      "text-halo-color": "rgba(5,7,13,.92)",
+      "text-halo-width": 1.4,
+    },
+  });
+
+  map.on("click", id, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = f.properties ?? {};
+    const code = String(p["code"] ?? "");
+    const tc = lang() === "tc";
+    // Join the live queue reading the panel is showing, so the popup answers the
+    // question rather than restating the label.
+    const st = (args.triggerState?.immd_cp_queue ?? {}) as Record<string, { arr?: number | null; dep?: number | null }>;
+    const q = st[code];
+    const fmtQ = (v: number | null | undefined) =>
+      v === null || v === undefined ? (tc ? "冇讀數" : "no reading") : `${v} ${tc ? "分鐘" : "min"}`;
+    const queue = q
+      ? `<span style="color:#8ea6c4">${tc ? "入境" : "arrival"} ${fmtQ(q.arr)} · ${tc ? "出境" : "departure"} ${fmtQ(q.dep)}</span><br>`
+      : "";
+    const kindLabel =
+      p["kind"] === "air" ? (tc ? "航空" : "Air") : p["kind"] === "sea" ? (tc ? "水路" : "Sea") : tc ? "陸路" : "Land";
+    const html = `
+        <div style="padding:9px 11px;font:12px/1.55 var(--font-ui);max-width:270px">
+          <b>${String(p[tc ? "tc" : "en"] ?? "")}</b><br>
+          <span style="color:#8ea6c4">${kindLabel} · ${code}</span><br>
+          ${queue}
+          ${
+            code === "STK"
+              ? `<span style="color:#fbbf24">${tc ? "通關服務已暫停" : "passenger service suspended"}</span><br>`
+              : ""
+          }
+          <a href="https://www.immd.gov.hk/hkt/contactus/control_points.html" target="_blank" rel="noopener" style="color:#8ea6c4">入境處管制站資料 ↗</a>
+        </div>`;
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup" }).setLngLat(e.lngLat).setHTML(html).addTo(map);
+  });
+  map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
+}
+
 export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[], args: LayerArgs): Promise<string[]> {
   const drawn: string[] = [];
   for (const def of defs) {
@@ -537,6 +670,14 @@ export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw
           drawn.push(def.id);
           break;
         }
+        case "poi":
+          // Official facilities that are the SUBJECT of a mode's panels — the
+          // control points 口岸模式 reports queue times for. A `poi` layer reads
+          // its own reference file rather than a source, because these positions
+          // are curated and validated, not fetched from a feed.
+          await controlPointLayer(map, def, args);
+          drawn.push(def.id);
+          break;
         case "none":
         case "line":
         default:

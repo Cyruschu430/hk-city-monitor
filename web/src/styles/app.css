@@ -69,20 +69,20 @@ a:hover{color:var(--cyan)}
 .mh-scope{font-size:10.5px;letter-spacing:.16em;font-weight:600;color:#cfe0f5;
   text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mh-clock{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;
-  color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+  color:var(--map-face-dim);white-space:nowrap;font-variant-numeric:tabular-nums}
 
 /* ---------- LAYERS control (bottom-left, above the scale bar) ---------- */
 /* World Monitor's map carries a real checklist here, not a caption: checkbox,
    the layer's own glyph, a name, and an ⓘ for attribution. Rows are
    interactive, so this is the one map-face element that takes pointer events. */
 .layer-control{position:absolute;left:10px;bottom:52px;display:flex;flex-direction:column;
-  background:rgba(5,8,13,.82);border:1px solid var(--hairline);border-radius:8px;
+  background:var(--map-face-bg);border:1px solid var(--map-face-line);border-radius:8px;
   backdrop-filter:var(--glass);max-width:230px;overflow:hidden}
 .layer-control[hidden]{display:none}
 .lyr-head{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  padding:6px 9px;border-bottom:1px solid var(--hairline)}
-.lyr-title{font-size:9.5px;letter-spacing:.16em;font-weight:600;color:#cfe0f5;text-transform:uppercase}
-.lyr-count{font-family:var(--font-mono);font-size:9px;color:var(--faint)}
+  padding:6px 9px;border-bottom:1px solid var(--map-face-line)}
+.lyr-title{font-size:9.5px;letter-spacing:.16em;font-weight:600;color:var(--map-face);text-transform:uppercase}
+.lyr-count{font-family:var(--font-mono);font-size:9px;color:var(--map-face-weak)}
 .lyr-body{display:flex;flex-direction:column;padding:3px 0}
 /* Map key. Sits inside the LAYERS body because the cluster number is a map
    symbol, and a symbol explained nowhere is a number the user has to guess at.
@@ -93,14 +93,18 @@ a:hover{color:var(--cyan)}
   padding:0 5px;border-radius:999px;border:1.5px solid var(--cyan);
   background:rgba(34,211,238,.16);color:#dff6ff;
   font-family:var(--font-mono);font-size:9.5px;font-variant-numeric:tabular-nums}
-.lyr-key-t{font-size:9.5px;line-height:1.35;color:var(--faint);min-width:0}
+.lyr-key-t{font-size:9.5px;line-height:1.35;color:var(--map-face-dim);min-width:0}
 .lyr-item{display:flex;flex-direction:column}
 .lyr-line{display:flex;align-items:center;gap:2px}
 .lyr-row{display:flex;align-items:center;gap:7px;flex:1 1 auto;min-width:0;
   background:none;border:0;padding:4px 8px;cursor:pointer;text-align:left;
-  font:inherit;color:var(--text);border-radius:5px}
+  font:inherit;color:var(--map-face);border-radius:5px}
 .lyr-row:hover{background:rgba(120,160,220,.10)}
-.lyr-row.off .lyr-label{color:var(--faint);text-decoration:line-through}
+/* An OFF layer must still be READABLE — it is a label, not a disabled control.
+   MEASURED 2026-09-24: this used `var(--faint)`, which in light mode is a dark
+   slate that vanished against the dark map face, so unchecked rows were the
+   ones you could not read. Dimmed via the map-face scale instead. */
+.lyr-row.off .lyr-label{color:var(--map-face-weak);text-decoration:line-through}
 .lyr-row.off .lyr-glyph,.lyr-row.off .lyr-swatch{opacity:.32;filter:grayscale(1)}
 /* The checkbox is drawn from the row's aria-checked state, so the visual can
    never disagree with what a screen reader is told. */
@@ -113,12 +117,12 @@ a:hover{color:var(--cyan)}
 .lyr-swatch.sw-polygon{background:rgba(255,93,108,.3);border:1.5px solid #ff5d6c}
 .lyr-swatch.sw-raster{background:linear-gradient(90deg,#3884ff,#2ecc71,#f1c40f,#e74c3c)}
 .lyr-swatch.sw-point{background:var(--cyan);border-radius:50%;width:8px;height:8px}
-.lyr-label{font-size:10.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lyr-label{font-size:10.5px;color:var(--map-face);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lyr-info{flex:0 0 auto;width:18px;height:18px;margin-right:5px;border-radius:50%;
-  border:1px solid var(--hairline);background:none;color:var(--faint);
+  border:1px solid var(--map-face-line);background:none;color:var(--map-face-weak);
   font:italic 600 10px/1 var(--font-mono);cursor:pointer;padding:0}
-.lyr-info:hover{color:var(--text);border-color:var(--dim)}
-.lyr-note{padding:2px 9px 6px 26px;font-size:9.5px;color:var(--dim);line-height:1.4}
+.lyr-info:hover{color:var(--map-face);border-color:var(--map-face-dim)}
+.lyr-note{padding:2px 9px 6px 26px;font-size:9.5px;color:var(--map-face-dim);line-height:1.4}
 .lyr-note[hidden]{display:none}
 .lyr-note a{color:var(--cyan);text-decoration:none}
 .lyr-note a:hover{text-decoration:underline}
@@ -126,7 +130,7 @@ a:hover{color:var(--cyan)}
    relationship visible instead of leaving the user to discover it. */
 .lyr-row.rail .lyr-label{font-weight:500}
 .lyr-row.rail::after{content:"";width:3px;height:3px;border-radius:50%;
-  background:var(--faint);margin-left:auto;flex:0 0 auto;opacity:.55}
+  background:var(--map-face-weak);margin-left:auto;flex:0 0 auto;opacity:.55}
 .lyr-row.rail[aria-checked="true"]::after{background:var(--cyan);opacity:.9}
 
 /* ---------- market (HK convention: red = up, green = down) ---------- */
@@ -166,7 +170,7 @@ a:hover{color:var(--cyan)}
 .palette-hint{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--faint);white-space:nowrap}
 
 /* ---------- map chrome: coords readout + flash highlight ---------- */
-.map-coords{font-family:var(--font-mono);font-size:10px;color:var(--dim);
+.map-coords{font-family:var(--font-mono);font-size:10px;color:var(--map-face-dim);
   pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.8)}
 @keyframes panel-flash{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 2px var(--cyan),0 0 24px -4px rgba(34,211,238,.7)}}
 .panel.flash{animation:panel-flash 1.4s ease-in-out}
@@ -176,7 +180,11 @@ a:hover{color:var(--cyan)}
 .maplibregl-ctrl-group button{background:var(--panel-solid)!important;border-bottom:1px solid var(--hairline)}
 .maplibregl-ctrl-group button+button{border-bottom:0}
 .maplibregl-ctrl-group button span{filter:none}
-.maplibregl-ctrl-scale{background:transparent!important;border-color:rgba(140,190,255,.4)!important;color:var(--dim);font-size:10px}
+/* The scale bar is drawn ON the map, not in a themed card: its text must be a
+   map-face colour or in light mode it is dark-on-dark. The background stays
+   transparent on purpose so the bar does not box in the map. */
+.maplibregl-ctrl-scale{background:transparent!important;border-color:rgba(140,190,255,.55)!important;
+  color:var(--map-face-dim);font-size:10px;text-shadow:0 1px 2px rgba(5,7,13,.9)}
 
 /* live tiles are video thumbs → 16:9 instead of the cameras' 4:3 */
 .cam.live{aspect-ratio:16/9}
@@ -276,10 +284,10 @@ a:hover{color:var(--cyan)}
    on the map face, not a footnote. MapLibre's own AttributionControl carries the
    text; this badge is the always-visible face of it. */
 .landsd-badge{position:absolute;right:10px;bottom:10px;display:flex;align-items:center;gap:7px;
-  padding:4px 9px;background:rgba(5,8,13,.72);border:1px solid var(--hairline);
-  border-radius:6px;font-size:10px;color:var(--dim);letter-spacing:.03em}
-.landsd-badge a{color:var(--dim)}
-.landsd-badge a:hover{color:var(--txt)}
+  padding:4px 9px;background:var(--map-face-bg);border:1px solid var(--map-face-line);
+  border-radius:6px;font-size:10px;color:var(--map-face-dim);letter-spacing:.03em}
+.landsd-badge a{color:var(--map-face-dim)}
+.landsd-badge a:hover{color:var(--map-face)}
 
 /* ---------- panels column (340px) ---------- */
 /* Panel column = category tabs + the scrollable panel grid. The tabs are a
@@ -572,7 +580,7 @@ a:hover{color:var(--cyan)}
 
 /* ---------- maplibre ---------- */
 .maplibregl-ctrl-attrib{background:rgba(5,8,13,.66);font-size:10px}
-.maplibregl-ctrl-attrib a{color:var(--faint)}
+.maplibregl-ctrl-attrib a{color:var(--map-face-dim)}
 .maplibregl-ctrl-attrib.maplibregl-compact{background:rgba(5,8,13,.66)}
 .cam-popup .maplibregl-popup-content{background:var(--panel-solid);color:var(--txt);
   border:1px solid var(--hairline-hi);border-radius:var(--radius-sm);padding:0}

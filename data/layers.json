@@ -1,13 +1,30 @@
 {
- "_comment": "Map layer registry. geom ∈ point/polygon/line/raster/none.",
+ "_comment": "Map layer registry. geom ∈ point/polygon/line/raster/poi/none.",
  "geoms": [
   "point",
   "polygon",
   "line",
   "raster",
+  "poi",
   "none"
  ],
  "layers": [
+  {
+   "id": "control_points",
+   "source": "immd_cp_queue",
+   "render": "status_grid",
+   "geom": "poi",
+   "symbol": "poi",
+   "title": {
+    "tc": "出入境管制站",
+    "en": "Immigration Control Points"
+   },
+   "_comment": "The POIs 口岸模式 is ABOUT. Before this the mode drew only camera dots: three panels of queue and ferry times with nothing on the map saying which crossings they referred to — the panel-to-map link was missing in the one mode where the map should lead. Positions come from data/control_points.json (reference data with a validation trail: each coordinate checked against an official anchor and rejected beyond 1.5km, which caught four wrong lookups). The popup joins the LIVE queue reading from the trigger state, so it answers the panel's question rather than restating the name. 深圳灣 has no coordinate — it is resolved at district level instead of being given a confident wrong pin.",
+   "popup": "control_point_popup",
+   "filters": {
+    "scope": "hk"
+   }
+  },
   {
    "id": "cameras_all",
    "source": "td_camera_list",

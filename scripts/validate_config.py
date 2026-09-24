@@ -45,7 +45,7 @@ RENDERS = {"big_number", "list", "table", "image_single", "image_wall",
 # Google Maps was ruled out for exactly this. The check is mechanical because the rule is.
 METERED_HOSTS = re.compile(r"googleapis\.com/maps|maps\.google|bingmaps|mapbox\.com|"
                            r"api\.openai\.com|anthropic\.com/v1|azure\.com|aws\.amazon", re.I)
-GEOMS = {"point", "polygon", "line", "raster", "none"}
+GEOMS = {"point", "polygon", "line", "raster", "poi", "none"}
 OPS = {"exists", ">=", "<=", "==", "in"}
 # Tier 1 rule ops. A superset of the trigger ops: rules also support strict
 # comparisons and the baseline-aware ops.

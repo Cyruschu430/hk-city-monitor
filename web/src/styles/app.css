@@ -456,13 +456,26 @@ a:hover{color:var(--cyan)}
 .gauge.ok .gv{color:var(--ok)}.gauge.warn .gv{color:var(--amber)}.gauge.alert .gv{color:var(--alert)}
 
 /* status_grid */
-.statuses{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:7px}
-.status{border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:7px 9px;
-  display:flex;align-items:center;gap:8px}
+/* 132px rather than 150px: the two-column panel grid gives a panel body ~309px,
+   where 150px columns cannot shrink and overflow (MEASURED: body 309, grid 355).
+   132px still fits two columns with the 7px gap and leaves the label room to
+   ellipsis instead of pushing the value out of the box. */
+.statuses{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:6px;min-width:0}
+.status{border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:6px 8px;
+  display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
 .status .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
 .status.s0 .dot{background:var(--ok)}.status.s1 .dot{background:var(--amber)}.status.s2 .dot{background:var(--alert)}
-.status .sl{font-size:11px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.status .sv{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--dim);white-space:nowrap}
+/* The label takes the space left after the value, and ellipsises.
+   `flex:1 1 auto` alone collapsed it to width 0 (MEASURED: .sl clientWidth 0
+   while .sv held the row), which hides the station name entirely — worse than
+   the overflow it was meant to fix. A basis of 0 with flex-grow makes the label
+   yield to the value but never vanish, and min-width:0 is what lets the
+   ellipsis engage at all (a flex item's automatic minimum is its min-content
+   width, so overflow:hidden is inert without it — AGENTS.md Pitfall 12). */
+.status .sl{font-size:11px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;min-width:0;flex:1 1 0%}
+.status .sv{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--dim);
+  white-space:nowrap;flex:0 0 auto}
 
 /* ---------- focus drawer ---------- */
 #drawer{position:fixed;top:40px;right:0;bottom:0;width:400px;max-width:92vw;z-index:40;

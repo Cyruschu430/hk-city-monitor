@@ -24,36 +24,104 @@ export function errored(note: string, updatedAt: Date | null = null): Honesty {
 }
 
 /**
- * Cadence-aware freshness: amber after 2× the source cadence, "red" (the
- * stale state's stronger form) after 5× (DESIGN_BRIEF §6 thresholds for
- * cameras). A fetch failure is always an immediate error for warnings and
+ * Cadence-aware freshness: stale once the reading is older than the source's
+ * quiet tolerance (see `quietSeconds`), which is 2× the cadence for ordinary
+ * polled feeds and an explicit longer window for push-style and reference
+ * sources. A fetch failure is always an immediate error for warnings and
  * market data — that decision lives in the panel engine, which calls errored().
+ *
+ * Note the parameter is the *tolerance*, not the cadence: passing a cadence
+ * here re-introduces the doubling and is what made a "continuous" news feed
+ * stale after 10 minutes. Callers pass `quietSeconds(src?.cadence)`.
  */
-export function degrade(h: Honesty, cadenceSeconds: number, now = new Date()): Honesty {
+export function degrade(h: Honesty, toleranceSeconds: number, now = new Date()): Honesty {
   if (h.state !== "live" || !h.updatedAt) return h;
   const age = (now.getTime() - h.updatedAt.getTime()) / 1000;
-  if (age > cadenceSeconds * 2) return { state: "stale", updatedAt: h.updatedAt };
+  if (age > toleranceSeconds) return { state: "stale", updatedAt: h.updatedAt };
   return h;
 }
 
-/** Parse the cadence strings in sources.json ("5 minutes", "15 minutes",
-    "every 2 minutes", "hourly", "as issued") into seconds. Defaults to 5
-    minutes — the modal cadence in the registry — for anything unparseable,
-    and 10 minutes for "as issued" sources (there is no cadence to double, so
-    pick the slowest common one rather than flashing stale on a quiet day). */
+/**
+ * Parse the cadence strings in sources.json ("5 minutes", "hourly",
+ * "continuous", "as issued", "snapshot"…) into seconds.
+ *
+ * MEASURED 2026-09-24: the registry uses **43 distinct cadence strings**, and
+ * the previous version of this function only understood numeric ones. Every
+ * non-numeric string that was not hourly/daily/as-issued fell through to the
+ * 300s default — which is wrong in both directions:
+ *
+ *   "continuous" (18 sources) → 300s → a government news category, which is
+ *     quiet overnight *by nature*, was painted stale after 10 minutes. This is
+ *     the bug behind 突發新聞 reading "+27h".
+ *   "snapshot" (10), "static" (4), "monthly", "annual", "decennial" → 300s →
+ *     a reference layer that changes once a decade was judged stale in the
+ *     same 10 minutes.
+ *
+ * A cadence is not one number: it is a *rate* for polling and a *quiet-period
+ * tolerance* for honesty. `cadenceSeconds` answers the first question and
+ * `quietSeconds` the second; keeping them separate is what stops a correct
+ * poll loop from producing an incorrect staleness badge.
+ */
 export function cadenceSeconds(cadence: string | undefined): number {
   if (!cadence) return 300;
   const m = /(\d+)\s*(minute|min|hour|second|sec)/i.exec(cadence);
-  if (!m) {
-    // "hourly" / "daily" carry no leading number — don't let them fall
-    // through to the 5-minute default, or an hourly model flashes stale.
-    if (/hourly|per hour|每小時/i.test(cadence)) return 3600;
-    if (/daily|per day|每日/i.test(cadence)) return 86_400;
-    return /as issued|real-time|即時/i.test(cadence) ? 600 : 300;
+  if (m) {
+    const n = Number(m[1]);
+    const unit = m[2]!.toLowerCase();
+    if (unit.startsWith("hour")) return n * 3600;
+    if (unit.startsWith("sec")) return n;
+    return n * 60;
   }
-  const n = Number(m[1]);
-  const unit = m[2]!.toLowerCase();
-  if (unit.startsWith("hour")) return n * 3600;
-  if (unit.startsWith("sec")) return n;
-  return n * 60;
+  // "hourly" / "daily" carry no leading number — don't let them fall
+  // through to the 5-minute default, or an hourly model flashes stale.
+  if (/hourly|per hour|每小時/i.test(cadence)) return 3600;
+  if (/daily|per day|每日/i.test(cadence)) return 86_400;
+  return 300;
+}
+
+/**
+ * How long a reading may go unchanged before it is *honestly* stale.
+ *
+ * This is deliberately NOT `cadenceSeconds`: the poll rate answers "how often
+ * should I ask", while this answers "how long may the answer stay the same
+ * before that itself is news". For a push-style publication feed there is no
+ * cadence to double — a quiet hour means no news, not a broken panel — so it
+ * gets an explicit quiet tolerance. Everything else keeps the 2× rule that
+ * DESIGN_BRIEF §6 sets for cameras, which is the conservative default.
+ *
+ * The asymmetry is intentional: a false "stale" badge on a healthy quiet feed
+ * trains the user to ignore the badge, which costs more than the badge is
+ * worth. A missed badge on a genuinely dead feed is what this threshold must
+ * never do, which is why the push-style entries are hours, not days.
+ *
+ * The rungs are ordered by how fast the underlying data really changes, and
+ * the ordering is asserted in honesty.test.ts: a strictly increasing ladder is
+ * the difference between a considered threshold and a pile of magic numbers.
+ */
+export function quietSeconds(cadence: string | undefined): number {
+  const c = cadence ?? "";
+  // Push-style: the publisher decides when there is news. news.gov.hk's seven
+  // category feeds and TD's special-traffic notices are all "as issued"; the
+  // feed rebuilds hourly even when it has nothing new to say (MEASURED: the
+  // 治安 channel's lastBuildDate was 2 minutes old while its newest article
+  // was 27 hours old — so feed freshness carries no information here).
+  //
+  // 24h, chosen by Cyrus 2026-09-24: it covers a normal overnight-plus-weekend
+  // gap, while a full day of silence in a feed that normally publishes daily
+  // IS worth flagging, because that is the shape a real outage takes.
+  if (/continuous|as issued|real-time|即時|on update|irregular|varies|periodic|when necessary/i.test(c))
+    return 86_400;
+  // Reference data: changes on a schedule longer than any session, and a
+  // snapshot boundary is not a latency. These sit ABOVE the push-style feeds
+  // because a reference layer that changed last year is still correct today,
+  // whereas a news feed that has said nothing for a day is worth a second look.
+  if (/snapshot|static|manual/i.test(c)) return 90 * 86_400;
+  if (/weekly/i.test(c)) return 180 * 86_400;
+  if (/monthly|half-yearly|quarterly/i.test(c)) return 400 * 86_400;
+  // A decennial dataset is the slowest thing in the registry and must not
+  // share a window with an annual one — the ladder has to stay strictly
+  // increasing or the ordering assertion (and the idea behind it) is false.
+  if (/annual|yearly/i.test(c)) return 800 * 86_400;
+  if (/decennial/i.test(c)) return 3650 * 86_400;
+  return cadenceSeconds(c) * 2;
 }

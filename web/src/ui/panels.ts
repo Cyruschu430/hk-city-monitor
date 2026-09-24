@@ -12,7 +12,7 @@
 import { MIN_REFRESH_MS } from "../config.ts";
 import { adaptPanel, type AdapterCtx } from "../lib/adapters.ts";
 import { clear, h } from "../lib/dom.ts";
-import { cadenceSeconds, degrade, errored, live, LOADING, type Honesty } from "../lib/honesty.ts";
+import { cadenceSeconds, degrade, errored, live, LOADING, quietSeconds, type Honesty } from "../lib/honesty.ts";
 import { lang, onLangChange, t } from "../lib/i18n.ts";
 import { renderPanel, type PanelData, type PanelDef, type WallImage } from "../lib/render.ts";
 import type { PanelDefRaw, Registry } from "../lib/sources.ts";
@@ -163,6 +163,25 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     );
   }
 
+  /** Stop every in-flight image inside a node before it is detached.
+   *
+   * MEASURED: switching modes repaints panels, which detaches `<img>` elements
+   * that are still decoding. Chromium then logs
+   * "InvalidStateError: The source image could not be decoded." — reproduced
+   * deterministically by switching to 颱風模式 (0 errors on boot and after
+   * refreshAll, 1 on the mode switch). The user sees nothing wrong (the new node
+   * renders fine) but the console is not clean, and a dirty console is how real
+   * errors get ignored.
+   *
+   * Assigning src to an EMPTY data URI cancels the pending fetch cleanly. It must
+   * not be `img.src = ""` — that requests the page itself and produces the very
+   * error we are removing (the same trap noted in lib/live.ts). */
+  function cancelImageLoads(node: Element): void {
+    for (const img of node.querySelectorAll("img")) {
+      if (!img.complete) img.src = "data:,";
+    }
+  }
+
   function mount(id: string, node: HTMLElement): void {
     // A panel that mounts after a tab was picked must honour the filter, or a
     // slow source would pop into the wrong tab when its fetch lands.
@@ -172,8 +191,11 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     const head = node.querySelector(".panel-head");
     if (head && !head.querySelector(".p-hide")) head.append(hideButton(id));
     const existing = root.querySelector(`[data-panel="${id}"]`);
-    if (existing) existing.replaceWith(node);
-    else {
+    if (existing) {
+      // Cancel BEFORE detaching, or the decode error fires on removal.
+      cancelImageLoads(existing);
+      existing.replaceWith(node);
+    } else {
       // Keep the configured order even when one panel resolves later.
       const idx = order.indexOf(id);
       const after = order
@@ -223,7 +245,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       // Degrade immediately, not on the next 30s tick: a payload whose own
       // timestamp is already old must mount as stale, never as live.
       const src = registry.byId.get(entry.panel.source);
-      entry.honesty = degrade(live(observedAt ?? new Date()), cadenceSeconds(src?.cadence));
+      entry.honesty = degrade(live(observedAt ?? new Date()), quietSeconds(src?.cadence));
       if (state !== undefined) deps.onState?.(entry.panel.source, state);
     } catch (err) {
       if (!entries.has(id)) return;
@@ -273,7 +295,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     const now = new Date();
     for (const entry of entries.values()) {
       const src = registry.byId.get(entry.panel.source);
-      const next = degrade(entry.honesty, cadenceSeconds(src?.cadence), now);
+      const next = degrade(entry.honesty, quietSeconds(src?.cadence), now);
       if (next.state !== entry.honesty.state) {
         entry.honesty = next;
         paint(entry.panel.id);

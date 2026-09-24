@@ -67,16 +67,58 @@ async function getAbsolute(url: string): Promise<Response> {
 }
 
 async function radarFrame(src: SourceDef): Promise<AdapterResult> {
-  // The radar is published as timestamped JPEGs (~6-minute frames). Try the
-  // current slot, then step back — a 404 here is expected, not a broken source.
+  // The radar is published as timestamped JPEGs on a 6-minute grid (~85KB each).
+  //
+  // WHY THIS RETURNS A DATA URL rather than the frame's URL. Two defects met
+  // here, both measured:
+  //   1. HKO answers a stale slot with 404 and a 180KB HTML error page. The
+  //      panel renders whatever `src` it is given into an <img>, so the browser
+  //      fetched that HTML as an image and Chromium threw
+  //      "InvalidStateError: The source image could not be decoded" from
+  //      createImageBitmap (the blob was image/png by content-type and
+  //      "<!doctype html>" by magic bytes).
+  //   2. Even with a content-type guard, checking a slot and then handing its
+  //      URL to an <img> is a RACE — the 6-minute slot can expire in between,
+  //      and the <img> is a second, unguarded request.
+  //
+  // Fetching once here and inlining the bytes removes both: there is exactly one
+  // request, it is validated, and the renderer cannot re-request a dead URL.
+  // The frames are ~85KB, so the cost is one base64 copy of a payload the page
+  // already downloaded anyway.
   for (const cand of P.radarCandidates()) {
-    const res = await fetch(fetchUrl({ ...src, url: cand.url }));
-    if (res.ok) {
-      return {
-        data: { kind: "image_single", src: fetchUrl({ ...src, url: cand.url }), alt: "天氣雷達 256 公里" },
-        observedAt: cand.frameAt,
-      };
+    let res: Response;
+    try {
+      res = await fetch(fetchUrl({ ...src, url: cand.url }));
+    } catch {
+      continue; // a network hiccup on one slot must not end the search
     }
+    if (!res.ok) continue;
+    const ct = (res.headers.get("content-type") ?? "").toLowerCase();
+    if (!ct.startsWith("image/")) continue;
+    const buf = await res.arrayBuffer();
+    // Belt and braces: the content-type can be right while the body is an error
+    // page (the 180KB HTML case above arrived labelled, so verify the magic
+    // bytes too). A JPEG starts ff d8; a PNG starts 89 50 4e 47.
+    const b = new Uint8Array(buf);
+    const isJpeg = b.length > 3 && b[0] === 0xff && b[1] === 0xd8;
+    const isPng = b.length > 4 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47;
+    if (!isJpeg && !isPng) continue;
+
+    // Base64 in chunks: String.fromCharCode(...bytes) overflows the call stack
+    // on a large frame (measured: ~85KB blows the argument limit).
+    let bin = "";
+    for (let i = 0; i < b.length; i += 0x8000) {
+      bin += String.fromCharCode(...b.subarray(i, i + 0x8000));
+    }
+    const mime = isPng ? "image/png" : "image/jpeg";
+    return {
+      data: {
+        kind: "image_single",
+        src: `data:${mime};base64,${btoa(bin)}`,
+        alt: "天氣雷達 256 公里",
+      },
+      observedAt: cand.frameAt,
+    };
   }
   throw new Error("四個時間格都攞唔到雷達圖");
 }
@@ -151,19 +193,43 @@ const ADAPTERS: Record<string, Adapter> = {
       time: `${fmt(r.suspend_at)} → ${r.resume_at ? fmt(r.resume_at) : lang() === "tc" ? "待定" : "TBC"}`,
     }));
     const observedAt = new Date(j.generated);
-    // TWO fields on purpose:
+    // THREE fields on purpose:
     //  · records      — every active notice in the collector output. The panel
     //                   lists them with their own timestamps and the freshness
     //                   chip, and the map highlights the same districts: that
     //                   visualises what is already on screen, nothing more.
     //  · records_fresh — empty once the collector output is older than 30 min.
-    //                   ONLY the 停水 vertical trigger reads this: auto-hoisting
-    //                   a life-safety mode on stale data is the thing we refuse.
+    //                   Auto-hoisting a life-safety mode on stale data is the
+    //                   thing we refuse.
+    //  · drinking_now  — MEASURED 2026-09-24, the count that the 停水 trigger
+    //                   actually needs. `records_fresh` alone was the wrong
+    //                   gate: `op:"exists"` on an array is true for ANY
+    //                   non-empty list, so with 6 notices in force the app
+    //                   auto-switched to 停水模式 on EVERY page load and
+    //                   collapsed the 18-panel overview to 1 panel. Worse, all
+    //                   6 were 鹹水 (flushing water) — nobody's drinking supply
+    //                   was out. Of 149 records that day, most were
+    //                   供水已恢復 (already restored) and 25 were
+    //                   停水仍未開始 (not yet started), so counting the raw
+    //                   list is wrong twice over.
+    //                   This counts only notices where the supply is out NOW
+    //                   and the water is 食水 or 食水及鹹水. Salt-water-only
+    //                   interruptions stay visible in the panel and on the map
+    //                   — they are real, and the user asked for them — but
+    //                   they do not take over the dashboard.
     const fresh = Date.now() - observedAt.getTime() < 30 * 60_000;
+    const drinkingNow = fresh
+      ? active.filter((r) => r.status === "現正停水" && /食水/.test(r.water_type)).length
+      : 0;
     return {
       data: { kind: "list", items },
       observedAt,
-      state: { records: active, records_fresh: fresh ? active : [] },
+      state: {
+        records: active,
+        records_fresh: fresh ? active : [],
+        drinking_now: drinkingNow,
+        salt_only_now: fresh ? active.filter((r) => r.status === "現正停水" && !/食水/.test(r.water_type)).length : 0,
+      },
     };
   },
 

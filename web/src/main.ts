@@ -289,11 +289,19 @@ async function boot(): Promise<void> {
   const emit = (sourceId: string, value: unknown) => {
     triggerState[sourceId] = value;
     if (sourceId === "wsd_water_suspension") {
-      // `records` lists what the panel is already showing (with timestamps);
-      // `records_fresh` is what the trigger reads. The map highlights the
-      // former, so the map and the panel can never disagree.
-      const records = (value as { records?: { district?: string }[] } | undefined)?.records ?? [];
-      const next = new Set(records.map((r) => r.district).filter((d): d is string => !!d));
+      // MEASURED 2026-09-24: this used `records`, which is EVERY active notice
+      // — and of 149 records that day, 116 were 供水已恢復 (already restored)
+      // and 25 were 停水仍未開始 (not yet started). Highlighting those painted
+      // most of Kowloon red on the OVERVIEW, where it reads as a live emergency
+      // while the water is in fact back on. The layer is titled 「停水受影響
+      // 地區」 — districts WITH suspensions — so it must mean that and nothing
+      // more: only notices whose supply is out right now.
+      // The panel still lists every active notice (including restored ones
+      // with their timestamps, which is useful history); the map is a claim
+      // about NOW, and the two are allowed to differ for that reason.
+      const records = (value as { records?: { district?: string; status?: string }[] } | undefined)?.records ?? [];
+      const nowDistricts = records.filter((r) => r.status === "現正停水").map((r) => r.district);
+      const next = new Set(nowDistricts.filter((d): d is string => !!d));
       const changed = next.size !== activeDistricts.size || [...next].some((d) => !activeDistricts.has(d));
       if (changed) {
         activeDistricts = next;

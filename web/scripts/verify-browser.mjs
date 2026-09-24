@@ -135,6 +135,29 @@ try {
   check("標註：地圖面有「Map from Lands Department 地政總署」", (attrib.badge ?? "").includes("Lands Department"),
     `badge="${attrib.badge}" ctrl="${attrib.ctrl}"`);
 
+  // --- 2b. the app must land on 總覽 BY ITSELF --------------------------------
+  // MEASURED 2026-09-24: it did not. The 停水 trigger was
+  // {field:"records_fresh", op:"exists"}, and `exists` on an array is true for
+  // ANY non-empty list — so with 6 鹹水 (flushing-water) notices in force the
+  // app auto-switched to 停水模式 on every load and the dashboard showed ONE
+  // panel instead of eighteen. This harness never saw it because the next check
+  // clicks the 總覽 button and then measures — i.e. it was measuring its own
+  // workaround. Assert the landing state BEFORE any click, so the app cannot be
+  // rescued by the test.
+  const landing = await page.evaluate(() => ({
+    mode: window.__hkcm?.currentMode?.() ?? null,
+    mounted: document.querySelectorAll(".panel[data-panel]").length,
+    banner: document.querySelector(".banner")?.textContent?.trim().slice(0, 80) ?? null,
+    drinkingNow: window.__hkcm?.triggerState?.wsd_water_suspension?.drinking_now ?? null,
+    saltOnly: window.__hkcm?.triggerState?.wsd_water_suspension?.salt_only_now ?? null,
+  }));
+  check(
+    "冷啟動：未撳任何嘢之前，app 自己落喺總覽而且開齊 18 個 panel",
+    landing.mode === "overview" && landing.mounted >= 18,
+    `mode=${JSON.stringify(landing.mode)}（"overview"=總覽）mounted=${landing.mounted} ` +
+      `drinking_now=${landing.drinkingNow} salt_only_now=${landing.saltOnly} banner=${JSON.stringify(landing.banner)}`,
+  );
+
   // --- 3. panels: config-driven, honesty states, footers ----------------------
   // Pin 總覽 first: the trigger engine may have auto-switched into a vertical
   // (today there ARE live water notices), and a mode transition is not a bug —
@@ -278,7 +301,17 @@ try {
       const list = Array.isArray(expr) && Array.isArray(expr[1]) ? expr[1] : [];
       covers = active.length > 0 && active.every((d) => list.includes(d));
     }
-    return { active: active.length, hasFill, hasLabel, covers };
+    // THE CROSS-CHECK. Comparing activeDistricts() against the layer filter only
+    // proves the map agrees with itself. MEASURED 2026-09-24: activeDistricts
+    // was built from `records`, which includes 供水已恢復 (supply restored) and
+    // 停水仍未開始 (not yet started) notices — so districts whose water was
+    // BACK ON were painted red as live emergencies. Derive the expectation from
+    // the raw records instead, so the check can disagree with the code.
+    const recs = window.__hkcm?.triggerState?.wsd_water_suspension?.records ?? [];
+    const outNow = [...new Set(recs.filter((r) => r.status === "現正停水").map((r) => r.district))];
+    const restored = [...new Set(recs.filter((r) => r.status === "供水已恢復").map((r) => r.district))];
+    const wronglyLit = restored.filter((d) => active.includes(d));
+    return { active: active.length, hasFill, hasLabel, covers, outNow: outNow.length, wronglyLit };
   });
   // Rule (from a screenshot review): with no active districts the layer is not
   // drawn at all — 18 faint outlines made the map a violet wireframe. With
@@ -289,6 +322,9 @@ try {
   check("P1 停水區：有 active 區 → 紅 fill＋區名 label 覆蓋；冇 active → 唔畫（唔做線網）",
     districtOk,
     `active=${districtLabel.active} fill=${districtLabel.hasFill} label=${districtLabel.hasLabel} covers=${districtLabel.covers}`);
+  check("P1 停水區語意：只標示「現正停水」嘅區，唔會將已恢復供水嘅區畫紅",
+    districtLabel.wronglyLit.length === 0,
+    `現正停水區=${districtLabel.outNow} · 錯誤地畫成停水嘅已恢復區=[${districtLabel.wronglyLit.join(", ")}]`);
 
   // P1 rail accent colors applied to the active mode button.
   const railAccent = await page.evaluate(() => {

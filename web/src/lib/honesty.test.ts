@@ -14,7 +14,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const { cadenceSeconds, quietSeconds, degrade, live, errored, LOADING } =
+const { cadenceSeconds, quietSeconds, degrade, live, errored, LOADING, POLL_DEFAULT_MEMBERS } =
   await import("./honesty.ts");
 
 // 1. The numeric cases must keep working — this is the behaviour the poll loop
@@ -165,6 +165,58 @@ const { cadenceSeconds, quietSeconds, degrade, live, errored, LOADING } =
     );
   }
   assert.ok(seen >= 4, `expected the push-style strings to still be present, matched ${seen}`);
+
+  // THE OTHER HALF OF THE REGRESSION, and the part that was still open.
+  //
+  // The push-style guard above only covers the 8 strings named in `pushStyle`.
+  // MEASURED 2026-09-24: that list omitted "live" and "delayed", so the test
+  // passed while those two — including yahoo_hk_quotes, whose own panel note
+  // reads 「延遲報價，唔係即時」 — silently used the 300s fallthrough. A hand-typed
+  // guard list cannot protect a registry it does not enumerate.
+  //
+  // So enumerate the whole registry instead and ask the question that actually
+  // matters: DOES THIS STRING GET A 10-MINUTE STALENESS TOLERANCE BY ACCIDENT?
+  //
+  // A string is classified when either
+  //   (a) quietSeconds gives it something other than the bare 2x300s default —
+  //       it matched the reference-data ladder or the push-style tier, or
+  //   (b) it is explicitly listed in POLL_DEFAULT_MEMBERS, or
+  //   (c) it carries a real number+unit, so 2x that cadence IS its tolerance.
+  //       "5 minutes" correctly yields 600s and is not an accident.
+  // Everything else reached `return 300` with nobody having thought about it.
+  //
+  // Two earlier versions of this check were wrong and worth recording:
+  //   · comparing `cadenceSeconds(c) === 300` flagged legitimate numeric
+  //     cadences, because a correct "5 minutes" also yields 300.
+  //   · the same test then flagged strings that quietSeconds DOES handle
+  //     (snapshot, monthly, decennial…), because it only consulted the polling
+  //     rate. The tolerance is the user-visible property; that is what to test.
+  const defaultMembers = new Set(POLL_DEFAULT_MEMBERS);
+  const hasNumber = /(\d+)\s*(minute|min|hour|second|sec)/i;
+  const unclassified: string[] = [];
+  for (const c of byCadence.keys()) {
+    if (c === "(missing)" || defaultMembers.has(c) || hasNumber.test(c)) continue;
+    if (quietSeconds(c) === 600) unclassified.push(`${c}  (${byCadence.get(c)} source(s))`);
+  }
+  assert.deepEqual(
+    unclassified,
+    [],
+    `these registry cadence strings get a 10-minute staleness tolerance by accident: ` +
+      `${JSON.stringify(unclassified)}. Either classify them in quietSeconds, or add them ` +
+      `to POLL_DEFAULT_MEMBERS with a reason.`,
+  );
+
+  // And the default members must still BE members — if one gets its own branch
+  // upstream, this list is stale and should shrink.
+  for (const c of POLL_DEFAULT_MEMBERS) {
+    if (!byCadence.has(c)) continue;
+    assert.equal(
+      cadenceSeconds(c),
+      300,
+      `${JSON.stringify(c)} is listed in POLL_DEFAULT_MEMBERS but no longer uses the default — ` +
+        `remove it from the list so the list keeps meaning something`,
+    );
+  }
 
   // The "continuous" family is the big one, and the count is the blast radius.
   const continuousCount = byCadence.get("continuous") ?? 0;

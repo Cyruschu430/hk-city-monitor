@@ -47,6 +47,10 @@ function text(res: Response): Promise<string> {
 
 // Each call site names the shape it expects from sources.json's documented
 // payload — the registry is the contract, so the cast is the parser's signature.
+// The registry payloads are untyped JSON, so this deliberately returns `any` and
+// each adapter narrows it at the point of use. (The eslint-disable is advisory
+// only — this repo has no eslint config, so nothing enforces it; kept so the
+// intent survives if a linter is ever added.)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function json(res: Response): Promise<any> {
   return await res.json();
@@ -245,10 +249,16 @@ const ADAPTERS: Record<string, Adapter> = {
         //  · points    — the geocoded notice locations: the actual affected
         //                buildings and streets, not whole districts. This is what
         //                the 停水 mode layer plots as pins with popups.
-        //  · districts — every district with an active notice. Kept because a
-        //                notice we could NOT geocode still has to appear
-        //                somewhere; today only the 2 fire-service notices fall
-        //                back here, so it is a safety net rather than the norm.
+        //  · districts — every district with an active notice. This is the SAFETY
+        //                NET for a notice ALS could not geocode: without it such a
+        //                notice would vanish from the map entirely.
+        //                MEASURED 2026-09-24: 0 of 176 records fell back
+        //                (counts.district_only = 0, active_district_only = 0), so
+        //                treat this path as UNEXERCISED, not as the norm. An
+        //                earlier version of this comment claimed "only the 2
+        //                fire-service notices fall back here" — that was never
+        //                true of the shipped data, and it invited the reader to
+        //                assume the fallback was load-bearing.
         points: located.map((r) => ({
           id: r.id,
           lat: r.lat as number,

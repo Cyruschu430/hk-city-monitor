@@ -42,13 +42,35 @@ export function degrade(h: Honesty, toleranceSeconds: number, now = new Date()):
 }
 
 /**
+ * The cadence strings sources.json is allowed to use the 5-minute default for.
+ *
+ * WHY THIS LIST EXISTS. The original defect was not that one string was mapped
+ * wrongly — it was that EVERY unrecognised string silently became 300s. Fixing
+ * individual strings does not close that hole; the next new string falls into it
+ * just as quietly. Naming the members turns "silently unhandled" into "listed on
+ * purpose", and honesty.test.ts asserts the real registry against this list, so
+ * a new unhandled cadence shows up as a failing test rather than a wrong badge.
+ *
+ * MEASURED 2026-09-24 (recounted 2026-09-25): sources.json carries **53 distinct
+ * cadence strings**. These three still land on the default, deliberately:
+ *   "live"    1 source  (afcd_closed_facilities) — a closure status feed; 5 min
+ *                        is the right poll rate and 10 min the right tolerance.
+ *   "delayed" 2 sources (yahoo_hsi, yahoo_hk_quotes) — Yahoo's delayed quotes
+ *                        refresh every ~5 min, so 5 min is the true cadence. NOT
+ *                        push-style: a market panel must go stale when the tape
+ *                        stops, which is why it is not in the 24h tier below.
+ *   "minutes" 1 source  — a bare unit with no number.
+ */
+export const POLL_DEFAULT_MEMBERS = ["live", "delayed", "minutes"];
+
+/**
  * Parse the cadence strings in sources.json ("5 minutes", "hourly",
  * "continuous", "as issued", "snapshot"…) into seconds.
  *
- * MEASURED 2026-09-24: the registry uses **43 distinct cadence strings**, and
- * the previous version of this function only understood numeric ones. Every
- * non-numeric string that was not hourly/daily/as-issued fell through to the
- * 300s default — which is wrong in both directions:
+ * MEASURED 2026-09-24: the registry uses **53 distinct cadence strings** (count
+ * re-taken 2026-09-25), and the previous version of this function only understood
+ * numeric ones. Every non-numeric string that was not hourly/daily/as-issued fell
+ * through to the 300s default — which was wrong in both directions:
  *
  *   "continuous" (18 sources) → 300s → a government news category, which is
  *     quiet overnight *by nature*, was painted stale after 10 minutes. This is
@@ -61,6 +83,9 @@ export function degrade(h: Honesty, toleranceSeconds: number, now = new Date()):
  * tolerance* for honesty. `cadenceSeconds` answers the first question and
  * `quietSeconds` the second; keeping them separate is what stops a correct
  * poll loop from producing an incorrect staleness badge.
+ *
+ * Anything NOT in POLL_DEFAULT_MEMBERS reaching the final `return 300` is a
+ * string nobody has classified — see the note on that constant.
  */
 export function cadenceSeconds(cadence: string | undefined): number {
   if (!cadence) return 300;
@@ -111,6 +136,15 @@ export function quietSeconds(cadence: string | undefined): number {
   // IS worth flagging, because that is the shape a real outage takes.
   if (/continuous|as issued|real-time|即時|on update|irregular|varies|periodic|when necessary/i.test(c))
     return 86_400;
+  // "As and when there is a change to the address or working hours of Immigration
+  // offices" (ck_hk_immd_set2_address_and_working_hours_of_office) is the same
+  // promise written as prose: the publisher updates it when the fact changes,
+  // which for an office address could be years. MEASURED 2026-09-24: it was
+  // reaching the bare 600s default, so a permanent reference document was being
+  // judged on a 10-minute clock. It belongs on the reference rung, not the news
+  // one — an office address that is a year old is still correct, whereas a news
+  // feed silent for a day is worth a second look.
+  if (/as and when|when there is a change/i.test(c)) return 90 * 86_400;
   // Reference data: changes on a schedule longer than any session, and a
   // snapshot boundary is not a latency. These sit ABOVE the push-style feeds
   // because a reference layer that changed last year is still correct today,

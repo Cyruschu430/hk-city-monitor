@@ -15,14 +15,16 @@
 // no way to tell a sports result from a traffic closure. The tabs then let a
 // reader isolate one type.
 //
-// DEDUPE IS NOT OPTIONAL. MEASURED 2026-09-24: the seven news.gov.hk category
-// feeds overlap heavily — admin, finance, health and school_work all returned the
-// SAME newest headline (資助人工智能研發 成果轉化惠民). One press release is
-// filed under every category it touches, so without dedupe the 政府 tab would show
-// the same sentence four times in a row.
+// DEDUPE IS NOT OPTIONAL. MEASURED 2026-09-24: the news.gov.hk category feeds
+// overlap heavily — admin, finance, health and school_work all returned the SAME
+// newest headline (資助人工智能研發 成果轉化惠民). One press release is filed under
+// every category it touches, so without dedupe the 政府 tab would show the same
+// sentence four times in a row. (Four of the six feeds merged into that tab, plus
+// gov_news_finance which is not merged — see the CATS entry.)
 //
-// It only ever shows REAL headlines from the official feeds; when a tab's feeds
-// are empty it says so instead of looping silence.
+// It only ever shows REAL headlines from the official feeds, and it distinguishes
+// "these sources have nothing to say" from "these sources could not be read" —
+// asserting calm it cannot see would be worse than saying nothing.
 //
 // prefers-reduced-motion turns the marquee into a static strip (required).
 
@@ -33,9 +35,17 @@ import { lang } from "../lib/i18n.ts";
 
 const POLL_MS = 5 * 60_000;
 const SPACER = "　▪　";
-/** Reading speed of the marquee: pixels of headline per second. Chosen so a
- *  typical 30-character Chinese headline takes ~11s to cross — slow enough to
- *  read, and identical on every tab regardless of how many headlines it has. */
+/** Reading speed of the marquee: pixels of headline per second.
+ *
+ *  The number that matters is this RATE, and it is deliberately independent of
+ *  how many headlines a tab holds — the duration is derived from the measured
+ *  track width, so 全部 (79 headlines) and 體育 (8) scroll at the same speed.
+ *  A typical 30-character Chinese headline is ~330px at 11px, so it passes a
+ *  fixed point in ~8s.
+ *
+ *  An earlier version of this comment claimed ~11s, which does not follow from
+ *  42px/s and was never measured; the constant was tuned by eye and the prose
+ *  was written to match the intent rather than the arithmetic. */
 const PX_PER_SECOND = 42;
 
 interface L10n {
@@ -60,8 +70,13 @@ const CATS: Cat[] = [
   {
     id: "gov",
     label: { tc: "政府", en: "Gov" },
-    // Every government category feed in one tab. They overlap (see the note at
-    // the top), so dedupe matters most here.
+    // The government category feeds merged into one tab. They overlap heavily
+    // (see the note at the top), so dedupe matters most here.
+    //
+    // gov_news_finance is deliberately NOT listed: this tab is for government
+    // announcements, and financial news already has its own 財經 tab fed by
+    // RTHK's finance section. Without this note a reader counting the registry's
+    // seven gov_news_* categories would think one had been dropped by mistake.
     sources: [
       "gov_news_law_order",
       "gov_news_admin",

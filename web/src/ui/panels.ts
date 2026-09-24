@@ -19,6 +19,22 @@ import type { PanelDefRaw, Registry } from "../lib/sources.ts";
 import type { Camera } from "../map/cameras.ts";
 import { pickWallCameras, wallImages } from "../map/cameras.ts";
 
+/**
+ * Is the "異常與匯聚" (Anomalies & convergence) panel shown?
+ *
+ * WITHDRAWN 2026-09-24 (Cyrus). The Tier 0-4 ANALYTICS ENGINE IS UNTOUCHED and
+ * still runs — rules still fire, baselines still accumulate, the status bar still
+ * reports coverage, and analytics.test.ts still covers all of it. What is gone is
+ * the panel that narrated the output.
+ *
+ * Kept as a flag rather than deleted, because the two are genuinely separable and
+ * the panel may come back: it was the only surface that explained WHY the app
+ * thought something was notable, and the engine is the expensive part. Restore by
+ * setting this to true — nothing else needs to change; `setAnalysis` is still
+ * wired and still called from main.ts.
+ */
+const ANALYSIS_PANEL_ENABLED = false;
+
 interface Entry {
   panel: PanelDefRaw;
   data: PanelData | null;
@@ -378,10 +394,12 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     },
     setAnalysis(brief) {
       const id = "analysis_brief";
-      // The panel exists only once analysis has run. Showing an empty shell
-      // before that would imply "no events", which is a different claim from
-      // "not computed yet".
+      // WITHDRAWN 2026-09-24 (Cyrus) — see the note on `setAnalysis` in the
+      // PanelsApi interface. The Tier 0-4 engine itself is untouched: it still
+      // runs, still feeds the rule engine and the status bar, and
+      // analytics.test.ts still covers it. Only this on-screen panel is gone.
       if (!brief) return;
+      if (!ANALYSIS_PANEL_ENABLED) return;
 
       const body = h("div", { class: "an-body" });
 

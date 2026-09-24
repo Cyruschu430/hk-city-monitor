@@ -468,6 +468,10 @@ async function boot(): Promise<void> {
   // fresh load it honestly reports "累積中 0/14 日" until a collector persists
   // baselines across days. That is the real state, not a placeholder.
   let baselineStore = emptyStore();
+  /** The most recent Tier 0-4 brief. Held on the app rather than only inside the
+      panel engine, because the panel that used to display it was withdrawn and
+      the engine's output still needs to be verifiable (see the QA hook below). */
+  let lastBrief: unknown = null;
 
   function runAnalysis(): void {
     const rules = (registry.rules ?? []) as unknown as RuleDef[];
@@ -481,6 +485,7 @@ async function boot(): Promise<void> {
       convergence: { windowMinutes: 60, minDomains: 2, maxGroups: 5 },
     });
     baselineStore = out.store;
+    lastBrief = out.brief;
     engine.setAnalysis(out.brief);
   }
   window.setInterval(runAnalysis, ANALYSIS_INTERVAL_MS);
@@ -837,6 +842,13 @@ async function boot(): Promise<void> {
     /** districts the map layer is highlighting right now — QA reads this
         instead of guessing from a screenshot */
     activeDistricts: () => [...activeDistricts],
+    /** The Tier 0-4 brief, or null before the first analysis run.
+        MEASURED 2026-09-24: the "異常與匯聚" panel was withdrawn (Cyrus) but the
+        ENGINE stayed. QA needs to keep verifying the engine, and the only honest
+        way to do that once the panel is gone is to expose the brief itself —
+        otherwise the analysis checks would be asserting on DOM that no longer
+        renders, i.e. passing by finding nothing. */
+    analysisBrief: () => lastBrief,
     drawnLayers: () => [...currentLayerIds],
     /** layers the user currently has ON — QA reads this instead of guessing
         from the rail's aria-pressed state */

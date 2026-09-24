@@ -1,4 +1,4 @@
-﻿# dependencies / build output
+# dependencies / build output
 node_modules/
 web/dist/
 web/node_modules/
@@ -29,7 +29,12 @@ Thumbs.db
 !.env.example
 *.bak-*
 
-# Runtime logs from local dev servers (must never be committed)
+# Runtime logs from local dev servers (must never be committed).
+# web/dev.log was missed and got staged once — match the whole family, not each
+# name, so the next server that writes a log is covered before it is written.
+*-dev.log
+web/dev.log
+web/*.log
 worker-dev.log
 web/preview.log
 .commitmsg

@@ -98,11 +98,13 @@
     "en": "Is my district under a water suspension, and when does it end?"
    },
    "trigger": {
+    "_comment": "Fires only on a DRINKING-water supply that is out RIGHT NOW (adapters.ts: drinking_now). MEASURED 2026-09-24: the previous trigger was {field:'records_fresh', op:'exists'}, which is true for ANY non-empty list — so 6 flushing-water (鹹水) notices auto-switched the app to 停水模式 on every page load and collapsed the 18-panel overview to a single panel. 'There is data' is not a reason to take over the dashboard; an actual tap-water outage is.",
     "any": [
      {
       "source": "wsd_water_suspension",
-      "field": "records_fresh",
-      "op": "exists"
+      "field": "drinking_now",
+      "op": ">=",
+      "value": 1
      }
     ]
    },

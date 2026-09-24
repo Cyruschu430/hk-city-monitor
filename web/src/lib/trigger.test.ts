@@ -16,7 +16,9 @@ const verticals: VerticalDef[] = [
   },
   {
     id: "water_supply",
-    trigger: { any: [{ source: "wsd_water_suspension", field: "records", op: "exists" }] },
+    // The real verticals.json condition, verbatim: a numeric threshold on the
+    // count of drinking-water outages that are live RIGHT NOW.
+    trigger: { any: [{ source: "wsd_water_suspension", field: "drinking_now", op: ">=", value: 1 }] },
   },
   { id: "leave", trigger: null },
 ];
@@ -37,10 +39,39 @@ assert.equal(activeVertical({}, verticals), null);
 assert.equal(activeVertical({ wsd_water_suspension: { records: [] } }, verticals), null);
 console.log("✓ 無警告／空記錄 → null");
 
-// 2b. Live water-suspension records → water mode.
-const wsd: State = { wsd_water_suspension: { records: [{ district: "深水埗" }] } };
+// 2b. A live DRINKING-water outage → water mode.
+const wsd: State = { wsd_water_suspension: { records: [{ district: "深水埗" }], drinking_now: 1 } };
 assert.equal(activeVertical(wsd, verticals), "water_supply");
-console.log("✓ 停水記錄觸發停水模式");
+console.log("✓ 食水停水（drinking_now=1）觸發停水模式");
+
+// 2c. THE REGRESSION (MEASURED 2026-09-24). 停水模式 was auto-activating on every
+//     page load, collapsing the 18-panel overview to 1 panel. The cause was a
+//     trigger of `{field:"records_fresh", op:"exists"}` — and `exists` on an
+//     array is true for ANY non-empty list, so merely HAVING water notices
+//     (6 of them, all 鹹水 flushing-water) hoisted a life-safety mode over a
+//     live dashboard. These three cases pin the semantics shut:
+//       · notices present but no drinking water out  → must NOT fire
+//       · notices present but none started yet       → must NOT fire
+//       · drinking_now 0 while records_fresh is full → must NOT fire
+const flushingOnly: State = {
+  wsd_water_suspension: { records: [{ water_type: "鹹水" }], records_fresh: [{ water_type: "鹹水" }], drinking_now: 0 },
+};
+assert.equal(activeVertical(flushingOnly, verticals), null, "flushing-water notices must not hoist 停水模式");
+const notStarted: State = {
+  wsd_water_suspension: { records: [{ status: "停水仍未開始" }], records_fresh: [{ status: "停水仍未開始" }], drinking_now: 0 },
+};
+assert.equal(activeVertical(notStarted, verticals), null, "a suspension that has not started must not hoist the mode");
+const staleFeed: State = {
+  wsd_water_suspension: { records: [{ water_type: "食水" }], records_fresh: [], drinking_now: 0 },
+};
+assert.equal(activeVertical(staleFeed, verticals), null, "stale collector output must never hoist a life-safety mode");
+// …while the genuine case still fires.
+assert.equal(
+  activeVertical({ wsd_water_suspension: { records: [{ water_type: "食水", status: "現正停水" }], drinking_now: 2 } }, verticals),
+  "water_supply",
+  "a real drinking-water outage must still hoist the mode",
+);
+console.log("✓ 迴歸：鹹水／未開始／資料過期 → 都唔會搶走總覽；真・食水停水仍然觸發");
 
 // 3. Purity: same input twice → same result, and the input is not mutated.
 const before = JSON.stringify(t8);

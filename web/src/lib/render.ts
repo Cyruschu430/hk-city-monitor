@@ -284,6 +284,19 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
     }
 
     case "image_single":
+      // An EMPTY src must never reach an <img>. `img.src = ""` resolves to the
+      // current page URL, so the browser fetches index.html, the server answers
+      // text/html, and Chromium throws "InvalidStateError: The source image
+      // could not be decoded" from createImageBitmap.
+      //
+      // MEASURED: the failing blob was 2551 bytes, content-type image/png, magic
+      // bytes "<!doctype html>" — i.e. the app's own index.html. Traced to
+      // hko_tc_track returning src:"" whenever no cyclone is active, which is the
+      // NORMAL state for most of the year. The same trap is documented in
+      // lib/live.ts and ui/panels.ts; this closes the last path into it.
+      if (!data.src) {
+        return emptyBox(opts.emptyText ?? DEFAULT_EMPTY);
+      }
       return h(
         "figure",
         { class: "pimg", style: "margin:0" },

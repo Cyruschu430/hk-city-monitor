@@ -417,3 +417,64 @@ What follows from it:
   calls it. Render the panel and assert the element is in the tree.
 - Two fixtures are currently referenced by no test (`rhrread.json`, `warninginfo.json`). An
   unreferenced fixture cannot fail, so it drifts in silence — either test it or delete it.
+
+### Pitfall 19 — a verification script that drives the UI before measuring HIDES first-paint bugs
+
+Measured 2026-09-24, and it is the most consequential bug found so far. The app **collapsed
+from 18 panels to 1** about two seconds after every cold load, permanently. Nobody saw it,
+because `audit-production.mjs` clicked through every category tab and every mode *before*
+counting panels — so it always reported 18. **The harness was measuring its own workaround.**
+
+```
+t=0.3s   18 panels
+t=2.0s    1 panel    <-- 17 destroyed, never come back
+t=45.0s   1 panel
+```
+
+Root cause was a config semantics error, not a code error: the 停水 trigger was
+`{field:"records_fresh", op:"exists"}`, and `exists` on an array means `length > 0` — so
+**merely having water notices** hoisted a life-safety mode over a live dashboard. All six
+notices were 鹹水 (flushing water); nobody's drinking supply was out. The app told every
+visitor their water was cut off.
+
+What follows from it:
+- **Assert the landing state BEFORE any interaction**, in the same harness that later clicks
+  around. `verify-browser.mjs` now has a 冷啟動 check that runs first and would fail on the
+  old build.
+- **A probe's readiness gate must be a condition, not a timer.** `probe-staleness.mjs` waited a
+  fixed 16s and printed one row on a slow boot, which reads as a data fault. Wait for a
+  *predicate* (all panels present AND none `loading`), and fail loudly if it never holds.
+- **`exists` is the wrong operator for "is there a problem".** `exists` answers "did I get
+  data"; a trigger needs "is the bad thing true". Prefer a numeric threshold on a field the
+  adapter computes for exactly that purpose (`drinking_now`), and write the `_comment` in
+  `verticals.json` explaining why the obvious-looking condition is wrong.
+- **Cross-check a map against the raw data, not against itself.** The old district check
+  compared the layer filter to `activeDistricts()` — which only proves the map agrees with
+  itself. It passed while `activeDistricts` contained districts whose water was back on
+  (116 of 149 notices that day were 供水已恢復). The check now derives its expectation from
+  the raw records and can therefore disagree with the code.
+
+### Pitfall 20 — one freshness number cannot serve both polling and honesty
+
+`cadenceSeconds()` understood only numeric cadences. The registry actually carries **53 distinct
+cadence strings**, and `"continuous"` (18 sources) fell through to the 300s default — so a
+government news category, which is quiet overnight *by nature*, was painted stale after ten
+minutes. The same fallthrough made `"snapshot"`, `"annual"` and `"decennial"` sources stale in
+ten minutes; a decennial dataset is not stale after ten months.
+
+Measured on the 治安 feed: `lastBuildDate` was **2 minutes old** (the feed was perfectly
+healthy) while its newest article was **27 hours old**. Feed freshness carries no information
+for a push-style source.
+
+What follows from it:
+- **Polling rate and quiet tolerance are different questions.** `cadenceSeconds` answers "how
+  often should I ask" (still used for the timer); `quietSeconds` answers "how long may the
+  answer stay the same before that is itself news". Keep them separate.
+- 推送式 sources (`continuous` / `as issued`) tolerate **24h** (Cyrus, 2026-09-24). Past that,
+  amber is correct and *is* the bug report — `breaking_news_list` legitimately shows stale.
+- **Test the model against the real registry**, not a hand-typed list. `honesty.test.ts` reads
+  `sources.json`, so a newly added cadence string cannot silently join the 300s default, and it
+  asserts the tolerance ladder is **strictly increasing** — which is how the `decennial`/`annual`
+  collision and the `snapshot`/`continuous` collision were both caught.
+- **A visual cluster of panels is not a dashboard.** `analysis_brief` has no source by design
+  (appended by `setAnalysis()`), so a probe printing a cadence for it invents a clock.

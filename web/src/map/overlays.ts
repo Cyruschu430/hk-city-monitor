@@ -278,7 +278,9 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
     },
   });
   // District name labels on the ACTIVELY affected areas only — MapLibre draws
-  // CJK via localIdeographFontFamily (set in basemap.ts), no glyph server hit.
+  // CJK through `localIdeographFontFamily`, which main.ts sets on the map when
+  // it builds the style (map/basemap.ts only defines that style), so no glyph
+  // server is hit at all.
   map.addLayer({
     id: `${id}-label`,
     type: "symbol",

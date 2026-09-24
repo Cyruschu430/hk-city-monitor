@@ -322,9 +322,13 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
   onLangChange(() => {
     for (const id of order) {
       const entry = entries.get(id);
-      // Re-render from cache — switching language must not re-fetch.
-      if (entry && entry.data) paint(id);
-      else if (entry) paint(id);
+      // Repaint from the ALREADY-FETCHED data — switching language must not
+      // re-fetch. `paint()` reads `entry.data` and renders it, so the no-refetch
+      // property lives there, not in a condition here. This used to read
+      // `if (entry && entry.data) paint(id); else if (entry) paint(id);`, whose
+      // two branches were identical: a guard that looked meaningful and was not,
+      // which invites the next reader to "preserve" it.
+      if (entry) paint(id);
     }
   });
 
@@ -394,10 +398,13 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     },
     setAnalysis(brief) {
       const id = "analysis_brief";
-      // WITHDRAWN 2026-09-24 (Cyrus) — see the note on `setAnalysis` in the
-      // PanelsApi interface. The Tier 0-4 engine itself is untouched: it still
-      // runs, still feeds the rule engine and the status bar, and
-      // analytics.test.ts still covers it. Only this on-screen panel is gone.
+      // WITHDRAWN 2026-09-24 (Cyrus) — the panel is off, controlled by
+      // ANALYSIS_PANEL_ENABLED at the top of this file. The Tier 0-4 ENGINE is
+      // untouched: it still runs, still feeds the rule engine and the status bar,
+      // and main.ts still publishes the brief on `window.__hkcm.analysisBrief()`
+      // so the engine stays verifiable without the panel. `analytics.test.ts`
+      // covers the engine's own modules (baseline/rules/convergence/narrative),
+      // not this panel.
       if (!brief) return;
       if (!ANALYSIS_PANEL_ENABLED) return;
 

@@ -122,9 +122,13 @@ a:hover{color:var(--cyan)}
   font:inherit;color:var(--map-face);border-radius:5px}
 .lyr-row:hover{background:rgba(120,160,220,.10)}
 /* An OFF layer must still be READABLE — it is a label, not a disabled control.
-   MEASURED 2026-09-24: this used `var(--faint)`, which in light mode is a dark
-   slate that vanished against the dark map face, so unchecked rows were the
-   ones you could not read. Dimmed via the map-face scale instead. */
+   MEASURED 2026-09-24: the map-face text used THEMED tokens, which in light mode
+   resolve to near-black (`--txt` = #0b1626) while the map face stays dark in
+   every theme, so the LAYERS names were effectively invisible. (`--faint` is not
+   the culprit — it is a mid blue-grey in both themes; the recorded colour was
+   rgb(11,22,38), which is `--txt`.) Hence the --map-face-* token scale in
+   tokens.css: OFF rows are dimmed within that scale rather than by switching to
+   a themed colour. */
 .lyr-row.off .lyr-label{color:var(--map-face-weak);text-decoration:line-through}
 .lyr-row.off .lyr-glyph,.lyr-row.off .lyr-swatch{opacity:.32;filter:grayscale(1)}
 /* The checkbox is drawn from the row's aria-checked state, so the visual can
@@ -261,8 +265,9 @@ a:hover{color:var(--cyan)}
 #langSwitch button[aria-pressed="true"],#themeSwitch button[aria-pressed="true"]{background:var(--cyan-tint);color:var(--cyan)}
 
 /* Sparkline: hand-rolled SVG (AGENTS.md — no charting library). Sits under the
-   change figure in the same cell so the market table keeps its three columns in
-   a 295px panel. */
+   change figure in the same cell so the market table keeps its three columns.
+   Width note: the panel body is ~309px (see the .gauges note below); 295px here
+   predates the current #layout and was a stale number. */
 .spark{display:block;margin-top:3px;overflow:visible}
 .spark path{vector-effect:non-scaling-stroke}
 
@@ -385,16 +390,23 @@ a:hover{color:var(--cyan)}
 /* PADDING IS THE NEIGHBOURHOOD, NOT THE CARD.
    Measured against World Monitor's /dashboard at the same 1600x1000 viewport:
    its .panels-grid uses gap:4px and 311px columns in a 634px box, and varies
-   card heights freely (200 / 380 / 404 / 764) because `align-items` is not
-   stretch. Ours was gap:10px + 12px padding with every row pair stretched to
-   its taller cell, which is why two short panels (天氣警告, 風勢) each carried
-   hundreds of pixels of dead space beside breaking_news_list.
-   `align-items:start` is the fix, and it is deliberately the SAFE one: the
-   column-count approach fails in this codebase for the three reasons recorded
-   in AGENTS.md Pitfall 12 (no-op on a flex container; extra columns sideways
-   inside a definite-height scroller; 1fr cannot shrink below min-content).
-   Keeping the two-column grid and simply not stretching the cells gets the
-   same varied-height result without re-entering that minefield. */
+   card heights freely (200 / 380 / 404 / 764).
+
+   WHAT WAS WRONG HERE, AND WHAT ACTUALLY FIXES IT. The original layout used
+   gap:10px + 12px padding with `align-items: stretch`, so every row pair
+   stretched to its taller cell and two short panels (天氣警告, 風勢) each
+   carried hundreds of pixels of dead space beside breaking_news_list.
+   `align-items:start` was tried first and is WRONG: it lets each card keep its
+   own height while the row TRACK stays 79.7px, so the cards draw on top of one
+   another. MEASURED: 42 panel-vs-panel overlaps (live_cams_wall y=141 h=210
+   ending at 351, with breaking_news_list starting at y=226).
+   The real fix is `grid-auto-rows: max-content` on #panels above, which sizes
+   the TRACK to its tallest item. Read that block before changing anything here —
+   the A/B numbers are in it, and the two properties must not be confused.
+
+   The column-count approach is rejected for the three reasons in AGENTS.md
+   Pitfall 12 (no-op on a flex container; extra columns sideways inside a
+   definite-height scroller; 1fr cannot shrink below min-content). */
 
 .panel{border:1px solid var(--hairline);border-radius:var(--radius);padding:0;min-width:0;
   background:var(--panel);backdrop-filter:var(--glass);overflow:hidden;
@@ -538,10 +550,18 @@ a:hover{color:var(--cyan)}
 /* Live-stream tiles carry a channel name and a play affordance, so they stay
    2-up at 16:9 — at 84px wide the channel text is unreadable and the tile
    stops being a recognisable video. Camera snapshots stay 3-up: they are
-   reference frames, and there are 1,047 of them. */
-.panel[data-panel="live_streams"] .wall{grid-template-columns:1fr 1fr}
-.panel[data-panel="live_streams"] .cam{aspect-ratio:16/9}
-.panel[data-panel="live_streams"] .cam .lab{font-size:9.5px;padding:3px 5px}
+   reference frames, and there are 1,047 of them.
+
+   MEASURED 2026-09-24: these three rules were scoped to
+   `.panel[data-panel="live_streams"]`, an id that exists NOWHERE in the repo —
+   the live wall is `live_cams_wall` (main.ts OVERVIEW, panels.json). They had
+   never matched, so the 16:9 YouTube thumbnails were being laid out as 4:3
+   camera snapshots: letterboxed content in a square-ish tile, 3-up, with the
+   channel label at the camera font size. A CSS rule whose selector matches
+   nothing fails silently — no build error, no console warning. */
+.panel[data-panel="live_cams_wall"] .wall{grid-template-columns:1fr 1fr}
+.panel[data-panel="live_cams_wall"] .cam{aspect-ratio:16/9}
+.panel[data-panel="live_cams_wall"] .cam .lab{font-size:9.5px;padding:3px 5px}
 
 /* raster_map preview */
 .praster{width:100%;border-radius:var(--radius-sm);border:1px solid var(--hairline);display:block}
@@ -558,10 +578,13 @@ a:hover{color:var(--cyan)}
 .gauge.ok .gv{color:var(--ok)}.gauge.warn .gv{color:var(--amber)}.gauge.alert .gv{color:var(--alert)}
 
 /* status_grid */
-/* 132px rather than 150px: the two-column panel grid gives a panel body ~309px,
-   where 150px columns cannot shrink and overflow (MEASURED: body 309, grid 355).
-   132px still fits two columns with the 7px gap and leaves the label room to
-   ellipsis instead of pushing the value out of the box. */
+/* 132px rather than 150px. The original measurement was: the two-column panel
+   grid gave a panel body ~309px, where 150px columns could not shrink and
+   overflowed (body 309, grid 355). The column is wider now — MEASURED
+   2026-09-24: panel 341px, body 339px, so the .statuses grid has 315px of room —
+   but 132px is kept because it is what the layout was tuned around and it still
+   yields two columns at the 6px gap (2x132 + 6 = 270) while leaving the label
+   room to ellipsis instead of pushing the value out of the box. */
 .statuses{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:6px;min-width:0}
 .status{border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:6px 8px;
   display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}

@@ -86,9 +86,10 @@
    "render": "raster_map",
    "geom": "polygon",
    "title": {
-    "tc": "停水受影響地區",
-    "en": "Districts with Water Suspensions"
+    "tc": "停水位置（大廈／街道）＋受影響地區",
+    "en": "Suspension Locations + Affected Districts"
    },
+   "_comment": "TWO things on one toggle, deliberately: geocoded PINS on each affected address (a point layer added in overlays.ts from the collector's ALS lookup) over a red TINT of the districts those addresses fall in. Cyrus 2026-09-24: 'Layers District with water suspension should refering to Panel 水務署 臨時停水通知 showing the affected locations by geocoding' — before this the layer tinted a whole 18-district polygon for an outage that was often one building, so a single 牛頭角道 notice turned all of 觀塘區 red. Pins are two-tone: alert red for 食水 (drinking water, the life-safety case) and amber for 鹹水 (flushing water). A notice the geocoder could not resolve still contributes its district, so nothing disappears silently.",
    "popup": "district_popup",
    "filters": {
     "scope": "hk"

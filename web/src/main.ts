@@ -18,7 +18,7 @@ import { lang, onLangChange, t } from "./lib/i18n.ts";
 import { loadRegistry, clearDataCache, type VerticalDefRaw } from "./lib/sources.ts";
 import { createMap, landsdBadge, setBasemap } from "./map/basemap.ts";
 import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./map/cameras.ts";
-import { applyVerticalLayers, clearVerticalLayers } from "./map/overlays.ts";
+import { applyVerticalLayers, clearVerticalLayers, type WaterPoint } from "./map/overlays.ts";
 import { createLayerControl, relabelLayerControl, type LayerRow } from "./ui/layercontrol.ts";
 import { toggle3d } from "./map/overlays3d.ts";
 import type { LayerDefRaw } from "./lib/sources.ts";
@@ -276,9 +276,14 @@ async function boot(): Promise<void> {
   let currentMode = "overview";
   let userPinned = false;
   let pendingVertical: VerticalDefRaw | null = null;
-  // Districts that currently have a live suspension — the map layer highlights
+  // Districts that currently have a live suspension — the map layer tints
   // exactly these, so the polygon layer and the panel cannot disagree.
   let activeDistricts = new Set<string>();
+  // The geocoded locations of those same notices. Kept beside the district set
+  // because the map draws BOTH: pins say WHERE, the tint says how large the
+  // affected area is. Cyrus 2026-09-24: the layer used to tint a whole district
+  // for an outage that was one building.
+  let waterPoints: WaterPoint[] = [];
   let drawnLayers: LayerDefRaw[] = [];
   let currentLayerIds: string[] = [];
   // Generation token: applyModeLayers is async (CSDI fetch); a mode switch
@@ -304,10 +309,18 @@ async function boot(): Promise<void> {
       const records = (value as { records?: { district?: string; status?: string }[] } | undefined)?.records ?? [];
       const nowDistricts = records.filter((r) => r.status === "現正停水").map((r) => r.district);
       const next = new Set(nowDistricts.filter((d): d is string => !!d));
-      const changed = next.size !== activeDistricts.size || [...next].some((d) => !activeDistricts.has(d));
+      // The geocoded pins, straight from the adapter (which already filtered to
+      // the notices that are out NOW). Comparing by id means a refresh that
+      // changed only an address still triggers a redraw.
+      const nextPoints = (value as { points?: WaterPoint[] } | undefined)?.points ?? [];
+      const pointsChanged =
+        nextPoints.length !== waterPoints.length || nextPoints.some((p, i) => waterPoints[i]?.id !== p.id);
+      const changed =
+        next.size !== activeDistricts.size || [...next].some((d) => !activeDistricts.has(d)) || pointsChanged;
       if (changed) {
         activeDistricts = next;
-        // Re-draw only if the 停水 layer is on screen, and only when the set
+        waterPoints = nextPoints;
+        // Re-draw only if the 停水 layer is on screen, and only when something
         // actually changed — this runs on every panel refresh otherwise.
         if (currentLayerIds.includes("water_suspension_districts")) void applyModeLayers(currentLayerIds);
       }
@@ -591,7 +604,7 @@ async function boot(): Promise<void> {
     try {
       // The gen check travels with the slow fetch: the layer code throws a
       // sentinel when a newer mode apply has already started.
-      const drawn = await applyVerticalLayers(map, defs, { registry, ctx, activeDistricts, gen, isCurrent: (g) => g === modeGen.current });
+      const drawn = await applyVerticalLayers(map, defs, { registry, ctx, activeDistricts, waterPoints, gen, isCurrent: (g) => g === modeGen.current });
       if (gen !== modeGen.current) return; // superseded — nothing to record
       drawnLayers = defs.filter((d) => drawn.includes(d.id));
       paintLegend(drawnLayers.map((d) => d.id));
@@ -704,7 +717,7 @@ async function boot(): Promise<void> {
           if (!def) throw new Error("layers.json 冇 rain_nowcast");
           clearVerticalLayers(map, [def]);
           if (!on) break;
-          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
           if (!drawn.includes("rain_nowcast")) throw new Error("降雨圖層畫唔出");
           break;
         }
@@ -719,7 +732,7 @@ async function boot(): Promise<void> {
           if (!def) throw new Error("layers.json 冇 aircraft（圖層已撤回，見 RAIL_LAYERS 註解）");
           clearVerticalLayers(map, [def]);
           if (!on) break;
-          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
           if (!drawn.includes("aircraft")) throw new Error("航機圖層畫唔出");
           break;
         }
@@ -731,7 +744,7 @@ async function boot(): Promise<void> {
           if (!def) throw new Error("layers.json 冇 wind_field");
           clearVerticalLayers(map, [def]);
           if (!on) break;
-          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
           if (!drawn.includes("wind_field")) throw new Error("風場圖層畫唔出");
           break;
         }
@@ -742,7 +755,7 @@ async function boot(): Promise<void> {
           if (!def) throw new Error("layers.json 冇 weather_stations");
           clearVerticalLayers(map, [def]);
           if (!on) break;
-          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts });
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
           if (!drawn.includes("weather_stations")) throw new Error("氣象站圖層畫唔出");
           break;
         }

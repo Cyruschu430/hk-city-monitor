@@ -19,6 +19,12 @@ __pycache__/
 *.pyc
 .venv/
 
+# wrangler local state. MEASURED 2026-09-24: a `wrangler pages deploy` from the
+# repo root writes .wrangler/cache/wrangler-account.json, which contains the
+# account NAME and ID. This repo is public, so that must never be committed.
+# (worker/.wrangler/ was already covered; the root-level one was not.)
+.wrangler/
+
 # OS
 .DS_Store
 Thumbs.db

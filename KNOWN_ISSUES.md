@@ -197,4 +197,58 @@ t=45.0s   1 panel                        <-- 唔會返嚟
 
 ---
 
+## 8. 已修：⌘K 命令面板完全開唔到（一個 TypeError 靜靜哋殺咗佢）
+
+**狀態**：**已修（2026-09-24）**。呢個係「撤回一個 panel」時我自己整出嚟嘅，
+但佢揭示咗一個一直都存在嘅脆弱點。
+
+### 現象
+`verify-browser.mjs` 報 `P1 ⌘K：open=false hits=0` —— 㩒 Ctrl+K **完全冇反應**。
+
+### 我第一反應係錯嘅
+我以為係測試自己按咗兩次（面板係 toggle 設計：`open ? close() : openIt()`）。
+於是寫咗 `probe-palette.mjs` **單獨**測：結果**一樣開唔到**。
+假設被推翻 —— 唔係測試 artefact，係真 bug。
+
+### 根因
+`probe-palette-why.mjs` 裝咗一個 capture-phase 監聽器去睇事件有冇到：
+```
+real page.keyboard.press: {"hidden":true,"spySaw":"k","spyCtrl":true}
+page errors: TypeError: Cannot read properties of undefined (reading 'tc')
+```
+**事件有到**（`spySaw="k"`, `ctrlKey=true`），但 listener **拋錯死咗**，所以冇開到面板。
+
+`.tc` 讀 undefined = 有個 language object 唔見咗。原因：我撤回 `crypto_prices`
+時，喺 `panels.json` 個 array 入面留咗一個**只有 `_comment` 嘅物件**（冇 `id`、冇 `title`）。
+`ui/palette.ts` 嘅 `buildIndex()` 會 iterate `registry.panels` 然後讀 `p.title.tc` →
+**拋 TypeError**。
+
+### 點解 validator 捉唔到
+因為我**同時改咗 validator** 去跳過冇 `id` 嘅項目（以為 `_comment` 係無害嘅慣例）。
+即係我自己拆咗個閘，然後踩落去。**兩個改動一齊做，互相掩蓋。**
+
+### 修法
+1. `panels.json`：撤回嘅 panel 放喺**根層** `_withdrawn_panels` key
+   （同 `_comment`／`_renders` 並排，唔會入到 runtime array）。
+2. `validate_config.py`：**還原**成唔准跳過 —— array 入面任何冇 `id` 嘅項目都係 error，
+   並喺原地寫低點解。
+3. `verify-browser.mjs`：⌘K check 改成斷言**真正開到**（`open=true` 而且搜到結果），
+   唔止係「唔拋錯」。
+
+### 量到嘅驗證（`probe-palette.mjs`，單獨跑）
+```
+after FIRST Ctrl+K   {"hidden":false,"visible":true,"items":1075,"activeEl":"palette-input"}
+after typing 尖沙咀    {"hidden":false,"visible":true,"items":2}
+after Escape         {"hidden":true,"visible":false}
+after SECOND Ctrl+K  {"hidden":false,"visible":true,"items":1075}
+```
+**1075 個項目**（模式＋panel＋相機），搜「尖沙咀」中 **2 個**。
+
+### 教訓
+> **一個「無害嘅註解」放入 runtime 讀嘅 array，就唔再係註解。**
+> 註解要放喺**唔會被 iterate** 嘅地方（文件根層、sibling key），
+> 而且**唔准為咗讓一個改動通過而改鬆個 validator** —— 兩者一齊做，就冇任何嘢守得住。
+
+---
+
 *2026-09-24 · 全部實測*

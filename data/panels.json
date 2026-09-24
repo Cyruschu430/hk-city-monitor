@@ -10,6 +10,10 @@
   "gauge_grid",
   "status_grid"
  ],
+ "_withdrawn_panels": {
+  "_comment": "Panels removed from the shipped set, with the reasoning and the restore path. A withdrawn panel goes HERE, never as an element of the panels array below. MEASURED 2026-09-24: an id-less object inside `panels` is NOT inert. It reaches the runtime registry (sources.ts passes panelsJ.panels straight through), and ui/palette.ts buildIndex() reads p.title.tc on every entry — so a comment-only element throws TypeError and BREAKS ⌘K SILENTLY (the keydown listener fires and dies before opening the palette, with no error near the palette itself).",
+  "crypto_prices": "WITHDRAWN 2026-09-24 (Cyrus). CoinGecko's free tier rate-limits Cloudflare's egress IPs, so the panel returned HTTP 429 on EVERY production load while working from a home IP — measured repeatedly through the deployed Worker, not transient. It was the last error state on the dashboard, and a panel permanently broken in the only environment users see is worse than no panel. It is also the least Hong-Kong-specific surface on the page (BTC/ETH in HKD), so it was the one to cut rather than fix. Restore: re-add { id:'crypto_prices', source:'coingecko', render:'list', title:{tc:'加密貨幣（港元）',en:'Crypto (HKD)'}, params:{}, cadence_note:{tc:'即時',en:'Live'} } to the panels array, put it back in main.ts OVERVIEW, and first confirm the 429 is gone from a Cloudflare egress IP. The adapter (coingecko), parsers.parseCoingecko and their tests are untouched."
+ },
  "panels": [
   {
    "id": "tc_track_image",
@@ -273,20 +277,6 @@
    "cadence_note": {
     "tc": "延遲報價，唔係即時",
     "en": "Delayed, not real-time"
-   }
-  },
-  {
-   "id": "crypto_prices",
-   "source": "coingecko",
-   "render": "list",
-   "title": {
-    "tc": "加密貨幣（港元）",
-    "en": "Crypto (HKD)"
-   },
-   "params": {},
-   "cadence_note": {
-    "tc": "即時",
-    "en": "Live"
    }
   },
   {

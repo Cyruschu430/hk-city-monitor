@@ -143,6 +143,12 @@ def main() -> int:
     # ---- panels / layers ----
     seen = set()
     for p in panels["panels"]:
+        # No skip for comment entries: a `_comment`-only object inside this array
+        # is NOT inert. It reaches the runtime registry (sources.ts passes
+        # panelsJ.panels straight through) and ui/palette.ts reads p.title.tc on
+        # every entry, so an id-less element throws and silently breaks ⌘K.
+        # MEASURED 2026-09-24. Withdrawn panels go in the root-level
+        # `_withdrawn_panels` key instead; this loop must reject anything else.
         pid = p.get("id")
         if not pid or pid in seen:
             errors.append(f"panel id missing or duplicated: {pid!r}")

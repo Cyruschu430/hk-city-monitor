@@ -50,7 +50,9 @@ const OVERVIEW = [
   "kmb_eta_table",
   "tp_queue_grid",
   "hk_market_table",
-  "crypto_prices",
+  // crypto_prices withdrawn 2026-09-24: CoinGecko 429s Cloudflare's egress on
+  // every production load. See the _comment in data/panels.json for the restore
+  // path — the adapter and its tests are intentionally left in place.
   "aqhi_gauge_grid",
   "carpark_vacancy_list",
   "ae_waiting_grid",

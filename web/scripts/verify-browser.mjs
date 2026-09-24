@@ -225,6 +225,66 @@ try {
       `inDOM=${landing.inDom} banner=${JSON.stringify(landing.banner)}`,
   );
 
+  // --- 2c. THE PANEL COLUMN MUST NOT OVERLAP ITSELF ---------------------------
+  // MEASURED 2026-09-24: `grid-auto-flow: dense` was added to pack the column and
+  // it shipped broken TWICE, because nothing in this harness looked at geometry.
+  //   · with the default `grid-auto-rows: auto`, every row track resolved to
+  //     79.7px, so panels sized to 79px while their own children summed to 498px
+  //     — 42 panel-vs-panel overlaps, e.g. live_cams_wall y=141 h=210 (ends 351)
+  //     with breaking_news_list starting at y=226.
+  //   · `align-items: start` restored the panel HEIGHTS but left the 79.7px
+  //     tracks, which overlapped them all in place.
+  // Both are silent: `npm run build` is clean and every other check passes. So
+  // assert the two things that were each independently broken, and assert them
+  // TOGETHER — checking only one is exactly how this shipped twice.
+  const colGeom = await page.evaluate(() => {
+    const col = document.querySelector("#panels");
+    const vis = [...col.querySelectorAll(".panel[data-panel]")].filter(
+      (p) => p.getBoundingClientRect().height > 0 && getComputedStyle(p).display !== "none",
+    );
+    const boxes = vis.map((p) => {
+      const b = p.getBoundingClientRect();
+      return { id: p.dataset.panel, x: b.x, y: b.y, w: b.width, h: b.height };
+    });
+    const overlaps = [];
+    for (let i = 0; i < boxes.length; i++) {
+      for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i];
+        const b = boxes[j];
+        const ox = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+        const oy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+        if (ox > 2 && oy > 2) overlaps.push(`${a.id}<->${b.id}(${Math.round(ox)}x${Math.round(oy)})`);
+      }
+    }
+    const rows = getComputedStyle(col).gridTemplateRows.split(" ").map(parseFloat).filter(Number.isFinite);
+    // A panel whose own children are taller than the panel is being CLIPPED
+    // (panel has overflow:hidden), which is the other half of the same defect.
+    const clipped = vis
+      .filter((p) => [...p.children].reduce((s, k) => s + k.getBoundingClientRect().height, 0) > p.getBoundingClientRect().height + 8)
+      .map((p) => p.dataset.panel);
+    return {
+      count: boxes.length,
+      overlaps,
+      clipped,
+      rowSum: Math.round(rows.reduce((a, b) => a + b, 0)),
+      scrollH: col.scrollHeight,
+      clientH: col.clientHeight,
+    };
+  });
+  check(
+    "面板欄：冇任何 panel 互相重疊，亦冇 panel 被自己嘅內容撐爆而裁切",
+    colGeom.overlaps.length === 0 && colGeom.clipped.length === 0,
+    `panels=${colGeom.count} overlaps=${colGeom.overlaps.length}${colGeom.overlaps.length ? " [" + colGeom.overlaps.slice(0, 4).join(", ") + "]" : ""} ` +
+      `clipped=[${colGeom.clipped.join(", ")}] rowSum=${colGeom.rowSum} scrollH=${colGeom.scrollH}`,
+  );
+  // The row tracks must account for the content, or the column is silently
+  // truncating. This is the assertion that would have caught the 79.7px tracks.
+  check(
+    "面板欄：grid 行高加總 ≥ 內容高度（行軌有跟內容大細，唔係固定 79px）",
+    colGeom.rowSum >= colGeom.count * 100 && colGeom.scrollH >= colGeom.rowSum - 40,
+    `rowSum=${colGeom.rowSum}px panels=${colGeom.count} (avg ${Math.round(colGeom.rowSum / Math.max(1, colGeom.count))}px/row) scrollH=${colGeom.scrollH}`,
+  );
+
   // --- 3. panels: config-driven, honesty states, footers ----------------------
   // Pin 總覽 first: the trigger engine may have auto-switched into a vertical
   // (today there ARE live water notices), and a mode transition is not a bug —

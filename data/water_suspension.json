@@ -3,11 +3,16 @@
  "source_name": "水務署 臨時停水通知",
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
- "generated": "2026-09-24T18:49:37+08:00",
+ "geocode_note": "lat/lng come from the OGCIO Address Lookup Service (als.gov.hk), the registered als_address_lookup source, applied to the first clause of each notice address. A notice that did not resolve keeps lat=null and is drawn at DISTRICT level — we never substitute a district centroid, because a confident pin in the wrong place is worse than an honest district highlight. See counts.located below for the split.",
+ "generated": "2026-09-24T19:19:37+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
-  "records": 172,
-  "active": 14
+  "records": 173,
+  "active": 15,
+  "located": 173,
+  "district_only": 0,
+  "active_located": 15,
+  "active_district_only": 0
  },
  "districts": [
   "中西區",
@@ -42,7 +47,9 @@
    "address": "康山花園 1座至 10座、康怡廣場（北）、康怡廣場辦公大樓",
    "address_en": "Kornhill Gardens Block 1-10, Kornhill Plaza (North), Kornhill Plaza Office Tower",
    "cause": "水管改善工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28502,
+   "lng": 114.21739
   },
   {
    "id": "2026090212776",
@@ -55,7 +62,9 @@
    "address": "青宏苑",
    "address_en": "Ching Wang Court",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.36171,
+   "lng": 114.10461
   },
   {
    "id": "2026090212787",
@@ -68,7 +77,9 @@
    "address": "安樂工廠大廈",
    "address_en": "On Lok Factory Building",
    "cause": "水管改善工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.31881,
+   "lng": 114.18945
   },
   {
    "id": "2026090312823",
@@ -81,7 +92,9 @@
    "address": "港鐵恆安站 及 啓新書院",
    "address_en": "Heng On MTR Station and Renaissance College",
    "cause": "水管改善工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.41846,
+   "lng": 114.22516
   },
   {
    "id": "2026090913039",
@@ -91,10 +104,12 @@
    "nature": "計劃停水",
    "suspend_at": "2026-09-25T10:00:00+08:00",
    "resume_at": null,
-   "address": "逸意居",
-   "address_en": "The Floridian",
+   "address": "逸意居  備注:只影響消防用水",
+   "address_en": "The Floridian Remark: Only fire service water is affected",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.28426,
+   "lng": 114.21849
   },
   {
    "id": "2026090913061",
@@ -107,7 +122,9 @@
    "address": "沙田道風山路30及31號屋",
    "address_en": "No. 30 & 31, To Fund Shan Road, Sha Tin.",
    "cause": "水管改善工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.38232,
+   "lng": 114.18386
   },
   {
    "id": "2026091013112",
@@ -120,7 +137,9 @@
    "address": "奧卑利街19-31號 (單數), 伊利近街21-47號 (單數), 伊利近街16-40號 (雙數), 些利街9-13號 (單數), 卑利街58-64號 (雙數)",
    "address_en": "No.19-31 Old Bailey Street (odd), No.21-47 Elgin Street (odd), No.16-40 Elgin Street (even), No.9-13 Shelley Street (odd), No.58-64 Peel Street (even)",
    "cause": "水管改善工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28082,
+   "lng": 114.1531
   },
   {
    "id": "2026091013118",
@@ -133,7 +152,9 @@
    "address": "菁泉雅居 (消防水)",
    "address_en": "La Fontaine (FIRE SERVICE WATER)",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.45291,
+   "lng": 114.1643
   },
   {
    "id": "2026091113134",
@@ -146,7 +167,9 @@
    "address": "菁泉雅居",
    "address_en": "La Fontaine",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.45291,
+   "lng": 114.1643
   },
   {
    "id": "2026091113135",
@@ -159,7 +182,9 @@
    "address": "寧養臺 備注: 只有消防水受影響",
    "address_en": "Ning Yeung Terrace Remark : Fire service water is affected only",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28448,
+   "lng": 114.14135
   },
   {
    "id": "2026091113136",
@@ -172,7 +197,9 @@
    "address": "港麗豪園 備注: 只有消防水受影響",
    "address_en": "Waterfront South Remark : Fire service water is affected only",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.24912,
+   "lng": 114.14781
   },
   {
    "id": "2026091113146",
@@ -185,7 +212,9 @@
    "address": "芊御，映河路及爾巒一帶",
    "address_en": "Area of Garden Regency, Ying Ho Road and Riva",
    "cause": "水管改善工程 ",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.35921,
+   "lng": 114.125
   },
   {
    "id": "2026091113149",
@@ -198,7 +227,9 @@
    "address": "1.稔灣路  2.曾咀 曾咀路  3.源區  4.曾咀靈灰安置所  5.新界西堆填區  6.稔灣港島西廢物轉運站 7.稔灣北大嶼山廢物轉運站 8.稔灣路附近一帶建築物，露天貨倉",
    "address_en": "1.Nim Wan Road 2.Tsang Tsui Tsang Tsui Road 3.T Park 4. Tsang Tsui Columbarium and Garden of Remembrance 5. West New Territories Landfill 6.lsland West Transfer Station 7.North Lautau Transfer Station 8.Structures, Building, Godown, Open Storage near Nim Wan Road",
    "cause": "水管改善工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.21379,
+   "lng": 114.02268
   },
   {
    "id": "2026091113150",
@@ -211,7 +242,9 @@
    "address": "(1) 定安街 25-75號 (單數)   (2) 定富街19-25號 (單數)   (3) 定富街 83-123號 (單數)",
    "address_en": "(1) No. 25-75 Ting On Street (Odd Number) (2) No. 19-25 Ting Fu Street (Odd Number) (3) No. 83-123 Ting Fu Street (Odd Number)",
    "cause": "接駁新用戶工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.47817,
+   "lng": 114.04417
   },
   {
    "id": "2026091413216",
@@ -224,7 +257,9 @@
    "address": "西貢白沙灣22A, 23A, 24, 37-62, 白沙灣教堂站公廁, 白沙灣中心及白沙灣停車場公廁",
    "address_en": "No.22A, 23A, 24, 37-62, Pak Sha Wan, Sai Kung, Pak Sha Wan Church Public Toilet, Pak Sha Wan Centre and Pak Sha Wan Car Park Toilet",
    "cause": "水管改善工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.36145,
+   "lng": 114.25692
   },
   {
    "id": "2026091413224",
@@ -237,7 +272,9 @@
    "address": "石排灣道小園地",
    "address_en": "Shek Pai Wan Road Amenity Plot",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.24913,
+   "lng": 114.14861
   },
   {
    "id": "2026091413226",
@@ -250,7 +287,9 @@
    "address": "西灣河海濱公園",
    "address_en": "Sai Wan Ho Harbour Park",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.36261,
+   "lng": 114.11206
   },
   {
    "id": "2026091413231",
@@ -263,7 +302,9 @@
    "address": "俊威閣",
    "address_en": "CHARMVIEW COURT; 73 POK FU LAM ROAD",
    "cause": "更換及修復水管計劃",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.28403,
+   "lng": 114.13657
   },
   {
    "id": "2026091413233",
@@ -276,7 +317,9 @@
    "address": "俊威閣",
    "address_en": "CHARMVIEW COURT; 73 POK FU LAM ROAD",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28403,
+   "lng": 114.13657
   },
   {
    "id": "2026091413234",
@@ -289,7 +332,9 @@
    "address": "粉嶺花園  ***只有消防水受影響***",
    "address_en": "Fanling Garden **ONLY FIRE SERVICE SUPPLY IS SUSPENDED***",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.49897,
+   "lng": 114.14026
   },
   {
    "id": "2026091413243",
@@ -302,7 +347,9 @@
    "address": "錦豐園  **消防水同樣受影響**",
    "address_en": "Kam Fung Garden **FIRE SERVICE WATER SUPPLY IS ALSO SUSPENDED**",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.42454,
+   "lng": 114.2262
   },
   {
    "id": "2026091513285",
@@ -315,7 +362,9 @@
    "address": "凱旋工商中心二期及三期, 駿昇中心（只影響消防系統）, 消防栓編號PH29069",
    "address_en": "Kaiser Estate Phase II and Phase III, Gemstar Tower (Affect fire service only), Fire Hydrant No. PH29069",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.31016,
+   "lng": 114.18908
   },
   {
    "id": "2026091513288",
@@ -328,7 +377,9 @@
    "address": "咸田新村  消防鵝頸 SN140, SN32235, SN32237",
    "address_en": "Shap Long Kau Tsuen,  Swan Neck SN140, SN32235, SN32237",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.24144,
+   "lng": 113.98068
   },
   {
    "id": "2026091513295",
@@ -341,7 +392,9 @@
    "address": "環宇海灣, 荃灣德士古道聯用綜合大樓地盤, 荃灣公園 消防栓編號 PH5899, PH5900, PH5918, PH9238, PH23218, PH23220及  PH23236",
    "address_en": "City Point, Construction Site of Joint-user Complex at Texaco Road, Tsuen Wan Tsuen Wan Park, Fire Hydrant Nos. PH5899, PH5900, PH5918, PH9238, PH23218, PH23220 and PH23236",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.3642,
+   "lng": 114.11466
   },
   {
    "id": "2026091513297",
@@ -354,7 +407,9 @@
    "address": "兆安橋附近淋花頭、泵房WY-03及WY-04；消防栓編號 PH23960, PH2069及SN6089",
    "address_en": "Water Point near Siu On Bridge, Pump Room WY-03 & WY-04 and the Fire Hydrant Nos. PH23960, PH2069 & SN6089",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.41383,
+   "lng": 113.96978
   },
   {
    "id": "2026091513300",
@@ -367,7 +422,9 @@
    "address": "1.富景花園第1座至11座  2.迦南幼稚園  3.富景商場",
    "address_en": "1.Fullview Garden Block 1 to Block 11 2.Cannan Kindergarten 3.Commercial Center of Fullview Garden",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28181,
+   "lng": 114.14732
   },
   {
    "id": "2026091613342",
@@ -380,7 +437,9 @@
    "address": "紅磡 馬頭圍道89-93號 (消防供水系統)",
    "address_en": "89-93 Ma Tau Wai Road (Fire Service), Hung Hom",
    "cause": "水管改善工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.31,
+   "lng": 114.18799
   },
   {
    "id": "2026091613348",
@@ -393,7 +452,9 @@
    "address": "蠔涌新村一帶 備注: 沖廁用食水亦同時暫停",
    "address_en": "AREA AROUND HO CHUNG NEW VILALGE Remark : Fresh water for flushing purpose is also affected",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.35331,
+   "lng": 114.24861
   },
   {
    "id": "2026091713394",
@@ -406,7 +467,9 @@
    "address": "恒順園",
    "address_en": "Handsome Court",
    "cause": "水管改善工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.38803,
+   "lng": 113.98107
   },
   {
    "id": "2026091813412",
@@ -419,7 +482,9 @@
    "address": "打石湖村（石塘）一帶 消防栓編號SN5379, PH10407和 PH25830",
    "address_en": "Premises near Ta Shek Wu Tsuen (Shek Tong), Yuen Long Fire Hydrant No. SN5379, PH10407 and PH25830",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.46237,
+   "lng": 114.10704
   },
   {
    "id": "2026091813413",
@@ -432,7 +497,9 @@
    "address": "富崗山路2-8號 大嶼山南警署 大嶼山梅窩附近廁所 富崗山路11號 富崗山路12號(百步軒)",
    "address_en": "Nos. 2-8 Fu Kong Shan Road Lantau South Police Station Toilet Near to Mui Wo, Lantau Island No. 11 Fu Kong Shan Road No. 12 Fu Kong Shan Road",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.26506,
+   "lng": 113.99957
   },
   {
    "id": "2026091813414",
@@ -445,7 +512,9 @@
    "address": "甘苑 備註: 沖廁用食水亦同時暫停",
    "address_en": "Kenville Building Remark: temporary mains water for flushing is also suspended",
    "cause": "更換及修復水管計劃",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.27618,
+   "lng": 114.15949
   },
   {
    "id": "2026091813420",
@@ -458,7 +527,9 @@
    "address": "下禾坑村,下禾坑地段編號DD39 1128 S.B &1128 RP,凹下1、1A、2、3A-B、4、5、6、7B、9-12、11A、61及62號,凹下地段編號: DD39 106, 108, 116 S.C, 116 S.D, 119, 137RP, 138RP, 3037, 3050B ,消防栓編號:SN21375, SN4283, PH4906 沖廁用食水亦同時暫停",
    "address_en": "Ha Wo Hang Tsuen,Lot Nos.: DD39 1128 S.B &1128 RP Ha Wo Hang ,Nos. 1, 1A, 2, 3A-B, 4, 5, 6, 7B, 9-12, 11A, 61 and 62 Au Ha,Lot Nos.: DD39 106, 108, 116 S.C, 116 S.D, 119, 137RP, 138RP, 3037, 3050B Au Ha,Fire Hydrant No: SN21375, SN4283, PH4906 Temporary mains water for flushing is also suspended",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.52653,
+   "lng": 114.19793
   },
   {
    "id": "2026091813424",
@@ -471,7 +542,9 @@
    "address": "騰龍臺1, 2, 3, 4 號  備註: 沖廁用食水亦同時受影響",
    "address_en": "1, 2, 3, 4 Denon Terrace Remarks: Fresh water for flushing purpose is also affected",
    "cause": "更換及修復水管計劃",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.33394,
+   "lng": 114.23546
   },
   {
    "id": "2026091813425",
@@ -484,7 +557,9 @@
    "address": "黃大仙上邨—詠善樓 及 公廁(近雅竹街) 消防栓編號. PH13404",
    "address_en": "Upper Wong Tai Sin Estate - Wing Sin House and Public Toilet near Nga Chuk Street Fire Hydrant No. PH13404",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.34383,
+   "lng": 114.19191
   },
   {
    "id": "2026091813426",
@@ -497,7 +572,9 @@
    "address": "西貢花園  ==只影響消防用水==",
    "address_en": "Sai Kung Garden ==NO FIRE SERVICE WATER SUPPLY ONLY==",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.47824,
+   "lng": 114.04727
   },
   {
    "id": "2026091813427",
@@ -510,7 +587,9 @@
    "address": "聯發園 掃管笏村臨時構建物 備註: 沖廁用食水亦同時受影響",
    "address_en": "So Kwun Wat Tsuen Temporary Structure Remarks: Fresh water for flushing",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.37757,
+   "lng": 114.00474
   },
   {
    "id": "2026091813428",
@@ -523,7 +602,9 @@
    "address": "西貢花園 備註: 沖廁用食水亦同時受暫停",
    "address_en": "Sai Kung Garden Remarks: Temporary mains water for flushing is also suspended",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.38241,
+   "lng": 114.27129
   },
   {
    "id": "2026091813441",
@@ -536,7 +617,9 @@
    "address": "西貢甲邊朗村5號及18A至18C號",
    "address_en": "No. 5 and 18A-18C, Kap Pin Long Village, SK",
    "cause": "水管改善工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.3854,
+   "lng": 114.26342
   },
   {
    "id": "2026091813454",
@@ -549,7 +632,9 @@
    "address": "元朗蔡屋村 , 英龍圍 , 大圍村 一帶",
    "address_en": "Area of Yuen Long Choi Uk Tsuen , Yung Lung Wai and Tai Wai Tsuen",
    "cause": "維修水管工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.44754,
+   "lng": 114.03565
   },
   {
    "id": "2026091813464",
@@ -562,7 +647,9 @@
    "address": "貝澳羅屋村4, 4A, 4B, 4C, 4D, 72A, 72B號，羅屋村公廁 及部分樓宇 (包括食水沖廁供應)",
    "address_en": "House No. 4, 4A, 4B, 4C, 4D, 72A, 72B Pui O Lo Uk Tsuen, Law Uk Tsuen Public Toilet and some premises, Lantau (Including fresh water flushing supply)",
    "cause": "水管改善工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.24359,
+   "lng": 113.97607
   },
   {
    "id": "2026091813468",
@@ -575,7 +662,9 @@
    "address": "建華街 39-57 號 (單數)，堡壘街 42-66 號 (雙數)",
    "address_en": "39-57 Kin Wah Street (odd number), 42-66 Fort Street (even number)",
    "cause": "水管改善工程",
-   "status": "停水已取消"
+   "status": "停水已取消",
+   "lat": 22.28964,
+   "lng": 114.19817
   },
   {
    "id": "2026091913487",
@@ -588,7 +677,9 @@
    "address": "英華街8號,發祥街1,3號",
    "address_en": "8 YING WA STREET,1 &3 FAT TSEUNG STREET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.33145,
+   "lng": 114.15204
   },
   {
    "id": "2026092113520",
@@ -601,7 +692,9 @@
    "address": "葵青劇院",
    "address_en": "KWAI TSING THEATRE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.3568,
+   "lng": 114.12617
   },
   {
    "id": "2026092113521",
@@ -614,7 +707,9 @@
    "address": "葵青劇院",
    "address_en": "KWAI TSING THEATRE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.3568,
+   "lng": 114.12617
   },
   {
    "id": "2026092113523",
@@ -627,7 +722,9 @@
    "address": "青山公路 - 米埔段近燈柱FC4128附近",
    "address_en": "AREA AROUND OF LAMP POST FC4128 OF CASTLE PEAK ROAD - MAI PO",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.48679,
+   "lng": 114.06072
   },
   {
    "id": "2026092113524",
@@ -640,7 +737,9 @@
    "address": "蠔涌村3巷13A附近一帶",
    "address_en": "AREA AROUND LANE 3 OF 13A HO CHUNG VILLAGE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.35567,
+   "lng": 114.24716
   },
   {
    "id": "2026092113525",
@@ -653,7 +752,9 @@
    "address": "坑下莆村近燈柱V8437一帶",
    "address_en": "AREA AROUND HANG HA PO TSUEN NEAR LAMPPOLE V8437",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.45732,
+   "lng": 114.14592
   },
   {
    "id": "2026092113526",
@@ -666,7 +767,9 @@
    "address": "社山村",
    "address_en": "SHE SHAN VILLAGE",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.45042,
+   "lng": 114.14426
   },
   {
    "id": "2026092113527",
@@ -679,7 +782,9 @@
    "address": "香港大學李嘉誠醫學院",
    "address_en": "HKU LI KA SHING FACULTY OF MEDICINE",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.2673,
+   "lng": 114.12827
   },
   {
    "id": "2026092113528",
@@ -692,7 +797,9 @@
    "address": "兆禧苑，兆禧苑商場",
    "address_en": "Siu Hei Court, Siu Hei Shopping Centre",
    "cause": "水管改善工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.37342,
+   "lng": 113.96658
   },
   {
    "id": "2026092113529",
@@ -705,7 +812,9 @@
    "address": "雲咸街65-67號",
    "address_en": "65-67 WYNDHAM STREET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28157,
+   "lng": 114.15494
   },
   {
    "id": "2026092113530",
@@ -718,7 +827,9 @@
    "address": "莫家村41號",
    "address_en": "41 MOK KA TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.27019,
+   "lng": 113.92895
   },
   {
    "id": "2026092113534",
@@ -731,7 +842,9 @@
    "address": "嘉華國際中心, 柯達大廈, 水務署香港區大樓, 廉正公署, 渣華道323號",
    "address_en": "K WAH CENTRE, KODAK HOUSE II, WSD HK OFFICE, ICAC, NO.323 JAVA ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.29306,
+   "lng": 114.2047
   },
   {
    "id": "2026092113535",
@@ -744,7 +857,9 @@
    "address": "部份掃管笏村",
    "address_en": "PART OF SO KWUN WAT TSUEN",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.3758,
+   "lng": 114.00539
   },
   {
    "id": "2026092113536",
@@ -757,7 +872,9 @@
    "address": "粉嶺塘坑近燈柱EA3181附近一帶",
    "address_en": "FANLING TONG HANG NEAR LAMP POST EA3181",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.49103,
+   "lng": 114.1513
   },
   {
    "id": "2026092113537",
@@ -770,7 +887,9 @@
    "address": "石塘村",
    "address_en": "SHEK TONG TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.4405,
+   "lng": 114.04263
   },
   {
    "id": "2026092113538",
@@ -783,7 +902,9 @@
    "address": "部份黃屋村",
    "address_en": "PART OF WONG UK TSUEN",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.36296,
+   "lng": 114.02322
   },
   {
    "id": "2026092113539",
@@ -796,7 +917,9 @@
    "address": "漆咸道南73-75號",
    "address_en": "NOS 73-75 CHATHAM ROAD SOUTH",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.30026,
+   "lng": 114.17583
   },
   {
    "id": "2026092113541",
@@ -809,7 +932,9 @@
    "address": "大埔汀角路近燈柱V8462附近一帶",
    "address_en": "TAI PO TING KOK ROAD NEAR LAMP POST V8462",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.45236,
+   "lng": 114.16525
   },
   {
    "id": "2026092113542",
@@ -822,7 +947,9 @@
    "address": "青山公路新田段近燈柱FC4129附近一帶",
    "address_en": "CASTLE PEAK ROAD SAN TIN NEAR LAMP POST FC4129",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.49844,
+   "lng": 114.07828
   },
   {
    "id": "2026092113543",
@@ -835,7 +962,9 @@
    "address": "陽光山莊",
    "address_en": "SUNNY HILLS",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.49767,
+   "lng": 114.07562
   },
   {
    "id": "2026092113544",
@@ -848,7 +977,9 @@
    "address": "錦田永隆圍近燈柱VD9836附近一帶",
    "address_en": "KAM TIN WING LUNG WAI NEAR LAMP POST VD9836",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.44046,
+   "lng": 114.06756
   },
   {
    "id": "2026092113545",
@@ -861,7 +992,9 @@
    "address": "大欖涌道部分",
    "address_en": "PART OF TAI LAM CHUNG ROAD",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.36369,
+   "lng": 114.02081
   },
   {
    "id": "2026092113547",
@@ -874,7 +1007,9 @@
    "address": "圍內村",
    "address_en": "WAI LOI TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.51006,
+   "lng": 114.12317
   },
   {
    "id": "2026092113548",
@@ -887,7 +1022,9 @@
    "address": "錦石新村",
    "address_en": "KAM SHEK NEW VILLAGE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.44955,
+   "lng": 114.15735
   },
   {
    "id": "2026092113549",
@@ -900,7 +1037,9 @@
    "address": "部份馬田村",
    "address_en": "PART OF MA TIN TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.43892,
+   "lng": 114.02234
   },
   {
    "id": "2026092113550",
@@ -913,7 +1052,9 @@
    "address": "木廠街17號",
    "address_en": "NO.17 MOK CHEONG STREET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.3217,
+   "lng": 114.19325
   },
   {
    "id": "2026092113551",
@@ -926,7 +1067,9 @@
    "address": "元嶺村一帶",
    "address_en": "AREA AROUND YUEN LING TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.47566,
+   "lng": 114.15737
   },
   {
    "id": "2026092113552",
@@ -939,7 +1082,9 @@
    "address": "橫台山散村路近BD1769附近一帶",
    "address_en": "WANG TOI SHAN SHAN TSUEN ROAD NEAR LAMP POST BD1769",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.44436,
+   "lng": 114.09533
   },
   {
    "id": "2026092113554",
@@ -952,7 +1097,9 @@
    "address": "西邊街4-4A號",
    "address_en": "NOS 4-4A WESTERN STREET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28764,
+   "lng": 114.1409
   },
   {
    "id": "2026092113555",
@@ -965,7 +1112,9 @@
    "address": "大埔坑下莆村近燈柱VE0163附近一帶",
    "address_en": "TAI PO HANG HA PO VILLAGE NEAR LAMP POST VE0163",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.45796,
+   "lng": 114.14464
   },
   {
    "id": "2026092113556",
@@ -978,7 +1127,9 @@
    "address": "永平村近燈柱FC0686一帶",
    "address_en": "AREA OF LAMP POST FC0686, WING PING TSUEN",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.50025,
+   "lng": 114.0763
   },
   {
    "id": "2026092113557",
@@ -991,7 +1142,9 @@
    "address": "南丫島, 南丫發電廠(東閘), 43大灣肚, 60-63, 80-89大灣南, (包括食水沖廁供應)",
    "address_en": "Lamma Power Station (East Gate), 43 Tai Wan To, 60-63, 80-89 Tai Wan Nam. Lamma Island (Including Fresh Water Flushing Supply)",
    "cause": "水管改善工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.22169,
+   "lng": 114.11498
   },
   {
    "id": "2026092113559",
@@ -1004,7 +1157,9 @@
    "address": "永隆圍近燈柱VD9836 一帶",
    "address_en": "AREA OF LAMP POST VD9836, WING LUNG WAI",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.43987,
+   "lng": 114.06693
   },
   {
    "id": "2026092113561",
@@ -1017,7 +1172,9 @@
    "address": "海防道 49號 北京道 12 - 16號 漢口道 14 - 44號 樂道 1 - 27號",
    "address_en": "NO. 49 HAIPHONG ROAD, Nos. 12 - 16 PEKING ROAD, Nos. 14 - 44 HANKOW ROAD, Nos. 1 - 27 LOCK ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.29598,
+   "lng": 114.17077
   },
   {
    "id": "2026092113562",
@@ -1030,7 +1187,9 @@
    "address": "大埔頭村",
    "address_en": "TAI PO TAU TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.45532,
+   "lng": 114.15727
   },
   {
    "id": "2026092113563",
@@ -1043,7 +1202,9 @@
    "address": "崇仁街1-5號，7-13A號，15-31號及33-39A號，康寧道74-76號",
    "address_en": "NO.1-5, 7-13A, 15-31 & 33-39A SHUNG YAN STREET, NO.74-76 HONG NING ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.31608,
+   "lng": 114.22365
   },
   {
    "id": "2026092113564",
@@ -1056,7 +1217,9 @@
    "address": "嘉林邊道42-54號",
    "address_en": "42-54 GRAMPIAN ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.3312,
+   "lng": 114.18678
   },
   {
    "id": "2026092113565",
@@ -1069,7 +1232,9 @@
    "address": "長庚",
    "address_en": "CHEUNG KANG",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.42944,
+   "lng": 114.23735
   },
   {
    "id": "2026092213566",
@@ -1082,7 +1247,9 @@
    "address": "牛頭角道319-325號(單數),牛頭角道325A號",
    "address_en": "319-325 NGAU TAU KOK ROAD(ODD NOS),325A NGAU TAU KOK ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.31506,
+   "lng": 114.22203
   },
   {
    "id": "2026092213569",
@@ -1095,7 +1262,9 @@
    "address": "澤蔭樓 豐蔭樓 盛蔭樓",
    "address_en": "CHAK YAM HOUSE FUNG YAM HOUSE SHING YAM HOUSE",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.36901,
+   "lng": 114.14221
   },
   {
    "id": "2026092213570",
@@ -1108,7 +1277,9 @@
    "address": "田寮村近燈柱VE5221一帶",
    "address_en": "AREA OF TIN LIU TSUEN NEAR LAMP POST VE5221",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.43173,
+   "lng": 114.02425
   },
   {
    "id": "2026092213571",
@@ -1121,7 +1292,9 @@
    "address": "新康街 近燈柱AD9564一帶 , 民生街",
    "address_en": "AREA AROUND LAMP POST AD9564 AT SAN HONG STREET, MAN SHANG STREET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.50482,
+   "lng": 114.12824
   },
   {
    "id": "2026092213573",
@@ -1134,7 +1307,9 @@
    "address": "恐龍坑近燈柱VG3770附近一帶",
    "address_en": "HUNG LUNG HANG NEAR LAMP POST VG3770",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.47924,
+   "lng": 114.15794
   },
   {
    "id": "2026092213574",
@@ -1147,7 +1322,9 @@
    "address": "恐龍坑近燈柱GD0484一帶",
    "address_en": "AREA OF HUNG LUNG HANG NEAR LAMP POST GD0484",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.47924,
+   "lng": 114.15794
   },
   {
    "id": "2026092213575",
@@ -1160,7 +1337,9 @@
    "address": "德士古道127-183號, 橫窩仔街2-50號, 1-57號, 沙咀道364-370號",
    "address_en": "NO.127-183 TEXACO ROAD, NO.2-50, 1-57 WANG WO TSAI STREET, NO.364-370 SHA TSUI ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.36377,
+   "lng": 114.11804
   },
   {
    "id": "2026092213577",
@@ -1173,7 +1352,9 @@
    "address": "大埔山寮路近燈柱VL0570附近一帶",
    "address_en": "TAI PO SHAN LIU ROAD NEAR LAMP POST VL0570",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.39545,
+   "lng": 114.27392
   },
   {
    "id": "2026092213578",
@@ -1186,7 +1367,9 @@
    "address": "圍內村 第3巷",
    "address_en": "WAI LOI TSUEN 3LANE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.50987,
+   "lng": 114.12279
   },
   {
    "id": "2026092213580",
@@ -1199,7 +1382,9 @@
    "address": "富善邨",
    "address_en": "FU SHIN ESTATE",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.45499,
+   "lng": 114.17731
   },
   {
    "id": "2026092213581",
@@ -1212,7 +1397,9 @@
    "address": "部分興旺街",
    "address_en": "PART OF HING WONG STREET",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.39266,
+   "lng": 113.97054
   },
   {
    "id": "2026092213583",
@@ -1225,7 +1412,9 @@
    "address": "興旺街",
    "address_en": "HING WONG STREET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.39266,
+   "lng": 113.97054
   },
   {
    "id": "2026092213584",
@@ -1238,7 +1427,9 @@
    "address": "豪華閣, 安盛大廈, 宜和樓, 金恒樓, 葵涌花園",
    "address_en": "HOOVER COURT, ON SHING BUILDING, YI WO BUILDING, KAM HENG BUILDING, KWAI CHUNG FA YUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.38504,
+   "lng": 114.19938
   },
   {
    "id": "2026092213585",
@@ -1251,7 +1442,9 @@
    "address": "米埔隴近燈柱FC4188一帶",
    "address_en": "AREA OF MAI PO LUNG ROAD NEAR LAMP POST FC4188",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.49665,
+   "lng": 114.06813
   },
   {
    "id": "2026092213586",
@@ -1264,7 +1457,9 @@
    "address": "天平山村",
    "address_en": "TIN PING SHAN TSUEN",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.50945,
+   "lng": 114.13082
   },
   {
    "id": "2026092213587",
@@ -1277,7 +1472,9 @@
    "address": "嘉華國際中心, 柯達大廈, 水務署香港區大樓, 廉正公署, 渣華道323號",
    "address_en": "K WAH CENTRE, KODAK HOUSE II, WSD HK OFFICE, ICAC, NO.323 JAVA ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.29306,
+   "lng": 114.2047
   },
   {
    "id": "2026092213588",
@@ -1290,7 +1487,9 @@
    "address": "新豐路 近 燈柱N7549 一帶",
    "address_en": "AREA AROUND LAMP POST N7549 AT SAN FUNG AVENUE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.50558,
+   "lng": 114.12713
   },
   {
    "id": "2026092213589",
@@ -1303,7 +1502,9 @@
    "address": "五洲南路路近燈柱EB0661附近",
    "address_en": "AREA AROUND NG CHOW SOUTH ROAD NEAR LAMP POST EB0661",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.52384,
+   "lng": 114.16354
   },
   {
    "id": "2026092213590",
@@ -1316,7 +1517,9 @@
    "address": "大藍寮村76-89號",
    "address_en": "76-89 TAI LAM LIU TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.3829,
+   "lng": 114.21618
   },
   {
    "id": "2026092213591",
@@ -1329,7 +1532,9 @@
    "address": "興旺街",
    "address_en": "HING WONG STREET",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.39266,
+   "lng": 113.97054
   },
   {
    "id": "2026092213593",
@@ -1342,7 +1547,9 @@
    "address": "黃竹園近燈柱FB4747附近一帶",
    "address_en": "AREA AROUND WONG CHUK YUEN NEAR LAMP POST FB4747",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.4319,
+   "lng": 114.10432
   },
   {
    "id": "2026092213594",
@@ -1355,7 +1562,9 @@
    "address": "健威花園, 健威商場",
    "address_en": "HEALTHY GARDENS, HEALTHY GARDENS SHOPPING CENTRE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.29154,
+   "lng": 114.20385
   },
   {
    "id": "2026092213595",
@@ -1368,7 +1577,9 @@
    "address": "水邊村",
    "address_en": "SHUI PIN TSUEN",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.32079,
+   "lng": 114.26784
   },
   {
    "id": "2026092213596",
@@ -1381,7 +1592,9 @@
    "address": "楊屋道137-143號",
    "address_en": "NO.137-143 YEUNG UK ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.36683,
+   "lng": 114.11827
   },
   {
    "id": "2026092213597",
@@ -1394,7 +1607,9 @@
    "address": "大埔社區中心",
    "address_en": "TAI PO COMMUNITY CENTRE",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.44654,
+   "lng": 114.16594
   },
   {
    "id": "2026092213598",
@@ -1407,7 +1622,9 @@
    "address": "港灣道12號",
    "address_en": "NOS 12 HARBOUR ROAD",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28033,
+   "lng": 114.17239
   },
   {
    "id": "2026092213599",
@@ -1420,7 +1637,9 @@
    "address": "奧運站",
    "address_en": "OLYMPIC STATION",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.27352,
+   "lng": 114.18752
   },
   {
    "id": "2026092213601",
@@ -1433,7 +1652,9 @@
    "address": "皇后大道西414-440號 (雙數)",
    "address_en": "NO.414-440 (EVEN) QUEEN'S ROAD WEST",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28634,
+   "lng": 114.13852
   },
   {
    "id": "2026092213604",
@@ -1446,7 +1667,9 @@
    "address": "安蔭商場、盛蔭樓、豐蔭樓、澤蔭樓、德蔭樓、耀蔭樓、石梨街網球場",
    "address_en": "ON YAM SHOPPING CENTRE, YIU YAM HOUSE, TAK YAM HOUSE, CHAK YAM HOUSE, FUNG YAM HOUSE, SHING YAM HOUSE, SHEK LEI STREET TENNIS COURTS",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.37123,
+   "lng": 114.14159
   },
   {
    "id": "2026092213605",
@@ -1459,7 +1682,9 @@
    "address": "坳背灣街",
    "address_en": "AU PUI WAN STREET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.39821,
+   "lng": 114.19404
   },
   {
    "id": "2026092213607",
@@ -1472,7 +1697,9 @@
    "address": "水邊村",
    "address_en": "SHUI PIN TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.32079,
+   "lng": 114.26784
   },
   {
    "id": "2026092213608",
@@ -1485,7 +1712,9 @@
    "address": "福喜街一帶",
    "address_en": "AREA AROUND FUK HI STREET",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.45773,
+   "lng": 114.0239
   },
   {
    "id": "2026092213609",
@@ -1498,7 +1727,9 @@
    "address": "永平村近燈柱FC0686 附近一帶 (沖廁水亦同時暫停)",
    "address_en": "AREA AROUND LAMP POST FC0686 AT WING PING TSUEN (FLUSHING WATER SUPPLY IS ALSO AFFECTED)",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.50025,
+   "lng": 114.0763
   },
   {
    "id": "2026092313610",
@@ -1511,7 +1742,9 @@
    "address": "和豐街28號 - 囍逸",
    "address_en": "NO.28 WO FUNG STREET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.49853,
+   "lng": 114.14279
   },
   {
    "id": "2026092313611",
@@ -1524,7 +1757,9 @@
    "address": "伊利近街,士丹頓街,堅道21-23, 41-71號,卑利街66號,普慶坊, 贊善里, 必列者士街, 四方街",
    "address_en": "ELGIN STREET,STAUNTON STREET, 23-23, 41-71 CAINE ROAD,66 PEEL STREET,PO HING FONG, CHANCERY LANE, BRIDGES STREET, SQUARE STREET",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.28115,
+   "lng": 114.1526
   },
   {
    "id": "2026092313612",
@@ -1537,7 +1772,9 @@
    "address": "車公廟路及紅梅谷路一帶",
    "address_en": "AREA AROUND CHE KUNG MIU ROAD AND HUNG MUI KUK ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.37475,
+   "lng": 114.18611
   },
   {
    "id": "2026092313613",
@@ -1550,7 +1787,9 @@
    "address": "洪屋村12號一帶",
    "address_en": "AREA OF NO.12 HUNG UK TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.44185,
+   "lng": 114.00365
   },
   {
    "id": "2026092313618",
@@ -1563,7 +1802,9 @@
    "address": "上北村 近 燈柱V1526一帶",
    "address_en": "AREA OF SHUENG PAK TSUEN NEAR LAMP POST V1526",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.51176,
+   "lng": 114.1259
   },
   {
    "id": "2026092313619",
@@ -1576,7 +1817,9 @@
    "address": "落路下村",
    "address_en": "LOK LO HA TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.40042,
+   "lng": 114.20092
   },
   {
    "id": "2026092313622",
@@ -1589,7 +1832,9 @@
    "address": "崇山新村 近 燈柱FB0616一帶",
    "address_en": "AREA OF SUNG SHAN SAN TSUEN NEAR LAMP POST FB0616",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.42516,
+   "lng": 114.03957
   },
   {
    "id": "2026092313627",
@@ -1602,7 +1847,9 @@
    "address": "望隆街16號, 望隆街14號, 筲箕灣東大街114號, 筲箕灣東大街116號, 望隆大廈, 東泰大廈, 金華街23號, 金華街21號, 金華街7號, 金華街5號, 金華街1-3號, 位於金華街近望隆街之建築地盤;  消防栓編號 SN1541 及 SN30286 沖廁用食水亦同時暫停",
    "address_en": "No. 16 Mong Lung Street, No. 14 Mong Lung Street, No. 114 Shau Kei Wan Main Street East, No. 116 Shau Kei Wan Main Street East, Mong Lung House, Tung Tai Building, No. 23 Kam Wa Street, No. 21 Kam Wa Street, No. 7 Kam Wa Street, No. 5 Kam Wa Street, Nos. 1-3 Kam Wa Street, Construction Site at Kam Wa Street near Mong Lung Street  Fire Hydrant Nos. SN1541 & SN30286 Temporary mains water for flushing is also suspended",
    "cause": "更換及修復水管計劃",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.27838,
+   "lng": 114.22982
   },
   {
    "id": "2026092313628",
@@ -1615,7 +1862,9 @@
    "address": "西灣河海濱公園",
    "address_en": "Sai Wan Ho Harbour Park",
    "cause": "水管改善工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.36261,
+   "lng": 114.11206
   },
   {
    "id": "2026092313636",
@@ -1628,7 +1877,9 @@
    "address": "新屋仔81-82號",
    "address_en": "81-82 SAN UK TSAI",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.51101,
+   "lng": 114.18078
   },
   {
    "id": "2026092313640",
@@ -1641,7 +1892,9 @@
    "address": "香港中國婦女會黃陳淑英紀念護理安老院  消防栓PH29186",
    "address_en": "Hong Kong Chinese Women's Club Madam Wong Chan Sook Ying Memorial Care & Attention Home for the Aged Fire Hydrant PH29186",
    "cause": "水務署測漏組 - 水管測漏工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.29838,
+   "lng": 114.24096
   },
   {
    "id": "2026092313641",
@@ -1654,7 +1907,9 @@
    "address": "馬游塘近燈柱VE0979附近一帶",
    "address_en": "AREA AROUND MA YAU TONG NEAR LAMP POST VE0979",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.32061,
+   "lng": 114.24324
   },
   {
    "id": "2026092313642",
@@ -1667,7 +1922,9 @@
    "address": "崇正新村",
    "address_en": "SHUNG CHING SAN TSUEN",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.43168,
+   "lng": 114.03104
   },
   {
    "id": "2026092313643",
@@ -1680,7 +1937,9 @@
    "address": "軍地北村近燈柱AD6964附近",
    "address_en": "AREA AROUND KWAN TEI NORTH TSUEN NEAR LAMP POST AD6964",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.50995,
+   "lng": 114.15739
   },
   {
    "id": "2026092313645",
@@ -1693,7 +1952,9 @@
    "address": "圍內村",
    "address_en": "WAI LOI TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.51006,
+   "lng": 114.12317
   },
   {
    "id": "2026092313647",
@@ -1706,7 +1967,9 @@
    "address": "康山花園, 康怡廣場(北)",
    "address_en": "KORNHILL GARDEN, KORNHILL PLAZA (NORTH)",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28505,
+   "lng": 114.21533
   },
   {
    "id": "2026092313649",
@@ -1719,7 +1982,9 @@
    "address": "筲箕灣東大街 114-116號",
    "address_en": "114-116 SHAU KEI WAN MAIN STREET EAST",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.27842,
+   "lng": 114.2301
   },
   {
    "id": "2026092313655",
@@ -1732,7 +1997,9 @@
    "address": "駱克道 442-468號 (雙數), 軒尼詩道 439-457號 (單數)",
    "address_en": "442-468 LOCKHART ROAD (EVEN.), 439-457 HENNESSY ROAD (ODD.)",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28027,
+   "lng": 114.18133
   },
   {
    "id": "2026092313656",
@@ -1745,7 +2012,9 @@
    "address": "荷李活道20-50號(雙數), 奧卑利街3-17號(單數), 些利街",
    "address_en": "NO.20-50 HOLLYWOON ROAD (EVEN), NO.3-17 OLD BAILEY STREET (ODD), SHELLEY STREET",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28278,
+   "lng": 114.1531
   },
   {
    "id": "2026092313660",
@@ -1758,7 +2027,9 @@
    "address": "鴨寮街107-125號(雙數), 汝州街140-162號(雙數), 石硤尾街11-17號(單數)",
    "address_en": "NO.107-125(ODD) AP LIU STREET, NO.140-162(EVEN) YU CHAU STREET, NO.11-17(ODD) SHEK KIP MEI STREET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.32885,
+   "lng": 114.16347
   },
   {
    "id": "2026092313661",
@@ -1771,7 +2042,9 @@
    "address": "皇后大道西 414-440號 (雙數)",
    "address_en": "414-440 QUEEN'S ROAD WEST (EVEN.)",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28634,
+   "lng": 114.13852
   },
   {
    "id": "2026092313662",
@@ -1784,7 +2057,9 @@
    "address": "徑棚下一帶",
    "address_en": "AREA OF KENG PANG HA",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.3912,
+   "lng": 114.26121
   },
   {
    "id": "2026092313664",
@@ -1797,7 +2072,9 @@
    "address": "筆架山道45-51號",
    "address_en": "NO.45-51 BEASON HILL ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.34348,
+   "lng": 114.1754
   },
   {
    "id": "2026092313665",
@@ -1810,7 +2087,9 @@
    "address": "南灣道6,8A,9,10號",
    "address_en": "NO.6,8A,9,10 SOUTH BAY ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.23615,
+   "lng": 114.19838
   },
   {
    "id": "2026092313666",
@@ -1823,7 +2102,9 @@
    "address": "炮仗街2-44號, 九龍城道5-41號, 落山道1K-1T號",
    "address_en": "2-44 PAU CHUNG STREET, 5-41 KOWLOON CITY ROAD, 1K-1T LOK SHAN ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.31801,
+   "lng": 114.18828
   },
   {
    "id": "2026092313667",
@@ -1836,7 +2117,9 @@
    "address": "大旗嶺近燈柱VA5771一帶",
    "address_en": "AREA OF LAMP POST VA5771, TAI KEI LENG",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.43815,
+   "lng": 114.03108
   },
   {
    "id": "2026092313668",
@@ -1849,7 +2132,9 @@
    "address": "忠孝街89號, 牧愛街38號, 公主道81號",
    "address_en": "NO.89 CHUNG HAU STREET, NO.38 GOOD SHEPHERD STREET, NO.81 PRINCESS MARGARET ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.31619,
+   "lng": 114.17929
   },
   {
    "id": "2026092313669",
@@ -1862,7 +2147,9 @@
    "address": "牛頭角道300-302號",
    "address_en": "300-302 NGAU TAK KOK ROAD",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.31437,
+   "lng": 114.22271
   },
   {
    "id": "2026092313670",
@@ -1875,7 +2162,9 @@
    "address": "正街街市, 西營盤街市",
    "address_en": "CENTRE STREET MARKET, SAI YING PUN MARKET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28634,
+   "lng": 114.14218
   },
   {
    "id": "2026092313671",
@@ -1888,7 +2177,9 @@
    "address": "七姊妹道100-104號(雙數), 英皇道494-560號(雙數), 丹拿道, 繼園臺",
    "address_en": "NO.100-104 TSAT TSZ MUI ROAD (EVEN), NO.494-560 KING'S ROAD (EVEN), TANNER ROAD, KAI YUEN TERRACE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.2911,
+   "lng": 114.20339
   },
   {
    "id": "2026092313672",
@@ -1901,7 +2192,9 @@
    "address": "亞畢諾道8,10號, 亞畢諾道公廁",
    "address_en": "NO.8,10 ARBUTHNOT ROAD, ARBUTHNOT ROAD PUBLIC TOILET",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28014,
+   "lng": 114.15469
   },
   {
    "id": "2026092313674",
@@ -1914,7 +2207,9 @@
    "address": "元朗市、屏山、橫洲、天水圍市",
    "address_en": "YUEN LONG TOWN, TIN SHUI WAI TOWN, PING SHAN, WANG CHAU",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.447,
+   "lng": 113.99298
   },
   {
    "id": "2026092313675",
@@ -1927,7 +2222,9 @@
    "address": "荔枝角道700號",
    "address_en": "700 LAI CHI KOK ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.33435,
+   "lng": 114.15346
   },
   {
    "id": "2026092413676",
@@ -1940,7 +2237,9 @@
    "address": "帝后華庭第三座",
    "address_en": "QUEEN'S TERRACE TOWER 3",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.28721,
+   "lng": 114.14706
   },
   {
    "id": "2026092413677",
@@ -1953,7 +2252,9 @@
    "address": "元朗市、屏山、橫洲、天水圍市",
    "address_en": "YUEN LONG TOWN, TIN SHUI WAI TOWN, PING SHAN, WANG CHAU",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.447,
+   "lng": 113.99298
   },
   {
    "id": "2026092413679",
@@ -1966,7 +2267,9 @@
    "address": "無水: 寶馬山道 1-2,4號, 天后廟道 190-216號 (雙數), 天后廟道公園  水弱/無水: 寶馬臺",
    "address_en": "NO SUPPLY: 1-2,4 BRAEMAR HILL ROAD, 190-216 TIN HAU TEMPLE ROAD (EVEN.), TIN HAU TEMPLE ROAD PARK WEAK / NO SUPPLY: BRAEMAR TERRACE",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.28767,
+   "lng": 114.2026
   },
   {
    "id": "2026092413680",
@@ -1979,7 +2282,9 @@
    "address": "田心村195-231號",
    "address_en": "195-231 TIN SAM TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.36994,
+   "lng": 114.17912
   },
   {
    "id": "2026092413682",
@@ -1992,7 +2297,9 @@
    "address": "瓦瑤頭 近 燈柱V7196一帶",
    "address_en": "AREA AROUND LMAP POST V7196 AT NGA YIU TAU",
    "cause": "水掣測試工作",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.42953,
+   "lng": 114.03635
   },
   {
    "id": "2026092413683",
@@ -2005,7 +2312,9 @@
    "address": "部分新力街, 新平街, 新益里",
    "address_en": "PART OF SAN LIK STREET, SAN PING CIRCUIT, SAN YICK LANE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.39345,
+   "lng": 113.9683
   },
   {
    "id": "2026092413684",
@@ -2018,7 +2327,9 @@
    "address": "部份 貝澳老圍村",
    "address_en": "PART OF PUI O LO WAI TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.2462,
+   "lng": 113.9795
   },
   {
    "id": "2026092413686",
@@ -2031,7 +2342,9 @@
    "address": "北港凹村 一帶",
    "address_en": "AREA AROUND PAK KONG AU VILLAGE",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.38285,
+   "lng": 114.26246
   },
   {
    "id": "2026092413687",
@@ -2044,7 +2357,9 @@
    "address": "粉嶺圍 近燈柱VG2325 一帶",
    "address_en": "AREA AROUND LAMP POST VG2325 AT  FANLING WAI",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.49836,
+   "lng": 114.13631
   },
   {
    "id": "2026092413688",
@@ -2057,7 +2372,9 @@
    "address": "冬青道2-8號, 成和道 74-80號",
    "address_en": "NOS 2-8 HOLLY ROAD, NOS 74-80 SING WOO ROAD",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.26598,
+   "lng": 114.18833
   },
   {
    "id": "2026092413689",
@@ -2070,7 +2387,9 @@
    "address": "畢拉山道111號",
    "address_en": "NOS 111 MOUNT BUTLER ROAD",
    "cause": "緊急維修水管工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.27201,
+   "lng": 114.19608
   },
   {
    "id": "2026092413690",
@@ -2083,7 +2402,9 @@
    "address": "徑棚下一帶",
    "address_en": "AREA AROUND KENG PANG HA",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.3912,
+   "lng": 114.26121
   },
   {
    "id": "2026092413691",
@@ -2096,7 +2417,9 @@
    "address": "長宏邨",
    "address_en": "CHEUNG WANG ESTATE",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.35658,
+   "lng": 114.09691
   },
   {
    "id": "2026092413692",
@@ -2109,7 +2432,9 @@
    "address": "大埔田",
    "address_en": "TAI PO TIN",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.52771,
+   "lng": 114.15221
   },
   {
    "id": "2026092413693",
@@ -2122,7 +2447,9 @@
    "address": "莆上村2巷16號",
    "address_en": "NO.16 PO SHEUNG TSUEN LANE NO.2",
    "cause": "水掣測試工作",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.50758,
+   "lng": 114.12555
   },
   {
    "id": "2026092413694",
@@ -2135,7 +2462,9 @@
    "address": "荷李活道20-50號 (雙數), 些利街2-12號 (雙數)",
    "address_en": "NOS 20-50 HOLLYWOOD ROAD (EVEN NOS), NOS 2-12 SHELLEY STREET (EVEN NOS)",
    "cause": "緊急維修水管工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.28278,
+   "lng": 114.1531
   },
   {
    "id": "2026092413695",
@@ -2148,7 +2477,9 @@
    "address": "雅息士道1,3,5號, 林肯道1,3,5號",
    "address_en": "NO.1,3,5 ESSEX CRESCENT, NO.1,3,5 LINCOLN ROAD",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.32808,
+   "lng": 114.17776
   },
   {
    "id": "2026092413697",
@@ -2161,7 +2492,9 @@
    "address": "青海圍 近燈柱H3706一帶",
    "address_en": "AREA AROUND LAMP POST H3706 TSING HOI CIRCUIT",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.38965,
+   "lng": 113.97923
   },
   {
    "id": "2026092413698",
@@ -2174,7 +2507,9 @@
    "address": "興民街26-54號, 筲箕灣道143-179號",
    "address_en": "NO.26-54 SHAU KEI WAN ROAD, NO.143-179 SHAU KEI WAN ROAD",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.28112,
+   "lng": 114.22375
   },
   {
    "id": "2026092413702",
@@ -2187,7 +2522,9 @@
    "address": "恐龍坑近燈柱EB0584附近",
    "address_en": "AREA AROUND HUNG LUNG HANG NEARBY LAMP POST EB0584",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.47924,
+   "lng": 114.15794
   },
   {
    "id": "2026092413704",
@@ -2200,7 +2537,9 @@
    "address": "南里1-25號 (單數)",
    "address_en": "NOS.1-25 SOUTH LANE (ODDS.)",
    "cause": "緊急維修水管工程",
-   "status": "停水仍未開始"
+   "status": "停水仍未開始",
+   "lat": 22.28529,
+   "lng": 114.1349
   },
   {
    "id": "2026092413705",
@@ -2213,7 +2552,9 @@
    "address": "東匯路 近燈柱AD7105一帶",
    "address_en": "AREA AROUND LAMP POST AD7105 TUNG WUI ROAD",
    "cause": "緊急維修水管工程",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.43547,
+   "lng": 114.06543
   },
   {
    "id": "2026092413707",
@@ -2226,7 +2567,9 @@
    "address": "亞畢諾道8,10號, 亞畢諾道公廁",
    "address_en": "NO.8,10 ARBUTHNOT ROAD, ARBUTHNOT ROAD PUBLIC TOILET",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.28014,
+   "lng": 114.15469
   },
   {
    "id": "2026092413713",
@@ -2236,10 +2579,12 @@
    "nature": "緊急停水",
    "suspend_at": "2026-09-24T16:00:00+08:00",
    "resume_at": null,
-   "address": "屯盛街，青海圍，青善街，青匯街，顯發里，富發里，屯興路，部份青山公路 - 青山灣段",
-   "address_en": "TUEN SHING STREET, TSING HOI CIRCUIT, TSING SIN STREET, TSING WUI STREET, HIN FAT LANE, FU FAT LANE, TUEN HING ROAD, PART OF CASTLE PEAK ROAD - CASTLE PEAK BAY",
+   "address": "青海圍，青善街，青匯街，顯發里，富發里，屯興路",
+   "address_en": "TSING HOI CIRCUIT, TSING SIN STREET, TSING WUI STREET, HIN FAT LANE, FU FAT LANE, TUEN HING ROAD",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.38965,
+   "lng": 113.97923
   },
   {
    "id": "2026092413716",
@@ -2252,7 +2597,9 @@
    "address": "水弱/無: 英皇道 632-880(雙)號，七姊妹道160-208號，健康東街21-29((單)號，百福道21號",
    "address_en": "WEAK/ NO: 632-880( (EVEN) KIND'S ROAD, 160-208 TSAT TSZ MUI ROAD, 21-29((ODD) HEALTHY STREET EAST, 21 PAK FUK ROAD",
    "cause": "緊急維修水管工程",
-   "status": "現正停水"
+   "status": "現正停水",
+   "lat": 22.29066,
+   "lng": 114.20894
   },
   {
    "id": "2026092413717",
@@ -2265,7 +2612,24 @@
    "address": "大窩村一帶",
    "address_en": "AREA AROUND TAI WO TSUEN",
    "cause": "水掣測試工作",
-   "status": "供水已恢復"
+   "status": "供水已恢復",
+   "lat": 22.2811,
+   "lng": 114.04267
+  },
+  {
+   "id": "2026092413718",
+   "water_type": "食水",
+   "district": "元朗區",
+   "district_en": "Yuen Long",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-24T18:07:00+08:00",
+   "resume_at": null,
+   "address": "東匯路近燈柱AD4162一帶",
+   "address_en": "AREA AROUND TUNG WUN ROAD NEAR LAMPPOLE AD4162",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水",
+   "lat": 22.43547,
+   "lng": 114.06543
   }
  ],
  "active_ids": [
@@ -2282,6 +2646,7 @@
   "2026092413698",
   "2026092413707",
   "2026092413713",
-  "2026092413716"
+  "2026092413716",
+  "2026092413718"
  ]
 }

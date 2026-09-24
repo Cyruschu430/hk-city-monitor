@@ -147,14 +147,18 @@ try {
   const landing = await page.evaluate(() => ({
     mode: window.__hkcm?.currentMode?.() ?? null,
     mounted: document.querySelectorAll(".panel[data-panel]").length,
+    // Derive the expectation from the app rather than hardcoding a number: a
+    // panel withdrawal (crypto_prices, 2026-09-24) then does not require editing
+    // the test, and a panel that silently fails to mount still fails the check.
+    expected: window.__hkcm?.overviewIds?.().length ?? 0,
     banner: document.querySelector(".banner")?.textContent?.trim().slice(0, 80) ?? null,
     drinkingNow: window.__hkcm?.triggerState?.wsd_water_suspension?.drinking_now ?? null,
     saltOnly: window.__hkcm?.triggerState?.wsd_water_suspension?.salt_only_now ?? null,
   }));
   check(
-    "冷啟動：未撳任何嘢之前，app 自己落喺總覽而且開齊 18 個 panel",
-    landing.mode === "overview" && landing.mounted >= 18,
-    `mode=${JSON.stringify(landing.mode)}（"overview"=總覽）mounted=${landing.mounted} ` +
+    "冷啟動：未撳任何嘢之前，app 自己落喺總覽而且開齊全部 panel",
+    landing.mode === "overview" && landing.expected > 0 && landing.mounted >= landing.expected,
+    `mode=${JSON.stringify(landing.mode)}（"overview"=總覽）mounted=${landing.mounted}/${landing.expected} ` +
       `drinking_now=${landing.drinkingNow} salt_only_now=${landing.saltOnly} banner=${JSON.stringify(landing.banner)}`,
   );
 
@@ -215,16 +219,16 @@ try {
 // is "real numbers, correct ages", not "always green".
   const mktOk = ["live", "stale"].includes(newPanels.market?.state) && (newPanels.market?.text ?? "").length > 10;
   const newsOk = ["live", "stale"].includes(newPanels.news?.state) && (newPanels.news?.text ?? "").length > 8;
-  // Crypto: CoinGecko rate-limits the shared free tier from Cloudflare's egress
-  // (429, measured), so once the build points at the deployed Worker this panel
-  // can legitimately be in its error state. The honesty contract is that it says
-  // so clearly — NOT that it is always green. A silently empty panel still fails.
+  // Crypto was WITHDRAWN 2026-09-24 (Cyrus): CoinGecko 429s Cloudflare's egress
+  // on every production load. This check used to TOLERATE that error state; the
+  // contract is now that the panel is gone, and — more usefully — that removing
+  // it left no trace. Asserting absence is what stops a withdrawal from
+  // half-happening (panel gone from OVERVIEW but still fetched, still erroring).
   const cryptoState = newPanels.crypto?.state;
-  const cryptoHonest = cryptoState === "live" ||
-    (cryptoState === "error" && (newPanels.crypto?.text ?? "").includes("CoinGecko"));
-  check("新面板 #5：港股（延遲報價）出真數字、紅升綠跌；加密貨幣 live 或誠實報錯",
-    mktOk && cryptoHonest && newPanels.mktUpClass,
-    `market=${newPanels.market?.state}:${newPanels.market?.text?.slice(0, 40)} crypto=${cryptoState}:${newPanels.crypto?.text?.slice(0, 50)} 有 mkt class=${newPanels.mktUpClass}`);
+  const cryptoGone = cryptoState === undefined && !(newPanels.crypto?.text ?? "").length;
+  check("新面板 #5：港股（延遲報價）出真數字、紅升綠跌；加密貨幣已撤回、冇痕跡",
+    mktOk && cryptoGone && newPanels.mktUpClass,
+    `market=${newPanels.market?.state}:${newPanels.market?.text?.slice(0, 40)} crypto=${cryptoState ?? "(absent)"} 有 mkt class=${newPanels.mktUpClass}`);
   check("新面板 #6：突發新聞（官方治安 RSS）有真標題", newsOk,
     `news=${newPanels.news?.state}:${newPanels.news?.text?.slice(0, 60)}`);
   check("新面板：AQHI 18 站 + 停車場空位", 

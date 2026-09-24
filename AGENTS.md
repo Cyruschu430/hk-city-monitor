@@ -517,3 +517,47 @@ The two fixes that survived: `align-items:start` (so a 2-line card no longer str
 505px neighbour — 14 distinct card heights replaced uniform pairs) and a **map key** explaining
 the cluster numbers. The `column-count` approach was rejected on purpose: AGENTS.md Pitfall 12
 already records its three failure modes in this codebase.
+
+### Pitfall 23 — a check that cannot fail is worse than no check
+
+`verify-browser.mjs` had a layer-toggle check that did:
+```js
+const btn = document.querySelector('.layer-control .lyr-row[role="switch"]');   // the FIRST switch
+const before = map.getLayoutProperty("vl-water_suspension_districts-fill", "visibility");
+```
+Row order varies with the mode, so it clicked a **camera** row and then read the **water**
+layer's visibility. Measured output: `before=visible after=visible restored=visible` — the
+assertion `before !== after` could never be true on that path. It had been passing for weeks by
+asserting nothing at all.
+
+**Select the element that OWNS the thing you assert on**, by its label or a data attribute —
+never by position. When it cannot find one, report the missing layer id rather than a generic
+error, so the failure says what was absent.
+
+### Pitfall 24 — a stale async result can make every readiness predicate pass while the check fails
+
+The same harness intermittently scored 62–64/66 against production (roughly 2 runs in 5) while
+all `settle()` predicates reported satisfied — **no timeout was printed**, which was the clue.
+Instrumenting the check captured the real state:
+
+```
+mode="water_supply"  rail=6  vertical=2  rows=[交通快拍相機,降雨臨近預報,…]
+```
+
+The mode had already changed to `water_supply`, but the LAYERS control still listed the
+**previous** mode's rows. Cause: the P0-1 race test deliberately double-switches (water →
+overview) and waited a flat 4000 ms; on a slower run the first water switch's async
+`applyModeLayers()` was still resolving when a later click re-entered water mode, and the stale
+result won the write.
+
+What follows from it:
+- **When a predicate-based wait still fails, the predicate is measuring the wrong thing.** Panel
+  state had settled; the *control* had not. Gate on the specific artefact the check reads.
+- **Wait for your own race test to settle before the next action touches the same state.** A test
+  that deliberately creates a race must not leak that race into later checks.
+- **Instrument before re-running.** Adding `mode`, `railRows`, `verticalRows` and `panelCount` to
+  the failure message is what turned "flaky" into a two-line diagnosis. Re-running until green
+  would have hidden it forever.
+- Reproduce under load: `npm test && node scripts/verify-browser.mjs …` in **one** command made
+  the failure deterministic, because the test suite competes for CPU. A gate that only passes on
+  an idle machine fails on a loaded CI runner.

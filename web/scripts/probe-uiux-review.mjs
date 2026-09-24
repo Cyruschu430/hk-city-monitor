@@ -64,10 +64,15 @@ const railClick = async (page, needle) => {
   }, needle);
 };
 
+// The app auto-hoists 停水模式 whenever a real drinking-water outage is in force
+// (correctly — see the trigger notes). Every "overview" shot must therefore
+// EXPLICITLY enter 總覽, or it silently photographs the water mode instead.
+const toOverview = (p) => railClick(p, "總覽");
+
 // 1. Overview, dark (the default first impression).
-await shoot("01-overview-dark", { theme: "dark" });
+await shoot("01-overview-dark", { theme: "dark", prepare: toOverview });
 // 2. Overview, LIGHT — the theme where the map-face text was invisible.
-await shoot("02-overview-light", { theme: "light" });
+await shoot("02-overview-light", { theme: "light", prepare: toOverview });
 // 3. The whole panel column in one tall shot, so density/raggedness is visible.
 const colPage = await browser.newPage({ viewport: { width: 1600, height: 1000 }, locale: "zh-HK" });
 await colPage.addInitScript(() => {
@@ -99,7 +104,7 @@ await shoot("06-typhoon", {
   prepare: (p) => railClick(p, "颱風"),
 });
 // 7. Mobile-ish width, to catch a layout that only breaks narrow.
-await shoot("07-narrow", { theme: "dark", width: 900, height: 1000 });
+await shoot("07-narrow", { theme: "dark", width: 900, height: 1000, prepare: toOverview });
 // 8. The ticker strip alone, zoomed, to judge the category tags.
 const tickPage = await browser.newPage({ viewport: { width: 1600, height: 1000 }, locale: "zh-HK", deviceScaleFactor: 2 });
 await tickPage.goto(URL_UNDER_TEST, { waitUntil: "domcontentloaded" });

@@ -26,11 +26,31 @@ function glyphColor(glyph: string): string {
   return "#22d3ee";
 }
 
+/** One geocoded water-suspension notice: WHERE the outage actually is. */
+export interface WaterPoint {
+  id: string;
+  lat: number;
+  lng: number;
+  district: string;
+  address: string;
+  water_type: string;
+  nature: string;
+  cause: string;
+  suspend_at: string | null;
+  resume_at: string | null;
+}
+
 export interface LayerArgs {
   registry: Registry;
   ctx: AdapterCtx;
   /** districts (Traditional Chinese) that currently have a live suspension */
   activeDistricts?: Set<string>;
+  /** Geocoded notice locations. `activeDistricts` says which districts are
+      affected; this says WHERE, so the map drops a pin on the building instead
+      of tinting a whole district for one address. Populated from the
+      collector's ALS geocoding — a notice that did not resolve is absent here
+      but still contributes its district, so nothing disappears silently. */
+  waterPoints?: WaterPoint[];
   /** mode-switch generation: passed by main; a layer whose fetch outlives the
       mode it was asked for must abort instead of painting orphan geometry */
   gen?: number;
@@ -63,7 +83,98 @@ export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): v
   for (const def of defs) {
     for (const id of layersOf(def)) if (map.getLayer(id)) map.removeLayer(id);
     if (map.getSource(`${PREFIX}${def.id}`)) map.removeSource(`${PREFIX}${def.id}`);
+    // The suspension pins are a SECOND source under the same layer definition,
+    // so clearing must remove them too or a mode switch leaves orphan dots.
+    const pid = `${PREFIX}${def.id}-points`;
+    if (map.getLayer(pid)) map.removeLayer(pid);
+    if (map.getSource(pid)) map.removeSource(pid);
   }
+}
+
+/**
+ * Draw the geocoded suspension pins, with a popup per notice.
+ *
+ * Cyrus: "Layers District with water suspension should refering to Panel
+ * 水務署 臨時停水通知 showing the affected locations by geocoding."
+ *
+ * Before this the layer tinted a whole district polygon for an outage that was
+ * often ONE building — a single 牛頭角道 notice turned all of 觀塘區 red. The
+ * notices carry a street address but no coordinates, so the collector resolves
+ * each one through ALS (the registered `als_address_lookup` source) and
+ * publishes lat/lng; see scripts/build_water_suspension.py.
+ *
+ * Two-tone on purpose: 食水 (drinking water) is the life-safety case and takes
+ * the same alert red as the district tint; 鹹水 (flushing water) is a nuisance
+ * and is amber. They are NOT the same emergency and the map says so without
+ * needing the popup.
+ *
+ * A separate function because the pins must be reachable on BOTH paths — the
+ * district tint can legitimately have nothing to draw while the pins do.
+ */
+function drawWaterPoints(map: maplibregl.Map, id: string, pts: WaterPoint[]): void {
+  if (pts.length === 0) return;
+  const pid = `${id}-points`;
+  if (map.getLayer(pid)) map.removeLayer(pid);
+  if (map.getSource(pid)) map.removeSource(pid);
+  map.addSource(pid, {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: pts.map((p) => ({
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [p.lng, p.lat] },
+        properties: {
+          address: p.address,
+          district: p.district,
+          water_type: p.water_type,
+          nature: p.nature,
+          cause: p.cause,
+          suspend_at: p.suspend_at,
+          resume_at: p.resume_at,
+          drinking: /食水/.test(p.water_type) ? 1 : 0,
+        },
+      })),
+    },
+  });
+  map.addLayer({
+    id: pid,
+    type: "circle",
+    source: pid,
+    paint: {
+      "circle-color": ["case", ["==", ["get", "drinking"], 1], "#ff5d6c", "#fbbf24"],
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 5, 14, 8, 17, 12],
+      "circle-stroke-color": "rgba(5,7,13,.85)",
+      "circle-stroke-width": 1.5,
+      "circle-opacity": 0.95,
+    },
+  });
+  map.on("click", pid, (e) => {
+    // Same guard as the district polygon: MapLibre fires every handler under the
+    // cursor, so without it a camera click stacks two popups.
+    const camHit = map.queryRenderedFeatures(e.point, {
+      layers: ["cameras-td-point", "cameras-hko-point", "cameras-td-cluster", "cameras-hko-cluster"],
+    });
+    if (camHit.length > 0) return;
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = f.properties ?? {};
+    const tc = lang() === "tc";
+    const when = String(p["suspend_at"] ?? "").slice(5, 16).replace("T", " ");
+    const back = String(p["resume_at"] ?? "").slice(5, 16).replace("T", " ");
+    const drinking = p["drinking"] === 1;
+    const html = `
+        <div style="padding:9px 11px;font:12px/1.55 var(--font-ui);max-width:280px">
+          <b style="color:${drinking ? "#ff5d6c" : "#fbbf24"}">
+            ${String(p["water_type"] ?? "")} · ${String(p["nature"] ?? "")}
+          </b><br>
+          <b>${String(p["district"] ?? "")}</b> ${String(p["address"] ?? "")}<br>
+          <span style="color:#8ea6c4">${String(p["cause"] ?? "")}</span><br>
+          <span style="color:#8ea6c4">${tc ? "停水" : "from"} ${when}${back ? ` → ${back}` : ""}</span>
+        </div>`;
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup" }).setLngLat(e.lngLat).setHTML(html).addTo(map);
+  });
+  map.on("mouseenter", pid, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", pid, () => (map.getCanvas().style.cursor = ""));
 }
 
 /** Trim whitespace from a district name.
@@ -109,10 +220,20 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
 
   const active = args.activeDistricts ?? new Set<string>();
   const activeList = [...active];
-  // No active districts → nothing to say. Drawing 18 faint district outlines
-  // anyway turned the map into a violet wireframe (caught in a screenshot
-  // review), so the layer is skipped entirely in that case.
-  if (activeList.length === 0) return;
+  const pts = args.waterPoints ?? [];
+  // No active districts → the district TINT has nothing to say, and drawing 18
+  // faint outlines anyway turned the map into a violet wireframe (caught in a
+  // screenshot review). MEASURED 2026-09-24: this used to `return` outright, so
+  // it also skipped the pins below — the map then showed a source with zero
+  // layers while the panel listed 15 real notices, because the district set is
+  // populated asynchronously by the panel and is legitimately empty on the first
+  // draw even when the geocoded points are already known. Pins and tint now draw
+  // INDEPENDENTLY; the function gives up only when BOTH are empty.
+  if (activeList.length === 0 && pts.length === 0) return;
+  if (activeList.length === 0) {
+    drawWaterPoints(map, id, pts);
+    return;
+  }
 
   const matchExpr: unknown = ["match", ["get", "DISTRICT_CHINESE"], ...activeList.flatMap((d) => [d, "#ff5d6c"]), "#a855f7"];
 
@@ -196,6 +317,10 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
   });
   map.on("mouseenter", `${id}-fill`, () => (map.getCanvas().style.cursor = "pointer"));
   map.on("mouseleave", `${id}-fill`, () => (map.getCanvas().style.cursor = ""));
+
+  // Pins on the actual affected addresses, on top of the district tint. The tint
+  // says how large the affected area is; the pins say WHERE.
+  drawWaterPoints(map, id, pts);
 }
 
 async function rasterLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs, panel: PanelDefRaw | undefined): Promise<void> {

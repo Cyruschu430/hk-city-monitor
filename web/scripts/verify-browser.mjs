@@ -59,10 +59,19 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, loc
  *
  * The predicate is deliberately generous (it keeps polling for the full budget)
  * because being slow is fine and being wrong is not.
+ *
+ * PASS VALUES AS `arg`, NEVER VIA CLOSURE. Playwright SERIALIZES `fn` and runs it
+ * inside the page, so a Node-side variable captured by the closure silently
+ * becomes `undefined` there — the predicate then compares against undefined, is
+ * never true, and burns its whole budget looking like a slow app.
+ * MEASURED 2026-09-24: `settle(() => cats[0] === cat, …)` timed out for 20s and
+ * logged a warning, while the check it gated still PASSED because the following
+ * page.evaluate re-read the real DOM. A silent, self-contradicting diagnostic.
+ * Use `settle(fn, budget, label, arg)` and take `arg` as the predicate's parameter.
  */
-const settle = async (fn, budgetMs = 30_000, label = "condition") => {
+const settle = async (fn, budgetMs = 30_000, label = "condition", arg = null) => {
   try {
-    await page.waitForFunction(fn, null, { timeout: budgetMs, polling: 250 });
+    await page.waitForFunction(fn, arg, { timeout: budgetMs, polling: 250 });
     return true;
   } catch {
     console.warn(`  [settle] timed out after ${budgetMs}ms: ${label}`);
@@ -584,27 +593,96 @@ try {
   });
   check("P0-6 熱帶氣旋名唔會重複（DUJUAN DUJUAN）", !tcName.doubled, `note="${tcName.note}"`);
 
-  // P2: ticker per-channel tabs — 全部/政府/交通/RTHK switch the source.
-  const tickerTabs = await page.evaluate(() => ({
-    tabs: [...document.querySelectorAll(".ticker-tab")].map((b) => b.textContent.trim()),
-    selected: document.querySelector(".ticker-tab[aria-selected='true']")?.textContent.trim() ?? null,
-  }));
-  check("P2 ticker tabs：全部/政府/交通/RTHK，預設全部", 
-    tickerTabs.tabs.join(",") === "全部,政府,交通,RTHK" && tickerTabs.selected === "全部",
-    `tabs=[${tickerTabs.tabs}] selected=${tickerTabs.selected}`);
-  // Switching to RTHK actually repolls that channel.
+  // P2: the ticker CLASSIFIES headlines by news type (Cyrus).
+  //
+  // The taxonomy is the publishers' own section feeds (RTHK 本地/國際/兩岸/財經/體育,
+  // news.gov.hk's category feeds, TD traffic), so this asserts a checkable fact
+  // about the SOURCE rather than an opinion about a headline. Previously the
+  // ticker had 4 tabs (全部/政府/交通/RTHK) and merged every headline
+  // undifferentiated — a reader could not tell a sports result from a road
+  // closure. These checks now hold the classification contract:
+  //   · one tab per news type, 全部 first and selected by default
+  //   · every headline carries its category tag inline
+  //   · a single-category tab shows ONLY that category
+  //   · no headline is repeated (the gov feeds overlap heavily — one press
+  //     release is filed under every category it touches)
+  const tickerTabs = await page.evaluate(() => {
+    const t = document.getElementById("ticker")?.__ticker;
+    return {
+      tabs: [...document.querySelectorAll(".ticker-tab")].map((b) => b.textContent.trim()),
+      selected: document.querySelector(".ticker-tab[aria-selected='true']")?.textContent.trim() ?? null,
+      categories: t ? t.categories().map((c) => c.tc) : [],
+    };
+  });
+  const wantedTabs = ["全部", "本地", "國際", "兩岸", "財經", "體育", "政府", "交通"];
+  check("P2 ticker tabs：每個新聞類別一個 tab，預設全部",
+    tickerTabs.tabs.join(",") === wantedTabs.join(",") && tickerTabs.selected === "全部" &&
+      tickerTabs.categories.length === wantedTabs.length - 1,
+    `tabs=[${tickerTabs.tabs}] 類別=[${tickerTabs.categories}] selected=${tickerTabs.selected}`);
+
+  // 全部 must be CLASSIFIED: every item tagged, and no duplicated headline.
+  // Wait on the TICKER (see the note below) — its collect is async and the panel
+  // predicate says nothing about it.
+  await settle(
+    () => (document.getElementById("ticker")?.__ticker?.shown() ?? []).length > 0,
+    25_000,
+    "ticker collected (全部)",
+  );
+  const allTab = await page.evaluate(() => {
+    const items = document.getElementById("ticker")?.__ticker?.shown() ?? [];
+    const titles = items.map((i) => i.title);
+    return {
+      n: items.length,
+      untagged: items.filter((i) => !i.cat).length,
+      distinctCats: [...new Set(items.map((i) => i.cat))],
+      dupes: titles.length - new Set(titles).size,
+    };
+  });
+  check("P2 ticker 全部：每則都有類別標籤，而且冇重複標題",
+    allTab.n > 0 && allTab.untagged === 0 && allTab.dupes === 0 && allTab.distinctCats.length >= 3,
+    `n=${allTab.n} 未標籤=${allTab.untagged} 重複=${allTab.dupes} 類別=[${allTab.distinctCats.join(",")}]`);
+
+  // A single-category tab must show ONLY that category — that is the whole point
+  // of classifying. 體育 is used because its feed is reliably populated.
+  //
+  // WAIT ON THE TICKER, NOT ON THE PANELS. MEASURED 2026-09-24: the generic
+  // `settled()` watches panel states, which have nothing to do with the ticker, so
+  // it returned immediately and the check read the track BEFORE the async collect
+  // had painted — reporting `selected=體育` alongside all 7 categories still on
+  // screen. The app was correct; the wait was watching the wrong thing.
+  const tickerShowsOnly = (cat) =>
+    settle(
+      // `wanted` arrives as the page-function ARGUMENT, not by closure — see the
+      // note on `settle`: a closed-over variable is undefined in the page.
+      (wanted) => {
+        const items = document.getElementById("ticker")?.__ticker?.shown() ?? [];
+        if (items.length === 0) return false;
+        const cats = [...new Set(items.map((i) => i.cat))];
+        return cats.length === 1 && cats[0] === wanted;
+      },
+      25_000,
+      `ticker showing only ${cat}`,
+      cat,
+    );
   await page.evaluate(() => {
-    const t = [...document.querySelectorAll(".ticker-tab")].find((b) => b.textContent.trim() === "RTHK");
+    const t = [...document.querySelectorAll(".ticker-tab")].find((b) => b.textContent.trim() === "體育");
     t?.click();
   });
-  await page.waitForTimeout(2500);
-  const rthkTicker = await page.evaluate(() => ({
-    selected: document.querySelector(".ticker-tab[aria-selected='true']")?.textContent.trim() ?? null,
-    text: (document.querySelector(".ticker-track")?.textContent ?? "").trim().slice(0, 70),
-  }));
-  check("P2 ticker：撳 RTHK tab → 切去 RTHK 源且有內容", 
-    rthkTicker.selected === "RTHK" && rthkTicker.text.length > 0,
-    `selected=${rthkTicker.selected} ticker="${rthkTicker.text}"…`);
+  await tickerShowsOnly("體育");
+  const sportTab = await page.evaluate(() => {
+    const t = document.getElementById("ticker")?.__ticker;
+    const items = t?.shown() ?? [];
+    return {
+      selected: document.querySelector(".ticker-tab[aria-selected='true']")?.textContent.trim() ?? null,
+      n: items.length,
+      cats: [...new Set(items.map((i) => i.cat))],
+      sample: items[0]?.title ?? "",
+    };
+  });
+  check("P2 ticker：撳一個類別 tab → 只出該類新聞，其他類別唔會混入",
+    sportTab.selected === "體育" && sportTab.n > 0 && sportTab.cats.length === 1 && sportTab.cats[0] === "體育",
+    `selected=${sportTab.selected} n=${sportTab.n} cats=[${sportTab.cats.join(",")}] · ${sportTab.sample.slice(0, 40)}`);
+
   await page.evaluate(() => {
     const t = [...document.querySelectorAll(".ticker-tab")].find((b) => b.textContent.trim() === "全部");
     t?.click();
@@ -652,51 +730,87 @@ try {
     const track = document.querySelector(".ticker-track");
     const dur = () => track?.style.animationDuration ?? "";
     const px = () => (track?.scrollWidth ?? 0) / 2;
+    const items = () => track?.querySelectorAll(".tk-item").length ?? 0;
+    // Wait for the track to STABILISE rather than for a fixed sleep: the collect
+    // is async and a flat 2600ms was a guess. Two consecutive equal item counts
+    // means painting has stopped for this tab.
+    const settleTrack = async () => {
+      let prev = -1;
+      for (let i = 0; i < 40; i++) {
+        await new Promise((r) => setTimeout(r, 250));
+        const n = items();
+        if (n > 0 && n === prev && dur() !== "") return;
+        prev = n;
+      }
+    };
     const click = async (label) => {
       [...document.querySelectorAll(".ticker-tab")].find((b) => b.textContent.trim() === label)?.click();
-      await new Promise((r) => setTimeout(r, 2600));
+      await settleTrack();
     };
+    // Compare the LONGEST tab (全部) against a SHORT one (體育). The rule under
+    // test is "constant pixels per second regardless of how much content a tab
+    // has", so the pair has to differ a lot in length for the check to mean
+    // anything. RTHK used to be that short tab; the ticker is now classified by
+    // news type, so 體育 plays its role.
     await click("全部");
     const all = { dur: dur(), px: px() };
-    await click("RTHK");
-    const rthk = { dur: dur(), px: px() };
+    await click("體育");
+    const short = { dur: dur(), px: px() };
     await click("全部");
-    return { all, rthk };
+    return { all, short };
   });
   const parseS = (d) => Number((d || "0s").replace("s", ""));
   const ppsAll = speed.all.px / parseS(speed.all.dur);
-  const ppsRthk = speed.rthk.px / parseS(speed.rthk.dur);
-  check("Bug ticker：速度改用固定 px/s（全部同 RTHK 同速，唔會長 tab 衝得特别快）",
-    speed.all.dur !== "" && speed.rthk.dur !== "" && Math.abs(ppsAll - ppsRthk) < 12 && ppsAll > 25 && ppsAll < 70,
-    `全部 ${speed.all.px}px/${speed.all.dur}=${ppsAll.toFixed(1)}px/s · RTHK ${speed.rthk.px}px/${speed.rthk.dur}=${ppsRthk.toFixed(1)}px/s`);
+  const ppsShort = speed.short.px / parseS(speed.short.dur);
+  check("Bug ticker：速度改用固定 px/s（全部同短 tab 同速，唔會長 tab 衝得特别快）",
+    speed.all.dur !== "" && speed.short.dur !== "" && Math.abs(ppsAll - ppsShort) < 12 && ppsAll > 25 && ppsAll < 70,
+    `全部 ${speed.all.px}px/${speed.all.dur}=${ppsAll.toFixed(1)}px/s · 體育 ${speed.short.px}px/${speed.short.dur}=${ppsShort.toFixed(1)}px/s`);
 
   // --- 4. the 停水 gate: live WSD data ----------------------------------------
-  await page.click(".rail-btn:nth-child(4)").catch(() => {}); // 停水模式 = 4th rail button
-  await page.waitForFunction(
+  //
+  // ROOT CAUSE OF THE LONG-STANDING INTERMITTENCY, found here after three wrong
+  // guesses. This block re-enters water mode with a POSITIONAL selector
+  // (`.rail-btn:nth-child(4)`) whose failure was swallowed by `.catch(() => {})`,
+  // and then waited for the LAYERS control to merely HAVE ROWS:
+  //     el.querySelectorAll(".lyr-row[role='switch']").length > 0
+  // A previous mode's rows satisfy that, so on a slow run the wait returned
+  // immediately and the check 20 lines below read the WRONG MODE's legend —
+  // reporting `rows=[交通快拍相機, …]` with `mode="water_supply"`. The strong
+  // predicate that would have caught it was 280 lines earlier, guarding a
+  // different set of checks.
+  //
+  // Two fixes: enter the mode by LABEL and assert it took, then gate on the same
+  // structural condition (exactly one vertical row, and it is the water layer)
+  // that the legend check actually depends on.
+  await railClick("停水");
+  const reachedWater = await settle(
+    (wanted) => (window.__hkcm?.currentMode?.() ?? null) === wanted,
+    20_000,
+    "entered water mode (before the LAYERS control checks)",
+    "water_supply",
+  );
+  if (!reachedWater) console.warn("  [setup] water mode not reached; the LAYERS checks may fail");
+  await settle(
     () => {
       const p = document.querySelector('[data-panel="water_suspension_list"]');
-      return p && p.dataset.state !== "loading";
+      return !!p && p.dataset.state !== "loading";
     },
-    null,
-    { timeout: 20_000 },
-  ).catch(() => {});
-  // A TIMER IS NOT A READINESS GATE. This waited a flat 1500ms after switching
-  // into water mode, and on a slow run the LAYERS control had not been
-  // repopulated yet — that produced a real, intermittent failure of the check
-  // below (observed once in four runs, 2026-09-24). Wait for the control to
-  // actually carry rows instead, so the check measures the app and not the
-  // harness's patience.
-  await page
-    .waitForFunction(
-      () => {
-        const el = document.querySelector(".layer-control");
-        return !!el && !el.hidden && el.querySelectorAll(".lyr-row[role='switch']").length > 0;
-      },
-      null,
-      { timeout: 20_000 },
-    )
-    .catch(() => {});
-  await page.waitForTimeout(400);
+    20_000,
+    "water panel left loading",
+  );
+  await settle(
+    () => {
+      const el = document.querySelector(".layer-control");
+      if (!el || el.hidden) return false;
+      const vertical = [...el.querySelectorAll(".lyr-row:not(.rail) .lyr-label")].map((r) =>
+        r.textContent.trim(),
+      );
+      return vertical.length === 1 && vertical[0].includes("停水");
+    },
+    25_000,
+    "LAYERS control showing exactly the water mode's own layer (before the legend check)",
+  );
+  await page.waitForTimeout(200);
 
   // LAYERS control + 圖層符號 (checked here, where the water mode's layers are drawn).
   const legend = await page.evaluate(() => {

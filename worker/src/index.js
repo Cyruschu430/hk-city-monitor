@@ -25,11 +25,31 @@ const MAX_UPSTREAM_BYTES = 16 * 1024 * 1024; // 16 MiB, checked via Content-Leng
 const DATA_CACHE_SECONDS = 60;
 const TILE_CACHE_SECONDS = 86_400;
 
-// Rate limits per client IP. DATA for proxy calls; TILE_MISS only counts edge-cache
-// misses (origin fetches), because a panning map legitimately asks for hundreds of
-// tiles — what must be bounded is how much origin traffic one client can CAUSE.
-const DATA_LIMIT_PER_MIN = 60;
+// Rate limits per client IP.
+//
+// WHAT MUST BE BOUNDED IS ORIGIN TRAFFIC, NOT REQUESTS. A cache HIT costs the
+// upstream publisher nothing, so counting hits against a rate limit protects
+// nobody and throttles our own users.
+//
+// MEASURED 2026-09-24: a single cold load of the dashboard issued **49 proxy
+// requests in 30s (96.6/min)** against a 60/min limit. The app was over budget by
+// 1.6x before the user did anything, because the panel engine, the map layers and
+// the news ticker all read overlapping sources within the same 60s cache window —
+// every one of those reads was a cache HIT, and every one was counted. The symptom
+// was intermittent panels failing with 429 on a loaded minute.
+//
+// The tile limiter already had this right (it counts misses after the cache
+// check). These constants make the same distinction for data:
+//   · DATA_MISS_LIMIT_PER_MIN  — the real LandsD/upstream protection, unchanged.
+//   · DATA_TOTAL_LIMIT_PER_MIN — a generous ceiling so a client hammering cached
+//     hits is still bounded, without penalising normal use.
+const DATA_MISS_LIMIT_PER_MIN = 60;
+const DATA_TOTAL_LIMIT_PER_MIN = 600;
 const TILE_MISS_LIMIT_PER_MIN = 120;
+// Tiles are cached for 24h, so a hit is a pure CDN read; panning a map legitimately
+// asks for a burst of them. This ceiling only exists to bound the Workers request
+// budget, not to model upstream load, so it is deliberately loose.
+const TILE_TOTAL_LIMIT_PER_MIN = 1200;
 
 // --- rate limiter ------------------------------------------------------------
 // Ceiling: this bucket is per-isolate in-memory state, so it is best-effort —
@@ -120,9 +140,11 @@ async function handleProxy(request, ctx) {
 
   const tile = TILE_PATH_RE.test(target.pathname);
 
-  // The data limiter counts every request (data is dynamic); the tile limiter only
-  // counts cache misses below — cached tiles are cheap for everyone.
-  if (!tile && isLimited(`d:${clientIp}`, DATA_LIMIT_PER_MIN, now)) {
+  // A generous ceiling on TOTAL requests, so a client hammering the cache is still
+  // bounded. This is NOT the upstream protection — that is the miss limit below.
+  const totalKey = tile ? `t:${clientIp}` : `d:${clientIp}`;
+  const totalLimit = tile ? TILE_TOTAL_LIMIT_PER_MIN : DATA_TOTAL_LIMIT_PER_MIN;
+  if (isLimited(totalKey, totalLimit, now)) {
     return jsonError(429, "rate_limited", "too many requests — retry in a minute");
   }
 
@@ -136,8 +158,14 @@ async function handleProxy(request, ctx) {
     return new Response(hit.body, { status: hit.status, headers });
   }
 
-  if (tile && isLimited(`t:${clientIp}`, TILE_MISS_LIMIT_PER_MIN, now)) {
+  // Past this point we are about to touch the upstream, so the real limit applies.
+  // Counting only MISSES is what stops the dashboard from throttling itself: see
+  // the note on DATA_MISS_LIMIT_PER_MIN.
+  if (tile && isLimited(`tm:${clientIp}`, TILE_MISS_LIMIT_PER_MIN, now)) {
     return jsonError(429, "rate_limited", "too many uncached tile requests — retry in a minute");
+  }
+  if (!tile && isLimited(`dm:${clientIp}`, DATA_MISS_LIMIT_PER_MIN, now)) {
+    return jsonError(429, "rate_limited", "too many uncached upstream requests — retry in a minute");
   }
 
   let upstream;

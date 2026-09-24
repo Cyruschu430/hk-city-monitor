@@ -292,7 +292,26 @@ try {
   // P0-1 layer/mode race: rapid mode switches must not leave orphan layers.
   await page.click(".rail-btn:nth-child(4)"); // water
   await page.click(".rail-btn:nth-child(1)"); // overview immediately
-  await page.waitForTimeout(4000);
+  // This deliberately races the two switches, so it MUST be allowed to fully
+  // settle before anything else touches the mode. MEASURED 2026-09-24: a flat
+  // 4000ms here left the first water switch's applyModeLayers() still resolving,
+  // and the NEXT water switch (below) could then be overwritten by that stale
+  // result — the LAYERS control showed the previous mode's rows while already
+  // reporting mode="water_supply". That was the intermittent 63/66.
+  await settle(
+    () => {
+      const map = window.__map;
+      const style = map?.getStyle();
+      if (!style) return false;
+      const orphans = (style.layers ?? []).filter((l) => l.id.startsWith("vl-"));
+      const mode = window.__hkcm?.currentMode?.() ?? null;
+      const drawn = window.__hkcm?.drawnLayers?.()?.map((l) => l.id) ?? [];
+      // Settled = back on overview, no vertical layers left, nothing drawn.
+      return mode === "overview" && orphans.length === 0 && drawn.length === 0;
+    },
+    20_000,
+    "P0-1 race settled (back on overview, no orphan layers)",
+  );
   const raceLayers = await page.evaluate(() => {
     const style = window.__map.getStyle();
     return {
@@ -339,12 +358,26 @@ try {
 
   // P1 district labels: in water mode the active districts carry name labels.
   await page.click(".rail-btn:nth-child(4)"); // water
-  // Two independent things must finish, and neither is a fixed duration:
-  //   1. the mode switch re-mounts panels (settled())
-  //   2. applyModeLayers() fetches the district polygons and draws them
-  // Waiting only for (1) still failed the layer checks when the machine was
-  // busy, because the fill/label layers appear from a second async step.
+  // THREE independent async steps must finish, and none is a fixed duration.
+  // MEASURED 2026-09-24: waiting on the panels alone was still intermittent
+  // (63/66 in 1 run of 4). The diagnostics showed why — the LAYERS control had
+  // not been rebuilt yet, so it still listed the PREVIOUS mode's rows
+  // (`rail=6, rows=[交通快拍相機…]` with mode already "water_supply"). The panel
+  // predicate was true while setRows() had not run.
+  // So the gate is on the CONTROL's own content: it must be showing this mode.
   await settled(30_000, "water mode settled");
+  await settle(
+    () => {
+      const el = document.querySelector(".layer-control");
+      if (!el || el.hidden) return false;
+      const labels = [...el.querySelectorAll(".lyr-label")].map((r) => r.textContent.trim());
+      // 停水受影響地區 is the water vertical's own layer, so its presence is
+      // proof the control was rebuilt for THIS mode rather than the last one.
+      return labels.some((t) => t.includes("停水"));
+    },
+    30_000,
+    "LAYERS control rebuilt for water mode",
+  );
   await settle(
     () => {
       const map = window.__map;
@@ -550,30 +583,52 @@ try {
   // LAYERS control + 圖層符號 (checked here, where the water mode's layers are drawn).
   const legend = await page.evaluate(() => {
     const el = document.querySelector(".layer-control");
+    const rows = [...(el?.querySelectorAll(".lyr-label") ?? [])].map((r) => r.textContent.trim());
+    const map = window.__map;
     return {
       hidden: el?.hidden ?? true,
-      rows: [...(el?.querySelectorAll(".lyr-label") ?? [])].map((r) => r.textContent.trim()),
+      rows,
       switches: el?.querySelectorAll('.lyr-row[role="switch"]').length ?? 0,
+      // Diagnostics for an intermittent failure: if the rows come back empty,
+      // these say WHICH piece was missing (no rail row vs no vertical row vs
+      // the control not rebuilt at all) instead of leaving it to guesswork.
+      mode: window.__hkcm?.currentMode?.() ?? null,
+      drawnLayers: window.__hkcm?.drawnLayers?.()?.map((l) => l.id) ?? null,
+      mapStyleReady: !!map?.getStyle(),
+      railRows: el?.querySelectorAll(".lyr-row.rail").length ?? 0,
+      verticalRows: el?.querySelectorAll(".lyr-row:not(.rail)").length ?? 0,
+      panelCount: document.querySelectorAll(".panel[data-panel]").length,
     };
   });
   check("UI 圖層控制：有圖層嘅模式會顯示，文字對得住個層",
     !legend.hidden && legend.rows.some((t) => t.includes("停水")),
-    `rows=[${legend.rows}]`);
+    `rows=[${legend.rows}] · mode=${JSON.stringify(legend.mode)} rail=${legend.railRows} vertical=${legend.verticalRows} ` +
+      `switches=${legend.switches} panelCount=${legend.panelCount} styleReady=${legend.mapStyleReady}`);
 
   // The control is only real if ticking it changes the map. Assert the actual
   // MapLibre layout property before and after — a DOM-only check would pass on
   // a button wired to nothing.
   const toggle = await page.evaluate(async () => {
-    const btn = document.querySelector('.layer-control .lyr-row[role="switch"]');
-    if (!btn) return { err: "no switch" };
     const map = window.__map;
-    const before = map.getLayoutProperty("vl-water_suspension_districts-fill", "visibility") ?? "visible";
+    const LAYER = "vl-water_suspension_districts-fill";
+    // Select the row that OWNS this layer, not the first switch on the panel.
+    // MEASURED 2026-09-24: `querySelector('.lyr-row[role="switch"]')` returns
+    // whichever row is first, and the order varies with the mode — so the check
+    // toggled a camera layer and reported before=visible after=visible, i.e. it
+    // silently asserted nothing while looking like it passed. Match on the
+    // row's own label instead, which is the thing the user clicks.
+    const btn = [...document.querySelectorAll('.layer-control .lyr-row[role="switch"]')].find((b) =>
+      (b.querySelector(".lyr-label")?.textContent ?? "").includes("停水"),
+    );
+    if (!btn) return { err: "no water-district row in the control" };
+    if (!map.getLayer(LAYER)) return { err: `map has no layer ${LAYER}` };
+    const before = map.getLayoutProperty(LAYER, "visibility") ?? "visible";
     btn.click();
-    await new Promise((r) => setTimeout(r, 400));
-    const after = map.getLayoutProperty("vl-water_suspension_districts-fill", "visibility") ?? "visible";
+    await new Promise((r) => setTimeout(r, 600));
+    const after = map.getLayoutProperty(LAYER, "visibility") ?? "visible";
     btn.click(); // restore
-    await new Promise((r) => setTimeout(r, 400));
-    const restored = map.getLayoutProperty("vl-water_suspension_districts-fill", "visibility") ?? "visible";
+    await new Promise((r) => setTimeout(r, 600));
+    const restored = map.getLayoutProperty(LAYER, "visibility") ?? "visible";
     return { before, after, restored, aria: btn.getAttribute("aria-checked") };
   });
   check("UI 圖層控制：tick／untick 真係改到地圖 layer visibility",

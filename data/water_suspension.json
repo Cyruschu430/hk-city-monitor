@@ -3,7 +3,7 @@
  "source_name": "水務署 臨時停水通知",
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
- "generated": "2026-09-24T09:09:37+08:00",
+ "generated": "2026-09-24T09:39:37+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
   "records": 150,
@@ -1963,8 +1963,8 @@
    "nature": "緊急停水",
    "suspend_at": "2026-09-24T03:55:00+08:00",
    "resume_at": null,
-   "address": "無水: 寶馬山道 1-2號, 天后廟道 190-216號 (雙數), 天后廟道公園  水弱/無水: 寶馬臺",
-   "address_en": "NO SUPPLY: 1-2 BRAEMAR HILL ROAD, 190-216 TIN HAU TEMPLE ROAD (EVEN.), TIN HAU TEMPLE ROAD PARK WEAK / NO SUPPLY: BRAEMAR TERRACE",
+   "address": "無水: 寶馬山道 1-2,4號, 天后廟道 190-216號 (雙數), 天后廟道公園  水弱/無水: 寶馬臺",
+   "address_en": "NO SUPPLY: 1-2,4 BRAEMAR HILL ROAD, 190-216 TIN HAU TEMPLE ROAD (EVEN.), TIN HAU TEMPLE ROAD PARK WEAK / NO SUPPLY: BRAEMAR TERRACE",
    "cause": "緊急維修水管工程",
    "status": "現正停水"
   },

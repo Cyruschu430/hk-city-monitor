@@ -315,15 +315,36 @@ a:hover{color:var(--cyan)}
 .ptab .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
 #panels{overflow-y:auto;overscroll-behavior:contain;
    padding:8px;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-   align-content:start;align-items:start;gap:6px;
-   /* `dense` is the mechanism that lets a WIDE card backfill the hole a short
-      card leaves beside a tall one. Measured on worldmonitor.app/dashboard: its
-      .panels-grid is `311px 311px` with `grid-auto-flow: dense`, and cards
-      declare `.panel-wide` (626px = both columns) or stay 311px. That is how it
-      packs 41 cards into 8.39 screens while ours fitted 17 into 3.95.
-      Safe here because this grid is a single vertical scroller with a definite
-      height — the multi-column failure modes in Pitfall 12 were about
-      column-count, which this is not. */
+   align-content:start;gap:6px;
+   /* ---------------------------------------------------------------------
+      THE ROW TRACK MUST BE `max-content`, AND THIS WAS MEASURED BY A/B TEST.
+
+      `grid-auto-flow: dense` lets a short card backfill the hole a tall card
+      leaves beside it — taken from worldmonitor.app/dashboard (311px columns,
+      `dense`, cards declaring `.panel-wide`).
+
+      But MEASURED 2026-09-24: with the default `grid-auto-rows: auto`, every
+      implicit row track resolved to **79.7px** regardless of its contents. The
+      panels then sized themselves to that track (`overflow:hidden`), so a panel
+      whose own children summed to 498px rendered 80px tall and scrolled to
+      1339px while showing nothing. Live A/B on the same page:
+
+        dense only                       panelH=  80  rowSum= 797  scrollH= 867
+        dense + align-items:start        panelH= 517  rowSum= 797  scrollH=1339  <- OVERLAPS
+        dense + grid-auto-rows:max-content  panelH=517  rowSum=4064  scrollH=4134  <- correct
+
+      `align-items:start` was tried first and is WRONG here: it lets each item
+      keep its own height while the row track stays 79.7px, so items render at
+      full size on top of one another (42 panel-vs-panel overlaps measured, e.g.
+      live_cams_wall y=141 h=210 ending at 351 with breaking_news_list starting
+      at y=226). `max-content` fixes the TRACK instead, which is the actual
+      defect — every row becomes exactly as tall as its tallest item, nothing
+      overlaps and nothing is clipped.
+
+      If you change anything here, assert BOTH: zero overlaps AND scrollHeight
+      equal to the sum of the row tracks. Checking only one of them is how this
+      shipped broken twice. */
+   grid-auto-rows:max-content;
    grid-auto-flow:dense}
 #panels::-webkit-scrollbar{width:8px}
 #panels::-webkit-scrollbar-thumb{background:rgba(140,190,255,.18);border-radius:8px}

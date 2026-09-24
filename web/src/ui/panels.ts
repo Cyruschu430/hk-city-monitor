@@ -433,7 +433,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
 
       const node = h(
         "section",
-        { class: "panel", "data-panel": id, "data-state": "live" },
+        { class: "panel wide", "data-panel": id, "data-state": "live" },
         h("div", { class: "panel-head" },
           h("h2", {}, lang() === "tc" ? "異常與匯聚" : "Anomalies & convergence"),
           // Honest provenance: the reader is told whether a machine wrote the

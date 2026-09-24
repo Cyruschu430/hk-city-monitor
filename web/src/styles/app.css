@@ -315,9 +315,22 @@ a:hover{color:var(--cyan)}
 .ptab .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
 #panels{overflow-y:auto;overscroll-behavior:contain;
    padding:8px;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-   align-content:start;align-items:start;gap:6px}
+   align-content:start;align-items:start;gap:6px;
+   /* `dense` is the mechanism that lets a WIDE card backfill the hole a short
+      card leaves beside a tall one. Measured on worldmonitor.app/dashboard: its
+      .panels-grid is `311px 311px` with `grid-auto-flow: dense`, and cards
+      declare `.panel-wide` (626px = both columns) or stay 311px. That is how it
+      packs 41 cards into 8.39 screens while ours fitted 17 into 3.95.
+      Safe here because this grid is a single vertical scroller with a definite
+      height — the multi-column failure modes in Pitfall 12 were about
+      column-count, which this is not. */
+   grid-auto-flow:dense}
 #panels::-webkit-scrollbar{width:8px}
 #panels::-webkit-scrollbar-thumb{background:rgba(140,190,255,.18);border-radius:8px}
+/* A card that asks for the full width. Chosen per panel (see `wide` in
+   panels.json) rather than by rule, because whether a panel benefits is a
+   judgement about its content: a wide table gains, a 2-row status grid does not. */
+.panel.wide{grid-column:1 / -1}
 
 /* PADDING IS THE NEIGHBOURHOOD, NOT THE CARD.
    Measured against World Monitor's /dashboard at the same 1600x1000 viewport:

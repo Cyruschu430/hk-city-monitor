@@ -12,7 +12,8 @@
  ],
  "_withdrawn_panels": {
   "_comment": "Panels removed from the shipped set, with the reasoning and the restore path. A withdrawn panel goes HERE, never as an element of the panels array below. MEASURED 2026-09-24: an id-less object inside `panels` is NOT inert. It reaches the runtime registry (sources.ts passes panelsJ.panels straight through), and ui/palette.ts buildIndex() reads p.title.tc on every entry — so a comment-only element throws TypeError and BREAKS ⌘K SILENTLY (the keydown listener fires and dies before opening the palette, with no error near the palette itself).",
-  "crypto_prices": "WITHDRAWN 2026-09-24 (Cyrus). CoinGecko's free tier rate-limits Cloudflare's egress IPs, so the panel returned HTTP 429 on EVERY production load while working from a home IP — measured repeatedly through the deployed Worker, not transient. It was the last error state on the dashboard, and a panel permanently broken in the only environment users see is worse than no panel. It is also the least Hong-Kong-specific surface on the page (BTC/ETH in HKD), so it was the one to cut rather than fix. Restore: re-add { id:'crypto_prices', source:'coingecko', render:'list', title:{tc:'加密貨幣（港元）',en:'Crypto (HKD)'}, params:{}, cadence_note:{tc:'即時',en:'Live'} } to the panels array, put it back in main.ts OVERVIEW, and first confirm the 429 is gone from a Cloudflare egress IP. The adapter (coingecko), parsers.parseCoingecko and their tests are untouched."
+  "crypto_prices": "WITHDRAWN 2026-09-24 (Cyrus). CoinGecko's free tier rate-limits Cloudflare's egress IPs, so the panel returned HTTP 429 on EVERY production load while working from a home IP — measured repeatedly through the deployed Worker, not transient. It was the last error state on the dashboard, and a panel permanently broken in the only environment users see is worse than no panel. It is also the least Hong-Kong-specific surface on the page (BTC/ETH in HKD), so it was the one to cut rather than fix. Restore: re-add { id:'crypto_prices', source:'coingecko', render:'list', title:{tc:'加密貨幣（港元）',en:'Crypto (HKD)'}, params:{}, cadence_note:{tc:'即時',en:'Live'} } to the panels array, put it back in main.ts OVERVIEW, and first confirm the 429 is gone from a Cloudflare egress IP. The adapter (coingecko), parsers.parseCoingecko and their tests are untouched.",
+  "holiday_leave_table": "WITHDRAWN 2026-09-24 (Cyrus), along with the whole `leave` vertical. It answered 'how do I turn the fewest annual-leave days into the longest run off' — a planning tool, not situational awareness. Every other panel answers 'what is happening in Hong Kong right now', and a mode that appears in the same rail as 颱風/口岸/停水 but does nothing time-critical made the rail inconsistent. The data (data/leave_plan.json from scripts/build_leave_plan.py), the adapter (hk_public_holidays) and the source entry are all LEFT IN PLACE, so restoring is: re-add { id:'holiday_leave_table', source:'hk_public_holidays', render:'table', title:{tc:'請假攻略',en:'Leave Planner'}, params:{computed_by:'scripts/build_leave_plan.py'}, cadence_note:{tc:'跟官方年曆更新',en:'Follows the official calendar'} }, restore the `leave` vertical in verticals.json, and add it to main.ts OVERVIEW if it should also sit on the overview."
  },
  "panels": [
   {
@@ -243,22 +244,6 @@
    }
   },
   {
-   "id": "holiday_leave_table",
-   "source": "hk_public_holidays",
-   "render": "table",
-   "title": {
-    "tc": "請假攻略",
-    "en": "Leave Planner"
-   },
-   "params": {
-    "computed_by": "scripts/build_leave_plan.py"
-   },
-   "cadence_note": {
-    "tc": "跟官方年曆更新",
-    "en": "Follows the official calendar"
-   }
-  }
-,  {
    "id": "hk_market_table",
    "source": "yahoo_hk_quotes",
    "render": "table",

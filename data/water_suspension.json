@@ -4,14 +4,14 @@
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
  "geocode_note": "lat/lng come from the OGCIO Address Lookup Service (als.gov.hk), the registered als_address_lookup source, applied to the first clause of each notice address. A notice that did not resolve keeps lat=null and is drawn at DISTRICT level -- we never substitute a district centroid, because a confident pin in the wrong place is worse than an honest district highlight.",
- "generated": "2026-09-24T20:39:37+08:00",
+ "generated": "2026-09-24T21:59:37+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
   "records": 173,
-  "active": 14,
+  "active": 13,
   "located": 173,
   "district_only": 0,
-  "active_located": 14,
+  "active_located": 13,
   "active_district_only": 0
  },
  "districts": [
@@ -2593,11 +2593,11 @@
    "district_en": "Eastern",
    "nature": "緊急停水",
    "suspend_at": "2026-09-24T16:30:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-24T21:04:00+08:00",
    "address": "水弱/無: 英皇道 632-880(雙)號，七姊妹道160-208號，健康東街21-29((單)號，百福道21號",
    "address_en": "WEAK/ NO: 632-880( (EVEN) KIND'S ROAD, 160-208 TSAT TSZ MUI ROAD, 21-29((ODD) HEALTHY STREET EAST, 21 PAK FUK ROAD",
    "cause": "緊急維修水管工程",
-   "status": "現正停水",
+   "status": "供水已恢復",
    "lat": 22.29066,
    "lng": 114.20894
   },
@@ -2645,7 +2645,6 @@
   "2026092413695",
   "2026092413698",
   "2026092413707",
-  "2026092413713",
-  "2026092413716"
+  "2026092413713"
  ]
 }

@@ -3,11 +3,11 @@
  "source_name": "水務署 臨時停水通知",
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
- "generated": "2026-09-24T10:29:36+08:00",
+ "generated": "2026-09-24T10:59:36+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
   "records": 154,
-  "active": 14
+  "active": 12
  },
  "districts": [
   "中西區",
@@ -289,7 +289,7 @@
    "address": "粉嶺花園  ***只有消防水受影響***",
    "address_en": "Fanling Garden **ONLY FIRE SERVICE SUPPLY IS SUSPENDED***",
    "cause": "更換及修復水管計劃",
-   "status": "現正停水"
+   "status": "停水仍未開始"
   },
   {
    "id": "2026091413243",
@@ -471,7 +471,7 @@
    "address": "騰龍臺1, 2, 3, 4 號  備註: 沖廁用食水亦同時受影響",
    "address_en": "1, 2, 3, 4 Denon Terrace Remarks: Fresh water for flushing purpose is also affected",
    "cause": "更換及修復水管計劃",
-   "status": "現正停水"
+   "status": "停水仍未開始"
   },
   {
    "id": "2026091813425",
@@ -2035,10 +2035,8 @@
   }
  ],
  "active_ids": [
-  "2026091413234",
   "2026091613342",
   "2026091813414",
-  "2026091813424",
   "2026092313611",
   "2026092313669",
   "2026092313675",

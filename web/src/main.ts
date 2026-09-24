@@ -59,8 +59,17 @@ const OVERVIEW = [
   "water_suspension_list",
 ];
 
-/** Trigger polling: two sources, 3 minutes. The Worker edge-caches 60s, so a
-    faster loop would buy nothing. */
+/** Trigger polling: 3 minutes. This interval is the REAL cadence for the two
+ *  trigger sources (see the list in pollTriggers) — not the cadence their panels
+ *  declare — because a trigger must fire even when its panel is hidden, and that
+ *  loop is the only fetch which runs unconditionally.
+ *
+ *  Why 3 minutes: hko_warnsum goes through the Worker, which edge-caches 60s, so a
+ *  faster loop would buy nothing there. The other source is the exception —
+ *  wsd_water_suspension is read from the collector's static JSON
+ *  (scripts/build_water_suspension.py), NOT through the Worker, and that file is
+ *  rebuilt on its own schedule. 3 minutes is the faster of the two, so neither is
+ *  polled faster than it can change. */
 const TRIGGER_POLL_MS = 3 * 60_000;
 
 /** How often the Tier 0-4 pipeline re-runs over current state. Faster than the
@@ -330,9 +339,6 @@ async function boot(): Promise<void> {
     paintCoverage();
   };
 
-  /** Honest coverage readout. `total` counts the SOURCES behind the mounted
-      panels (the engine dedupes by source), so the figure describes what is on
-      screen right now rather than a fixed promise about the catalog. */
   /** The 狀態 cell reports the SYSTEM, which is what its label says.
       It used to be driven by one source (wsd_water_suspension): a single 停水
       notice whose records were all older than the trigger's 30-minute barrier
@@ -348,10 +354,16 @@ async function boot(): Promise<void> {
     else statusbar.setFreshness(lang() === "tc" ? "正常" : "nominal", "ok");
   }
 
+  /** Honest coverage readout. `total` counts the SOURCES behind the mounted
+      panels (the engine dedupes by source), so the figure describes what is on
+      screen right now rather than a fixed promise about the catalog.
+
+      Repaints the status cell first: the two are views of the same tally and
+      must never be able to disagree. The panel bodies have their OWN 30s tick in
+      ui/panels.ts, so a panel footer and this line can differ by up to one tick
+      by design. */
   function paintCoverage(): void {
     const s = engine.stats();
-    // Painted together on purpose: the status cell and the coverage line are two
-    // views of the same tally, so they must never be able to disagree.
     paintStatus();
     statusbar.setCoverage({
       live: s.live,
@@ -675,6 +687,17 @@ async function boot(): Promise<void> {
 
   // --- trigger polling, independent of panel visibility ----------------------
   async function pollTriggers(): Promise<void> {
+    // The trigger-relevant sources, HAND-LISTED ON PURPOSE.
+    //
+    // This is the one fetch that runs even when the source's panel is hidden or
+    // unmounted, so it must stay a short, reviewed set rather than "everything a
+    // vertical mentions" — otherwise a background loop quietly polls the whole
+    // registry. The consequence is a coupling to remember: adding a vertical in
+    // verticals.json whose trigger reads a NEW source also means adding that
+    // source here, or the trigger can never fire in the background. The
+    // alternative (deriving the list from verticals.json) was rejected because
+    // some verticals reference sources only for their panels, not their triggers,
+    // and polling those unconditionally is exactly the cost this list avoids.
     for (const sourceId of ["hko_warnsum", "wsd_water_suspension"]) {
       const panel = registry.panels.find((p) => p.source === sourceId);
       if (!panel) continue;

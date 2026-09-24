@@ -561,3 +561,32 @@ What follows from it:
 - Reproduce under load: `npm test && node scripts/verify-browser.mjs …` in **one** command made
   the failure deterministic, because the test suite competes for CPU. A gate that only passes on
   an idle machine fails on a loaded CI runner.
+
+### Pitfall 25 — an assertion that contradicts the product's purpose will fail on a good day
+
+The cold-boot check asserted `mode === "overview"` unconditionally. On 2026-09-24 at 11:00 it
+failed with `mode="water_supply" drinking_now=7` — and the collector output confirmed **7 genuine
+drinking-water suspensions in force** (粉嶺花園, 紅磡馬頭圍道, 甘苑, 騰龍臺, 瓦瑤頭, 貝澳老圍村,
+北港凹村). Auto-hoisting 停水模式 was the **correct** behaviour: it is the entire point of the
+trigger, and the app was working better than the test allowed.
+
+The check now asserts the invariant that holds in both worlds:
+```
+drinking_now > 0  -> in 停水模式, not blank
+drinking_now == 0 -> on 總覽 with every overview panel
+```
+Both branches still catch the original bug (the old trigger fired at `drinking_now=0` and collapsed
+to one panel with no emergency at all), so nothing was weakened. Two follow-on checks had the same
+assumption — they clicked the water rail button to *enter* water mode, which is a no-op when the app
+is already there — and now enter it idempotently.
+
+What follows from it:
+- **A live-feed app has more than one correct state.** An assertion on an absolute ("must be on
+  overview") silently encodes "and there is never an emergency". Gate on the *relationship*
+  between the data and the UI, not on one of the outcomes.
+- **When a check fails, first ask whether the app or the check is wrong.** Here the app was right
+  and had been all along; the test was the defect. Verify against the source data before
+  "fixing" the app.
+- **Test the interesting branch.** This app is at its most important during an outage, and until
+  now the harness had never run in that state — the one moment the product exists for was the one
+  state it did not cover.

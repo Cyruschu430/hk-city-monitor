@@ -45,6 +45,21 @@
   --sheet:        rgba(6,10,18,.9);
   --cyan-tint:    rgba(34,211,238,.14);
   --surface-grad: linear-gradient(180deg,rgba(9,15,26,.9),rgba(6,10,18,.94));
+
+  /* ---- MAP-FACE TOKENS: NEVER OVERRIDDEN BY THE LIGHT THEME ----------------
+     The map stays dark in every theme (see the note below), so anything drawn
+     ON the map must not use a themed colour. MEASURED 2026-09-24: `.lyr-label`
+     used `var(--txt)`, which resolves cleanly but flips to #0b1626 in light mode
+     — near-black text on a dark map face. The LAYERS control was effectively
+     invisible and NOTHING reported it: not tsc, not the build, not the console.
+     These tokens exist so map-face styling has an honest name to reach for, and
+     `scripts/check-tokens.mjs` fails the build if a themed token is used inside
+     a map-face selector instead. */
+  --map-face:     #cfe0f5;  /* primary text on the map */
+  --map-face-dim: #9fb4cc;  /* secondary text on the map */
+  --map-face-weak:#7b90a8;  /* captions and counts on the map */
+  --map-face-bg:  rgba(5,8,13,.82);
+  --map-face-line:rgba(140,190,255,.16);
 }
 
 /* Light theme. NOT an inversion: the signal colours keep their meaning (red =

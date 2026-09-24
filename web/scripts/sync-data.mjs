@@ -41,6 +41,11 @@ const files = [
   ["data/water_suspension.json", "water_suspension.json"],
   // Curated community live-stream list (YouTube, third-party — see source entry)
   ["data/live_streams.json", "live_streams.json"],
+  // Immigration control points with VALIDATED WGS84 positions, so 口岸模式 can
+  // plot the crossings as POIs with popups instead of only camera dots. Reference
+  // data, not a feed — see the _method note in the file for how each coordinate
+  // was checked before it was allowed in.
+  ["data/control_points.json", "control_points.json"],
   ["sources.json", "sources.json"],
 ];
 

@@ -604,7 +604,7 @@ async function boot(): Promise<void> {
     try {
       // The gen check travels with the slow fetch: the layer code throws a
       // sentinel when a newer mode apply has already started.
-      const drawn = await applyVerticalLayers(map, defs, { registry, ctx, activeDistricts, waterPoints, gen, isCurrent: (g) => g === modeGen.current });
+      const drawn = await applyVerticalLayers(map, defs, { registry, ctx, activeDistricts, waterPoints, triggerState, gen, isCurrent: (g) => g === modeGen.current });
       if (gen !== modeGen.current) return; // superseded — nothing to record
       drawnLayers = defs.filter((d) => drawn.includes(d.id));
       paintLegend(drawnLayers.map((d) => d.id));

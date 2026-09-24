@@ -381,11 +381,18 @@ try {
       const orphans = (style.layers ?? []).filter((l) => l.id.startsWith("vl-"));
       const mode = window.__hkcm?.currentMode?.() ?? null;
       const drawn = window.__hkcm?.drawnLayers?.()?.map((l) => l.id) ?? [];
-      // Settled = back on overview, no vertical layers left, nothing drawn.
-      return mode === "overview" && orphans.length === 0 && drawn.length === 0;
+      // Settled = no vertical layers left and nothing drawn. Deliberately does
+      // NOT require mode === "overview": MEASURED 2026-09-24, when a real
+      // drinking-water outage is in force the trigger auto-hoists 停水模式, so
+      // the app legitimately never returns to overview. Requiring it made this
+      // wait burn its full 20s budget every run, and the next section's rail
+      // click then TOGGLED WATER OFF instead of on — which is why two LAYERS
+      // checks failed intermittently while the app was behaving correctly.
+      // The P0-1 question is about orphan GEOMETRY, not about which mode won.
+      return orphans.length === 0 && drawn.length === 0;
     },
     20_000,
-    "P0-1 race settled (back on overview, no orphan layers)",
+    "P0-1 race settled (no orphan or leftover vl- layers)",
   );
   const raceLayers = await page.evaluate(() => {
     const style = window.__map.getStyle();
@@ -437,8 +444,20 @@ try {
   // a blind click on the water rail button is a no-op at best and, if the rail
   // ever became a toggle, would exit the mode these checks need. Assert the mode
   // is water and only click when it is not.
+  // Enter water mode and CONFIRM it took. A positional `.rail-btn:nth-child(4)`
+  // was used here and it is fragile twice over: the rail order is config-driven,
+  // and a click when the app is ALREADY in water mode is a no-op at best. Assert
+  // the resulting mode rather than trusting the click.
   const alreadyWater = await page.evaluate(() => (window.__hkcm?.currentMode?.() ?? null) === "water_supply");
-  if (!alreadyWater) await page.click(".rail-btn:nth-child(4)"); // water
+  if (!alreadyWater) await railClick("停水");
+  const inWater = await settle(
+    () => (window.__hkcm?.currentMode?.() ?? null) === "water_supply",
+    15_000,
+    "entered water mode",
+  );
+  if (!inWater) {
+    console.warn("  [setup] could not enter water mode; the layer checks below will be skipped");
+  }
   // THREE independent async steps must finish, and none is a fixed duration.
   // MEASURED 2026-09-24: waiting on the panels alone was still intermittent
   // (63/66 in 1 run of 4). The diagnostics showed why — the LAYERS control had

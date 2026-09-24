@@ -28,14 +28,18 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import ssl
 import sys
+import time
+import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "data", "water_suspension.json")
+GEOCODE_CACHE = os.path.join(ROOT, "data", "geocode_cache.json")
 
 URL = "https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv"
 UA = {"User-Agent": "hk-city-monitor/0.2 (+open data client; github.com/Cyruschu430/hk-city-monitor)"}
@@ -64,7 +68,7 @@ def fetch() -> str:
 
 
 def parse_hk_date(s: str) -> str | None:
-    """'17-09-2026 22:00' (DD-MM-YYYY HH:mm, Hong Kong time) → ISO 8601 +08:00."""
+    """'17-09-2026 22:00' (DD-MM-YYYY HH:mm, Hong Kong time) -> ISO 8601 +08:00."""
     s = (s or "").strip()
     if len(s) < 16:
         return None
@@ -73,6 +77,119 @@ def parse_hk_date(s: str) -> str | None:
     except ValueError:
         return None
     return dt.isoformat()
+
+
+# --- geocoding -----------------------------------------------------------------
+#
+# WHY HERE AND NOT IN THE BROWSER. The map used to highlight a whole DISTRICT for
+# a suspension, because the WSD feed carries a district name and nothing else --
+# so "停水受影響地區" painted an entire 18-district polygon red when the actual
+# outage was one building. Cyrus asked for the affected LOCATIONS:
+# "Layers District with water suspension should refering to Panel 水務署 臨時停水
+# 通知 showing the affected locations by geocoding."
+#
+# ALS (`als.gov.hk/lookup`, already the registered `als_address_lookup` source) is
+# the OGCIO official address lookup: keyless, and MEASURED to return both a
+# normalised address AND <Latitude>/<Longitude>. Tested 2026-09-24 against eight
+# real notice addresses of the messy kind this feed publishes ("甘苑 備註: 沖廁用
+# 食水亦同時暫停", "田心村195-231號", "莆上村2巷16號") -- 8/8 resolved.
+#
+# It runs in the COLLECTOR, not the page, because:
+#   1. ALS is a lookup service; hammering it once per page load is abusive.
+#   2. Notices change every few minutes, so coordinates cache far longer than the
+#      notice data itself.
+#   3. AGENTS.md forbids an LLM on this path. ALS is a gazetteer, not a guess.
+#
+# HONESTY RULE: a notice that does not resolve keeps lat=null and is drawn as its
+# DISTRICT, exactly as before. We never fall back to a district centroid and call
+# it an address -- a confident pin in the wrong place is worse than an honest
+# district highlight.
+
+
+def _als_lookup(query: str) -> tuple[float, float] | None:
+    """One ALS lookup. Returns (lat, lng) or None. Never raises."""
+    q = query.strip()
+    if not q:
+        return None
+    url = "https://www.als.gov.hk/lookup?q=" + urllib.parse.quote(q)
+    req = urllib.request.Request(url, headers=UA)
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            xml = r.read().decode("utf-8", errors="replace")
+    except Exception:
+        return None
+    first = xml.split("<SuggestedAddress>", 1)
+    if len(first) < 2:
+        return None
+    block = first[1]
+    lat = re.search(r"<Latitude>([^<]+)</Latitude>", block)
+    lng = re.search(r"<Longitude>([^<]+)</Longitude>", block)
+    if not lat or not lng:
+        return None
+    try:
+        return float(lat.group(1)), float(lng.group(1))
+    except ValueError:
+        return None
+
+
+def _clean_for_lookup(address: str) -> str:
+    """Strip what ALS cannot match; keep the part that names a place.
+
+    The feed writes free text: a comma-separated street list, an inline note
+    ("備註: ..."), and a supply qualifier prefix ("無水:"). ALS matches a single
+    place, so take the FIRST clause and drop the annotations. Deliberately
+    conservative -- if this yields junk the lookup simply misses and the notice
+    stays district-level, which is the safe outcome.
+    """
+    a = address.split("備註:")[0]
+    a = re.sub(r"^\s*(無水|水弱/無水|水弱)\s*[:：]\s*", "", a)
+    a = a.split("、")[0].split(",")[0].split("，")[0]
+    a = re.sub(r"\s*近\s*燈柱\S*.*$", "", a)
+    a = re.sub(r"\s*一帶\s*$", "", a)
+    return a.strip(" ,，、.")
+
+
+def geocode_records(records: list[dict], *, verbose: bool = True) -> dict:
+    """Attach lat/lng to every record we can resolve. Cached across runs."""
+    cache: dict[str, list[float] | None] = {}
+    if os.path.exists(GEOCODE_CACHE):
+        try:
+            with open(GEOCODE_CACHE, encoding="utf-8") as f:
+                cache = json.load(f)
+        except (OSError, ValueError):
+            cache = {}
+
+    hits = misses = cached_n = 0
+    for r in records:
+        key = _clean_for_lookup(r.get("address") or "")
+        if not key:
+            r["lat"] = r["lng"] = None
+            misses += 1
+            continue
+        if key in cache:
+            co = cache[key]
+            cached_n += 1
+        else:
+            co = _als_lookup(key)
+            cache[key] = list(co) if co else None
+            time.sleep(0.25)  # be a polite client of a government lookup service
+        if co:
+            r["lat"], r["lng"] = co[0], co[1]
+            hits += 1
+        else:
+            r["lat"] = r["lng"] = None
+            misses += 1
+
+    try:
+        os.makedirs(os.path.dirname(GEOCODE_CACHE), exist_ok=True)
+        with open(GEOCODE_CACHE, "w", encoding="utf-8") as f:
+            json.dump(cache, f, ensure_ascii=False, indent=0, sort_keys=True)
+    except OSError:
+        pass  # a cache we cannot write is a slow run, not a failed one
+
+    if verbose:
+        print(f"geocode: {hits} located, {misses} district-only ({cached_n} from cache)")
+    return {"located": hits, "district_only": misses, "from_cache": cached_n}
 
 
 def build(text: str) -> dict:
@@ -101,7 +218,9 @@ def build(text: str) -> dict:
         })
 
     active = [r for r in records if r["status"] == "現正停水"]
+    geo = geocode_records(records)
     now = datetime.now(HKT)
+    active_located = sum(1 for r in active if r.get("lat") is not None)
     return {
         "source": URL,
         "source_name": "水務署 臨時停水通知",
@@ -111,9 +230,24 @@ def build(text: str) -> dict:
             "(no CORS). This file is the collector's output."
         ),
         "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
+        "geocode_note": (
+            "lat/lng come from the OGCIO Address Lookup Service (als.gov.hk), the "
+            "registered als_address_lookup source, applied to the first clause of "
+            "each notice address. A notice that did not resolve keeps lat=null and "
+            "is drawn at DISTRICT level -- we never substitute a district "
+            "centroid, because a confident pin in the wrong place is worse than "
+            "an honest district highlight."
+        ),
         "generated": now.isoformat(timespec="seconds"),
         "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
-        "counts": {"records": len(records), "active": len(active)},
+        "counts": {
+            "records": len(records),
+            "active": len(active),
+            "located": geo["located"],
+            "district_only": geo["district_only"],
+            "active_located": active_located,
+            "active_district_only": len(active) - active_located,
+        },
         "districts": sorted({r["district"] for r in records if r["district"]}),
         "records": records,
         "active_ids": [r["id"] for r in active],
@@ -121,17 +255,38 @@ def build(text: str) -> dict:
 
 
 def main() -> int:
+    # Windows consoles default to cp1252, and this script prints Chinese (the
+    # district and address strings are part of its report). MEASURED 2026-09-24:
+    # an arrow in a status line crashed the run with UnicodeEncodeError AFTER the
+    # expensive fetch and geocode had already succeeded, so a scheduling failure
+    # looked like a data failure. Reconfigure once, at the entry point, rather
+    # than scrubbing every non-ASCII character out of the output.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError):
+        pass
+
     check = "--check" in sys.argv
     text = fetch()
     data = build(text)
 
-    print(f"fetched {len(text)} chars (Big5 → {len(data['records'])} records)")
+    print(f"fetched {len(text)} chars (Big5 -> {len(data['records'])} records)")
     if data["counts"]["active"] == 0:
-        print("⚠️  0 現正停水 — possible, but check before believing a quiet feed")
+        print("WARNING: 0 active suspensions - possible, but verify a quiet feed")
     print(f"active: {data['counts']['active']}  districts: {len(data['districts'])}")
 
     if check:
         ok = data["counts"]["records"] > 0 and len(data["districts"]) >= 15
+        # A geocoder that silently stops resolving is the failure mode that
+        # matters: the map would quietly fall back to district polygons and
+        # nobody would notice the pins had gone. Assert a floor, not 100%,
+        # because a genuinely odd address is allowed to miss.
+        located = data["counts"]["located"]
+        total = data["counts"]["records"]
+        coverage = located / total if total else 0
+        if coverage < 0.5:
+            ok = False
+            print(f"self-check: geocode coverage {coverage:.0%} ({located}/{total}) below the 50% floor")
         print("self-check OK" if ok else "self-check FAILED")
         return 0 if ok else 1
 

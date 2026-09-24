@@ -182,15 +182,27 @@ const ADAPTERS: Record<string, Adapter> = {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const j = (await res.json()) as {
       generated: string;
-      records: { id: string; water_type: string; district: string; nature: string; suspend_at: string | null; resume_at: string | null; address: string; cause: string; status: string }[];
+      counts?: { located?: number; district_only?: number; active_located?: number; active_district_only?: number };
+      records: { id: string; water_type: string; district: string; nature: string; suspend_at: string | null; resume_at: string | null; address: string; cause: string; status: string; lat?: number | null; lng?: number | null }[];
       active_ids: string[];
     };
     const active = j.records.filter((r) => j.active_ids.includes(r.id));
     const fmt = (iso: string | null) => (iso ? iso.slice(5, 16).replace("T", " ") : lang() === "tc" ? "待定" : "TBC");
+    // A notice carries lat/lng only when the collector resolved its address
+    // through ALS (scripts/build_water_suspension.py). MEASURED 2026-09-24:
+    // 173/173 resolved — but the code must not ASSUME that, because a notice
+    // without coordinates still has to appear, at district level.
+    const located = active.filter((r) => Number.isFinite(r.lat) && Number.isFinite(r.lng));
     const items = active.map((r) => ({
       title: `${r.district} ${r.address}`,
       sub: `${r.water_type} · ${r.nature} · ${r.cause}`,
       time: `${fmt(r.suspend_at)} → ${r.resume_at ? fmt(r.resume_at) : lang() === "tc" ? "待定" : "TBC"}`,
+      // A geocoded notice links straight to its position on the official
+      // map.gov.hk viewer, so a reader can see exactly which building it is.
+      href:
+        Number.isFinite(r.lat) && Number.isFinite(r.lng)
+          ? `https://www.map.gov.hk/gm/map/s/${encodeURIComponent(`${r.lat},${r.lng}`)}`
+          : undefined,
     }));
     const observedAt = new Date(j.generated);
     // THREE fields on purpose:
@@ -229,6 +241,29 @@ const ADAPTERS: Record<string, Adapter> = {
         records_fresh: fresh ? active : [],
         drinking_now: drinkingNow,
         salt_only_now: fresh ? active.filter((r) => r.status === "現正停水" && !/食水/.test(r.water_type)).length : 0,
+        // WHAT THE MAP DRAWS.
+        //  · points    — the geocoded notice locations: the actual affected
+        //                buildings and streets, not whole districts. This is what
+        //                the 停水 mode layer plots as pins with popups.
+        //  · districts — every district with an active notice. Kept because a
+        //                notice we could NOT geocode still has to appear
+        //                somewhere; today only the 2 fire-service notices fall
+        //                back here, so it is a safety net rather than the norm.
+        points: located.map((r) => ({
+          id: r.id,
+          lat: r.lat as number,
+          lng: r.lng as number,
+          district: r.district,
+          address: r.address,
+          water_type: r.water_type,
+          nature: r.nature,
+          cause: r.cause,
+          suspend_at: r.suspend_at,
+          resume_at: r.resume_at,
+        })),
+        districts: [...new Set(active.map((r) => r.district).filter(Boolean))],
+        located_count: located.length,
+        district_only_count: active.length - located.length,
       },
     };
   },

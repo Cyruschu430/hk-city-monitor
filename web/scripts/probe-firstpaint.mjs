@@ -20,13 +20,18 @@ console.log(`ready=1 after ${Date.now() - t0}ms`);
 
 const probe = () =>
   page.evaluate(() => {
-    const panels = [...document.querySelectorAll(".panel[data-panel]")];
+    const all = [...document.querySelectorAll(".panel[data-panel]")];
+    // A tab filter HIDES panels without unmounting them (measured: 17 in the DOM
+    // while only 5 are visible on 交通). Counting DOM nodes therefore reports a
+    // number the user never sees — count what is actually painted.
+    const shown = all.filter((p) => p.getBoundingClientRect().height > 0 && getComputedStyle(p).display !== "none");
     const byState = {};
-    for (const p of panels) byState[p.dataset.state] = (byState[p.dataset.state] ?? 0) + 1;
+    for (const p of shown) byState[p.dataset.state] = (byState[p.dataset.state] ?? 0) + 1;
     return {
-      mounted: panels.length,
+      mounted: shown.length,
+      inDom: all.length,
       byState,
-      ids: panels.map((p) => p.dataset.panel),
+      ids: shown.map((p) => p.dataset.panel),
       activeTab: window.__hkcm?.currentTab?.() ?? null,
       tabButtons: [...document.querySelectorAll("#panelTabs .ptab")].map(
         (b) => `${b.dataset.group}:${b.getAttribute("aria-selected") ?? b.className}`,
@@ -34,7 +39,7 @@ const probe = () =>
     };
   });
 
-console.log(`\n${"t(s)".padStart(6)}  mounted  states`);
+console.log(`\n${"t(s)".padStart(6)}  visible  inDom  states`);
 let last = -1;
 for (const wait of [0, 1000, 2000, 3000, 5000, 8000, 12000, 16000, 20000, 30000, 45000]) {
   const target = wait;
@@ -42,7 +47,7 @@ for (const wait of [0, 1000, 2000, 3000, 5000, 8000, 12000, 16000, 20000, 30000,
   if (target > elapsed) await page.waitForTimeout(target - elapsed);
   const s = await probe();
   const stamp = ((Date.now() - t0) / 1000).toFixed(1);
-  console.log(`${stamp.padStart(6)}  ${String(s.mounted).padStart(7)}  ${JSON.stringify(s.byState)}`);
+  console.log(`${stamp.padStart(6)}  ${String(s.mounted).padStart(7)}  ${String(s.inDom).padStart(5)}  ${JSON.stringify(s.byState)}`);
   if (s.mounted !== last) {
     console.log(`        ids: ${s.ids.join(", ")}`);
     last = s.mounted;

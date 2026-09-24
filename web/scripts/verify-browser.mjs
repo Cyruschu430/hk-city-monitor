@@ -144,22 +144,32 @@ try {
   // clicks the 總覽 button and then measures — i.e. it was measuring its own
   // workaround. Assert the landing state BEFORE any click, so the app cannot be
   // rescued by the test.
-  const landing = await page.evaluate(() => ({
-    mode: window.__hkcm?.currentMode?.() ?? null,
-    mounted: document.querySelectorAll(".panel[data-panel]").length,
-    // Derive the expectation from the app rather than hardcoding a number: a
-    // panel withdrawal (crypto_prices, 2026-09-24) then does not require editing
-    // the test, and a panel that silently fails to mount still fails the check.
-    expected: window.__hkcm?.overviewIds?.().length ?? 0,
-    banner: document.querySelector(".banner")?.textContent?.trim().slice(0, 80) ?? null,
-    drinkingNow: window.__hkcm?.triggerState?.wsd_water_suspension?.drinking_now ?? null,
-    saltOnly: window.__hkcm?.triggerState?.wsd_water_suspension?.salt_only_now ?? null,
-  }));
+  const landing = await page.evaluate(() => {
+    // Count what is PAINTED, not what is in the DOM. A tab filter hides panels
+    // without unmounting them (measured: 17 in the DOM, 5 visible on 交通), so
+    // a DOM count reports a number the user never sees.
+    const all = [...document.querySelectorAll(".panel[data-panel]")];
+    const shown = all.filter((p) => p.getBoundingClientRect().height > 0 && getComputedStyle(p).display !== "none");
+    const visibleOverview = shown.filter((p) => !p.hidden).length;
+    return {
+      mode: window.__hkcm?.currentMode?.() ?? null,
+      mounted: visibleOverview,
+      inDom: all.length,
+      // Derive the expectation from the app rather than hardcoding a number: a
+      // panel withdrawal (crypto_prices, 2026-09-24) then does not require editing
+      // the test, and a panel that silently fails to mount still fails the check.
+      expected: window.__hkcm?.overviewIds?.().length ?? 0,
+      banner: document.querySelector(".banner")?.textContent?.trim().slice(0, 80) ?? null,
+      drinkingNow: window.__hkcm?.triggerState?.wsd_water_suspension?.drinking_now ?? null,
+      saltOnly: window.__hkcm?.triggerState?.wsd_water_suspension?.salt_only_now ?? null,
+    };
+  });
   check(
     "冷啟動：未撳任何嘢之前，app 自己落喺總覽而且開齊全部 panel",
     landing.mode === "overview" && landing.expected > 0 && landing.mounted >= landing.expected,
-    `mode=${JSON.stringify(landing.mode)}（"overview"=總覽）mounted=${landing.mounted}/${landing.expected} ` +
-      `drinking_now=${landing.drinkingNow} salt_only_now=${landing.saltOnly} banner=${JSON.stringify(landing.banner)}`,
+    `mode=${JSON.stringify(landing.mode)}（"overview"=總覽）visible=${landing.mounted}/${landing.expected} ` +
+      `inDOM=${landing.inDom} drinking_now=${landing.drinkingNow} salt_only_now=${landing.saltOnly} ` +
+      `banner=${JSON.stringify(landing.banner)}`,
   );
 
   // --- 3. panels: config-driven, honesty states, footers ----------------------
@@ -462,7 +472,23 @@ try {
     null,
     { timeout: 20_000 },
   ).catch(() => {});
-  await page.waitForTimeout(1500);
+  // A TIMER IS NOT A READINESS GATE. This waited a flat 1500ms after switching
+  // into water mode, and on a slow run the LAYERS control had not been
+  // repopulated yet — that produced a real, intermittent failure of the check
+  // below (observed once in four runs, 2026-09-24). Wait for the control to
+  // actually carry rows instead, so the check measures the app and not the
+  // harness's patience.
+  await page
+    .waitForFunction(
+      () => {
+        const el = document.querySelector(".layer-control");
+        return !!el && !el.hidden && el.querySelectorAll(".lyr-row[role='switch']").length > 0;
+      },
+      null,
+      { timeout: 20_000 },
+    )
+    .catch(() => {});
+  await page.waitForTimeout(400);
 
   // LAYERS control + 圖層符號 (checked here, where the water mode's layers are drawn).
   const legend = await page.evaluate(() => {

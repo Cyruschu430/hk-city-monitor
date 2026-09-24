@@ -590,3 +590,28 @@ What follows from it:
 - **Test the interesting branch.** This app is at its most important during an outage, and until
   now the harness had never run in that state — the one moment the product exists for was the one
   state it did not cover.
+
+### Pitfall 26 — `grid-auto-flow: dense` + a wide card is what makes a panel column pack
+
+The 3.95-screens figure was NOT content bloat (measured waste: 0.1%). The gap was structural:
+World Monitor's `.panels-grid` is `311px 311px` with **`grid-auto-flow: dense`**, and cards declare
+`.panel-wide` (626px = both columns). `dense` lets a short card **backfill the hole** a tall card
+leaves beside it; `auto-flow: row` — which is what we had — cannot, so every short card sat beside
+a tall neighbour with dead space below it.
+
+Measured result of adopting it (overview, production):
+
+| | before | after |
+|---|---|---|
+| column height | 3339px | **1339px** |
+| screens of scroll | 3.95 | **1.54** |
+| widths in use | 335px only | 341px **and** 687px |
+
+**This is not the Pitfall 12 minefield.** That pitfall is about `column-count` on a definite-height
+scroller (extra columns sideways, off-screen). `grid-auto-flow: dense` on a simple two-column grid
+is a different mechanism and safe here — but it is only safe because the grid is a *single vertical
+scroller*, so re-check the assumption if that ever changes.
+
+Choose `wide` **per panel in config**, not by a blanket rule: a 4-column table gains from 687px, a
+two-row status grid just looks sparse. `render.ts` renders `PanelDef.wide` as a class so the
+decision stays in `panels.json` where it can be reviewed in a diff.

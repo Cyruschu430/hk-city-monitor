@@ -116,7 +116,7 @@ a:hover{color:var(--cyan)}
 .layer-control.collapsed .lyr-chev{transform:rotate(-45deg)}
 .layer-control.collapsed .lyr-head{border-bottom-color:transparent}
 .lyr-title{font-size:9.5px;letter-spacing:.16em;font-weight:600;color:var(--map-face);text-transform:uppercase}
-.lyr-count{font-family:var(--font-mono);font-size:9px;color:var(--map-face-weak)}
+.lyr-count{font-family:var(--font-mono);font-size:9.5px;color:var(--map-face-weak)}
 /* Collapsed hides the list but keeps the head, so the count stays on screen and
    the control never becomes invisible with no way back — the one-way door
    Pitfall 15 records. `display:none` (not a zero height) so the rows cannot be
@@ -281,7 +281,7 @@ a:hover{color:var(--cyan)}
 .stat{display:flex;flex-direction:column;gap:1px;padding:0 11px;line-height:1.15;
   border-left:1px solid var(--hairline)}
 .stat:first-child{border-left:0}
-.stat-label{font-family:var(--font-ui);font-size:8.5px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+.stat-label{font-family:var(--font-ui);font-size:9.5px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
 .stat-value{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt)}
 .stat-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:0 0 auto}
 .stat-fresh[data-fresh="warn"] .stat-dot{background:var(--amber)}
@@ -600,10 +600,10 @@ a:hover{color:var(--cyan)}
 .cam{position:relative;border-radius:5px;overflow:hidden;border:1px solid var(--hairline);
   background:#0a1220;aspect-ratio:4/3;cursor:pointer}
 .cam img{width:100%;height:100%;object-fit:cover;display:block}
-.cam .lab{position:absolute;left:0;right:0;bottom:0;padding:2px 4px;font-size:8.5px;line-height:1.25;
+.cam .lab{position:absolute;left:0;right:0;bottom:0;padding:2px 5px;font-size:9.5px;line-height:1.3;
   background:linear-gradient(0deg,rgba(3,7,14,.94),transparent);color:#dbeafe;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cam .fresh{position:absolute;top:3px;right:3px;font-size:8px;padding:1px 4px}
+.cam .fresh{position:absolute;top:3px;right:3px;font-size:9.5px;padding:1px 5px}
 .cam.dead::after{content:attr(data-dead);position:absolute;inset:0;display:grid;place-items:center;
   color:var(--dim);font-size:9px;text-align:center;padding:2px;background:rgba(3,7,14,.86)}
 .cam.dead img{opacity:.2}

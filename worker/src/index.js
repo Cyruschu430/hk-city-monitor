@@ -36,8 +36,12 @@ const UPSTREAM_TIMEOUT_MS = 10_000;
  * 18s is chosen against the CLIENT, not against Cloudflare's limits: `fetchSource`
  * aborts at 25s (web/src/lib/sources.ts), so anything longer here would be invisible
  * to the user — the browser would have given up first.
+ * 18s was raised to 22s on 2026-09-25 after a third gate run still caught a 504 on
+ * this URL: 18s left too little headroom for a slow-but-successful answer, and the
+ * client's own abort is 25s, so 22s spends the whole budget the user is actually
+ * waiting without ever exceeding it.
  */
-const SLOW_HOST_TIMEOUT_MS = 18_000;
+const SLOW_HOST_TIMEOUT_MS = 22_000;
 const SLOW_HOSTS = new Set(["api.open-meteo.com"]);
 const MAX_UPSTREAM_BYTES = 16 * 1024 * 1024; // 16 MiB, checked via Content-Length when present
 

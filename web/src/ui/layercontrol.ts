@@ -201,10 +201,28 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
 export function relabelLayerControl(el: HTMLElement, rows: LayerRow[]): void {
   const items = el.querySelectorAll<HTMLElement>(".lyr-item");
   rows.forEach((row, i) => {
-    const label = items[i]?.querySelector<HTMLElement>(".lyr-label");
-    if (!label) return;
-    const text = row.label ?? row.def.title;
-    label.textContent = lang() === "tc" ? text.tc : text.en;
+    const item = items[i];
+    const label = item?.querySelector<HTMLElement>(".lyr-label");
+    if (label) {
+      const text = row.label ?? row.def.title;
+      label.textContent = lang() === "tc" ? text.tc : text.en;
+    }
+    // THE SOURCE NOTE NEEDS RELABELLING TOO. MEASURED 2026-09-25: this function
+    // only touched `.lyr-label`, so after a language switch the layer names
+    // became English while the ⓘ note beside every one of them stayed Chinese —
+    // the exact half-translated state the EN audit exists to catch.
+    const note = item?.querySelector<HTMLElement>(".lyr-note");
+    if (note) {
+      const a = note.querySelector("a");
+      const text = row.sourceName;
+      if (a) a.textContent = `${text} ↗`;
+      else note.textContent = text;
+    }
+    const info = item?.querySelector<HTMLElement>(".lyr-info");
+    if (info) {
+      info.setAttribute("aria-label", lang() === "tc" ? "來源" : "Source");
+      info.title = row.sourceUrl ? `${row.sourceName} ↗` : row.sourceName;
+    }
   });
   const title = el.querySelector<HTMLElement>(".lyr-title");
   if (title) title.textContent = lang() === "tc" ? "圖層" : "LAYERS";

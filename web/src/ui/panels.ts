@@ -15,7 +15,7 @@ import { clear, h } from "../lib/dom.ts";
 import { cadenceSeconds, degrade, errored, live, LOADING, quietSeconds, type Honesty } from "../lib/honesty.ts";
 import { lang, onLangChange, t } from "../lib/i18n.ts";
 import { renderPanel, type PanelData, type PanelDef, type WallImage } from "../lib/render.ts";
-import type { PanelDefRaw, Registry } from "../lib/sources.ts";
+import { sourceLabel, type PanelDefRaw, type Registry } from "../lib/sources.ts";
 import type { Camera } from "../map/cameras.ts";
 import { pickWallCameras, wallImages } from "../map/cameras.ts";
 
@@ -234,7 +234,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     mount(
       id,
       renderPanel(def, entry.data, entry.honesty, {
-        sourceName: src?.name,
+        sourceName: sourceLabel(src, entry.panel.source),
         sourceUrl: src?.url,
         emptyText: EMPTY_TEXT[entry.panel.source],
         onRetry: () => void refresh(id),

@@ -664,6 +664,17 @@ a:hover{color:var(--cyan)}
 .cam-popup .maplibregl-popup-content{background:var(--panel-solid);color:var(--txt);
   border:1px solid var(--hairline-hi);border-radius:var(--radius-sm);padding:0}
 .maplibregl-popup-close-button{color:var(--dim)}
+/* Attribute popup for point layers (氣象站, and the aircraft/vessel layers that
+   share the path). Two columns so a long address wraps under its own label
+   instead of pushing the value off the popup — the CSDI addresses run to ~50
+   characters and a single-column list became a wall of run-on text. */
+.attr-popup{padding:9px 11px;font:12px/1.5 var(--font-ui);max-width:300px}
+.attr-title{display:block;margin-bottom:5px;font-size:12.5px;color:var(--cyan)}
+.attr-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 9px;padding:1px 0}
+.attr-k{color:var(--faint);font-size:10.5px;white-space:nowrap;align-self:start;padding-top:1px}
+.attr-v{color:var(--txt);font-size:11.5px;min-width:0;word-break:break-word}
+.attr-coords{margin-top:6px;padding-top:5px;border-top:1px solid var(--hairline);
+  font-family:var(--font-mono);font-size:10px;color:var(--faint)}
 
 /* ---------- mobile ---------- */
 @media (max-width:880px){

@@ -975,13 +975,29 @@ try {
     const id = "vl-water_suspension_districts-points";
     if (!map.getLayer(id)) return { layer: false };
     const spec = map.getStyle().layers.find((l) => l.id === id);
+    const feats = map.getSource(id)?._data?.features ?? [];
     return {
       layer: true,
       type: map.getLayer(id).type,
       iconImage: JSON.stringify(spec?.layout?.["icon-image"] ?? null),
       images: ["no-water", "no-water-salt"].map((n) => [n, map.hasImage(n)]),
-      // A symbol layer with no text-field places nothing unless the icon resolved.
-      rendered: map.queryRenderedFeatures({ layers: [id] }).length,
+      // Every feature must resolve to one of the two registered images. `drinking`
+      // is written by the adapter, and the `case` expression falls back to
+      // `no-water-salt` — so a feature with the property MISSING would silently
+      // wear the 鹹水 amber and understate a drinking-water outage. That is a
+      // data bug this catches, not just a rendering one.
+      allHaveIcon: feats.length > 0 && feats.every((f) => f.properties?.drinking === 0 || f.properties?.drinking === 1),
+      // A symbol layer with no text-field places nothing unless the icon resolved,
+      // so a painted feature is proof the icon exists.
+      //
+      // VIEWPORT ONLY — `queryRenderedFeatures` returns what is currently painted
+      // (AGENTS.md Pitfall 7), and by this point in the run the map has been panned
+      // and resized, so this can legitimately read 0 with the pins perfectly
+      // healthy. It is therefore a DIAGNOSTIC, not the assertion: the assertion is
+      // on the SOURCE, which holds every pin regardless of where the camera is.
+      // Measured against production: a run that read rendered=0 here had 6 pins in
+      // the source and the probe read them fine seconds later.
+      renderedInView: map.queryRenderedFeatures({ layers: [id] }).length,
       sourceCount: (map.getSource(id)?._data?.features ?? []).length,
     };
   });
@@ -989,9 +1005,12 @@ try {
     pinIcon.layer && pinIcon.type === "symbol" &&
       pinIcon.iconImage.includes("no-water") && pinIcon.iconImage.includes("drinking") &&
       pinIcon.images.every(([, ok]) => ok === true) &&
-      pinIcon.rendered > 0 && pinIcon.sourceCount > 0,
+      // BOTH glyphs present AND every source feature claiming one of them — an
+      // icon-image that names a missing image still renders nothing.
+      pinIcon.sourceCount > 0 &&
+      pinIcon.allHaveIcon,
     pinIcon.layer
-      ? `type=${pinIcon.type} · icon-image=${pinIcon.iconImage} · 圖示=${JSON.stringify(pinIcon.images)} · 畫出 ${pinIcon.rendered}/${pinIcon.sourceCount}`
+      ? `type=${pinIcon.type} · icon-image=${pinIcon.iconImage} · 圖示=${JSON.stringify(pinIcon.images)} · 來源 ${pinIcon.sourceCount} 支（視窗內畫出 ${pinIcon.renderedInView}）· 每支都有對應圖示=${pinIcon.allHaveIcon}`
       : "冇 vl-water_suspension_districts-points 圖層");
 
   // --- 5c. no LAYERS row may show a blank mark ---------------------------------
@@ -1578,7 +1597,14 @@ try {
       bodyH: Math.round(body.getBoundingClientRect().height),
       stored: localStorage.getItem("hkcm.lyrCollapsed"),
       // The click must have flipped the VISUAL, not just the attribute.
-      chev: getComputedStyle(el.querySelector(".lyr-chev")).transform,
+      // Guarded: on a build where the chevron is missing this returned null and
+      // `getComputedStyle(null)` threw, taking the whole run down AFTER the check
+      // it belonged to had passed. A diagnostic must never be able to crash the
+      // harness (Pitfall 29's lesson, one layer out).
+      chev: (() => {
+        const c = el.querySelector(".lyr-chev");
+        return c ? getComputedStyle(c).transform : "missing";
+      })(),
     };
     return { open, closed, reopened };
   });
@@ -1685,9 +1711,14 @@ try {
       type: map.getLayer(id).type,
       iconImage: JSON.stringify(spec?.layout?.["icon-image"] ?? null),
       images: ["cp-land", "cp-sea", "cp-air"].map((n) => [n, map.hasImage(n)]),
-      rendered: map.queryRenderedFeatures({ layers: [id] }).length,
+      // Viewport-dependent, so a diagnostic only — see the note on the water pins.
+      renderedInView: map.queryRenderedFeatures({ layers: [id] }).length,
       sourceCount: feats.length,
       kinds: [...new Set(feats.map((f) => f.properties?.kind))].sort(),
+      // Every feature must map onto one of the three registered images. `kind` is
+      // curated reference data, so an unrecognised value would fall through to
+      // `cp-land` silently — a sea crossing drawn as a land one.
+      allHaveIcon: feats.length > 0 && feats.every((f) => ["air", "sea", "land"].includes(f.properties?.kind)),
       // The names must clear the glyph: with `text-offset: [0, 1.4]` a 30px icon
       // sat on top of its own label.
       textOffset: JSON.stringify(map.getLayoutProperty(`${id}-label`, "text-offset")),
@@ -1697,9 +1728,9 @@ try {
     cpLayer.layer && cpLayer.type === "symbol" &&
       cpLayer.iconImage.includes("cp-land") && cpLayer.iconImage.includes("kind") &&
       cpLayer.images.every(([, ok]) => ok === true) &&
-      cpLayer.rendered > 0 && cpLayer.sourceCount >= 10 && cpLayer.kinds.length >= 2,
+      cpLayer.sourceCount >= 10 && cpLayer.kinds.length >= 2 && cpLayer.allHaveIcon,
     cpLayer.layer
-      ? `type=${cpLayer.type} · icon-image=${cpLayer.iconImage} · 圖示=${JSON.stringify(cpLayer.images)} · 畫出 ${cpLayer.rendered}/${cpLayer.sourceCount} · 種類=${JSON.stringify(cpLayer.kinds)} · text-offset=${cpLayer.textOffset}`
+      ? `type=${cpLayer.type} · icon-image=${cpLayer.iconImage} · 圖示=${JSON.stringify(cpLayer.images)} · 來源 ${cpLayer.sourceCount} 個（視窗內畫出 ${cpLayer.renderedInView}）· 種類=${JSON.stringify(cpLayer.kinds)} · 每個都有對應圖示=${cpLayer.allHaveIcon} · text-offset=${cpLayer.textOffset}`
       : "冇 vl-control_points 圖層");
 
   await page.screenshot({ path: join(outDir, "05-typhoon-after-border.png") });

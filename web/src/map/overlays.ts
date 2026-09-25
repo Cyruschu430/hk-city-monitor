@@ -557,6 +557,10 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
         "icon-ignore-placement": true,
       },
     });
+    // Attributes on the moving path too. The aircraft layer was withdrawn, but the
+    // vessel one is coming and it draws exactly here — leaving this branch without
+    // a popup would recreate the weather-station bug on a brand new layer.
+    attributePopup(map, `${id}-point`);
     return;
   }
 
@@ -628,7 +632,132 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     filter: ["!", ["has", "point_count"]],
     layout: { "icon-image": glyph, "icon-size": size as never, "icon-allow-overlap": true },
   });
+  // THE fix for "weather station layer click完冇attribute pop up": this path had
+  // no click handler at all, so 氣象站 (and any point layer without its own
+  // popup) was inert under the cursor.
+  attributePopup(map, `${id}-point`);
 }
+/** Field labels for the attribute popup. A key with no entry falls back to the
+ *  raw key, which is honest ("you are seeing an unlabelled field") rather than
+ *  inventing a translation. */
+const POPUP_LABELS: Record<string, { tc: string; en: string }> = {
+  Name: { tc: "名稱", en: "Name" },
+  Address: { tc: "地址", en: "Address" },
+  TypesofWeatherStation: { tc: "氣象站類型", en: "Station type" },
+  Elevationofgroundabovemeansea_level_metres: { tc: "海拔（米）", en: "Elevation (m)" },
+  OpeningHours: { tc: "開放時間", en: "Opening hours" },
+  Telephone: { tc: "電話", en: "Telephone" },
+  Website: { tc: "網站", en: "Website" },
+  LastUpdate: { tc: "資料更新", en: "Data updated" },
+  // Aircraft / vessel fields, ready for the layers that will use this path.
+  flight: { tc: "航班", en: "Flight" },
+  hex: { tc: "ICAO 24-bit", en: "ICAO 24-bit" },
+  altFt: { tc: "高度（呎）", en: "Altitude (ft)" },
+  gsKt: { tc: "地速（節）", en: "Ground speed (kt)" },
+  trackDeg: { tc: "航向", en: "Track" },
+  verticalFpm: { tc: "升降率（呎/分）", en: "Vertical rate (ft/min)" },
+  mmsi: { tc: "MMSI", en: "MMSI" },
+  shipName: { tc: "船名", en: "Vessel" },
+  sog: { tc: "船速（節）", en: "Speed (kt)" },
+  cog: { tc: "航向", en: "Course" },
+  destination: { tc: "目的地", en: "Destination" },
+};
+
+/** Keys that carry no information for a reader. `_sc` is Simplified Chinese —
+ *  the third language of every CSDI field triple, and this app is TC/EN only.
+ *  The rest are dataset plumbing (which catalogue the record came from) or the
+ *  raw projected coordinates, which duplicate the geometry. */
+const POPUP_SKIP = /^(OBJECTID|Easting|Northing|Latitude|Longitude|Latitude_N|Longitude_E|Dataset|DataGovHK|EmailAddress|FaxNumber)$/;
+
+/** HTML-escape a value before it goes into a popup.
+ *
+ * These popups render text that came from a REMOTE FEED. Nothing escapes it today
+ * — `controlPointLayer` and `drawWaterPoints` interpolate raw values into
+ * `setHTML`, so a feed value containing markup executes in the page. That is a
+ * real (if low-probability) injection path on government data, and this helper
+ * exists so the new code does not add a third instance. The older two are left
+ * alone deliberately: changing them is a separate review, and doing it silently
+ * inside a popup feature would hide it. */
+function esc(v: unknown): string {
+  return String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+}
+
+/** One feature's attributes as popup HTML, or null when it has nothing to say. */
+function attributeHtml(p: Record<string, unknown>, lngLat: maplibregl.LngLat): string | null {
+  const tc = lang() === "tc";
+  // CSDI publishes every field as a `Foo_tc` / `Foo_en` / `Foo_sc` triple. Group
+  // them back into one logical field so the popup shows 地址 once, not three
+  // times, and pick the language of the current UI (AGENTS.md: { tc, en } of the
+  // same field, never twin fields that drift).
+  const groups = new Map<string, { tc?: unknown; en?: unknown; value?: unknown }>();
+  for (const [k, v] of Object.entries(p)) {
+    const m = /^(.*)_(tc|en|sc)$/.exec(k);
+    // `m[1]` is `string | undefined` under noUncheckedIndexedAccess; the regex
+    // guarantees it exists, but the compiler cannot know that.
+    const base = m?.[1] ?? k;
+    const slot = groups.get(base) ?? {};
+    if (m) {
+      if (m[2] !== "sc") slot[m[2] as "tc" | "en"] = v;
+    } else {
+      slot.value = v;
+    }
+    groups.set(base, slot);
+  }
+
+  const titleRaw = groups.get("Name");
+  const title = tc ? titleRaw?.tc ?? titleRaw?.value : titleRaw?.en ?? titleRaw?.value;
+  const rows: string[] = [];
+  for (const [base, slot] of groups) {
+    if (base === "Name" || POPUP_SKIP.test(base)) continue;
+    const raw = tc ? slot.tc ?? slot.value : slot.en ?? slot.value;
+    const text = raw === null || raw === undefined ? "" : String(raw).trim();
+    // "N.A." is what CSDI writes for an absent value. Showing it is noise; the
+    // field is simply not there.
+    if (!text || /^(n\.?a\.?|nil|null|-|—)$/i.test(text)) continue;
+    const label = POPUP_LABELS[base];
+    const isLink = /^https?:\/\//.test(text);
+    const valueHtml = isLink
+      ? `<a href="${esc(text)}" target="_blank" rel="noopener" style="color:#22d3ee">${esc(text.replace(/^https?:\/\//, "").slice(0, 46))} ↗</a>`
+      : esc(text);
+    rows.push(
+      `<div class="attr-row"><span class="attr-k">${esc(label ? (tc ? label.tc : label.en) : base)}</span>` +
+        `<span class="attr-v">${valueHtml}</span></div>`,
+    );
+  }
+
+  const head = `<b class="attr-title">${esc(title ?? (tc ? "未命名" : "Unnamed"))}</b>`;
+  const coords = `<div class="attr-coords">${esc(lngLat.lat.toFixed(5))}, ${esc(lngLat.lng.toFixed(5))}</div>`;
+  // A feature with a name and nothing else still gets a popup — the name plus its
+  // position IS an answer, and silently doing nothing on click reads as broken,
+  // which is the bug this whole function exists to fix.
+  return `<div class="attr-popup">${head}${rows.join("")}${coords}</div>`;
+}
+
+/** Attach an ATTRIBUTE POPUP to a point layer.
+ *
+ * Cyrus 2026-09-25: "weather station layer click完冇attribute pop up". The cause
+ * was not a broken popup — there was NO click handler on this path at all.
+ * `pointLayer()` added its layers and returned, so every layer drawn through it
+ * was inert under the cursor: 氣象站 today, and the aircraft and vessel layers
+ * that will use the same path next.
+ *
+ * Wired here rather than per-layer so a new point layer cannot be born without
+ * attributes, which is exactly how this one was. */
+function attributePopup(map: maplibregl.Map, layerId: string): void {
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const html = attributeHtml((f.properties ?? {}) as Record<string, unknown>, e.lngLat);
+    if (!html) return;
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "310px" })
+      .setLngLat(e.lngLat)
+      .setHTML(html)
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+
 /**
  * Official control points as map POIs, with a popup carrying their attributes.
  *

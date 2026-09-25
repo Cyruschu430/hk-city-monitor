@@ -68,11 +68,39 @@ for (const [src, dst] of optional) {
 }
 
 // --- basemap style -----------------------------------------------------------
-// Tile order differs per provider and getting it backwards yields a plausible
-// map in the wrong place: LandsD is {z}/{x}/{y}, Esri is {z}/{y}/{x}.
-const LANDSD = "https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz";
-const ESRI =
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile";
+// R1 (docs/SOURCE_COVERAGE_REVIEW.md). These URLs used to be HARDCODED here, so
+// `landsd_basemap_tiles`, `landsd_label_tiles`, `landsd_imagery_tiles`,
+// `esri_world_imagery` and `carto_dark_style` all read as "referenced by nothing"
+// in the registry while the map depended on them — and if LandsD moved a path,
+// no registry entry needed editing and `validate_config.py` (which walks
+// sources.json, not this generated file) stayed green. That is the same class of
+// defect as Pitfall 27's dead CSS selector: a reference that looks live and
+// matches nothing. The URLs now come FROM the registry, and a missing entry is a
+// hard failure rather than a silent fallback to a string in this file.
+const registry = JSON.parse(readFileSync(join(root, "sources.json"), "utf8"));
+const srcUrl = (id) => {
+  const s = (registry.sources ?? []).find((x) => x.id === id);
+  if (!s?.url) throw new Error(`sync-data: sources.json has no usable url for "${id}" — the basemap needs it`);
+  return s.url;
+};
+
+// Tile order differs per provider and getting it backwards yields a plausible map
+// in the WRONG PLACE: LandsD is {z}/{x}/{y}, Esri is {z}/{y}/{x}. The order is a
+// fact about the provider that cannot be derived from the URL, so it is stated
+// per source here — but the PATH is not.
+//
+// The registry stores a real probed tile (…/14/13387/7151.png) rather than a
+// template with braces, because a probe has to request something concrete. So the
+// template is derived by replacing the trailing z/x/y integers with tokens, which
+// keeps the registry the single source of truth for the path.
+function tileTemplate(sampleUrl, order) {
+  const m = /\/(\d+)\/(\d+)\/(\d+)(\.[A-Za-z0-9]+)?$/.exec(sampleUrl);
+  if (!m) throw new Error(`sync-data: tile sample URL has no /z/x/y tail: ${sampleUrl}`);
+  if (order !== "zxy" && order !== "zyx") throw new Error(`sync-data: bad tile order "${order}"`);
+  const head = sampleUrl.slice(0, m.index);
+  const ext = m[4] ?? "";
+  return `${head}/${order === "zxy" ? "{z}/{x}/{y}" : "{z}/{y}/{x}"}${ext}`;
+}
 
 const workerBase = (process.env.VITE_WORKER_BASE || "").replace(/\/+$/, "");
 // MapLibre substitutes {z}/{x}/{y} AFTER reading the template, so the braces
@@ -81,11 +109,21 @@ const tile = (tpl) =>
   workerBase ? `${workerBase}/proxy?url=${encodeURIComponent(tpl).replace(/%7B/g, "{").replace(/%7D/g, "}")}` : tpl;
 
 // Only LandsD goes through the Worker: its terms forbid request bursts and the
-// edge cache is the protection (COST.md §2). The Esri fallback is NOT in
-// sources.json, so the Worker's whitelist would refuse it — routing it there
-// would 403. If imagery should be cached too, add the source to sources.json,
-// re-run scripts/build_worker_whitelist.py, and route it like LandsD.
+// edge cache is the protection (COST.md §2).
+//
+// The Esri fallback stays DIRECT, and the earlier reason recorded here — "Esri is
+// not in sources.json, so the Worker's whitelist would refuse it" — was WRONG:
+// `esri_world_imagery` has been in the registry all along. The real reason is
+// cost: it is a FALLBACK that is normally never requested, and spending Worker
+// cache entries (and the 100k/day free-tier budget) on a rarely-used layer is the
+// wrong trade. Routing it through the Worker is a one-line change if that
+// calculation ever flips.
 const tileViaWorker = tile;
+
+const LANDSD_TOPO = tileTemplate(srcUrl("landsd_basemap_tiles"), "zxy");
+const LANDSD_LABEL = tileTemplate(srcUrl("landsd_label_tiles"), "zxy");
+const LANDSD_IMAGERY = tileTemplate(srcUrl("landsd_imagery_tiles"), "zxy");
+const ESRI_IMAGERY = tileTemplate(srcUrl("esri_world_imagery"), "zyx");
 
 const style = {
   version: 8,
@@ -94,14 +132,14 @@ const style = {
   sources: {
     "landsd-topo": {
       type: "raster",
-      tiles: [tile(`${LANDSD}/basemap/WGS84/{z}/{x}/{y}.png`)],
+      tiles: [tile(LANDSD_TOPO)],
       tileSize: 256,
       maxzoom: 19,
       attribution: "Map from Lands Department 地政總署",
     },
     "landsd-label-tc": {
       type: "raster",
-      tiles: [tile(`${LANDSD}/label/hk/tc/WGS84/{z}/{x}/{y}.png`)],
+      tiles: [tile(LANDSD_LABEL)],
       tileSize: 256,
       maxzoom: 19,
     },
@@ -110,13 +148,13 @@ const style = {
     // routed via the Worker's edge cache like the other LandsD tiles.
     "landsd-imagery": {
       type: "raster",
-      tiles: [tile(`${LANDSD}/imagery/WGS84/{z}/{x}/{y}.png`)],
+      tiles: [tile(LANDSD_IMAGERY)],
       tileSize: 256,
       maxzoom: 19,
     },
     "esri-imagery": {
       type: "raster",
-      tiles: [`${ESRI}/{z}/{y}/{x}`], // direct — see tileViaWorker note above
+      tiles: [ESRI_IMAGERY], // direct — see the cost note above
       tileSize: 256,
       maxzoom: 19,
       attribution: "Imagery © Esri, Maxar, Earthstar Geographics",

@@ -63,6 +63,41 @@ export function stamp(at: Date): string {
   return `${dayFmt.format(at)} ${t}`;
 }
 
+/** A Date → the HKT wall-clock string the feeds publish and `relTime` re-reads:
+ *  "YYYY-MM-DD HH:mm".
+ *
+ *  MEASURED 2026-09-25 — the two list parsers built this string with
+ *  `date.toISOString().slice(0, 16).replace("T", " ")`, which is **UTC**, while
+ *  `relTime` (below) parses it as **+08:00**. Producer and consumer disagreed by
+ *  eight hours, so:
+ *    · every 特別交通消息 row printed its time eight hours early and the relative
+ *      age read 「8 小時前」 under a footer clock that said 17:02 — measured: TD
+ *      ReferenceDate 17:02:37 HKT became a row reading 2026-09-25 09:02;
+ *    · government-news rows shifted the same way, and since
+ *      `breaking_news_list` tolerates 24h a date-only `pubDate` pushed
+ *      `observedAt` past it — the panel was latched STALE while the feed's own
+ *      `lastBuildDate` was two minutes old.
+ *  It has to be ONE shared function rather than two matching edits, because the
+ *  defect is exactly that the formatter and the parser were written separately
+ *  and nothing tied them together. Anything rendering "YYYY-MM-DD HH:mm" for
+ *  `relTime` must come through here.
+ *
+ *  `hourCycle: "h23"`, not `hour12: false`: the latter can yield "24" for midnight
+ *  in some engines, which `relTime`'s regex would read as hour 24. */
+export function hkWallTime(at: Date): string {
+  const p = new Intl.DateTimeFormat("en-CA", {
+    timeZone: HK_TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(at);
+  const g = (t: string) => p.find((x) => x.type === t)?.value ?? "00";
+  return `${g("year")}-${g("month")}-${g("day")} ${g("hour")}:${g("minute")}`;
+}
+
 /** "2026-09-19 16:00" (HKT wall, as feeds publish) → relative age for a
     list row ("2 日前" / "3 h ago"); the caller keeps the absolute stamp in a
     title attribute. Unknown formats pass through unchanged. */

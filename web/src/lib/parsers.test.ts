@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 };
 
 const P = await import("./parsers.ts");
+const F = await import("./format.ts");
 const fx = (name: string) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "..", "test", "fixtures", name));
 const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFEFF/, ""));
 
@@ -202,14 +203,86 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log(`✓ AQHI: ${cells.length} 站，風險級別全齊，更新 ${observedAt?.toISOString().slice(0, 16)}`);
 }
 
-// 17. Carpark merge.
+// 17. Carpark merge — re-derived from the RAW fixture, not from the parser.
+//
+// The old version of this block asserted `rows.length > 0`, that names were
+// present, and printed `${vacancy}/${capacity}`. It passed for as long as the
+// panel has existed while the panel was showing a 總數 column of "—" for every
+// row and an ordering that had never sorted anything — because `capacity` does
+// not exist in `basic_info_all.json`, so the ratio key was Infinity for every row
+// and `br - ar` was NaN. Printing "2/0" reads as fine.
+//
+// The expectation is therefore computed HERE, from the fixture's own records,
+// independently of parseCarpark — the same "cross-check against the raw data, not
+// against itself" rule the district check had to learn (Pitfall 19).
 {
-  const v = jx("carpark_vacancy.json");
-  const i = jx("carpark_basic_info.json");
-  const rows = P.parseCarpark(v, i, 12);
-  assert.ok(rows.length > 0, `${rows.length} carparks`);
-  assert.ok(rows.every((r) => r.name.length > 0), "names present");
-  console.log(`✓ 停車場: ${rows.length} 個（空位最高優先），首個 ${rows[0]!.name} ${rows[0]!.vacancy}/${rows[0]!.capacity}`);
+  const v = jx("carpark_vacancy.json") as {
+    car_park: { park_id: string; vehicle_type?: { type?: string; service_category?: { vacancy?: number; lastupdate?: string }[] }[] }[];
+  };
+  const i = jx("carpark_basic_info.json") as { car_park: { park_id: string; name_tc?: string; name_en?: string }[] };
+
+  // 1. The feed does NOT carry capacity. If a future capture adds it, this fails
+  //    and the 總數 column can come back — deliberately, because the column was
+  //    removed on the strength of this fact.
+  const infoKeys = new Set(i.car_park.flatMap((p) => Object.keys(p)));
+  assert.ok(!infoKeys.has("capacity"), "basic_info_all.json still has no capacity field (the 總數 column's premise)");
+
+  // 2. Expected private-car vacancy, per park, from the raw records.
+  const expected = new Map<string, number>();
+  let multiType = 0;
+  for (const p of v.car_park) {
+    if ((p.vehicle_type ?? []).length > 1) multiType++;
+    let sum = 0;
+    for (const vt of p.vehicle_type ?? []) {
+      if (vt.type !== "P") continue;
+      for (const sc of vt.service_category ?? []) sum += Number(sc.vacancy) || 0;
+    }
+    expected.set(p.park_id, sum);
+  }
+  // The summing bug needs more than one vehicle type to be observable at all.
+  assert.ok(multiType > 0, `${multiType} car parks carry >1 vehicle_type, so the P-only rule is testable`);
+
+  // 3. If any park has a non-P type carrying vacancy, summing all types would
+  //    differ — assert that this is a real distinction in this fixture.
+  const differs = v.car_park.some((p) => {
+    const all = (p.vehicle_type ?? []).reduce(
+      (a, vt) => a + (vt.service_category ?? []).reduce((x, sc) => x + (Number(sc.vacancy) || 0), 0),
+      0,
+    );
+    return all !== (expected.get(p.park_id) ?? 0);
+  });
+  assert.ok(differs, "at least one park reports non-private-car vacancy, so P-only changes the number");
+
+  const MAX = 12;
+  const rows = P.parseCarpark(v, i, MAX);
+  assert.equal(rows.length, MAX, `${MAX} rows`);
+
+  // 4. Every row's vacancy is the value derived above, and every row is private-car.
+  const wrong = rows.filter((r) => r.vacancy !== (expected.get(r.id) ?? -1));
+  assert.equal(wrong.length, 0, `vacancy must be the private-car sum (mismatches: ${wrong.map((r) => r.id).join(",")})`);
+
+  // 5. The panel claims "most free spaces first". Prove the sort ran: take the
+  //    top-12 by vacancy straight from the raw data and require the same ids.
+  const topExpected = i.car_park
+    .filter((p) => expected.has(p.park_id))
+    .map((p) => ({ id: p.park_id, name: (p.name_tc ?? p.name_en)!, vacancy: expected.get(p.park_id)! }))
+    .sort((a, b) => b.vacancy - a.vacancy || a.name.localeCompare(b.name, "zh-Hant"))
+    .slice(0, MAX)
+    .map((r) => r.id);
+  assert.deepEqual(rows.map((r) => r.id), topExpected, "rows are the top-N by private-car vacancy");
+
+  // 6. Descending, and no row carries capacity any more.
+  assert.ok(rows.every((r, n) => n === 0 || rows[n - 1]!.vacancy >= r.vacancy), "vacancy descending");
+  assert.ok(!("capacity" in rows[0]!), "CarparkRow no longer carries capacity");
+
+  // 7. Per-park report times parsed (the panel shows them per row).
+  const timed = rows.filter((r) => r.updatedAt instanceof Date && Number.isFinite(r.updatedAt.getTime()));
+  assert.ok(timed.length > 0, `${timed.length}/${rows.length} rows carry a parsed report time`);
+
+  console.log(
+    `✓ 停車場: ${rows.length} 個（私家車空位最多優先）· 首位 ${rows[0]!.name} ${rows[0]!.vacancy} 個 · ` +
+      `多車種場 ${multiType} 個（只用 P 種）· 有時間戳 ${timed.length}/${rows.length}`,
+  );
 }
 
 // 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).
@@ -335,6 +408,62 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   assert.equal(cheungChau!.speedKmh, 18, "speed parsed");
   assert.equal(cheungChau!.gustKmh, 27, "gust parsed");
 
+  // EVERY direction the feed publishes must resolve — not a hand-picked pair.
+  //
+  // This is the assertion that was missing, and its absence is exactly how the
+  // compass table stayed wrong: it carried full words only for North/East/South/
+  // West and ABBREVIATIONS for the other twelve points, while the CSV publishes
+  // full words throughout. MEASURED against the live file: "Southeast" appeared
+  // 14 times, "East" 12, "Northeast" 2, "South" 1 — so only the last two matched,
+  // 16 of 30 stations lost their bearing, the barb map silently drew 10 of 30, and
+  // the panel's mean was 16.7 km/h against a true 14.6 over the stations that did
+  // report. The single `East → 90` assertion above passed throughout.
+  //
+  // The set below is read from the FIXTURE — so it is the feed's own vocabulary,
+  // not a list typed here — and any direction string that is a real compass point
+  // must map to a number. Non-directions (N/A, Calm) must stay null.
+  // The three words HKO uses for "there is no single bearing". These must stay
+  // null — inventing a direction for `Variable` would draw a steady wind that the
+  // instrument explicitly said it could not see. Everything else must resolve.
+  //
+  // The fixture's own vocabulary is: East x14, Southeast x7, Northeast x3, N/A x2,
+  // Northwest x2, Variable x1, Calm x1 — i.e. 26 real bearings and 3 non-answers.
+  // Under the old table only East matched, so 12 of those 26 were dropped.
+  const NON_DIRECTIONS = new Set(["N/A", "Calm", "Variable", "", "-"]);
+  const unresolved = stations.filter((s) => !NON_DIRECTIONS.has(s.dirText) && s.dirDeg === null);
+  assert.equal(
+    unresolved.length,
+    0,
+    `every compass point must resolve; unresolved: ${[...new Set(unresolved.map((s) => s.dirText))].join(", ")}`,
+  );
+  // And the reverse: a non-answer must NOT silently become a bearing.
+  const invented = stations.filter((s) => NON_DIRECTIONS.has(s.dirText) && s.dirDeg !== null);
+  assert.equal(invented.length, 0, `non-directions must stay null: ${invented.map((s) => s.dirText).join(", ")}`);
+  // The three real bearings the old table lost — asserted by name so this cannot
+  // regress via the fixture changing shape.
+  assert.equal(byName.get("Cheung Chau")!.dirDeg, 90, "Cheung Chau East");
+  const se = stations.find((s) => s.dirText === "Southeast");
+  assert.equal(se?.dirDeg, 135, `"Southeast" → 135° (got ${se?.dirDeg})`);
+  const nw = stations.find((s) => s.dirText === "Northwest");
+  assert.equal(nw?.dirDeg, 315, `"Northwest" → 315° (got ${nw?.dirDeg})`);
+  const ne = stations.find((s) => s.dirText === "Northeast");
+  assert.equal(ne?.dirDeg, 45, `"Northeast" → 45° (got ${ne?.dirDeg})`);
+
+  // The full 8-point rose, asserted by value, from a synthetic file — so a future
+  // edit to the table cannot quietly drop a word the feed publishes only rarely.
+  const ROSE: [string, number][] = [
+    ["North", 0], ["Northeast", 45], ["East", 90], ["Southeast", 135],
+    ["South", 180], ["Southwest", 225], ["West", 270], ["Northwest", 315],
+  ];
+  const roseCsv =
+    "Date time,Automatic Weather Station,Dir,Speed,Gust\n" +
+    ROSE.map(([w], i) => `202609250850,S${i},${w},10,20`).join("\n") +
+    "\n";
+  const rose = P.parseWindCsv(roseCsv).stations;
+  ROSE.forEach(([word, deg], i) => {
+    assert.equal(rose.find((s) => s.name === `S${i}`)?.dirDeg, deg, `"${word}" → ${deg}°`);
+  });
+
   // "N/A" direction with a real speed: the speed is usable, the direction is
   // NOT. Defaulting it to 0 would draw a northerly wind that does not exist.
   const green = byName.get("Green Island");
@@ -434,4 +563,36 @@ console.log("\nparsers.test.ts: ALL PASS");
   assert.ok(rmkCount > 0, "fixture 要有 rmk 值，否則呢個測試測唔到嘢");
   assert.ok(rows.some((r) => r[3] && r[3]!.length > 0), "rmk 有顯示，冇被 drop");
   console.log(`✓ 九巴到站: ${rows.length} 行；備註有顯示（例：${rows.find((r) => r[3])?.[3]}）`);
+}
+
+
+// 25. List rows carry HKT wall times, not UTC — the producer/consumer contract.
+//
+// MEASURED 2026-09-25: `parseTrafficNews` and `parseGovNews` built each row's
+// `time` with `date.toISOString().slice(0, 16)`, which is UTC, while `relTime`
+// parses that string as +08:00. Every row therefore printed eight hours early and
+// aged eight hours fast: TD ReferenceDate 17:02:37 HKT became a row reading
+// "2026-09-25 09:02" under a footer clock saying 17:02, and the news rows shifted
+// far enough that `breaking_news_list`'s 24h tolerance latched the panel stale
+// while the feed's own lastBuildDate was two minutes old.
+//
+// This asserts the CONTRACT rather than either implementation: whatever produces
+// the string, re-reading it must give back the same instant.
+{
+  const at = new Date("2026-09-25T09:02:00Z"); // 17:02 HKT
+  assert.equal(F.hkWallTime(at), "2026-09-25 17:02", "a UTC instant formats as HKT wall time");
+
+  const threeMinLater = new Date(at.getTime() + 3 * 60_000);
+  const right = F.relTime(F.hkWallTime(at), threeMinLater);
+  assert.ok(/3/.test(right) && /分|min/.test(right), `a 3-minute-old row reads as minutes, got "${right}"`);
+
+  // Midnight must not become hour 24 (`hour12:false` can emit "24").
+  assert.equal(F.hkWallTime(new Date("2026-09-24T16:00:00Z")), "2026-09-25 00:00", "midnight → 00:00, not 24:00");
+
+  // A check that cannot fail is worse than none: prove this test can tell the two
+  // formatters apart by running the OLD one and showing it reads as hours.
+  const oldUtc = at.toISOString().slice(0, 16).replace("T", " ");
+  const wrong = F.relTime(oldUtc, threeMinLater);
+  assert.ok(/8/.test(wrong) && /小時|h ago/.test(wrong), `the old UTC formatter must read as 8 hours — got "${wrong}"`);
+  console.log(`✓ 時間戳: HKT 牆上時間（${F.hkWallTime(at)}）· 舊 UTC 寫法會變「${wrong}」`);
 }

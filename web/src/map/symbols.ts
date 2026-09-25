@@ -18,7 +18,25 @@ export type GlyphId =
   | "aqhi"
   | "plane"
   | "ferry"
-  | "water";
+  | "water"
+  // Border control points, one per crossing KIND. The glyph is identical and the
+  // DISC carries the kind (land violet / sea cyan / air blue), which is the same
+  // split the previous plain circles used — so a reader who learnt the colours
+  // keeps them, and now gets a symbol that says "crossing" as well.
+  | "cp-land"
+  | "cp-sea"
+  | "cp-air"
+  // Water suspension, split by the thing that actually matters: 食水 (drinking
+  // water, the life-safety case, alert red) vs 鹹水 (flushing water, a nuisance,
+  // amber). Same drawing, different disc, so the two are never confused at a
+  // glance — the rule `drawWaterPoints` already applied with two-tone circles.
+  | "no-water"
+  | "no-water-salt"
+  // Wind flow (modelled particle field).
+  | "wind-flow"
+  // Rail toggles that are not map layers at all (deck.gl 3D, the raster basemap).
+  | "blocks"
+  | "aerial";
 
 interface GlyphSpec {
   /** draw the glyph centred in a size×size box */
@@ -189,17 +207,196 @@ function drawFerry(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** Water droplet for suspension notices. */
-function drawWater(ctx: CanvasRenderingContext2D, size: number): void {
+/** Border control point: a gateway with a traveller passing through it.
+ *
+ * Cyrus: "Border control point layer — use relevant symbology for them, don't use
+ * simple point symbols." The layer used to draw a bare `circle`, which said only
+ * "something is here" — the same thing every other point layer on this map says.
+ * A portal with an arrow through it reads as a CROSSING at 44px and still reads
+ * at the 14px the legend draws, which a passport or a barrier boom does not: both
+ * turn to mush below ~20px.
+ *
+ * The arrow points right on purpose. Direction is not information here (the
+ * crossing is bidirectional), so an asymmetric mark would imply something the
+ * data does not say; a rightward arrow is the neutral reading direction. */
+function drawControlPoint(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();
   ctx.translate(c, c);
+  stroke(ctx);
+  // Portal: two posts and a lintel.
+  ctx.beginPath();
+  ctx.moveTo(-9, 11);
+  ctx.lineTo(-9, -7);
+  ctx.lineTo(9, -7);
+  ctx.lineTo(9, 11);
+  ctx.stroke();
+  // Feet, so the posts read as standing on the ground rather than floating.
+  ctx.beginPath();
+  ctx.moveTo(-12.5, 11);
+  ctx.lineTo(-5.5, 11);
+  ctx.moveTo(5.5, 11);
+  ctx.lineTo(12.5, 11);
+  ctx.stroke();
+  // The traveller: arrow through the gateway.
+  ctx.beginPath();
+  ctx.moveTo(-5, 2);
+  ctx.lineTo(5, 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(1.5, -3.2);
+  ctx.lineTo(6.4, 2);
+  ctx.lineTo(1.5, 7.2);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(255,255,255,.92)";
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** Water suspension: the `water` droplet struck through.
+ *
+ * Cyrus: "Suspension Location layer — use relevant symbology, don't use simple
+ * point symbols." The pins were two-tone CIRCLES; the colour carried the whole
+ * message and the shape carried none.
+ *
+ * Built as the family negation of `drawWater` rather than a new invention: this
+ * map already uses the droplet for water supply, so "droplet + slash" is read
+ * without a legend, and the two symbols cannot drift apart because they are drawn
+ * from the same outline source below.
+ *
+ * The slash is drawn as TWO strokes with a gap over the droplet, not one line
+ * across it. A single line makes the droplet unreadable at legend size and the
+ * symbol then reads as "crossed out circle", i.e. exactly the plain point symbol
+ * this replaces. */
+function dropletPath(ctx: CanvasRenderingContext2D): void {
   ctx.beginPath();
   ctx.moveTo(0, -12);
   ctx.bezierCurveTo(7, -2, 9, 3, 9, 6);
   ctx.arc(0, 6, 9, 0, Math.PI);
   ctx.bezierCurveTo(-9, 3, -7, -2, 0, -12);
   ctx.closePath();
+}
+
+function drawNoWater(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  dropletPath(ctx);
+  ctx.fillStyle = "rgba(233,242,255,.42)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(5,7,13,.85)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // The slash: outline pass first so it stays legible over the droplet's fill,
+  // then the dark ink on top.
+  for (const pass of [
+    { w: 4.4, col: "rgba(5,7,13,.9)" },
+    { w: 2.4, col: "rgba(255,255,255,.97)" },
+  ]) {
+    ctx.strokeStyle = pass.col;
+    ctx.lineWidth = pass.w;
+    ctx.lineCap = "round";
+    for (const seg of [
+      { x1: -13, y1: -11, x2: -3, y2: -1 },
+      { x1: 3, y1: 1, x2: 13, y2: 11 },
+    ]) {
+      ctx.beginPath();
+      ctx.moveTo(seg.x1, seg.y1);
+      ctx.lineTo(seg.x2, seg.y2);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+/** Wind flow: three streamlines with a curl, matching the rail button's own wind
+ *  icon so the legend row and the button that drives it read as the same thing. */
+function drawWindFlow(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.strokeStyle = "rgba(233,242,255,.95)";
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  for (const s of [
+    { y: -9, len: 6, hook: 4 },
+    { y: 0, len: 3, hook: 5 },
+    { y: 9, len: 7, hook: 3.5 },
+  ]) {
+    ctx.beginPath();
+    ctx.moveTo(-12, s.y);
+    ctx.lineTo(s.len, s.y);
+    ctx.arc(s.len, s.y - s.hook / 2, s.hook / 2, Math.PI / 2, -Math.PI / 2, true);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/** 3D buildings: an isometric block with a second block behind it, so the legend
+ *  row says "extruded mass", not "another point". */
+function drawBlocks(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.strokeStyle = "rgba(5,7,13,.85)";
+  ctx.lineWidth = 1.2;
+  ctx.lineJoin = "round";
+  const box = (x: number, y: number, w: number, h: number, top: number) => {
+    ctx.beginPath();
+    ctx.moveTo(x - w, y);
+    ctx.lineTo(x - w, y - h);
+    ctx.lineTo(x, y - h - top);
+    ctx.lineTo(x + w, y - h);
+    ctx.lineTo(x + w, y);
+    ctx.lineTo(x, y + top);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(233,242,255,.9)";
+    ctx.fill();
+    ctx.stroke();
+  };
+  box(-2, 8, 7, 6, 4);
+  box(6, 3, 6, 9, 3.5);
+  ctx.restore();
+}
+
+/** Aerial basemap: a tilted map sheet with a horizon fold — a photograph of the
+ *  ground, not a flat tile. */
+function drawAerial(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.beginPath();
+  ctx.moveTo(-12, 4);
+  ctx.lineTo(12, 4);
+  ctx.lineTo(9, 12);
+  ctx.lineTo(-9, 12);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(233,242,255,.9)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(5,7,13,.85)";
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+  // The sky above the fold, as an outline only: a filled shape would make the two
+  // halves read as one flat block at legend size.
+  ctx.beginPath();
+  ctx.moveTo(-12, 4);
+  ctx.lineTo(-4, -12);
+  ctx.lineTo(4, -12);
+  ctx.lineTo(12, 4);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** Water droplet for suspension notices. Shares `dropletPath` with the struck-
+ *  through `no-water` mark above, so "water supply" and "water suspended" stay the
+ *  same silhouette and only the slash distinguishes them. */
+function drawWater(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  dropletPath(ctx);
   ctx.fillStyle = "rgba(233,242,255,.95)";
   ctx.fill();
   ctx.strokeStyle = "rgba(5,7,13,.85)";
@@ -216,7 +413,28 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   plane: { draw: drawPlane },
   ferry: { draw: drawFerry, disc: "#38bdf8" },
   water: { draw: drawWater, disc: "#22d3ee" },
+  "cp-land": { draw: drawControlPoint, disc: "#a855f7" },
+  "cp-sea": { draw: drawControlPoint, disc: "#22d3ee" },
+  "cp-air": { draw: drawControlPoint, disc: "#38bdf8" },
+  "no-water": { draw: drawNoWater, disc: "#ff5d6c" },
+  "no-water-salt": { draw: drawNoWater, disc: "#fbbf24" },
+  "wind-flow": { draw: drawWindFlow },
+  blocks: { draw: drawBlocks },
+  aerial: { draw: drawAerial },
 };
+
+/** Is this string a glyph this build can actually draw?
+ *
+ * Exists because a `symbol` that is NOT in `GLYPHS` fails completely silently:
+ * `drawGlyphInto` returns early, the canvas stays transparent, and the legend row
+ * shows an empty 14x14 box with no error anywhere. MEASURED 2026-09-25 —
+ * `layers.json` declared `"symbol": "poi"` for the control-point layer and no such
+ * glyph has ever existed, so that row had a blank symbol for as long as it has
+ * been a POI layer. `GlyphId` is a compile-time union, but these strings come from
+ * JSON, so nothing checks them at build time; this is the runtime check. */
+export function hasGlyph(id: string): id is GlyphId {
+  return Object.prototype.hasOwnProperty.call(GLYPHS, id);
+}
 
 // --- wind barbs ------------------------------------------------------------------
 // A wind barb is the standard meteorological way to show a wind vector: a shaft

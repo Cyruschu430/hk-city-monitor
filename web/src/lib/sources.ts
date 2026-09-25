@@ -6,11 +6,36 @@
 
 import { proxied } from "../config.ts";
 import { hkToday } from "./format.ts";
+import { lang } from "./i18n.ts";
 
 export interface SourceDef {
   id: string;
   group?: string;
   name: string;
+  /** The publisher's English name.
+   *
+   * MEASURED 2026-09-25: the registry had NO English names, so in EN mode every
+   * panel footer and every layer note showed a Chinese source name — the single
+   * largest reason the English UI was incomplete (22 chrome strings surviving a
+   * language switch, measured by web/scripts/probe-en-audit.mjs). Added for all
+   * 175 entries in sources.json. Optional in the TYPE because the registry is
+   * fetched at runtime and a missing value must degrade to the Chinese name
+   * rather than render `undefined`, but validate_config.py checks that every
+   * entry has one, so an omission fails the build rather than reaching a user.
+   */
+  name_en?: string;
+  /** The same feed in English, where the publisher runs one.
+   *
+   * MEASURED 2026-09-25: RTHK and news.gov.hk each publish their news in BOTH
+   * official languages from the same section, so this is one source with two
+   * renderings — the same principle as name/name_en, not two sources that could
+   * drift apart. Verified individually: all twelve return 20 items.
+   *
+   * This matters because the ticker is a TICKER: with only the Chinese feed, the
+   * English UI showed 71 Chinese headlines in a strip the user reads continuously.
+   * Translating a headline would be inventing editorial copy; pointing at the
+   * publisher's own English edition is not. */
+  url_en?: string;
   type: string;
   url: string;
   auth?: string;
@@ -66,10 +91,25 @@ export interface LayerDefRaw {
   symbol?: string;
 }
 
+/** The publisher's name in the ACTIVE language, falling back to the Chinese one.
+ *
+ * One helper rather than `lang() === "tc" ? src.name : src.name_en` at each call
+ * site: there are five of them (panel footers, layer notes, layer rows, the
+ * drawer and the palette) and a sixth added later would silently show Chinese in
+ * EN mode — which is exactly how the gap arose in the first place. The fallback
+ * is deliberate: the registry is fetched at runtime, so a missing `name_en` must
+ * render the Chinese name rather than the string "undefined".
+ */
+export function sourceLabel(src: SourceDef | undefined, fallback = ""): string {
+  if (!src) return fallback;
+  return (lang() === "tc" ? src.name : src.name_en) || src.name || fallback;
+}
+
 /** Some probed URLs embed a sample date ("date=2026-09-18"); the app always
     asks for today in Hong Kong time. */
 export function resolveUrl(src: SourceDef): string {
-  let url = src.url;
+  // The publisher's own edition for the active language, when there is one.
+  let url = (lang() === "en" && src.url_en) || src.url;
   if (src.id === "hkia_flights") {
     url = url.replace(/date=\d{4}-\d{2}-\d{2}/, `date=${hkToday()}`);
     // arrivals feed answers the resident question (接機); cargo adds noise.

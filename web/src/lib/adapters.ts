@@ -187,20 +187,82 @@ const ADAPTERS: Record<string, Adapter> = {
     const j = (await res.json()) as {
       generated: string;
       counts?: { located?: number; district_only?: number; active_located?: number; active_district_only?: number };
-      records: { id: string; water_type: string; district: string; nature: string; suspend_at: string | null; resume_at: string | null; address: string; cause: string; status: string; lat?: number | null; lng?: number | null }[];
+      records: {
+        id: string;
+        water_type: string;
+        district: string;
+        district_en?: string;
+        nature: string;
+        suspend_at: string | null;
+        resume_at: string | null;
+        address: string;
+        address_en?: string;
+        cause: string;
+        status: string;
+        lat?: number | null;
+        lng?: number | null;
+      }[];
       active_ids: string[];
     };
     const active = j.records.filter((r) => j.active_ids.includes(r.id));
     const fmt = (iso: string | null) => (iso ? iso.slice(5, 16).replace("T", " ") : lang() === "tc" ? "待定" : "TBC");
+    const tc = lang() === "tc";
+    // The collector keeps the publisher's own English renderings alongside the
+    // Chinese (district_en / address_en — WSD publishes both), so the ENGLISH UI
+    // reads the publisher's words rather than a translation of them. MEASURED
+    // 2026-09-25: this panel was the last place a language switch still showed
+    // Chinese in the body, because it built its title from `district`/`address`
+    // only.
+    //
+    // The enumerated fields (water_type, nature, cause, status) are Chinese-only
+    // in the feed, so they go through a lookup with the original as its fallback:
+    // an unseen value renders in Chinese rather than as a blank or a guess, which
+    // is the honest failure for a closed vocabulary that could grow.
+    //
+    // The vocabulary is COMPLETE, not sampled. MEASURED 2026-09-25 by enumerating
+    // every distinct value in the collector output across all 176 records:
+    // water_type 3, nature 2, cause 8, status 4 — 17 strings in total. Listing all
+    // of them once is what stops this becoming a game of whack-a-mole: the first
+    // version translated the values I happened to see on screen, and the very next
+    // audit still found 「更換及修復水管計劃」 untranslated.
+    const WSD_EN: Record<string, string> = {
+      // water_type (3)
+      食水: "Fresh water",
+      鹹水: "Flushing water",
+      食水及鹹水: "Fresh & flushing water",
+      // nature (2)
+      緊急停水: "Emergency suspension",
+      計劃停水: "Planned suspension",
+      // cause (8)
+      接駁新用戶工程: "New connection works",
+      更換及修復水管計劃: "Mains replacement & rehabilitation",
+      "水務署測漏組 - 水管測漏工程": "WSD leak detection survey",
+      水掣測試工作: "Valve testing",
+      水管改善工程: "Mains improvement works",
+      維修水管工程: "Mains repair",
+      緊急維修水管工程: "Emergency mains repair",
+      // status (4)
+      供水已恢復: "Supply restored",
+      停水仍未開始: "Not yet started",
+      停水已取消: "Cancelled",
+      現正停水: "Suspended now",
+    };
+    // Key on the TRIMMED value but return a trimmed miss too: the feed contains
+    // "水管改善工程 " with a trailing space, so a raw-keyed lookup would miss and
+    // a raw fallback would render the stray space.
+    const tr = (s: string) => {
+      const key = s.trim();
+      return tc ? key : (WSD_EN[key] ?? key);
+    };
     // A notice carries lat/lng only when the collector resolved its address
     // through ALS (scripts/build_water_suspension.py). MEASURED 2026-09-24:
     // 173/173 resolved — but the code must not ASSUME that, because a notice
     // without coordinates still has to appear, at district level.
     const located = active.filter((r) => Number.isFinite(r.lat) && Number.isFinite(r.lng));
     const items = active.map((r) => ({
-      title: `${r.district} ${r.address}`,
-      sub: `${r.water_type} · ${r.nature} · ${r.cause}`,
-      time: `${fmt(r.suspend_at)} → ${r.resume_at ? fmt(r.resume_at) : lang() === "tc" ? "待定" : "TBC"}`,
+      title: `${tc ? r.district : (r.district_en ?? r.district)} ${tc ? r.address : (r.address_en ?? r.address)}`,
+      sub: `${tr(r.water_type)} · ${tr(r.nature)} · ${tr(r.cause)}`,
+      time: `${fmt(r.suspend_at)} → ${r.resume_at ? fmt(r.resume_at) : tc ? "待定" : "TBC"}`,
       // A geocoded notice links straight to its position on the official
       // map.gov.hk viewer, so a reader can see exactly which building it is.
       href:

@@ -119,6 +119,20 @@ def main() -> int:
         warnings.append(f"{len(unlicensed)} source(s) have no confirmed licence: "
                         + ", ".join(unlicensed[:8]) + ("…" if len(unlicensed) > 8 else ""))
 
+    # ---- every source needs an English name ----
+    # MEASURED 2026-09-25: the registry had NO English names at all, so in EN mode
+    # every panel footer and every layer note showed Chinese — 22 chrome strings
+    # surviving a language switch, found by web/scripts/probe-en-audit.mjs. This is
+    # the same class as the cadence default in Pitfall 20: an omission that renders
+    # something plausible (here, a Chinese label that looks intentional) rather than
+    # failing. An error, not a warning, because unlike a licence — which is
+    # legitimately unknown until someone reads the terms — a missing English name
+    # has no acceptable excuse.
+    unnamed = [s["id"] for s in sources["sources"] if not str(s.get("name_en") or "").strip()]
+    if unnamed:
+        errors.append(f"{len(unnamed)} source(s) have no name_en (the English UI would show Chinese): "
+                      + ", ".join(unnamed[:8]) + ("…" if len(unnamed) > 8 else ""))
+
     # ---- timestamped URLs must be templates ----
     # A committed literal timestamp 404s within minutes and looks like a dead
     # source (measured: hko_radar). The app substitutes {YYYYMMDDHHMM} at

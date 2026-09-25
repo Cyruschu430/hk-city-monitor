@@ -19,10 +19,27 @@ export interface StatusBar {
   setCoverage(s: { live: number; total: number; error: number; stale: number; catalog: number }): void;
 }
 
-/** One label+value readout cell. */
+/** One label+value readout cell.
+ *
+ * The label is BILINGUAL and returned so it can be relabelled on a language
+ * switch. MEASURED 2026-09-25 (web/scripts/probe-en-audit.mjs): these labels were
+ * hardcoded Chinese — 狀態 / 模式 / 相機 / 底圖 — so the EN UI showed Chinese in its
+ * most prominent strip. They were created once and never revisited, which is why
+ * the language switch appeared to work while this row did not change.
+ */
 function stat(label: string, value: HTMLElement | string, extraClass = ""): HTMLElement {
   return h("div", { class: `stat ${extraClass}` }, h("span", { class: "stat-label" }, label), h("span", { class: "stat-value" }, value));
 }
+
+/** Every label in the strip, in one place, so a language switch cannot miss one. */
+const LABELS = {
+  fresh: { tc: "狀態", en: "Status" },
+  mode: { tc: "模式", en: "Mode" },
+  cams: { tc: "相機", en: "Cameras" },
+  basemap: { tc: "底圖", en: "Basemap" },
+  direct: { tc: "LandsD 直連", en: "LandsD direct" },
+  worker: { tc: "Worker 快取", en: "Worker cache" },
+} as const;
 
 export function createStatusBar(root: HTMLElement): StatusBar {
   clear(root);
@@ -71,9 +88,37 @@ export function createStatusBar(root: HTMLElement): StatusBar {
   };
   syncTheme();
   onThemeChange(syncTheme);
-  onLangChange(syncTheme);
 
-  const freshStat = stat("狀態", h("span", {}, freshDot, freshEl), "stat-fresh");
+  const freshStat = stat(LABELS.fresh[lang() === "tc" ? "tc" : "en"], h("span", {}, freshDot, freshEl), "stat-fresh");
+  const modeStat = stat(LABELS.mode[lang() === "tc" ? "tc" : "en"], modeEl);
+  const camsStat = stat(LABELS.cams[lang() === "tc" ? "tc" : "en"], camsEl, "hide-s");
+  const tilesStat = stat(LABELS.basemap[lang() === "tc" ? "tc" : "en"], tilesEl, "hide-s");
+  // Kept so a language switch can relabel them: the four cells above are created
+  // once, and `syncLang` below is the only thing that may change their text.
+  const labelCells: [HTMLElement, keyof typeof LABELS][] = [
+    [freshStat, "fresh"],
+    [modeStat, "mode"],
+    [camsStat, "cams"],
+    [tilesStat, "basemap"],
+  ];
+  /** What the basemap cell is currently reporting, so relabelling it does not
+      have to guess between the two values. */
+  let tilesVia: "direct" | "worker" = "worker";
+
+  // The four readout LABELS and the basemap VALUE are language-dependent, and they
+  // are built once, so a language switch has to walk them explicitly. Same shape
+  // as Pitfall 15 (a preference painted only from its change event): the parts
+  // that DO update are the visible ones, which is what makes a half-translated
+  // strip look like a working language switch.
+  const syncLang = () => {
+    const tc = lang() === "tc";
+    for (const [cell, key] of labelCells) {
+      const el = cell.querySelector<HTMLElement>(".stat-label");
+      if (el) el.textContent = tc ? LABELS[key].tc : LABELS[key].en;
+    }
+    tilesEl.textContent = LABELS[tilesVia === "direct" ? "direct" : "worker"][tc ? "tc" : "en"];
+  };
+  onLangChange(syncLang);
 
   // Coverage strip. World Monitor's footer reads "Digest coverage: complete —
   // 116 publishers, 295 items, feeds 234/245, categories 17/17". That sentence
@@ -92,9 +137,9 @@ export function createStatusBar(root: HTMLElement): StatusBar {
         "div",
         { class: "meta" },
         freshStat,
-        stat("模式", modeEl),
-        stat("相機", camsEl, "hide-s"),
-        stat("底圖", tilesEl, "hide-s"),
+        modeStat,
+        camsStat,
+        tilesStat,
         stat("HKT", clockEl),
         langBox,
         themeBox,
@@ -115,7 +160,10 @@ export function createStatusBar(root: HTMLElement): StatusBar {
       modeEl.textContent = name;
     },
     setTiles(via) {
-      tilesEl.textContent = via === "direct" ? "LandsD 直連" : "Worker 快取";
+      // Remember which value is showing, so syncLang can re-render it in the
+      // other language without re-deriving it from the network state.
+      tilesVia = via === "direct" ? "direct" : "worker";
+      tilesEl.textContent = LABELS[tilesVia === "direct" ? "direct" : "worker"][lang() === "tc" ? "tc" : "en"];
     },
     setFreshness(text, state) {
       freshEl.textContent = text;

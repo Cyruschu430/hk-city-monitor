@@ -90,6 +90,10 @@ function layersOf(def: LayerDefRaw): string[] {
 
 export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): void {
   for (const def of defs) {
+    // Stop any forecast-frame animation BEFORE its source goes away: an interval
+    // that keeps calling updateImage() on a removed source throws every tick for
+    // the life of the tab.
+    stopRasterFrameTimers([`${PREFIX}${def.id}`]);
     for (const id of layersOf(def)) if (map.getLayer(id)) map.removeLayer(id);
     if (map.getSource(`${PREFIX}${def.id}`)) map.removeSource(`${PREFIX}${def.id}`);
     // The suspension pins are a SECOND source under the same layer definition,
@@ -359,10 +363,86 @@ async function rasterLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArg
     source: id,
     paint: {
       "raster-opacity": Number(panel.params?.["opacity"] ?? 0.6),
+      // A 2km model grid: smoothing it would invent detail that is not there.
       "raster-resampling": "nearest",
     },
   });
+
+  // ---------------------------------------------------------------------------
+  // ANIMATE THE FORECAST HORIZONS.
+  //
+  // MEASURED 2026-09-25: the HKO nowcast CSV carries FOUR half-hourly frames
+  // (+30/+60/+90/+120 min) and the parser was throwing three of them away
+  // ("first forecast horizon only"), so a nowcast — a product whose entire point
+  // is showing where rain is GOING — was rendered as a single still.
+  //
+  // One image source, `updateImage()` per frame: that re-uploads the texture
+  // rather than adding a layer per frame, so four frames cost one layer and the
+  // crossfade the raster layer would otherwise do between separate sources does
+  // not appear.
+  //
+  // The timer is attached to the SOURCE, and stops when the layer is removed:
+  // clearVerticalLayers() removes the source, and an interval writing to a
+  // removed source throws every tick. `frameTimers` is what lets the removal path
+  // stop it — a leaked interval here would keep a 2.7MB parse's worth of decoded
+  // images alive for the life of the tab.
+  // ---------------------------------------------------------------------------
+  if (data.frames && data.frames.length > 1) {
+    const src = map.getSource(id) as maplibregl.ImageSource | undefined;
+    if (src && typeof src.updateImage === "function") {
+      const urls = data.frames.map((f) => f.src);
+      let i = 0;
+      const timer = window.setInterval(() => {
+        i = (i + 1) % urls.length;
+        // A removed source must not throw on every tick.
+        if (!map.getSource(id)) {
+          window.clearInterval(timer);
+          forgetFrameTimer(id);
+          return;
+        }
+        // MapLibre 4.x `updateImage()` returns the source, NOT a promise — it
+        // reports a failure as an 'error' event on the map, which the app's own
+        // handler surfaces. So this is a synchronous guard, not a `.catch()`: an
+        // earlier version chained `.catch()` and TypeScript was right to reject it.
+        try {
+          src.updateImage({ url: urls[i]! });
+        } catch {
+          /* a dropped frame keeps the previous one on screen */
+        }
+      }, FRAME_MS);
+      frameTimers.set(id, timer);
+      // QA hook: the harness asserts the animation has MORE THAN ONE frame
+      // without waiting for a GPU compositor frame.
+      (window as unknown as Record<string, unknown>)["__rasterFrames"] = {
+        layer: id,
+        count: urls.length,
+        endings: data.frames.map((f) => f.ending),
+      };
+    }
+  }
 }
+
+/** Forecast frames per layer. Kept OUTSIDE the layer closure so the removal path
+ *  can stop a timer it does not own a reference to — the alternative, relying on
+ *  the interval to notice its source is gone, means one wasted tick per removed
+ *  layer per frame period, forever. */
+const frameTimers = new Map<string, number>();
+function forgetFrameTimer(id: string): void {
+  frameTimers.delete(id);
+}
+export function stopRasterFrameTimers(ids: string[]): void {
+  for (const id of ids) {
+    const t = frameTimers.get(id);
+    if (t !== undefined) {
+      window.clearInterval(t);
+      frameTimers.delete(id);
+    }
+  }
+}
+/** 900ms per frame: four frames is one 3.6s loop, fast enough to read as motion
+ *  and slow enough to see each horizon. Not configurable yet — a speed control is
+ *  a UI decision that needs a control, not a hidden constant. */
+const FRAME_MS = 900;
 
 /** A point layer declared in layers.json with a `symbol` that is NOT one of the
     two camera walls. Two data shapes reach here:

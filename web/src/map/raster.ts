@@ -19,12 +19,28 @@ function rainColor(mm: number): [number, number, number, number] {
   return [231, 76, 60, 200];
 }
 
-export const browserRasterizer: Rasterizer = {
-  async nowcast(grid: NowcastGrid, _bbox: [number, number, number, number], _opacity: number): Promise<string> {
+/** Draw one canvas per forecast horizon.
+ *
+ *  One function for the single-frame and multi-frame cases so the two can never
+ *  diverge: the panel takes frames[0], the map animates all of them, and both go
+ *  through the same colour ramp and the same grid resolution.
+ *
+ *  Drawn at grid resolution then scaled with image-rendering:pixelated — this is
+ *  a 2 km model grid and smoothing it would invent detail that is not there.
+ */
+async function renderNowcastFrames(
+  grids: NowcastGrid[],
+  _bbox: [number, number, number, number],
+  opacity: number,
+): Promise<string[]> {
+  const out: string[] = [];
+  for (const grid of grids) {
     const w = grid.lons.length;
     const h = grid.lats.length;
-    // Draw at grid resolution, then scale with image-rendering:pixelated — this
-    // is a 2 km model grid and smoothing it would invent detail.
+    if (w === 0 || h === 0) {
+      out.push("");
+      continue;
+    }
     const canvas = document.createElement("canvas");
     canvas.width = w;
     canvas.height = h;
@@ -38,11 +54,25 @@ export const browserRasterizer: Rasterizer = {
         img.data[i] = r;
         img.data[i + 1] = g;
         img.data[i + 2] = b;
-        img.data[i + 3] = a;
+        // The panel passes an opacity, and the map layer relies on it too: the
+        // previous version accepted `_opacity` and ignored it, so the legend's
+        // "60%" was a number nothing honoured.
+        img.data[i + 3] = Math.round(a * (Number.isFinite(opacity) ? opacity / 0.6 : 1));
       }
     }
     ctx.putImageData(img, 0, 0);
-    return canvas.toDataURL("image/png");
+    out.push(canvas.toDataURL("image/png"));
+  }
+  return out;
+}
+
+export const browserRasterizer: Rasterizer = {
+  async nowcast(grid: NowcastGrid, bbox: [number, number, number, number], opacity: number): Promise<string> {
+    return (await renderNowcastFrames([grid], bbox, opacity))[0]!;
+  },
+
+  async nowcastFrames(grids: NowcastGrid[], bbox: [number, number, number, number], opacity: number): Promise<string[]> {
+    return renderNowcastFrames(grids, bbox, opacity);
   },
 
   async tcTrack(track: { name: string; points: TcPoint[] }): Promise<string> {

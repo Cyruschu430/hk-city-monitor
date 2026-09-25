@@ -222,153 +222,6 @@ function drawWaterPoints(map: maplibregl.Map, id: string, pts: WaterPoint[]): vo
   map.on("mouseleave", pid, () => (map.getCanvas().style.cursor = ""));
 }
 
-/** Trim whitespace from a district name.
- *
- * MEASURED upstream defect: CSDI publishes 深水埗區 with a trailing CRLF —
- * `"深水埗區\r\n"` (feature OBJECTID 6 of the WSD district layer). Every match
- * below is exact string equality, so a clean name from a WSD notice would never
- * match that polygon and the district would silently never highlight.
- *
- * Normalising at the boundary (once, when the data arrives) rather than at each
- * comparison means the match, the filter, the paint expression and the label all
- * agree by construction — and the popup shows a clean name. */
-function cleanDistrict(v: unknown): string {
-  return typeof v === "string" ? v.replace(/[\r\n\t]+/g, " ").trim() : "";
-}
-
-/** Normalise every feature's district name in place-safe fashion (returns new). */
-function normaliseDistricts(fc: GeoJSON.FeatureCollection): GeoJSON.FeatureCollection {
-  return {
-    ...fc,
-    features: (fc.features ?? []).map((f) => {
-      const props = f.properties ?? {};
-      const name = cleanDistrict(props["DISTRICT_CHINESE"]);
-      if (!name || name === props["DISTRICT_CHINESE"]) return f;
-      return { ...f, properties: { ...props, DISTRICT_CHINESE: name } };
-    }),
-  };
-}
-
-async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs): Promise<void> {
-  const src = args.registry.byId.get(def.source);
-  if (!src) throw new Error(`layer ${def.id}: source ${def.source} 唔存在`);
-  const gen = args.gen ?? 0;
-  const res = await fetch(fetchUrl(src), { signal: AbortSignal.timeout(25_000) });
-  if (stale(args, gen)) throw new Error("obsolete layer request"); // mode switched mid-fetch
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const raw = (await res.json()) as GeoJSON.FeatureCollection;
-  const data = normaliseDistricts(raw);
-
-  const id = `${PREFIX}${def.id}`;
-  if (stale(args, gen)) throw new Error("obsolete layer request");
-  map.addSource(id, { type: "geojson", data });
-
-  const active = args.activeDistricts ?? new Set<string>();
-  const activeList = [...active];
-  const pts = args.waterPoints ?? [];
-  // No active districts → the district TINT has nothing to say, and drawing 18
-  // faint outlines anyway turned the map into a violet wireframe (caught in a
-  // screenshot review). MEASURED 2026-09-24: this used to `return` outright, so
-  // it also skipped the pins below — the map then showed a source with zero
-  // layers while the panel listed 15 real notices, because the district set is
-  // populated asynchronously by the panel and is legitimately empty on the first
-  // draw even when the geocoded points are already known. Pins and tint now draw
-  // INDEPENDENTLY; the function gives up only when BOTH are empty.
-  if (activeList.length === 0 && pts.length === 0) return;
-  if (activeList.length === 0) {
-    drawWaterPoints(map, id, pts);
-    return;
-  }
-
-  const matchExpr: unknown = ["match", ["get", "DISTRICT_CHINESE"], ...activeList.flatMap((d) => [d, "#ff5d6c"]), "#a855f7"];
-
-  if (stale(args, gen)) throw new Error("obsolete layer request");
-  map.addLayer({
-    id: `${id}-fill`,
-    type: "fill",
-    source: id,
-    // Only the affected districts are drawn at all. The first version painted
-    // the other 17 at fill-opacity 0.03 with a 0.5px violet line "for context",
-    // and at 18 districts that reads as a wireframe mesh over the whole
-    // territory (caught twice in screenshot reviews — once with no active
-    // districts, and again with 9, where the mesh survived around the edges).
-    // Context comes from the basemap, not from outlines of places nothing is
-    // happening.
-    filter: ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]],
-    paint: {
-      "fill-color": matchExpr as never,
-      // 0.22 keeps the district readable while the basemap still shows through
-      // (0.30 read as a solid blob in a screenshot review).
-      "fill-opacity": 0.22,
-    },
-  });
-  map.addLayer({
-    id: `${id}-line`,
-    type: "line",
-    source: id,
-    filter: ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]],
-    paint: {
-      "line-color": matchExpr as never,
-      "line-width": 2,
-      "line-opacity": 0.95,
-    },
-  });
-  // District name labels on the ACTIVELY affected areas only — MapLibre draws
-  // CJK through `localIdeographFontFamily`, which main.ts sets on the map when
-  // it builds the style (map/basemap.ts only defines that style), so no glyph
-  // server is hit at all.
-  map.addLayer({
-    id: `${id}-label`,
-    type: "symbol",
-    source: id,
-    filter: ["in", ["get", "DISTRICT_CHINESE"], ["literal", activeList]],
-    layout: {
-      "text-field": ["get", "DISTRICT_CHINESE"],
-      "text-font": ["Noto Sans Regular"],
-      "text-size": 12,
-      "text-offset": [0, 0.4],
-      "text-anchor": "center",
-    },
-    paint: {
-      "text-color": "#ff5d6c",
-      "text-halo-color": "rgba(5,7,13,.9)",
-      "text-halo-width": 1.2,
-    },
-  });
-  if (stale(args, gen)) throw new Error("obsolete layer request");
-
-  map.on("click", `${id}-fill`, (e) => {
-    // A camera sitting on a district polygon receives the same click: MapLibre
-    // fires every layer handler under the cursor, so without this guard a
-    // camera click stacked a district popup on top of the camera HUD + drawer
-    // (caught in a screenshot review).
-    const camHit = map.queryRenderedFeatures(e.point, {
-      layers: ["cameras-td-point", "cameras-hko-point", "cameras-td-cluster", "cameras-hko-cluster"],
-    });
-    if (camHit.length > 0) return;
-    const f = e.features?.[0];
-    if (!f) return;
-    const props = f.properties ?? {};
-    const name = String(props["DISTRICT_CHINESE"] ?? props["DISTRICT"] ?? "—");
-    const isActive = active.has(name);
-    const csv = String(props["URL"] ?? "");
-    const html = `
-      <div style="padding:9px 11px;font:12px/1.5 var(--font-ui)">
-        <b>${name}</b><br>
-        <span style="color:${isActive ? "#ff5d6c" : "#8ea6c4"}">
-          ${isActive ? (lang() === "tc" ? "有停水通知" : "suspension in force") : lang() === "tc" ? "現時無停水通知" : "no suspension"}
-        </span>
-        ${csv ? `<br><a href="${csv}" target="_blank" rel="noopener" style="color:#8ea6c4">水務署分區通知 ↗</a>` : ""}
-      </div>`;
-    new maplibregl.Popup({ closeButton: true, className: "cam-popup" }).setLngLat(e.lngLat).setHTML(html).addTo(map);
-  });
-  map.on("mouseenter", `${id}-fill`, () => (map.getCanvas().style.cursor = "pointer"));
-  map.on("mouseleave", `${id}-fill`, () => (map.getCanvas().style.cursor = ""));
-
-  // Pins on the actual affected addresses, on top of the district tint. The tint
-  // says how large the affected area is; the pins say WHERE.
-  drawWaterPoints(map, id, pts);
-}
 
 async function rasterLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs, panel: PanelDefRaw | undefined): Promise<void> {
   if (!panel) throw new Error(`layer ${def.id}: 冇對應 panel 定義 bbox/opacity`);
@@ -493,6 +346,23 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   if (!glyph) throw new Error(`layer ${def.id}: point 圖層需要 symbol 欄位`);
   registerGlyphs(map); // idempotent; the point path may run before cameras.ts
 
+  const id = `${PREFIX}${def.id}`;
+
+  // WATER SUSPENSION PINS — drawn here so the layer can be an honest `point`
+  // layer, and drawn with the SAME code as before.
+  //
+  // Cyrus 2026-09-25: "boundary polygon 有誤導性; 我覺得顯示 point location 就夠".
+  // The district tint is gone (see layers.json `_comment` for why he is right);
+  // what is left is the pins, which were always built by a bespoke join rather
+  // than fetched as GeoJSON: the collector geocodes each notice's own street
+  // address through ALS and writes lat/lng into data/water_suspension.json, so
+  // there is nothing here to fetch. `args.waterPoints` is that join, and
+  // `drawWaterPoints` already knows how to render it — nothing to rewrite.
+  if (def.source === "wsd_water_suspension") {
+    drawWaterPoints(map, id, args.waterPoints ?? []);
+    return;
+  }
+
   const gen = args.gen ?? 0;
   const panel = args.registry.panels.find((p) => p.source === def.source);
   let fc: GeoJSON.FeatureCollection;
@@ -512,7 +382,8 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     fc = (await res.json()) as GeoJSON.FeatureCollection;
   }
 
-  const id = `${PREFIX}${def.id}`;
+  const src2 = id; // `id` is already built above, before the water branch
+  void src2;
   if (stale(args, gen)) throw new Error("obsolete layer request");
   // A moving point layer is NOT clustered: aircraft change position every few
   // seconds, so clusters would re-form constantly and hide exactly the
@@ -898,9 +769,17 @@ export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw
     try {
       switch (def.geom) {
         case "polygon":
-          await polygonLayer(map, def, args);
-          drawn.push(def.id);
-          break;
+          // There are NO polygon layers any more. The last one was the water
+          // district tint, removed 2026-09-25 (Cyrus: "boundary polygon 有誤導性;
+          // 我覺得顯示 point location 就夠") — see layers.json
+          // `water_suspension_districts` `_comment`. This THROWS rather than
+          // falling through to `default`, so re-adding a polygon layer is loud: a
+          // silent no-op would leave the toggle on with nothing drawn, which reads
+          // as a broken layer. The removal machinery is untouched — `layersOf()`
+          // still clears the `-fill`/`-line`/`-label` family and `mapIdsFor()`
+          // still maps it — so restoring one means restoring this function, not
+          // re-deriving it.
+          throw new Error(`圖層 ${def.id}：polygon 圖層已經移除（見 layers.json 停水位置 _comment）`);
         case "raster": {
           // A raster layer needs its panel's bbox/opacity; panels carry those.
           const panel = args.registry.panels.find((p) => p.source === def.source && p.render === "raster_map");

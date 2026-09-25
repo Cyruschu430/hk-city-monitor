@@ -86,6 +86,15 @@ export function createRail(
           type: "button",
           "aria-pressed": "false",
           "data-accent": ACCENTS[id] ?? "",
+          // `data-accent` was DEAD CONFIG until 2026-09-25: rail.ts set it and no
+          // CSS rule read it, so every mode's "accent colour" was the one global
+          // `--cyan` and the per-mode palette in ACCENTS existed only in this file.
+          // (The gate's accent check hid it — it read the first pressed rail button,
+          // which was a CAMERA button that is cyan anyway, so it passed while
+          // measuring a different element entirely.) Publishing it as a custom
+          // property makes the existing 5-colour palette real: modes now read apart
+          // at a glance, which is the point of an accent.
+          style: ACCENTS[id] ? `--accent:${ACCENTS[id]}` : "",
           onclick: () => cb.onMode(id),
         },
         icon(ICONS[id] ?? ICONS["overview"]!),

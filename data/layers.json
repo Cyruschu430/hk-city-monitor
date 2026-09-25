@@ -99,17 +99,17 @@
   },
   {
    "id": "water_suspension_districts",
-   "source": "wsd_water_suspension_districts",
-   "render": "raster_map",
-   "geom": "polygon",
+   "source": "wsd_water_suspension",
+   "render": "list",
+   "geom": "point",
    "symbol": "no-water",
    "title": {
-    "tc": "停水位置＋受影響地區",
-    "en": "Suspension Locations + Districts"
+    "tc": "停水位置",
+    "en": "Suspension locations"
    },
-   "_title_note": "MEASURED 2026-09-24: the previous title 停水位置（大廈／街道）＋受影響地區 was 17 characters and the LAYERS control is 230px wide, so it ellipsised mid-word to 停水位置（大廈／街道）＋受… — a layer name the reader could not finish. Shortened to fit. The full description lives in _comment below, which is where detail belongs.",
-   "_comment": "TWO things on one toggle, deliberately: geocoded PINS on each affected address (a point layer added in overlays.ts from the collector's ALS lookup) over a red TINT of the districts those addresses fall in. Cyrus 2026-09-24: 'Layers District with water suspension should refering to Panel 水務署 臨時停水通知 showing the affected locations by geocoding' — before this the layer tinted a whole 18-district polygon for an outage that was often one building, so a single 牛頭角道 notice turned all of 觀塘區 red. Pins are two-tone: alert red for 食水 (drinking water, the life-safety case) and amber for 鹹水 (flushing water). A notice the geocoder could not resolve still contributes its district, so nothing disappears silently.",
-   "popup": "district_popup",
+   "_title_note": "MEASURED 2026-09-24: an earlier title 停水位置（大廈／街道）＋受影響地區 was 17 characters and the LAYERS control is 230px wide, so it ellipsised mid-word to 停水位置（大廈／街道）＋受… — a layer name the reader could not finish. Now that the district tint is gone the name is simply 停水位置, which fits with room to spare.",
+   "_comment": "Cyrus 2026-09-25: 'boundary polygon 有誤導性; 我覺得顯示 point location 就夠' — so this is now PINS ONLY, and the district TINT is deleted. He is right, and the numbers say why: the tint was a whole 18-district CSDI polygon painted for an outage that is usually ONE building, so 「觀塘區」 went red because of a single 牛頭角道 notice. The pins come from the collector's ALS geocode of each notice's own street address, so they are the actual claim the data supports; the polygon was an inference drawn on top of it and it overstated the affected area every single time. Pins stay two-tone — alert red for 食水 (drinking water, the life-safety case) and amber for 鹹水 (flushing water) — and the layer title no longer mentions districts because it no longer draws any. CONSEQUENCE: the CSDI 18-district source `wsd_water_suspension_districts` and its geometry are now unused, and `polygonLayer`/`normaliseDistricts` were deleted with it. If the tint ever returns, the 深水埗區 trailing-CRLF fix that `normaliseDistricts` existed for is in git history — and it is a real upstream defect, not a rumour.",
+   "popup": null,
    "filters": {
     "scope": "hk"
    }

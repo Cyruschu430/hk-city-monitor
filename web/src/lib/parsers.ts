@@ -12,6 +12,10 @@
 //     panel engine only falls back to fetch time when the source is silent.
 
 import { lang } from "./i18n.ts";
+// The ONE place a Date becomes the "YYYY-MM-DD HH:mm" wall string that `relTime`
+// re-reads as +08:00. Building it with `toISOString()` here produced UTC and made
+// every row eight hours early — see `hkWallTime` in format.ts.
+import { hkWallTime } from "./format.ts";
 import type { ListItem, StatusCell, Gauge } from "./render.ts";
 
 // --- tiny flat-XML helpers ---------------------------------------------------
@@ -90,7 +94,7 @@ export function parseSpecialTraffic(xml: string): { items: ListItem[]; observedA
     if (!text) continue;
     items.push({
       title: text.replace(/\s*\n\s*/g, " "),
-      time: when ? when.toISOString().slice(0, 16).replace("T", " ") : undefined,
+      time: when ? hkWallTime(when) : undefined,
     });
   }
   items.sort((a, b) => (b.time ?? "").localeCompare(a.time ?? ""));
@@ -452,7 +456,7 @@ export function parseRss(xml: string, max = 25): { items: ListItem[]; observedAt
     if (when) times.push(when);
     items.push({
       title,
-      time: when ? when.toISOString().slice(0, 16).replace("T", " ") : undefined,
+      time: when ? hkWallTime(when) : undefined,
       href: link || undefined,
     });
   }
@@ -625,37 +629,80 @@ export function parseAqhiDashboard(json: unknown): { cells: Gauge[]; observedAt:
 export interface CarparkRow {
   id: string;
   name: string;
+  /** Free PRIVATE-CAR spaces (vehicle_type "P"). */
   vacancy: number;
-  capacity: number;
+  /** Last time THIS car park reported, from the feed's own `lastupdate`.
+   *
+   *  Per-park, not per-feed, and that matters: TD updates each car park
+   *  independently, so one row can be minutes old while the one beside it is a
+   *  week old. Without carrying this the panel has no way to say which. */
+  updatedAt: Date | null;
 }
 
 /** vacancy_all.json + basic_info_all.json both wrap {car_park:[…]}; merge by
-    park_id. Cap at maxRows, sort by occupancy ratio (highest first) so the
-    panel leads with the fullest lots. */
+ *  park_id, cap at maxRows, sort by free spaces (most first).
+ *
+ *  TWO MEASURED DEFECTS FIXED HERE 2026-09-25 — both had been live, and neither
+ *  was visible, because a table of plausible numbers looks correct:
+ *
+ *  1. `capacity` DOES NOT EXIST. This read `base.capacity` from
+ *     `basic_info_all.json`, whose full key list is park_id / name_* /
+ *     displayAddress_* / latitude / longitude / district_* / contactNo /
+ *     opening_status / height / remark_* / website_* / carpark_photo. There is no
+ *     capacity, so every row's was 0 — which meant the 總數 column rendered "—"
+ *     for all 12 rows (MEASURED in the DOM: 12 of 12) AND the sort key
+ *     `vacancy / capacity` was `Infinity` for every row, so `br - ar` was NaN and
+ *     **the ordering never sorted anything**. The panel showed the feed's first
+ *     12 rows in feed order, presented by the panel's own doc comment as
+ *     "sort by occupancy ratio (highest first)". `capacity` is gone from the
+ *     type; the ratio sort is impossible with this feed and is replaced by a
+ *     real vacancy-descending sort with a deterministic name tie-break.
+ *  2. IT SUMMED ACROSS VEHICLE TYPES. `vehicle_type` carries ten types — measured
+ *     values P, P_D, M, T, L, B, C, O, H, N — and 150 of the 554 car parks have
+ *     more than one. Adding them all counts goods-vehicle, coach and motorcycle
+ *     spaces into a number the panel labels 「空位」, so a lorry park outranked a
+ *     car park. `P` is the private car; only `P` is counted.
+ *
+ *  The old test could not catch either: it asserted `rows.length > 0` and that
+ *  names were present, and printed `vacancy/capacity` — which prints "2/0" and
+ *  reads as fine. The fixture was a faithful capture of the live feed all along
+ *  and DOES lack `capacity`; the assertion was the defect. */
 export function parseCarpark(vacancyJson: unknown, infoJson: unknown, maxRows: number): CarparkRow[] {
-  const vac = (vacancyJson as { car_park?: { park_id?: string; vehicle_type?: { vacancy?: number }[] }[] })?.car_park ?? [];
-  const info = (infoJson as { car_park?: { park_id?: string; name_tc?: string; name_en?: string; capacity?: number }[] })?.car_park ?? [];
+  const vac = (vacancyJson as { car_park?: CarparkVacancyRec[] })?.car_park ?? [];
+  const info = (infoJson as { car_park?: { park_id?: string; name_tc?: string; name_en?: string }[] })?.car_park ?? [];
   const byId = new Map(info.filter((p) => p.park_id).map((p) => [p.park_id!, p]));
   const rows: CarparkRow[] = [];
   for (const p of vac) {
     if (!p.park_id) continue;
     const base = byId.get(p.park_id);
     if (!base?.name_tc && !base?.name_en) continue;
-    const vacancy = (p.vehicle_type ?? []).reduce((a, b) => a + (Number(b.vacancy) || 0), 0);
-    const capacity = Number(base.capacity) || 0;
+    let vacancy = 0;
+    let latest = 0;
+    for (const vt of p.vehicle_type ?? []) {
+      if (vt.type !== "P") continue;
+      for (const sc of vt.service_category ?? []) {
+        vacancy += Number(sc.vacancy) || 0;
+        const t = Date.parse((sc.lastupdate ?? "").replace(" ", "T") + "+08:00");
+        if (Number.isFinite(t) && t > latest) latest = t;
+      }
+    }
     rows.push({
       id: p.park_id,
       name: (base.name_tc ?? base.name_en)!,
       vacancy,
-      capacity,
+      updatedAt: latest ? new Date(latest) : null,
     });
   }
-  rows.sort((a, b) => {
-    const ar = a.capacity ? a.vacancy / a.capacity : 0;
-    const br = b.capacity ? b.vacancy / b.capacity : 0;
-    return br - ar;
-  });
+  // Most free spaces first. `name` as tie-break so the order is stable between
+  // requests — without it, rows with equal vacancy shuffle on every poll and the
+  // panel looks like it is animating.
+  rows.sort((a, b) => b.vacancy - a.vacancy || a.name.localeCompare(b.name, "zh-Hant"));
   return rows.slice(0, maxRows);
+}
+
+interface CarparkVacancyRec {
+  park_id?: string;
+  vehicle_type?: { type?: string; service_category?: { vacancy?: number; lastupdate?: string }[] }[];
 }
 
 // --- ADS-B aircraft (adsb.fi and adsb.lol) -------------------------------------
@@ -824,13 +871,64 @@ export interface WindStation {
   lat?: number;
 }
 
-/** Compass point → degrees. 16-point rose, which is what HKO publishes. */
-const COMPASS: Record<string, number> = {
-  North: 0, NNE: 22.5, NE: 45, ENE: 67.5,
-  East: 90, ESE: 112.5, SE: 135, SSE: 157.5,
-  South: 180, SSW: 202.5, SW: 225, WSW: 247.5,
-  West: 270, WNW: 292.5, NW: 315, NNW: 337.5,
-};
+/** Canonical compass key: lower-cased, letters only. `North-northeast`,
+ *  `North Northeast` and `NNE` must all collapse to the same entry — otherwise
+ *  every spelling variant is another chance to be silently wrong. */
+function compassKey(s: string): string {
+  return s.toLowerCase().replace(/[^a-z]/g, "");
+}
+
+/** Compass point → degrees. 16-point rose, which is what HKO publishes.
+ *
+ *  MEASURED 2026-09-25 — this table was WRONG and had been losing most of the
+ *  wind directions on the board. It carried full words for the four cardinal
+ *  points (North, East, South, West) and ABBREVIATIONS for the other twelve
+ *  (`NNE`, `NE`, `ENE`, …), but `latest_10min_wind.csv` publishes FULL WORDS.
+ *  Counting the live file's own values at that moment:
+ *
+ *      "Southeast" x14 · "East" x12 · "Northeast" x2 · "South" x1 · "N/A" x1
+ *
+ *  Only `East` and `South` ever matched, so 16 of 30 stations silently lost their
+ *  bearing — and neither consequence was cosmetic:
+ *    · `joinWindToStations` DROPS a reading with no bearing, so the barb map drew
+ *      10 of 30 stations: a wind field built from a third of the instruments;
+ *    · `windStatus` excludes those stations from the mean, so the panel reported
+ *      **16.7 km/h where the 29 reporting stations averaged 14.6 km/h**.
+ *  A wind barb without a direction is not a wind barb, so this was the feature
+ *  failing, not a detail of it.
+ *
+ *  Both spellings are now present (the feed is not the only HKO product), and the
+ *  key is canonicalised. `parsers.test.ts` asserts EVERY direction string the live
+ *  file publishes resolves — a hand-checked pair or two is what let this through. */
+const COMPASS: Record<string, number> = (() => {
+  const entries: [string, number][] = [
+    // Full words — what the CSV actually publishes.
+    ["North", 0],
+    ["North-northeast", 22.5],
+    ["Northeast", 45],
+    ["East-northeast", 67.5],
+    ["East", 90],
+    ["East-southeast", 112.5],
+    ["Southeast", 135],
+    ["South-southeast", 157.5],
+    ["South", 180],
+    ["South-southwest", 202.5],
+    ["Southwest", 225],
+    ["West-southwest", 247.5],
+    ["West", 270],
+    ["West-northwest", 292.5],
+    ["Northwest", 315],
+    ["North-northwest", 337.5],
+    // Abbreviations, which other HKO products use.
+    ["N", 0], ["NNE", 22.5], ["NE", 45], ["ENE", 67.5],
+    ["E", 90], ["ESE", 112.5], ["SE", 135], ["SSE", 157.5],
+    ["S", 180], ["SSW", 202.5], ["SW", 225], ["WSW", 247.5],
+    ["W", 270], ["WNW", 292.5], ["NW", 315], ["NNW", 337.5],
+  ];
+  const out: Record<string, number> = {};
+  for (const [k, v] of entries) out[compassKey(k)] = v;
+  return out;
+})();
 
 /** Wind-CSV station name → CSDI station name, for pairs that differ.
  *
@@ -925,7 +1023,7 @@ export function parseWindCsv(text: string): { stations: WindStation[]; observedA
       dirText,
       // A compass point that is not on the rose (N/A, Calm, blank) yields null,
       // never a default direction — a made-up bearing is worse than none.
-      dirDeg: COMPASS[dirText] ?? null,
+      dirDeg: COMPASS[compassKey(dirText)] ?? null,
       speedKmh: num(cols[3]),
       gustKmh: num(cols[4]),
       observedAt: at,

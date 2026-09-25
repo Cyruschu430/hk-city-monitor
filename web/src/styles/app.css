@@ -287,6 +287,16 @@ a:hover{color:var(--cyan)}
    of control (a small exclusive choice) and must not drift apart visually. */
 #langSwitch,#themeSwitch{display:flex;border:1px solid var(--hairline);border-radius:var(--radius-pill);overflow:hidden}
 #langSwitch button,#themeSwitch button{padding:3px 10px;font-size:10.5px;color:var(--dim);letter-spacing:.08em}
+/* WCAG 2.2 AA 2.5.8 wants a 24x24 minimum target. MEASURED 2026-09-25
+   (scripts/probe-uiux-defects.mjs): the language and theme pills were 44x22 and
+   the ticker tabs 44x22 — every control in the header chrome missed the minimum,
+   by 2px on desktop and 5px on a 390px phone. Both strips have the room (the
+   ticker is 26px tall, the status row 40px), so this is REAL height rather than
+   an invisible expanded hit area: an ::after overlay would leave a 22px visual
+   and make adjacent tabs overlap each other's hit boxes by a pixel, which trades
+   a legibility bug for a mis-click bug. */
+.ticker-tab,.ticker-tag,#langSwitch button,#themeSwitch button{
+  display:inline-flex;align-items:center;justify-content:center;min-height:24px}
 #langSwitch button[aria-pressed="true"],#themeSwitch button[aria-pressed="true"]{background:var(--cyan-tint);color:var(--cyan)}
 
 /* Sparkline: hand-rolled SVG (AGENTS.md — no charting library). Sits under the
@@ -669,9 +679,15 @@ a:hover{color:var(--cyan)}
   #drawer{top:auto;left:0;width:auto;height:70vh;border-left:0;border-top:1px solid var(--hairline-hi)}
   /* measured P0-5: 390px was overflowing — brand text, mode, camera count,
      tile route and clock all fought for one line. Hide the secondary meta
-     entirely and let the brand share the row with clock + language. */
+     entirely and let the brand share the row with clock + language.
+     MEASURED 2026-09-25: the `max-width:38vw` cap that used to be here truncated
+     the product's OWN NAME — 「HK CITY MONITOR」 rendered as 「HK CITY MONITO…」,
+     103px of content cut off. Capping a brand at a viewport fraction is the wrong
+     instrument; the row already has `min-width:0` + `space-between`, so the brand
+     now shrinks only when the meta beside it genuinely needs the room, and the
+     tracking is tightened so it fits the 390px row without any cap at all. */
   #statusbar{padding:0 8px;gap:8px}
-  .brand h1{font-size:11px;letter-spacing:.1em;max-width:38vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .brand h1{font-size:11px;letter-spacing:.02em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .brand .sub{display:none}
   #statusbar .meta .hide-s{display:none}
   #statusbar .meta{gap:6px;font-size:10px}

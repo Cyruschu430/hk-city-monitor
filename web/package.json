@@ -14,7 +14,8 @@
     "preview": "vite preview",
     "check:css": "node scripts/check-tokens.mjs",
     "check:encoding": "node scripts/check-encoding.mjs src scripts ../data ../sources.json",
-    "check:static": "npm run check:css && npm run check:encoding",
+    "check:basemap": "node scripts/check-basemap.mjs",
+    "check:static": "npm run check:css && npm run check:encoding && npm run check:basemap",
     "test": "node src/lib/trigger.test.ts && node src/lib/context.test.ts && node src/lib/honesty.test.ts && node src/lib/render.test.ts && node src/lib/parsers.test.ts && node src/lib/analytics.test.ts"
   },
   "dependencies": {

@@ -646,18 +646,33 @@ const ADAPTERS: Record<string, Adapter> = {
     const infoSrc = ctx.registry.byId.get("td_carpark_info");
     if (!infoSrc) throw new Error("sources.json 冇 td_carpark_info");
     const [v, info] = await Promise.all([json(await get(src)), json(await get(infoSrc))]);
-    const rows = P.parseCarpark(v, info, max).map((r) => [
-      r.name,
-      String(r.vacancy),
-      r.capacity ? String(r.capacity) : "—",
-    ]);
+    const rows = P.parseCarpark(v, info, max);
+    const tc = lang() === "tc";
+    // THREE columns, not four. The 總數 column this panel used to show read "—"
+    // for all 12 rows because `basic_info_all.json` has NO capacity field at all
+    // (see parseCarpark) — a column that could never be filled, on screen, with
+    // no error. It is replaced by the car park's OWN report time, which the feed
+    // does carry and which the panel needs: TD updates each car park
+    // independently, so one row can be minutes old beside a week-old one.
+    const fmt = (d: Date | null) => {
+      if (!d) return "—";
+      const p = (n: number) => String(n).padStart(2, "0");
+      // HKT, because every other timestamp in this app is local time.
+      const h = new Date(d.getTime() + 8 * 3600_000);
+      return `${p(h.getUTCMonth() + 1)}-${p(h.getUTCDate())} ${p(h.getUTCHours())}:${p(h.getUTCMinutes())}`;
+    };
+    const times = rows.map((r) => r.updatedAt).filter((d): d is Date => d !== null);
     return {
       data: {
         kind: "table",
-        columns: lang() === "tc" ? ["停車場", "空位", "總數"] : ["Carpark", "Free", "Total"],
-        rows,
+        columns: tc ? ["停車場", "私家車空位", "該場更新"] : ["Carpark", "Free (car)", "Reported"],
+        rows: rows.map((r) => [r.name, String(r.vacancy), fmt(r.updatedAt)]),
       },
-      observedAt: null,
+      // The NEWEST per-park report, so the panel's own clock is not older than
+      // the freshest row it is showing. `null` when the feed carried no times at
+      // all, which the panel renders as its no-timestamp state rather than
+      // inventing "now".
+      observedAt: times.length ? new Date(Math.max(...times.map((d) => d.getTime()))) : null,
     };
   },
 

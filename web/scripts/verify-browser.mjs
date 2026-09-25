@@ -509,61 +509,116 @@ try {
     () => {
       const map = window.__map;
       if (!map) return false;
-      // Draw only happens when there ARE active districts (the layer is
-      // deliberately not drawn otherwise — see the rule asserted below), so
-      // treat "no districts" as already-settled rather than waiting forever.
-      const active = window.__hkcm?.activeDistricts?.() ?? [];
-      if (active.length === 0) return true;
-      return !!map.getLayer("vl-water_suspension_districts-fill");
+      // The pins come from the collector's ALS geocode of each notice, so with
+      // nothing out right now there are legitimately none — treat that as settled
+      // rather than waiting 30s for a layer that will never be created.
+      const pts = window.__hkcm?.triggerState?.wsd_water_suspension?.points ?? [];
+      if (pts.length === 0) return true;
+      return !!map.getLayer("vl-water_suspension_districts-points");
     },
     30_000,
-    "district layer drawn",
+    "water pin layer drawn",
   );
-  const districtLabel = await page.evaluate(() => {
+  const waterPins = await page.evaluate(() => {
     const map = window.__map;
-    const active = window.__hkcm.activeDistricts();
-    const hasFill = !!map.getLayer("vl-water_suspension_districts-fill");
-    const hasLabel = !!map.getLayer("vl-water_suspension_districts-label");
-    let covers = false;
-    if (hasLabel) {
-      // ["in", ["get","DISTRICT_CHINESE"], ["literal", [...]]]
-      const f = map.getFilter("vl-water_suspension_districts-label") ?? [];
-      const expr = f[2];
-      const list = Array.isArray(expr) && Array.isArray(expr[1]) ? expr[1] : [];
-      covers = active.length > 0 && active.every((d) => list.includes(d));
-    }
-    // THE CROSS-CHECK. Comparing activeDistricts() against the layer filter only
-    // proves the map agrees with itself. MEASURED 2026-09-24: activeDistricts
-    // was built from `records`, which includes 供水已恢復 (supply restored) and
-    // 停水仍未開始 (not yet started) notices — so districts whose water was
-    // BACK ON were painted red as live emergencies. Derive the expectation from
-    // the raw records instead, so the check can disagree with the code.
+    const pid = "vl-water_suspension_districts-points";
+    const hasPins = !!map.getLayer(pid);
+    const spec = map.getStyle().layers.find((l) => l.id === pid);
+    // EVERY layer under this prefix, so "the polygon is gone" is asserted against
+    // the MAP rather than against a list of names we happen to expect.
+    const waterLayers = map.getStyle().layers.map((l) => l.id).filter((i) => i.startsWith("vl-water_suspension"));
+    const pts = window.__hkcm?.triggerState?.wsd_water_suspension?.points ?? [];
     const recs = window.__hkcm?.triggerState?.wsd_water_suspension?.records ?? [];
-    const outNow = [...new Set(recs.filter((r) => r.status === "現正停水").map((r) => r.district))];
-    const restored = [...new Set(recs.filter((r) => r.status === "供水已恢復").map((r) => r.district))];
-    const wronglyLit = restored.filter((d) => active.includes(d));
-    return { active: active.length, hasFill, hasLabel, covers, outNow: outNow.length, wronglyLit };
+    return {
+      hasPins,
+      type: hasPins ? map.getLayer(pid).type : null,
+      iconImage: JSON.stringify(spec?.layout?.["icon-image"] ?? null),
+      geocoded: pts.length,
+      sourceFeatures: (map.getSource(pid)?._data?.features ?? []).length,
+      waterLayers,
+      outNow: recs.filter((r) => r.status === "現正停水").length,
+      restored: recs.filter((r) => r.status === "供水已恢復").length,
+    };
   });
-  // Rule (from a screenshot review): with no active districts the layer is not
-  // drawn at all — 18 faint outlines made the map a violet wireframe. With
-  // districts affected, the fill + name labels must be present and cover them.
-  const districtOk = districtLabel.active > 0
-    ? districtLabel.hasFill && districtLabel.hasLabel && districtLabel.covers
-    : !districtLabel.hasFill;
-  check("P1 停水區：有 active 區 → 紅 fill＋區名 label 覆蓋；冇 active → 唔畫（唔做線網）",
-    districtOk,
-    `active=${districtLabel.active} fill=${districtLabel.hasFill} label=${districtLabel.hasLabel} covers=${districtLabel.covers}`);
-  check("P1 停水區語意：只標示「現正停水」嘅區，唔會將已恢復供水嘅區畫紅",
-    districtLabel.wronglyLit.length === 0,
-    `現正停水區=${districtLabel.outNow} · 錯誤地畫成停水嘅已恢復區=[${districtLabel.wronglyLit.join(", ")}]`);
+  // Cyrus 2026-09-25: "boundary polygon 有誤導性; 我覺得顯示 point location 就夠".
+  // The tint is deleted, so the assertion is now the NEGATIVE one: no `-fill`,
+  // `-line` or `-label` may survive under this prefix. A check that only counted
+  // the pins would pass just as happily with the misleading polygon still painted
+  // underneath them.
+  const strayPolygon = waterPins.waterLayers.filter((i) => !i.endsWith("-points"));
+  check("停水位置：只剩點，冇再畫 district polygon（fill／line／label 全清）",
+    strayPolygon.length === 0,
+    strayPolygon.length === 0
+      ? `只有 ${JSON.stringify(waterPins.waterLayers)}`
+      : `仲有 ${JSON.stringify(strayPolygon)}`);
+  check("停水位置：pins 係 symbol 圖層、食水／鹹水兩色（唔係淨係一個圓點）",
+    !waterPins.hasPins ||
+      (waterPins.type === "symbol" &&
+        waterPins.iconImage.includes("no-water") &&
+        waterPins.iconImage.includes("no-water-salt") &&
+        waterPins.iconImage.includes("drinking")),
+    waterPins.hasPins
+      ? `type=${waterPins.type} · icon-image=${waterPins.iconImage} · 來源 ${waterPins.sourceFeatures} 點（地理編碼 ${waterPins.geocoded}）`
+      : "現時冇 pin（可能冇「現正停水」通知）");
+  // The honesty rule survives the polygon's removal, restated for pins: a pin can
+  // only exist for an outage that is out NOW. Before the fix the map lit districts
+  // whose supply had already been restored, so this is the invariant, not a detail.
+  check("停水位置語意：有 pin 就一定有「現正停水」通知（唔會為已恢復供水嘅個案畫點）",
+    waterPins.geocoded === 0 || waterPins.outNow > 0,
+    `pins=${waterPins.geocoded} · 現正停水=${waterPins.outNow} · 供水已恢復=${waterPins.restored}`);
 
-  // P1 rail accent colors applied to the active mode button.
+  // P1 rail accent colours, asserted on the ACTIVE MODE button.
+  //
+  // MEASURED 2026-09-25: this read `document.querySelector('.rail-btn[aria-pressed
+  // ="true"]')` — "the first pressed rail button". The rail carries MODE buttons
+  // and LAYER buttons, and the camera layers are ON by default, so the first
+  // pressed button is whichever the DOM happens to put first. It reported
+  // `rgb(88,150,186)` (a muted camera button) instead of the water accent. It is
+  // the same defect as Pitfall 23, in the one check that pitfall is about: select
+  // the element that OWNS the thing you assert on. Mode buttons are the ones with
+  // `data-accent`, so select on that.
+  // `.rail-btn{transition:color .12s}` — so reading the colour immediately can
+  // catch it MID-TRANSITION. MEASURED: two consecutive runs reported
+  // rgb(88,150,186) and then rgb(82,158,198) for the same button, both on the line
+  // between the old colour and the accent. Wait for two consecutive reads to agree
+  // rather than for a fixed sleep, so a slower machine does not produce a colour
+  // that is merely *nearly* right — which is how an assertion starts getting
+  // "fixed" by loosening it.
+  await page
+    .waitForFunction(
+      () => {
+        const b = [...document.querySelectorAll('.rail-btn[data-accent][aria-pressed="true"]')].find((x) =>
+          (x.querySelector(".tip")?.textContent ?? "").includes("停水"),
+        );
+        if (!b) return false;
+        const c = getComputedStyle(b).color;
+        const prev = b.dataset.__lastColor;
+        b.dataset.__lastColor = c;
+        return prev === c;
+      },
+      null,
+      { timeout: 5_000 },
+    )
+    .catch(() => {});
   const railAccent = await page.evaluate(() => {
-    const active = document.querySelector('.rail-btn[aria-pressed="true"]');
-    return { has: !!active, color: active ? getComputedStyle(active).color : null };
+    const modes = [...document.querySelectorAll('.rail-btn[data-accent][aria-pressed="true"]')];
+    const water = modes.find((b) => (b.querySelector(".tip")?.textContent ?? "").includes("停水"));
+    const b = water ?? modes[0] ?? null;
+    return {
+      has: !!b,
+      label: (b?.querySelector(".tip")?.textContent ?? "").trim(),
+      accent: b?.dataset.accent ?? null,
+      color: b ? getComputedStyle(b).color : null,
+      pressedModes: modes.length,
+    };
   });
-  check("P1 rail：active mode 有 accent 色（藍=停水）", railAccent.has && railAccent.color === "rgb(56, 189, 248)",
-    `color=${railAccent.color}`);
+  check("P1 rail：active mode 有 accent 色（藍=停水）",
+    // `data-accent` holds the COLOUR, not the mode id — comparing it to
+    // "water_supply" failed on a button that was already correct, which is the
+    // third distinct way this one check has managed to be wrong. Identify the
+    // element by its label and assert the colour separately.
+    railAccent.has && railAccent.label.includes("停水") && railAccent.color === "rgb(56, 189, 248)",
+    `label="${railAccent.label}" data-accent=${railAccent.accent} color=${railAccent.color} 已按模式數=${railAccent.pressedModes}`);
 
   // P1 live tiles render 16:9.
   await page.click(".rail-btn:nth-child(1)");
@@ -844,7 +899,13 @@ try {
   // a button wired to nothing.
   const toggle = await page.evaluate(async () => {
     const map = window.__map;
-    const LAYER = "vl-water_suspension_districts-fill";
+    // The water layer is PINS now, and on a day when nothing is out there are no
+    // pins at all — so fall back to a layer that is always present when switched
+    // on. Otherwise this check would quietly stop testing anything on a quiet day,
+    // which is the "check that cannot fail" trap (Pitfall 23).
+    const waterPins = "vl-water_suspension_districts-points";
+    const LAYER = map.getLayer(waterPins) ? waterPins : "vl-weather_stations-point";
+    const ROW_NEEDLE = LAYER === waterPins ? "停水" : "氣象站";
     // Select the row that OWNS this layer, not the first switch on the panel.
     // MEASURED 2026-09-24: `querySelector('.lyr-row[role="switch"]')` returns
     // whichever row is first, and the order varies with the mode — so the check
@@ -852,9 +913,9 @@ try {
     // silently asserted nothing while looking like it passed. Match on the
     // row's own label instead, which is the thing the user clicks.
     const btn = [...document.querySelectorAll('.layer-control .lyr-row[role="switch"]')].find((b) =>
-      (b.querySelector(".lyr-label")?.textContent ?? "").includes("停水"),
+      (b.querySelector(".lyr-label")?.textContent ?? "").includes(ROW_NEEDLE),
     );
-    if (!btn) return { err: "no water-district row in the control" };
+    if (!btn) return { err: `no LAYERS row containing "${ROW_NEEDLE}"` };
     if (!map.getLayer(LAYER)) return { err: `map has no layer ${LAYER}` };
     const before = map.getLayoutProperty(LAYER, "visibility") ?? "visible";
     btn.click();
@@ -911,54 +972,34 @@ try {
   check("停水模式：唔會盲試連唔到嘅 esd.wsd.gov.hk（BoringSSL 拒絕 static-RSA TLS）",
     !wsdHit && !esdTried, `worker 命中=${wsdHit ?? "冇"}，esd 請求=${esdTried ? "有" : "冇"}`);
 
-  // The layer is added asynchronously (a CSDI fetch), so wait for it rather
-  // than sampling mid-attach.
-  await page.waitForFunction(() => !!window.__map?.getLayer("vl-water_suspension_districts-fill"), null, { timeout: 25_000 }).catch(() => {});
+  // The pins are built from the collector's geocoded notices (no CSDI fetch any
+  // more), so wait on the map rather than sampling mid-attach.
+  await page
+    .waitForFunction(
+      () => {
+        const m = window.__map;
+        if (!m) return false;
+        const pts = window.__hkcm?.triggerState?.wsd_water_suspension?.points ?? [];
+        return pts.length === 0 || !!m.getLayer("vl-water_suspension_districts-points");
+      },
+      null,
+      { timeout: 25_000 },
+    )
+    .catch(() => {});
   await page.waitForTimeout(1200);
-  const districtLayer = await page.evaluate(() => {
-    const map = window.__map;
-    const id = "vl-water_suspension_districts-fill";
-    if (!map.getLayer(id)) return { ok: false };
-    const feats = map.queryRenderedFeatures({ layers: [id] });
-    const names = [...new Set(feats.map((f) => f.properties?.DISTRICT_CHINESE))].filter(Boolean);
-    const paint = JSON.stringify(map.getPaintProperty(id, "fill-color"));
-    const filter = JSON.stringify(map.getFilter(id));
-    const active = window.__hkcm.activeDistricts();
-    // Assert both the full source set and the filter, so "0 drawn because the
-    // fetch failed" can never pass as "correctly showing only active".
-    // The SOURCE data and the FILTER are the honest measures here.
-    //
-    // `querySourceFeatures` only returns features in tiles loaded for the CURRENT
-    // viewport (AGENTS.md Pitfall 7), so it reports a viewport-dependent subset —
-    // measured 13 of 18 districts depending on where the map happens to be. A
-    // check that reads it as "the source has 13 districts" is asserting the
-    // camera position, not the data. The GeoJSON attached to the source is the
-    // full set; the filter says which of them are meant to be visible.
-    const viewportDistricts = [...new Set(map.querySourceFeatures("vl-water_suspension_districts").map((f) => f.properties?.DISTRICT_CHINESE))].filter(Boolean).length;
-    const srcData = map.getSource("vl-water_suspension_districts")?._data;
-    const allNames = [...new Set((srcData?.features ?? []).map((f) => f.properties?.DISTRICT_CHINESE))].filter(Boolean);
-    return {
-      ok: true,
-      rendered: feats.length,
-      drawnDistricts: names,
-      sourceDistricts: allNames.length,
-      viewportDistricts,
-      highlighted: active,
-      allActiveInPaint: active.every((d) => paint.includes(d)),
-      filterNamesActive: active.every((d) => filter.includes(d)),
-      styled: paint.includes("ff5d6c"),
-      noWhitespaceNames: allNames.every((n) => n === n.trim() && !/[\r\n\t]/.test(n)),
-    };
-  });
-  check("停水模式：只畫有停水嘅區（非受影響區唔畫），全部轉紅",
-    districtLayer.ok &&
-      districtLayer.sourceDistricts === 18 &&
-      districtLayer.noWhitespaceNames &&
-      districtLayer.drawnDistricts.length > 0 &&
-      districtLayer.allActiveInPaint &&
-      districtLayer.filterNamesActive &&
-      districtLayer.styled,
-    `來源18區=${districtLayer.sourceDistricts}（視窗內 ${districtLayer.viewportDistricts}）畫出=${districtLayer.drawnDistricts?.join("、")} 標紅區=${districtLayer.highlighted?.join("、")} 名冇雜訊=${districtLayer.noWhitespaceNames}`);
+  // The district-tint assertions that used to live here are GONE with the tint.
+  // What replaces them is asserted above (only `-points` exists under this prefix)
+  // and below (the pins are a two-tone symbol layer). What is worth keeping from
+  // the old block is its lesson, so it is restated rather than deleted:
+  //
+  //   Comparing the drawn set against `activeDistricts()` only proves the map
+  //   agrees with itself. MEASURED 2026-09-24: `activeDistricts` was built from
+  //   `records`, which includes 供水已恢復 (supply restored) and 停水仍未開始 (not
+  //   yet started) notices, so districts whose water was BACK ON were painted as
+  //   live emergencies. The expectation has to come from the raw records.
+  //
+  // That is why the pin check below derives `現正停水` from the records instead of
+  // trusting the layer.
 
   // --- 5b. the suspension PINS are a symbol, not a dot -------------------------
   // Cyrus 2026-09-25: "Suspension Location layer and Border control point layer -

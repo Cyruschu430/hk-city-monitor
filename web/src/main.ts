@@ -191,6 +191,53 @@ async function boot(): Promise<void> {
       if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
     }
   });
+  // NOTE: the ✕ on a LAYERS row needs no wiring here. It calls this same
+  // `onToggle(row, false)` to switch the layer off and then drops the row, so the
+  // checkbox, the ✕ and the rail button all go through one implementation of
+  // "off". An earlier draft of this change added a second `onDismiss` path for it,
+  // which would have been a second place for the three to disagree.
+
+  // ---- 2D / 3D VIEW SWITCH ---------------------------------------------------
+  // Cyrus 2026-09-25: "3D 個 tile 轉個 button 比 user Switch 去 3D view". The 3D
+  // buildings existed only as a rail toggle labelled 「3D 樓宇（載入慢）」, which
+  // describes a DATASET and a cost, not a VIEW. The thing a reader actually wants
+  // — "show me this in 3D" — had no control at all.
+  //
+  // The button switches the VIEW, and turns the tiles on as part of doing so:
+  // extruded buildings seen from directly overhead are just a confusing flat map,
+  // which is why the two belong to one press. It drives the RAIL button rather
+  // than calling toggle3d, for the same reason the LAYERS rows do — one
+  // implementation of "3D is on", so this cannot disagree with the rail.
+  //
+  // Its label follows the MAP'S PITCH, not the rail: that is the property the user
+  // can see, and it stays truthful even if they toggle the tiles from the rail.
+  const view3dBtn = h("button", { class: "view3d", type: "button", "aria-pressed": "false" });
+  const PITCH_3D = 62;
+  const syncView3d = () => {
+    const tilted = map.getPitch() > 15;
+    view3dBtn.setAttribute("aria-pressed", tilted ? "true" : "false");
+    view3dBtn.textContent = tilted ? "2D" : "3D";
+    view3dBtn.title = tilted
+      ? lang() === "tc"
+        ? "返去平面檢視"
+        : "Back to the flat view"
+      : lang() === "tc"
+        ? "3D 樓宇檢視（載入較慢）"
+        : "3D building view (heavier)";
+  };
+  view3dBtn.addEventListener("click", () => {
+    if (map.getPitch() > 15) {
+      map.easeTo({ pitch: 0, duration: 700 });
+      return;
+    }
+    const btn = rail.layerButton("buildings3d");
+    if (btn && btn.getAttribute("aria-pressed") !== "true") btn.click();
+    map.easeTo({ pitch: PITCH_3D, duration: 900 });
+  });
+  map.on("moveend", syncView3d);
+  onLangChange(syncView3d);
+  hudEl.append(view3dBtn);
+  syncView3d();
 
   /** The MapLibre layer ids a single registry layer owns once drawn. */
   function mapIdsFor(def: LayerDefRaw): string[] {
@@ -198,6 +245,14 @@ async function boot(): Promise<void> {
     if (def.geom === "point" && (def.source.includes("td_camera") || def.source.includes("hko_webcam"))) {
       const prefix = def.source.includes("hko") ? "cameras-hko" : "cameras-td";
       return [`${prefix}-cluster`, `${prefix}-count`, `${prefix}-point`];
+    }
+    if (def.geom === "point" && def.source === "wsd_water_suspension") {
+      // The water pins are a bespoke ALS join drawn by `drawWaterPoints()`, which
+      // names its layer `-points` (PLURAL) rather than `-point`. Without this the
+      // LAYERS row would own an id that does not exist, and the row's visibility
+      // toggle would silently do nothing — the same dead-control bug the
+      // control-point row had.
+      return [`vl-${def.id}-points`];
     }
     if (def.geom === "point") return [`vl-${def.id}-circle`, `vl-${def.id}-count`, `vl-${def.id}-point`];
     if (def.geom === "raster") return [`vl-${def.id}-fill`];

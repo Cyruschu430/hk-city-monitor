@@ -172,6 +172,15 @@ a:hover{color:var(--cyan)}
   border:1px solid var(--map-face-line);background:none;color:var(--map-face-weak);
   font:italic 600 10px/1 var(--font-mono);cursor:pointer;padding:0}
 .lyr-info:hover{color:var(--map-face);border-color:var(--map-face-dim)}
+/* Remove (✕). Hidden until the row is hovered or the button is focused, so the
+   list stays a legend rather than a row of controls — but `opacity`, not
+   `display:none`, so it keeps its place in the row and nothing shifts on hover,
+   and it stays in the tab order for keyboard users. */
+.lyr-remove{flex:0 0 auto;width:18px;height:18px;margin-right:4px;border-radius:50%;
+  border:1px solid transparent;background:none;color:var(--map-face-weak);
+  font:600 10px/1 var(--font-ui);cursor:pointer;padding:0;opacity:0;transition:opacity .12s ease}
+.lyr-item:hover .lyr-remove,.lyr-remove:focus-visible{opacity:1}
+.lyr-remove:hover{color:#ff8a95;border-color:rgba(255,93,108,.5);background:rgba(255,93,108,.12)}
 .lyr-note{padding:2px 9px 6px 26px;font-size:9.5px;color:var(--map-face-dim);line-height:1.4}
 .lyr-note[hidden]{display:none}
 .lyr-note a{color:var(--cyan);text-decoration:none}
@@ -320,9 +329,14 @@ a:hover{color:var(--cyan)}
   border-radius:10px;color:var(--faint);transition:color .12s}
 .rail-btn svg{width:20px;height:20px;stroke-width:1.5}
 .rail-btn:hover{color:var(--dim)}
-.rail-btn[aria-pressed="true"]{color:var(--cyan)}
+/* A pressed rail button takes its MODE's accent when it has one (`--accent`,
+   published by rail.ts from the ACCENTS palette) and the shared cyan otherwise —
+   layer toggles get cyan, modes get their own colour. Before this every pressed
+   button was the same cyan, so the palette in rail.ts was dead config and the five
+   modes were only distinguishable by icon. */
+.rail-btn[aria-pressed="true"]{color:var(--accent,var(--cyan))}
 .rail-btn[aria-pressed="true"]::before{content:"";position:absolute;left:-6px;top:10px;bottom:10px;
-  width:2px;background:var(--cyan);border-radius:2px}
+  width:2px;background:var(--accent,var(--cyan));border-radius:2px}
 .rail-btn .tip{position:absolute;left:52px;top:50%;translate:0 -50%;padding:5px 9px;
   background:var(--shade);border:1px solid var(--hairline);border-radius:6px;font-size:11px;
   color:var(--txt);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:50}
@@ -349,6 +363,17 @@ a:hover{color:var(--cyan)}
   border-radius:6px;font-size:10px;color:var(--map-face-dim);letter-spacing:.03em}
 .landsd-badge a{color:var(--map-face-dim)}
 .landsd-badge a:hover{color:var(--map-face)}
+/* 2D / 3D view switch. Top-right of the map face: the LAYERS list owns
+   bottom-left and the LandsD attribution bottom-right, so this cannot collide
+   with either. Sized past the 24px target minimum and using the map-face token
+   scale, because it is drawn on the map and stays dark in every theme. */
+.view3d{position:absolute;right:10px;top:10px;width:40px;height:28px;padding:0;
+  display:grid;place-items:center;border-radius:7px;cursor:pointer;
+  background:var(--map-face-bg);border:1px solid var(--map-face-line);
+  backdrop-filter:var(--glass);color:var(--map-face);
+  font:600 11px/1 var(--font-ui);letter-spacing:.1em}
+.view3d:hover{border-color:var(--map-face-dim);color:#fff}
+.view3d[aria-pressed="true"]{background:var(--cyan);border-color:var(--cyan);color:#06121a}
 
 /* ---------- panels column (340px) ---------- */
 /* Panel column = category tabs + the scrollable panel grid. The tabs are a

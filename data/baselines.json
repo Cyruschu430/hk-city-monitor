@@ -353,6 +353,14 @@
     "min": 210,
     "max": 210,
     "lastUpdated": "2026-09-25T08:50:45.726Z"
+   },
+   "5|17": {
+    "n": 1,
+    "sum": 270,
+    "sumSq": 72900,
+    "min": 270,
+    "max": 270,
+    "lastUpdated": "2026-09-25T09:50:45.818Z"
    }
   },
   "immd_cp_queue.maxQueueMin": {
@@ -707,6 +715,14 @@
     "min": 0,
     "max": 0,
     "lastUpdated": "2026-09-25T08:50:45.726Z"
+   },
+   "5|17": {
+    "n": 1,
+    "sum": 0,
+    "sumSq": 0,
+    "min": 0,
+    "max": 0,
+    "lastUpdated": "2026-09-25T09:50:45.818Z"
    }
   },
   "aqhi_city_dashboard.maxAqhi": {
@@ -1061,6 +1077,14 @@
     "min": 6,
     "max": 6,
     "lastUpdated": "2026-09-25T08:50:45.726Z"
+   },
+   "5|17": {
+    "n": 1,
+    "sum": 6,
+    "sumSq": 36,
+    "min": 6,
+    "max": 6,
+    "lastUpdated": "2026-09-25T09:50:45.818Z"
    }
   },
   "ck_hk_hko_rss_latest_ten_minute_wind_info.maxSpeedKmh": {
@@ -1415,6 +1439,14 @@
     "min": 28,
     "max": 28,
     "lastUpdated": "2026-09-25T08:50:45.726Z"
+   },
+   "5|17": {
+    "n": 1,
+    "sum": 23,
+    "sumSq": 529,
+    "min": 23,
+    "max": 23,
+    "lastUpdated": "2026-09-25T09:50:45.818Z"
    }
   }
  },

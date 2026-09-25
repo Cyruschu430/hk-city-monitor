@@ -75,9 +75,27 @@ function stale(args: LayerArgs, gen: number): boolean {
  *  a layer this list misses survives its own toggle and paints over the next
  *  mode (the same class of bug as the orphaned district mesh). `-halo` and
  *  `-point` were added with the aircraft layer; `-count` with the generic
- *  point path. */
+ *  point path.
+ *
+ *  MEASURED 2026-09-25 — this list was itself missing one, which is why the BARE
+ *  id is now first. `controlPointLayer()` draws under `vl-control_points` and
+ *  `vl-control_points-label`; only the `-label` half was in the list, so
+ *  `vl-control_points` outlived its own mode. Probe output (probe-orphan-layers.mjs),
+ *  counts of `vl-` layers still on the map that the current mode does not claim:
+ *
+ *      總覽   drawn=[]                  vl=[]
+ *      口岸   drawn=[control_points…]   vl=[vl-control_points, …-label]
+ *      停水   drawn=[water…]            vl=[vl-control_points, …water…]   <-- orphan
+ *      總覽   drawn=[]                  vl=[vl-control_points]            <-- still there
+ *
+ *  i.e. visiting 口岸模式 ONCE left twelve control-point dots painted over every
+ *  later mode for the life of the tab, with nothing in the UI able to remove
+ *  them. Choosing suffixes over the bare id assumes every branch suffixed its
+ *  ids; `poi` is the branch that did not. Listing the bare id covers it and any
+ *  future branch that does the same. */
 function layersOf(def: LayerDefRaw): string[] {
   return [
+    `${PREFIX}${def.id}`,
     `${PREFIX}${def.id}-fill`,
     `${PREFIX}${def.id}-line`,
     `${PREFIX}${def.id}-circle`,
@@ -127,6 +145,10 @@ export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): v
 function drawWaterPoints(map: maplibregl.Map, id: string, pts: WaterPoint[]): void {
   if (pts.length === 0) return;
   const pid = `${id}-points`;
+  // The pins are glyph icons now, so the images must exist before addLayer or
+  // MapLibre draws nothing and reports no error. Idempotent, and this path can
+  // run before either the point path or cameras.ts has registered them.
+  registerGlyphs(map);
   if (map.getLayer(pid)) map.removeLayer(pid);
   if (map.getSource(pid)) map.removeSource(pid);
   map.addSource(pid, {
@@ -151,14 +173,24 @@ function drawWaterPoints(map: maplibregl.Map, id: string, pts: WaterPoint[]): vo
   });
   map.addLayer({
     id: pid,
-    type: "circle",
+    type: "symbol",
     source: pid,
-    paint: {
-      "circle-color": ["case", ["==", ["get", "drinking"], 1], "#ff5d6c", "#fbbf24"],
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 5, 14, 8, 17, 12],
-      "circle-stroke-color": "rgba(5,7,13,.85)",
-      "circle-stroke-width": 1.5,
-      "circle-opacity": 0.95,
+    layout: {
+      // A SHAPE, not a dot. Cyrus 2026-09-25: "Suspension Location layer — use
+      // relevant symbology for them, don't use simple point symbols." These were
+      // plain `circle`s, so the entire message was carried by colour: you had to
+      // already know that red meant drinking water. The mark is now the map's own
+      // water droplet struck through (`no-water` / `no-water-salt` in symbols.ts),
+      // which says "supply interrupted" on its own, and the disc keeps the
+      // 食水 / 鹹水 colour split that was already doing useful work.
+      "icon-image": ["case", ["==", ["get", "drinking"], 1], "no-water", "no-water-salt"],
+      // Slightly larger than a bare dot needs to be: the slash has to stay
+      // readable at city zoom, and a 12px struck droplet is mush.
+      "icon-size": ["interpolate", ["linear"], ["zoom"], 10, 0.34, 14, 0.52, 17, 0.78],
+      "icon-allow-overlap": true,
+      // Pins must not be swallowed by the district tint drawn beneath them, and
+      // the icon is the whole point of the layer, so it wins the collision.
+      "icon-ignore-placement": true,
     },
   });
   map.on("click", pid, (e) => {
@@ -645,27 +677,37 @@ async function controlPointLayer(map: maplibregl.Map, def: LayerDefRaw, args: La
       })),
     },
   });
+  // A GATEWAY SYMBOL, not a circle. Cyrus 2026-09-25: "Border control point layer
+  // — use relevant symbology for them, don't use simple point symbols." These were
+  // plain circles, so the layer said only "something is here" — exactly what the
+  // camera and station layers already say. The glyph is a portal with a traveller
+  // passing through it (symbols.ts `drawControlPoint`), and the KIND moves from the
+  // circle's fill to the glyph's disc, so land / sea / air still read apart at a
+  // glance without opening the popup.
+  registerGlyphs(map);
   map.addLayer({
     id,
-    type: "circle",
+    type: "symbol",
     source: id,
-    paint: {
-      // Land, sea and air crossings are different things; colour by kind so the
-      // three read apart without opening a popup.
-      "circle-color": [
+    layout: {
+      "icon-image": [
         "match",
         ["get", "kind"],
-        "air", "#38bdf8",
-        "sea", "#22d3ee",
-        "#a855f7",
+        "air", "cp-air",
+        "sea", "cp-sea",
+        "cp-land",
       ] as never,
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 5, 14, 9, 17, 13],
-      "circle-stroke-color": "rgba(5,7,13,.9)",
-      "circle-stroke-width": 2,
+      "icon-size": ["interpolate", ["linear"], ["zoom"], 10, 0.42, 14, 0.68, 17, 0.95],
+      // Twelve crossings on the whole territory cannot collide, and hiding one
+      // would drop a border point from a layer whose entire job is to name them.
+      "icon-allow-overlap": true,
+      "icon-ignore-placement": true,
     },
   });
-  // Names sit beside the dots from z11 — below that they collide across the
-  // harbour and the dots alone are enough.
+  // Names sit BELOW the symbols from z11, offset far enough to clear the icon
+  // rather than the 5px dot that used to be there — at 2.0em the label starts just
+  // under a 0.5-scaled glyph. Below z11 they collide across the harbour and the
+  // symbols alone are enough.
   map.addLayer({
     id: `${id}-label`,
     type: "symbol",
@@ -675,7 +717,7 @@ async function controlPointLayer(map: maplibregl.Map, def: LayerDefRaw, args: La
       "text-field": ["get", lang() === "tc" ? "tc" : "en"],
       "text-font": ["Noto Sans Regular"],
       "text-size": 11,
-      "text-offset": [0, 1.4],
+      "text-offset": [0, 2],
       "text-anchor": "top",
       "text-allow-overlap": false,
     },

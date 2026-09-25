@@ -76,9 +76,35 @@ async function build(map: maplibregl.Map, src: SourceDef): Promise<WindOverlay> 
     ];
   }
 
+  /** Fetch + parse the field, with ONE retry.
+   *
+   * MEASURED 2026-09-25: the Worker answered `504 upstream_timeout` for this URL
+   * on two consecutive full gate runs while a standalone probe of the identical
+   * request got 200. A timeout on a 352-point query is transient by nature, and
+   * without a retry a single slow spot leaves the layer dead until the user
+   * toggles it off and on — which is a failure they cannot diagnose. The Worker
+   * now gives this host 18s instead of 10s; this retry is the second line, for the
+   * case where even that is not enough.
+   *
+   * Bounded at two attempts on purpose. A retry loop against an upstream that is
+   * genuinely down turns one honest error into three slow ones, and the layer
+   * already has an error state to show. */
+  async function loadField(): Promise<WindField> {
+    let lastErr: unknown;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetchSource(src);
+        return parseWindField(await res.json());
+      } catch (err) {
+        lastErr = err;
+        if (attempt === 0) await new Promise((r) => setTimeout(r, 900));
+      }
+    }
+    throw lastErr;
+  }
+
   async function load(): Promise<void> {
-    const res = await fetchSource(src);
-    field = parseWindField(await res.json());
+    field = await loadField();
     if (field.samples.length === 0) throw new Error("wind: 0 samples");
 
     // IDW from the modelled lattice to a texture. width/height are the texture's

@@ -91,7 +91,15 @@ const RAIL_LAYERS: RailLayer[] = [
   // tolerates cloud egress is found, or when a PC-side collector publishes a
   // static JSON the front end can read (the water-suspension pattern).
   // { id: "aircraft", label: { tc: "航機（ADS-B）", en: "Aircraft (ADS-B)" } },
-  { id: "wind_field", label: { tc: "風場", en: "Wind field" } },
+  // 「（模式格網）」 is not decoration. This layer is Open-Meteo MODEL output, and
+  // `weather_stations` one row below is the OBSERVED counterpart — two layers with
+  // the same subject and different epistemics, one click apart. The rail label is
+  // what the LAYERS control shows (`railLabel()` prefers it over the layers.json
+  // title), so a bare 「風場」 here would have hidden the only word on screen that
+  // says "this is a model, not a measurement" — which is the whole honesty rule for
+  // this layer. 風場 stays as the prefix so the label still reads as wind at a
+  // glance and every existing `includes("風場")` selector keeps working.
+  { id: "wind_field", label: { tc: "風場（模式格網）", en: "Wind flow (modelled)" } },
   { id: "weather_stations", label: { tc: "氣象站", en: "Weather stations" } },
   { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" } },
   { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
@@ -193,6 +201,15 @@ async function boot(): Promise<void> {
     }
     if (def.geom === "point") return [`vl-${def.id}-circle`, `vl-${def.id}-count`, `vl-${def.id}-point`];
     if (def.geom === "raster") return [`vl-${def.id}-fill`];
+    // `poi` (curated reference POIs, drawn by controlPointLayer) does NOT use the
+    // `-point`/`-label` suffix scheme — it adds the BARE id plus `-label`. Missing
+    // this branch is why the 出入境管制站 row in the LAYERS control was a DEAD
+    // control: `mapLayerIds` came back empty, so clicking the row ran a loop over
+    // nothing and the pins could not be hidden from the panel at all (measured
+    // 2026-09-25). `overlays.ts` `layersOf()` had the mirror-image bug and left
+    // the bare layer orphaned on the map; both are fixed together because both
+    // come from assuming the suffix scheme is universal.
+    if (def.geom === "poi") return [`vl-${def.id}`, `vl-${def.id}-label`];
     return [];
   }
 

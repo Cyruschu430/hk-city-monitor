@@ -14,7 +14,7 @@
    "source": "immd_cp_queue",
    "render": "status_grid",
    "geom": "poi",
-   "symbol": "poi",
+   "symbol": "cp-land",
    "title": {
     "tc": "出入境管制站",
     "en": "Immigration Control Points"
@@ -102,6 +102,7 @@
    "source": "wsd_water_suspension_districts",
    "render": "raster_map",
    "geom": "polygon",
+   "symbol": "no-water",
    "title": {
     "tc": "停水位置＋受影響地區",
     "en": "Suspension Locations + Districts"
@@ -114,14 +115,14 @@
    }
   },
   {
-   "_comment": "WIND FLOW — a GPU particle animation over a MODELLED 22x16 lattice (Open-Meteo, 352 points), not the station barbs it used to draw. Cyrus 2026-09-25. The barbs answered 'what is the wind at this instrument'; a flow animation answers 'where is the air going', which is what a reader reads off a weather map. geom is 'poi' because the renderer is bespoke (map/wind.ts), so it must NOT be handed to the generic point renderer — the symbol field is kept for the legend glyph only. HONESTY: this is modelled data; the weather_stations layer is the OBSERVED counterpart and both are one click apart, because conflating a model with a measurement is the dishonest option. Zero MapLibre layers are created, so nothing needs clearing — visibility belongs to the deck.gl overlay, like the 3D layer.",
+   "_comment": "WIND FLOW — a GPU particle animation over a MODELLED 22x16 lattice (Open-Meteo, 352 points), not the station barbs it used to draw. Cyrus 2026-09-25. The barbs answered 'what is the wind at this instrument'; a flow animation answers 'where is the air going', which is what a reader reads off a weather map. geom is 'none' because zero MapLibre layers are created — map/wind.ts draws the whole thing through a deck.gl MapboxOverlay, so visibility belongs to that overlay, like the 3D layer, and clearVerticalLayers has nothing to clear. It used to be 'poi' with a stale 'wind-barb' symbol, which worked only by accident: 'poi' MEANS the curated border-crossing POI renderer, so listing this layer in a vertical would have handed a modelled wind field to the control-point drawer. HONESTY: this is modelled data; the weather_stations layer is the OBSERVED counterpart and both are one click apart, because conflating a model with a measurement is the dishonest option. Zero MapLibre layers are created, so nothing needs clearing.",
    "id": "wind_field",
    "source": "open_meteo_wind_grid",
    "render": "status_grid",
-   "geom": "poi",
-   "symbol": "wind-barb",
+   "geom": "none",
+   "symbol": "wind-flow",
    "title": {
-    "tc": "氣流（模式格網）",
+    "tc": "風場（模式格網）",
     "en": "Wind flow (modelled)"
    },
    "popup": null,

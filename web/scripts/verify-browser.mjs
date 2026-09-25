@@ -960,6 +960,82 @@ try {
       districtLayer.styled,
     `來源18區=${districtLayer.sourceDistricts}（視窗內 ${districtLayer.viewportDistricts}）畫出=${districtLayer.drawnDistricts?.join("、")} 標紅區=${districtLayer.highlighted?.join("、")} 名冇雜訊=${districtLayer.noWhitespaceNames}`);
 
+  // --- 5b. the suspension PINS are a symbol, not a dot -------------------------
+  // Cyrus 2026-09-25: "Suspension Location layer and Border control point layer -
+  // use relevant symbology for them, don't use simple point symbols." Both were
+  // plain `circle` layers, so the shape said nothing and colour carried the whole
+  // message.
+  //
+  // An `icon-image` that names an unregistered image fails SILENTLY: MapLibre
+  // draws nothing and logs nothing. So this does not read the config back — it
+  // asserts the layer TYPE and then that features are actually painted, which is
+  // only possible if the icon resolved.
+  const pinIcon = await page.evaluate(() => {
+    const map = window.__map;
+    const id = "vl-water_suspension_districts-points";
+    if (!map.getLayer(id)) return { layer: false };
+    const spec = map.getStyle().layers.find((l) => l.id === id);
+    return {
+      layer: true,
+      type: map.getLayer(id).type,
+      iconImage: JSON.stringify(spec?.layout?.["icon-image"] ?? null),
+      images: ["no-water", "no-water-salt"].map((n) => [n, map.hasImage(n)]),
+      // A symbol layer with no text-field places nothing unless the icon resolved.
+      rendered: map.queryRenderedFeatures({ layers: [id] }).length,
+      sourceCount: (map.getSource(id)?._data?.features ?? []).length,
+    };
+  });
+  check("停水位置：用「水龍頭劃斜」符號（唔係淨係一個圓點），圖示真係載入到",
+    pinIcon.layer && pinIcon.type === "symbol" &&
+      pinIcon.iconImage.includes("no-water") && pinIcon.iconImage.includes("drinking") &&
+      pinIcon.images.every(([, ok]) => ok === true) &&
+      pinIcon.rendered > 0 && pinIcon.sourceCount > 0,
+    pinIcon.layer
+      ? `type=${pinIcon.type} · icon-image=${pinIcon.iconImage} · 圖示=${JSON.stringify(pinIcon.images)} · 畫出 ${pinIcon.rendered}/${pinIcon.sourceCount}`
+      : "冇 vl-water_suspension_districts-points 圖層");
+
+  // --- 5c. no LAYERS row may show a blank mark ---------------------------------
+  // The general form of the bug just fixed twice over. A `symbol` naming a glyph
+  // that is not in `GLYPHS` makes `drawGlyphInto` return early and leave a
+  // transparent canvas; a `geom` with no `.sw-*` rule leaves a swatch with no
+  // background. Both render an EMPTY BOX, and neither throws, warns or fails a
+  // build (Pitfall 27 from the other side). The control-point row did the first
+  // for as long as `symbol: "poi"` was in layers.json — measured 2026-09-25.
+  const legendMarks = await page.evaluate(() =>
+    [...document.querySelectorAll(".layer-control .lyr-item")].map((item) => {
+      const cv = item.querySelector("canvas.lyr-glyph");
+      const sw = item.querySelector(".lyr-swatch");
+      let ink = 0;
+      if (cv) {
+        const d = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+        for (let i = 3; i < d.length; i += 4) if (d[i] > 8) ink++;
+      }
+      const bg = sw ? getComputedStyle(sw).backgroundColor : "";
+      return {
+        label: item.querySelector(".lyr-label")?.textContent?.trim() ?? "?",
+        kind: cv ? "glyph" : sw ? "swatch" : "none",
+        ink,
+        bg,
+      };
+    }),
+  );
+  const blank = legendMarks.filter(
+    (r) => r.kind === "none" || (r.kind === "glyph" && r.ink === 0) || (r.kind === "swatch" && bg(r.bg) === 0),
+  );
+  function bg(v) {
+    // "rgba(0, 0, 0, 0)" and "" both mean nothing was painted.
+    if (!v) return 0;
+    const m = /rgba?\(([^)]+)\)/.exec(v);
+    if (!m) return 1;
+    const parts = m[1].split(",").map((x) => parseFloat(x));
+    return parts.length > 3 ? parts[3] : 1;
+  }
+  check("圖層圖例：每一行都有真嘅符號（冇空白格）",
+    legendMarks.length > 0 && blank.length === 0,
+    blank.length === 0
+      ? `${legendMarks.length} 行全部有墨（${legendMarks.map((r) => `${r.label}:${r.kind === "glyph" ? r.ink + "px" : "swatch"}`).join(" · ")}）`
+      : `空白：${blank.map((r) => `${r.label}(${r.kind} ink=${r.ink} bg=${r.bg})`).join("、")}`);
+
   // --- 5. camera click → focus drawer ----------------------------------------
   const drawer = await page.evaluate(async () => {
     const map = window.__map;
@@ -1328,85 +1404,51 @@ try {
       `plane glyph 仍在=${aircraftWithdrawn.planeGlyphStillRegistered}`,
     ].join(" · "));
 
-  // --- 9b1b. wind barbs, and the honesty rule that shapes them ---------------
-  // ROADMAP B5: wind is never shown where no station measured it. That is
-  // enforced as DATA (a `fade` per feature, computed from the distance to the
-  // nearest reporting station), so it is assertable rather than a styling
-  // claim. If someone raises the fade radius or drops the fade property, this
-  // fails instead of quietly painting wind over empty sea.
+  // --- 9b1b. wind FLOW, and what became of the honesty rule -------------------
+  // Cyrus 2026-09-25: "make wind field this layer to wind flow renderer animation
+  // layer". The layer now draws a GPU particle field over a MODELLED grid
+  // (`map/wind.ts` + `lib/windgrid.ts`), so `vl-wind_field-point` no longer
+  // exists and the barb checks that used to live here — the fade-by-distance
+  // rule, the per-speed glyph buckets — would read `undefined` and CRASH the run
+  // (`wind.ids.length`). A gate that throws is worse than a gate that fails: it
+  // takes every later check down with it, so this was fixed before anything else.
+  //
+  // The honesty property did not go away, it MOVED. A barb was honest because it
+  // could only appear where a station measured, enforced as data via `fade` from
+  // the distance to the nearest station. A modelled field covers the whole
+  // domain, so there is no hole to fade out of — the honesty now has to be in the
+  // LABEL, and that is what the second check asserts. Deleting the old checks
+  // without replacing that would have quietly dropped the requirement.
   await railClick("風場");
-  await page.waitForFunction(() => {
-    const m = window.__map;
-    return m && m.getSource("vl-wind_field") && m.querySourceFeatures("vl-wind_field").length > 0;
-  }, null, { timeout: 30_000 }).catch(() => {});
+  await page.waitForFunction(() => Boolean(window.__windField), null, { timeout: 60_000 }).catch(() => {});
   await page.waitForTimeout(1500);
-  const wind = await page.evaluate(() => {
-    const map = window.__map;
-    const layer = "vl-wind_field-point";
-    // Diagnostics for a state that only fails INSIDE the run: report what the
-    // toggle believes and what the source holds, so a failure names its cause
-    // instead of just reporting zero.
-    const railBtn = [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
-      (x.querySelector(".tip")?.textContent ?? "").includes("風場"));
-    const diag = {
-      railPressed: railBtn?.getAttribute("aria-pressed") ?? null,
-      layersOn: window.__hkcm?.layersOn ? window.__hkcm.layersOn() : null,
-      srcExists: !!map.getSource("vl-wind_field"),
-      srcFeatures: map.getSource("vl-wind_field")?._data?.features?.length ?? null,
-    };
-    if (!map.getLayer(layer)) return { layer: false, diag };
-    const feats = map.querySourceFeatures("vl-wind_field");
-    const fades = feats.map((f) => f.properties?.fade).filter((v) => typeof v === "number");
-    const nearest = feats.map((f) => f.properties?.nearestKm).filter((v) => typeof v === "number");
-    const barbs = [...new Set(feats.map((f) => f.properties?.barbId))];
+  const windFlow = await page.evaluate(() => {
+    const w = window.__windField ?? null;
+    const row = document.querySelector('.layer-control .lyr-row[data-rail="wind_field"]');
     return {
-      layer: true,
-      features: feats.length,
-      ids: barbs,
-      iconOk: barbs.every((b) => map.hasImage(`barb-${b}`)),
-      opacity: JSON.stringify(map.getPaintProperty(layer, "icon-opacity")),
-      rotate: JSON.stringify(map.getLayoutProperty(layer, "icon-rotate")),
-      maxNearestKm: nearest.length ? Math.max(...nearest) : null,
-      minFade: fades.length ? Math.min(...fades) : null,
-      // A real falloff has a spread of values; a constant means the fade is not
-      // wired to distance at all.
-      distinctFades: new Set(fades).size,
-      diag,
+      has: Boolean(w),
+      samples: w?.samples ?? 0,
+      speeds: w?.speeds ?? null,
+      observedAt: w?.observedAt ?? null,
+      label: row?.querySelector(".lyr-label")?.textContent?.trim() ?? "",
+      checked: row?.getAttribute("aria-checked") ?? null,
     };
   });
-  // Read features from the SOURCE, not from querySourceFeatures. The latter only
-  // returns what is in tiles loaded for the CURRENT viewport (Pitfall 7), and by
-  // this point in the run the map has been resized and panned — measured: the
-  // source held 8 barbs while querySourceFeatures returned 0, with the toggle
-  // correctly pressed. The tiles are not the data.
-  const windData = await page.evaluate(() => {
-    const src = window.__map.getSource("vl-wind_field")?._data;
-    const feats = Array.isArray(src?.features) ? src.features : [];
-    const props = feats.map((f) => f.properties ?? {});
-    const fades = props.map((p) => p.fade).filter((v) => typeof v === "number");
-    const nearest = props.map((p) => p.nearestKm).filter((v) => typeof v === "number");
-    return {
-      count: feats.length,
-      ids: [...new Set(props.map((p) => p.barbId).filter(Boolean))],
-      maxNearestKm: nearest.length ? Math.max(...nearest) : null,
-      minFade: fades.length ? Math.min(...fades) : null,
-      distinctFades: new Set(fades).size,
-      allHaveBearing: props.every((p) => typeof p.dirDeg === "number"),
-    };
-  });
-  const windIconOk = wind.ids.length > 0 ? wind.iconOk : true;
-  check("風場：風羽畫出嚟、每支對應速度桶、依風向旋轉",
-    wind.layer && windData.count > 0 && windIconOk &&
-      wind.rotate.includes("dirDeg") && windData.ids.length >= 1 && windData.allHaveBearing,
-    `${windData.count} 支 · 速度桶=${JSON.stringify(windData.ids)} · 有方位=${windData.allHaveBearing} · rotate=${wind.rotate}` +
-      (wind.features > 0 ? "" : ` · 視窗內 tile=${wind.features}（DIAG=${JSON.stringify(wind.diag)}）`));
-  check("風場誠實：冇站嘅地方淡出（≤15km）＋ 透明度真係跟距離",
-    windData.maxNearestKm !== null && windData.maxNearestKm <= 15.5 &&
-      wind.opacity?.includes("fade") && windData.distinctFades > 1,
-    `最遠測站距離=${windData.maxNearestKm}km · 最少 fade=${windData.minFade} · 唔同透明度值=${windData.distinctFades}`);
+  const windObs = windFlow.observedAt ? Date.parse(windFlow.observedAt) : NaN;
+  check("風流：真係攞到模式格網（唔係 0 點，速度有分佈，有模式時間）",
+    windFlow.has && windFlow.samples >= 300 &&
+      Array.isArray(windFlow.speeds) && windFlow.speeds[1] > windFlow.speeds[0] &&
+      Number.isFinite(windObs) && Math.abs(Date.now() - windObs) < 24 * 3600 * 1000,
+    `${windFlow.samples} 點 · 風速 ${JSON.stringify(windFlow.speeds)} m/s · 模式時間 ${windFlow.observedAt}`);
+  check("風流誠實：圖層名講明係「模式格網」，唔會扮成實測站",
+    /模式|modelled|modeled/i.test(windFlow.label) && windFlow.checked === "true",
+    `圖層名="${windFlow.label}" · 開關=${windFlow.checked}`);
+  // The particle animation itself needs a real GPU — a headless pass says nothing
+  // about it (AGENTS.md). What is asserted instead is the field behind it, which
+  // is the part that would silently be empty or constant on a regression, plus the
+  // general "every legend row shows a real mark" check further down.
   await railClick("風場"); // leave it off
-  await page.waitForTimeout(800);
-
+  await page.waitForTimeout(1200);
   // --- 9b1c. CSDI weather-station reference layer -----------------------------
   // A STATIC layer, verified as a real fetch rather than a stub: the source was
   // flagged todo until it was actually measured (49 features, all Points).
@@ -1465,29 +1507,135 @@ try {
 
   // Drive the toggle from the PANEL and assert the rail button follows — one
   // implementation of "on", so the two controls cannot disagree.
+  //
+  // The subject is 氣象站, not 風場. It was 風場 and asserted that
+  // `vl-wind_field-point` appeared — an id that stopped existing when the layer
+  // became a deck.gl particle overlay (see the wind block above). A rail row that
+  // owns no MapLibre layer proves nothing about the map: any state flip at all
+  // would satisfy it, which is Pitfall 14 with a new coat of paint. 氣象站 draws
+  // a real `vl-weather_stations-point`, so this still asserts on the map.
   const lyrToggle = await page.evaluate(async () => {
-    const row = document.querySelector('.layer-control .lyr-row[data-rail="wind_field"]');
-    if (!row) return { err: "no wind row" };
+    const row = document.querySelector('.layer-control .lyr-row[data-rail="weather_stations"]');
+    if (!row) return { err: "no weather_stations row in LAYERS" };
     const railBtn = () => [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
-      (x.querySelector(".tip")?.textContent ?? "").includes("風場"));
+      (x.querySelector(".tip")?.textContent ?? "").includes("氣象站"));
     const before = { row: row.getAttribute("aria-checked"), rail: railBtn()?.getAttribute("aria-pressed") };
     row.click();
-    await new Promise((r) => setTimeout(r, 5000));
+    // A PREDICATE, not a fixed sleep (Pitfall 19): the point layer appears only
+    // once its fetch resolves, so a slow run would read "no layer" and blame the
+    // toggle.
+    const t0 = Date.now();
+    while (Date.now() - t0 < 40_000 && !window.__map.getLayer("vl-weather_stations-point")) {
+      await new Promise((r) => setTimeout(r, 250));
+    }
     const after = {
       row: row.getAttribute("aria-checked"),
       rail: railBtn()?.getAttribute("aria-pressed"),
-      layer: !!window.__map.getLayer("vl-wind_field-point"),
+      layer: !!window.__map.getLayer("vl-weather_stations-point"),
     };
     row.click(); // restore
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 2000));
     return { before, after, rowAfterRestore: row.getAttribute("aria-checked") };
   });
   check("LAYERS 控制：撳一行真係開圖層，而且同 rail 掣同步",
     lyrToggle.before?.row === "false" && lyrToggle.after?.row === "true" &&
       lyrToggle.after?.rail === "true" && lyrToggle.after?.layer === true &&
-      // Restored, so the wind checks that follow start from a known OFF state.
+      // Restored, so the checks that follow start from a known OFF state.
       lyrToggle.rowAfterRestore === "false",
-    `row ${lyrToggle.before?.row}→${lyrToggle.after?.row}（還原 ${lyrToggle.rowAfterRestore}）· rail ${lyrToggle.before?.rail}→${lyrToggle.after?.rail} · layer=${lyrToggle.after?.layer}`);
+    lyrToggle.err ??
+      `row ${lyrToggle.before?.row}→${lyrToggle.after?.row}（還原 ${lyrToggle.rowAfterRestore}）· rail ${lyrToggle.before?.rail}→${lyrToggle.after?.rail} · layer=${lyrToggle.after?.layer}`);
+  await page.waitForTimeout(800);
+
+  // --- 9b1e. the LAYERS list collapses, and the choice survives a reload ------
+  // The list covers the map face in portrait and on a short window, and it had
+  // no way to put it away. Three things have to hold, and each has failed in
+  // this codebase before: the head must still be reachable while collapsed (a
+  // one-way door), the rows must be genuinely unpainted rather than merely
+  // transparent (else they stay clickable), and the state must be restored from
+  // `build()` rather than only from the click handler — `setRows()` rebuilds the
+  // control on every mode switch, which would silently re-open a collapsed list.
+  const lyrCollapse = await page.evaluate(async () => {
+    const el = document.querySelector(".layer-control");
+    const head = el?.querySelector(".lyr-head");
+    const body = el?.querySelector(".lyr-body");
+    if (!el || !head || !body) return { err: "no layer control" };
+    const painted = (n) => !!n && n.getBoundingClientRect().height > 0;
+    const open = { exp: head.getAttribute("aria-expanded"), bodyH: Math.round(body.getBoundingClientRect().height) };
+    head.click();
+    await new Promise((r) => setTimeout(r, 250));
+    const closed = {
+      exp: head.getAttribute("aria-expanded"),
+      bodyH: Math.round(body.getBoundingClientRect().height),
+      headH: Math.round(head.getBoundingClientRect().height),
+      headPainted: painted(head),
+      count: el.querySelector(".lyr-count")?.textContent ?? "",
+      stored: localStorage.getItem("hkcm.lyrCollapsed"),
+    };
+    head.click();
+    await new Promise((r) => setTimeout(r, 250));
+    const reopened = {
+      exp: head.getAttribute("aria-expanded"),
+      bodyH: Math.round(body.getBoundingClientRect().height),
+      stored: localStorage.getItem("hkcm.lyrCollapsed"),
+      // The click must have flipped the VISUAL, not just the attribute.
+      chev: getComputedStyle(el.querySelector(".lyr-chev")).transform,
+    };
+    return { open, closed, reopened };
+  });
+  check("LAYERS 清單可以收起／展開，收起時標題仍然撳得到",
+    !lyrCollapse.err &&
+      lyrCollapse.open?.exp === "true" && lyrCollapse.open.bodyH > 40 &&
+      lyrCollapse.closed?.exp === "false" && lyrCollapse.closed.bodyH === 0 &&
+      lyrCollapse.closed.headPainted && lyrCollapse.closed.headH > 0 &&
+      lyrCollapse.closed.count.length > 0 && lyrCollapse.closed.stored === "1" &&
+      lyrCollapse.reopened?.exp === "true" && lyrCollapse.reopened.bodyH > 40 &&
+      lyrCollapse.reopened.stored === "0",
+    lyrCollapse.err
+      ? lyrCollapse.err
+      : `展開 ${lyrCollapse.open.bodyH}px → 收起 ${lyrCollapse.closed.bodyH}px（頭 ${lyrCollapse.closed.headH}px、數目「${lyrCollapse.closed.count}」）→ 再展開 ${lyrCollapse.reopened.bodyH}px · storage ${lyrCollapse.closed.stored}→${lyrCollapse.reopened.stored}`);
+
+  // A mode switch REBUILDS the control (`setRows()` on the real path — it is the
+  // only caller of `paintLegend`), so a collapsed list must come back collapsed.
+  // Driven through the actual rail buttons rather than a QA hook, because the
+  // thing under test IS the rebuild path.
+  const lyrCollapseSticky = await page.evaluate(async () => {
+    const waitFor = async (fn, budget = 15000) => {
+      const t0 = Date.now();
+      while (Date.now() - t0 < budget) {
+        if (fn()) return true;
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      return false;
+    };
+    const railBtn = (label) =>
+      [...document.querySelectorAll("#rail .rail-btn")].find((x) =>
+        (x.querySelector(".tip")?.textContent ?? "").includes(label));
+    const exp = () => document.querySelector(".layer-control .lyr-head")?.getAttribute("aria-expanded");
+    if (exp() !== "true") return { err: `not expanded to start (${exp()})` };
+    document.querySelector(".layer-control .lyr-head")?.click();
+    await new Promise((r) => setTimeout(r, 200));
+    if (exp() !== "false") return { err: "head click did not collapse" };
+    // Walk to another mode and back — each crossing rebuilds the rows.
+    railBtn("颱風")?.click();
+    await waitFor(() => exp() === "false" && document.querySelector(".layer-control .lyr-row"));
+    await new Promise((r) => setTimeout(r, 1200));
+    const inTyphoon = exp();
+    // `setRows()` is async-ish on this path, so re-read after the rows land.
+    const rowsAfterSwitch = document.querySelectorAll(".layer-control .lyr-row").length;
+    railBtn("總覽")?.click();
+    await waitFor(() => document.querySelectorAll(".panel[data-panel]").length > 3);
+    await new Promise((r) => setTimeout(r, 1500));
+    const backOnOverview = exp();
+    // Leave it expanded for the checks that follow.
+    document.querySelector(".layer-control .lyr-head")?.click();
+    await new Promise((r) => setTimeout(r, 250));
+    return { inTyphoon, rowsAfterSwitch, backOnOverview, restored: exp() };
+  });
+  check("LAYERS 清單：切換模式重建之後，收起狀態唔會自己彈返開",
+    lyrCollapseSticky.inTyphoon === "false" && lyrCollapseSticky.rowsAfterSwitch > 0 &&
+      lyrCollapseSticky.backOnOverview === "false" && lyrCollapseSticky.restored === "true",
+    lyrCollapseSticky.err ??
+      `颱風模式 ${lyrCollapseSticky.rowsAfterSwitch} 行 · 收起狀態 颱風=${lyrCollapseSticky.inTyphoon} 返總覽=${lyrCollapseSticky.backOnOverview}（還原 ${lyrCollapseSticky.restored}）`);
   await page.waitForTimeout(800);
 
   // --- 9b. the other two verticals, from config only -------------------------
@@ -1522,7 +1670,71 @@ try {
       panels.map((p) => `${p.id}=${p.state}(${p.kind})`).join(" ") +
         (stillLoading.length ? `  [未載完：${stillLoading.join(",")}]` : ""));
   }
+  // --- 9b1f. the border control points are a SYMBOL, not a dot ----------------
+  // Same requirement as the suspension pins above, and the same silent failure:
+  // an `icon-image` naming an unregistered image draws nothing and says nothing.
+  // The loop leaves the app in 口岸模式, so the layer is on the map right here.
+  const cpLayer = await page.evaluate(() => {
+    const map = window.__map;
+    const id = "vl-control_points";
+    if (!map.getLayer(id)) return { layer: false };
+    const spec = map.getStyle().layers.find((l) => l.id === id);
+    const feats = map.getSource(id)?._data?.features ?? [];
+    return {
+      layer: true,
+      type: map.getLayer(id).type,
+      iconImage: JSON.stringify(spec?.layout?.["icon-image"] ?? null),
+      images: ["cp-land", "cp-sea", "cp-air"].map((n) => [n, map.hasImage(n)]),
+      rendered: map.queryRenderedFeatures({ layers: [id] }).length,
+      sourceCount: feats.length,
+      kinds: [...new Set(feats.map((f) => f.properties?.kind))].sort(),
+      // The names must clear the glyph: with `text-offset: [0, 1.4]` a 30px icon
+      // sat on top of its own label.
+      textOffset: JSON.stringify(map.getLayoutProperty(`${id}-label`, "text-offset")),
+    };
+  });
+  check("出入境管制站：用「關口＋過關人」符號（唔係淨係一個圓點），陸海空分色",
+    cpLayer.layer && cpLayer.type === "symbol" &&
+      cpLayer.iconImage.includes("cp-land") && cpLayer.iconImage.includes("kind") &&
+      cpLayer.images.every(([, ok]) => ok === true) &&
+      cpLayer.rendered > 0 && cpLayer.sourceCount >= 10 && cpLayer.kinds.length >= 2,
+    cpLayer.layer
+      ? `type=${cpLayer.type} · icon-image=${cpLayer.iconImage} · 圖示=${JSON.stringify(cpLayer.images)} · 畫出 ${cpLayer.rendered}/${cpLayer.sourceCount} · 種類=${JSON.stringify(cpLayer.kinds)} · text-offset=${cpLayer.textOffset}`
+      : "冇 vl-control_points 圖層");
+
   await page.screenshot({ path: join(outDir, "05-typhoon-after-border.png") });
+
+  // --- 9b1g. leaving a mode takes its layers with it ---------------------------
+  // MEASURED 2026-09-25 (`probe-orphan-layers.mjs`). `controlPointLayer()` draws
+  // under the BARE id `vl-control_points`, but `layersOf()` in overlays.ts listed
+  // only the SUFFIXED family, so after visiting 口岸模式 once those twelve dots
+  // stayed painted over every later mode for the life of the tab:
+  //
+  //     總覽  drawn=[]                 vl=[]
+  //     口岸  drawn=[control_points]   vl=[vl-control_points, -label]
+  //     停水  drawn=[water_…]          vl=[vl-control_points, …water…]   <-- orphan
+  //     總覽  drawn=[]                 vl=[vl-control_points]            <-- still there
+  //
+  // Nothing in the UI could remove them. The check is deliberately GENERAL — it
+  // does not name control_points — because the defect class is "a layer outlives
+  // the mode that asked for it", and the next one will be a different id. 總覽
+  // draws no vertical layers at all, so the honest expectation there is zero.
+  await page.evaluate(() => {
+    [...document.querySelectorAll("#rail .rail-btn")]
+      .find((x) => (x.querySelector(".tip")?.textContent ?? "").includes("總覽"))?.click();
+  });
+  await page.waitForTimeout(7000);
+  const orphans = await page.evaluate(() => ({
+    mode: window.__hkcm.currentMode(),
+    drawn: window.__hkcm.drawnLayers(),
+    vl: window.__map
+      .getStyle()
+      .layers.map((l) => l.id)
+      .filter((i) => i.startsWith("vl-")),
+  }));
+  check("切換模式：走嘅時候清走自己嘅圖層（總覽唔應該剩低任何 vl- 孤兒）",
+    orphans.mode === "overview" && orphans.drawn.length === 0 && orphans.vl.length === 0,
+    `mode=${orphans.mode} · drawn=${JSON.stringify(orphans.drawn)} · 剩低 vl- 圖層=${JSON.stringify(orphans.vl)}`);
 
   const proxyWorked = workerHits.filter((u) => u.includes("weather.gov.hk") || u.includes("hongkongairport") || u.includes("mardep") || u.includes("info.gov.hk"));
   check("Worker 代理：CORS 封閉源（天文台／機管局／海事處）真係經 /proxy 行", proxyWorked.length > 0,

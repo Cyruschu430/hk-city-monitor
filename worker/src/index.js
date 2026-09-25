@@ -16,6 +16,29 @@ const ALLOWED_HOSTS = new Set(WHITELIST);
 
 const UA = "hk-city-monitor/0.2 (+https://github.com/Cyruschu430/hk-city-monitor)";
 const UPSTREAM_TIMEOUT_MS = 10_000;
+
+/**
+ * Some upstreams are legitimately slower than the default budget, and 10s turns a
+ * request that WOULD have succeeded into a user-visible 504.
+ *
+ * MEASURED 2026-09-25: `api.open-meteo.com` is asked for a 352-point lattice in a
+ * SINGLE query (sources.json `open_meteo_wind_grid`), and it intermittently took
+ * longer than 10s. `verify-browser.mjs` captured a real `504 upstream_timeout` for
+ * that URL on two consecutive runs, while a standalone probe of the same request
+ * answered 200 in a second — so this is a slow spot, not a broken source. The 504
+ * left the wind layer un-loaded until the user toggled it off and on again.
+ *
+ * Deliberately a short explicit list keyed off the TARGET HOST (server-side, never
+ * from a client-supplied parameter — that would be an open proxy with extra steps)
+ * rather than a longer global budget: 10s stays the rule for every other host, so a
+ * genuinely dead upstream still fails fast instead of holding the request.
+ *
+ * 18s is chosen against the CLIENT, not against Cloudflare's limits: `fetchSource`
+ * aborts at 25s (web/src/lib/sources.ts), so anything longer here would be invisible
+ * to the user — the browser would have given up first.
+ */
+const SLOW_HOST_TIMEOUT_MS = 18_000;
+const SLOW_HOSTS = new Set(["api.open-meteo.com"]);
 const MAX_UPSTREAM_BYTES = 16 * 1024 * 1024; // 16 MiB, checked via Content-Length when present
 
 // Edge-cache lifetimes. Data payloads: 60s collapses simultaneous users onto one
@@ -174,7 +197,7 @@ async function handleProxy(request, ctx) {
       method: "GET",
       headers: { "User-Agent": UA, Accept: request.headers.get("Accept") || "*/*" },
       redirect: "follow",
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+      signal: AbortSignal.timeout(SLOW_HOSTS.has(target.host) ? SLOW_HOST_TIMEOUT_MS : UPSTREAM_TIMEOUT_MS),
     });
   } catch (err) {
     const timeout = err && (err.name === "TimeoutError" || err.name === "AbortError");

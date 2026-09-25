@@ -596,3 +596,38 @@ console.log("\nparsers.test.ts: ALL PASS");
   assert.ok(/8/.test(wrong) && /小時|h ago/.test(wrong), `the old UTC formatter must read as 8 hours — got "${wrong}"`);
   console.log(`✓ 時間戳: HKT 牆上時間（${F.hkWallTime(at)}）· 舊 UTC 寫法會變「${wrong}」`);
 }
+
+
+// 26. The A&E update stamp is Chinese, and it used to parse to NULL.
+//
+// MEASURED 2026-09-25 against the live feed: `updateTime` is
+// "2026年9月25日 下午6時15分", and this was fed to `new Date()`, which cannot parse
+// it — so `observedAt` was ALWAYS null. The panel therefore had no clock at all
+// and could never degrade, meaning a frozen Hospital Authority feed would look
+// live forever. That is constraint 2 ("never present stale data as live") failing
+// silently, and the fixture carries the same string, so one assertion would have
+// caught it. None existed.
+{
+  const s = "2026年9月25日 下午6時15分";
+  const at = P.parseHkChineseDate(s);
+  assert.ok(at instanceof Date, `"${s}" must parse (got ${at})`);
+  // 18:15 HKT === 10:15Z. Asserting the INSTANT, not the string, so a timezone
+  // slip cannot pass.
+  assert.equal(at!.toISOString(), "2026-09-25T10:15:00.000Z", "下午6時15分 → 18:15 HKT");
+
+  // The 12-hour edges, where a naive `+12` is wrong: 上午12時 is midnight and
+  // 下午12時 is noon.
+  assert.equal(P.parseHkChineseDate("2026年1月1日 上午12時5分")!.toISOString(), "2025-12-31T16:05:00.000Z", "上午12時 → 00:05");
+  assert.equal(P.parseHkChineseDate("2026年1月1日 下午12時30分")!.toISOString(), "2026-01-01T04:30:00.000Z", "下午12時 → 12:30");
+  assert.equal(P.parseHkChineseDate("2026年12月31日 下午11時59分")!.toISOString(), "2026-12-31T15:59:00.000Z", "下午11時 → 23:59");
+  // A minute field is optional in the wild; do not return null without one.
+  assert.ok(P.parseHkChineseDate("2026年9月25日 下午6時") instanceof Date, "hour-only stamp still parses");
+  // And a non-date must still be null rather than "now".
+  assert.equal(P.parseHkChineseDate("not a date"), null, "unparseable → null, never a guess");
+
+  // The wiring, not just the helper: the parser that produced the null must use it.
+  const live = { waitTime: [], updateTime: s };
+  const { observedAt } = P.parseAeWaiting(live);
+  assert.ok(observedAt instanceof Date, "parseAeWaiting must carry the stamp through");
+  console.log(`✓ 急症室時間: ${s} → ${at!.toISOString()}（12 小時制邊界同 null 都測齊）`);
+}

@@ -58,8 +58,51 @@ async function build(map: maplibregl.Map, src: SourceDef): Promise<WindOverlay> 
   let particle: InstanceType<typeof WindParticleLayer> | null = null;
   let visible = false;
 
-  const overlay = new MapboxOverlay({ interleaved: true, layers: [] });
+  // NOT INTERLEAVED — and that is the whole reason the animation was frozen.
+  //
+  // MEASURED 2026-09-25 on a real GPU (AMD Radeon, D3D11, headed run): with
+  // `interleaved: true` the layer loaded (352 samples, texture built, luma.gl
+  // compiled its buffers) and then never moved — pixel motion between three
+  // samples 700ms apart was **0 of 7875, twice**. The particles were drawn once
+  // and never stepped again.
+  //
+  // Why: the layer's own loop is `draw() → requestStep() → setTimeout(FPS) →
+  // step() → setNeedsRedraw()` (maplibre-gl-wind dist/index.js:473,623-635). In
+  // INTERLEAVED mode deck.gl draws into MapLibre's canvas and MapLibre owns the
+  // render loop — it repaints on interaction, not continuously — so
+  // `setNeedsRedraw()` flags a frame nobody renders and the loop dies after the
+  // first one. In the default (overlaid) mode deck.gl owns a canvas and its own
+  // animation loop, so the flag is acted on.
+  //
+  // The library's own MapLibre example uses `new MapboxOverlay({ layers })` with
+  // no `interleaved` option. The cost of the fix is that the field draws above the
+  // basemap and its labels rather than between style layers, which is what Windy
+  // does anyway — the wind is the subject, not an underlay.
+  const overlay = new MapboxOverlay({ layers: [] });
   map.addControl(overlay as unknown as maplibregl.IControl);
+
+  // QA HOOK for the animation itself. `__windField` proves the DATA arrived; this
+  // proves the LAYER is wired and being handed to deck. They are different
+  // failures — measured 2026-09-25: the field loaded (352 samples) while the canvas
+  // never moved, and nothing on the page could say which half had broken.
+  //
+  // `MapboxOverlay` does not expose `props` publicly (`tsc` rejects it), so the
+  // read goes through a cast AND falls back to the internal Deck instance. The
+  // first version of this hook read `overlay.props.layers` alone and reported
+  // **0 layers while the layer was in fact set** — a QA hook that lies is worse
+  // than no hook, so it now reports which source it read.
+  const overlayInternals = overlay as unknown as {
+    props?: { layers?: unknown[] };
+    _deck?: { props?: { layers?: unknown[] } };
+  };
+  (window as unknown as Record<string, unknown>)["__windOverlay"] = {
+    deckCanvases: () => map.getContainer().querySelectorAll("canvas").length,
+    layerCount: () => (overlayInternals.props?.layers ?? overlayInternals._deck?.props?.layers ?? []).length,
+    layerCountSource: () => (overlayInternals.props ? "overlay.props" : overlayInternals._deck ? "overlay._deck.props" : "unknown"),
+    visible: () => visible,
+    hasParticle: () => particle !== null,
+    zoom: () => map.getZoom(),
+  };
 
   /** Colour by speed. Blue → cyan → amber → red, so a calm day reads calm and a
    *  gale reads as one; the ramp is anchored to the ACTUAL min/max of the current

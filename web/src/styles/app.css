@@ -100,11 +100,30 @@ a:hover{color:var(--cyan)}
   background:var(--map-face-bg);border:1px solid var(--map-face-line);border-radius:8px;
   backdrop-filter:var(--glass);max-width:230px;overflow:hidden}
 .layer-control[hidden]{display:none}
-.lyr-head{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  padding:6px 9px;border-bottom:1px solid var(--map-face-line)}
+/* The head is the collapse control, so it is a real button: full width, no
+   native chrome, and it keeps its own hover state. */
+.lyr-head{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;
+  padding:6px 9px;background:none;border:0;border-bottom:1px solid var(--map-face-line);
+  font:inherit;text-align:left;cursor:pointer}
+.lyr-head:hover{background:rgba(120,160,220,.10)}
+.lyr-head-t{display:flex;align-items:center;gap:6px;min-width:0}
+/* Chevron drawn from two borders rather than a glyph, so it inherits the
+   map-face token scale and cannot go missing from a font subset. Points DOWN
+   when the list is open, RIGHT when it is closed. */
+.lyr-chev{width:5px;height:5px;flex:0 0 auto;position:relative;top:-1px;
+  border-right:1.4px solid var(--map-face-weak);border-bottom:1.4px solid var(--map-face-weak);
+  transform:rotate(45deg);transition:transform .15s ease}
+.layer-control.collapsed .lyr-chev{transform:rotate(-45deg)}
+.layer-control.collapsed .lyr-head{border-bottom-color:transparent}
 .lyr-title{font-size:9.5px;letter-spacing:.16em;font-weight:600;color:var(--map-face);text-transform:uppercase}
 .lyr-count{font-family:var(--font-mono);font-size:9px;color:var(--map-face-weak)}
-.lyr-body{display:flex;flex-direction:column;padding:3px 0}
+/* Collapsed hides the list but keeps the head, so the count stays on screen and
+   the control never becomes invisible with no way back — the one-way door
+   Pitfall 15 records. `display:none` (not a zero height) so the rows cannot be
+   read or clicked while hidden. */
+.layer-control.collapsed .lyr-body{display:none}
+.lyr-body{display:flex;flex-direction:column;padding:3px 0;
+  max-height:min(52vh,440px);overflow-y:auto;overscroll-behavior:contain}
 /* Map key. Sits inside the LAYERS body because the cluster number is a map
    symbol, and a symbol explained nowhere is a number the user has to guess at.
    Muted and small so it reads as a caption to the map, not another control. */
@@ -138,7 +157,13 @@ a:hover{color:var(--cyan)}
 .lyr-row[aria-checked="true"] .lyr-box::after{content:"";position:absolute;left:3px;top:0.5px;
   width:3px;height:6px;border:solid #06121a;border-width:0 1.8px 1.8px 0;transform:rotate(42deg)}
 .lyr-glyph{width:14px;height:14px;flex:0 0 auto}
-.lyr-swatch{width:12px;height:8px;border-radius:2px;flex:0 0 auto}
+/* A swatch carries a FALLBACK background, so a `geom` this sheet has no rule for
+   can never render as an invisible 12x8 box. MEASURED 2026-09-25: `wind_field`
+   declared `geom: "poi"`, there is no `.sw-poi` rule and never was, and the row
+   therefore had a blank swatch with no error anywhere — the same silent-selector
+   failure as Pitfall 27, from the other side. The specific rules below override
+   this one; the layers that matter now carry real glyphs instead. */
+.lyr-swatch{width:12px;height:8px;border-radius:2px;flex:0 0 auto;background:var(--map-face-line)}
 .lyr-swatch.sw-polygon{background:rgba(255,93,108,.3);border:1.5px solid #ff5d6c}
 .lyr-swatch.sw-raster{background:linear-gradient(90deg,#3884ff,#2ecc71,#f1c40f,#e74c3c)}
 .lyr-swatch.sw-point{background:var(--cyan);border-radius:50%;width:8px;height:8px}

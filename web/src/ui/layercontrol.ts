@@ -18,7 +18,7 @@
 
 import { h, clear } from "../lib/dom.ts";
 import { lang } from "../lib/i18n.ts";
-import { drawGlyphInto, type GlyphId } from "../map/symbols.ts";
+import { drawGlyphInto, hasGlyph, type GlyphId } from "../map/symbols.ts";
 import type { LayerDefRaw } from "../lib/sources.ts";
 
 export interface LayerRow {
@@ -49,32 +49,112 @@ export interface LayerControl {
   syncRail(on: string[]): void;
 }
 
-/** Layer id → the runtime glyph that represents it. Config-first: a layer that
-    declares `symbol` wins, otherwise fall back to the known ids.
-    `wind-barb` is not a fixed glyph (there is one image per speed bucket), so
-    it is excluded here and drawn as a generic swatch instead. */
+/** Layer id → the runtime glyph that represents it, for rows whose layers.json
+ *  entry either has no `symbol` or belongs to a RAIL toggle that has no entry at
+ *  all.
+ *
+ * The RAIL half is the important half. RAIL_LAYERS ids are `cameras_td`,
+ * `cameras_hko`, `imagery`, `buildings3d` — none of which is a layers.json id (the
+ * registry calls them `cameras_all` / `hko_cameras`). Those rows therefore used a
+ * SYNTHETIC definition in `paintLegend()` with `geom: "raster"`, and the old
+ * `geom === "raster" → water` fallback below then handed every one of them a water
+ * droplet: 運輸署相機, 天文台相機, 航拍底圖 and 3D 樓宇 all wore the same blue drop as
+ * the rain layer. MEASURED 2026-09-25 by reading the row symbols in the built
+ * page. The fallback is gone; an unknown raster row now gets the gradient raster
+ * swatch, which is honest about being "some raster", rather than the wrong icon. */
+const GLYPH_BY_ID: Record<string, GlyphId> = {
+  // rail toggles (synthetic defs — no layers.json entry)
+  cameras_td: "cam-td",
+  cameras_hko: "cam-hko",
+  // layers.json ids
+  cameras_all: "cam-td",
+  hko_cameras: "cam-hko",
+  control_points: "cp-land",
+  water_suspension: "no-water",
+  water_suspension_districts: "no-water",
+  rain_nowcast: "water",
+  buildings3d: "blocks",
+  imagery: "aerial",
+};
+
 function glyphFor(def: LayerDefRaw): GlyphId | null {
-  if (def.symbol && def.symbol !== "wind-barb") return def.symbol as GlyphId;
-  if (def.id === "cameras_all") return "cam-td";
-  if (def.id === "hko_cameras") return "cam-hko";
-  if (def.geom === "raster") return "water";
-  return null;
+  // Config-first: a layer that declares a REAL `symbol` wins. `hasGlyph` is the
+  // guard that matters — `layers.json` is JSON, so `symbol: "poi"` type-checks as
+  // nothing at all, and an unknown id makes `drawGlyphInto` return early and leave
+  // a blank canvas. That is exactly what the control-point row was doing.
+  if (def.symbol && hasGlyph(def.symbol)) return def.symbol;
+  return GLYPH_BY_ID[def.id] ?? null;
+}
+
+/** Where the list's collapsed state lives. A persisted preference, so it is read
+    once at module load and painted from ONE function that both `build()` and the
+    click handler call — Pitfall 15: a preference written only from its change
+    handler has no boot state, so a reload silently resets it and the user's
+    choice was never really a choice. */
+const COLLAPSE_KEY = "hkcm.lyrCollapsed";
+const BODY_ID = "lyr-list";
+
+let collapsed = ((): boolean => {
+  try {
+    return localStorage.getItem(COLLAPSE_KEY) === "1";
+  } catch {
+    /* private mode — start expanded, which is the safe default */
+    return false;
+  }
+})();
+
+/** The head's tooltip has to agree with its current state and language, so it
+    is derived in one place rather than written at two call sites. */
+function collapseTitle(isCollapsed: boolean): string {
+  const tc = lang() === "tc";
+  if (isCollapsed) return tc ? "展開圖層清單" : "Expand the layer list";
+  return tc ? "收起圖層清單" : "Collapse the layer list";
 }
 
 export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on: boolean) => void): LayerControl {
   let rows: LayerRow[] = [];
 
+  /** Repaint the collapsed state. Called by `build()` (so a rebuilt control
+      keeps the user's choice) and by the head's click handler (so the two paths
+      cannot drift). */
+  function paintCollapsed(): void {
+    el.classList.toggle("collapsed", collapsed);
+    const head = el.querySelector<HTMLElement>(".lyr-head");
+    if (!head) return;
+    head.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    head.title = collapseTitle(collapsed);
+  }
+
   function build(): void {
     clear(el);
     el.hidden = false;
 
+    // The head is a BUTTON, not a label. It was a plain div, which made the
+    // list a fixed object: on a small map face the rows covered the territory
+    // and there was no way to put them away. `aria-expanded`/`aria-controls`
+    // are set here rather than in CSS so the collapsed state is legible to a
+    // screen reader and to QA without reading a class name.
     const head = h(
-      "div",
-      { class: "lyr-head" },
-      h("span", { class: "lyr-title" }, lang() === "tc" ? "圖層" : "LAYERS"),
+      "button",
+      { class: "lyr-head", type: "button", "aria-expanded": "true", "aria-controls": BODY_ID },
+      h(
+        "span",
+        { class: "lyr-head-t" },
+        h("span", { class: "lyr-chev", "aria-hidden": "true" }),
+        h("span", { class: "lyr-title" }, lang() === "tc" ? "圖層" : "LAYERS"),
+      ),
       h("span", { class: "lyr-count" }, `${rows.length}`),
     );
-    const body = h("div", { class: "lyr-body" });
+    head.addEventListener("click", () => {
+      collapsed = !collapsed;
+      try {
+        localStorage.setItem(COLLAPSE_KEY, collapsed ? "1" : "0");
+      } catch {
+        /* non-persistent is acceptable; the toggle still works this session */
+      }
+      paintCollapsed();
+    });
+    const body = h("div", { class: "lyr-body", id: BODY_ID });
 
     // A KEY, not a caption. Taken from World Monitor's bottom-centre legend bar,
     // which explains every dot colour on the map face.
@@ -164,6 +244,7 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
     }
 
     el.append(head, body);
+    paintCollapsed();
 
     // The glyphs are drawn from the same primitives the map uses, so a legend
     // row can never drift from the symbol actually drawn on the map.
@@ -226,4 +307,9 @@ export function relabelLayerControl(el: HTMLElement, rows: LayerRow[]): void {
   });
   const title = el.querySelector<HTMLElement>(".lyr-title");
   if (title) title.textContent = lang() === "tc" ? "圖層" : "LAYERS";
+  // The head's tooltip is user-facing copy too, so it is re-derived on a
+  // language switch from the SAME function `build()` uses. Left out, the tooltip
+  // would be the one string on the map face that stayed in the old language.
+  const head = el.querySelector<HTMLElement>(".lyr-head");
+  if (head) head.title = collapseTitle(el.classList.contains("collapsed"));
 }

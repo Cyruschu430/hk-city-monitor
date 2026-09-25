@@ -114,15 +114,15 @@
    }
   },
   {
-   "_comment": "The 'aircraft' layer definition was withdrawn from the SHIPPED set 2026-09-23 because adsb.fi/adsb.lol block Cloudflare egress IPs, so it could only ever error in production. Kept out of layers.json rather than left in and unreferenced, because an unreferenced layer is not validated by any vertical and would rot silently. To restore: re-add { id: 'aircraft', source: 'adsb_fi_hk', render: 'status_grid', geom: 'point', symbol: 'plane', ... } and the rail entry in main.ts. The generic point renderer, the adapter and registerGlyphs('plane') are all untouched.",
+   "_comment": "WIND FLOW — a GPU particle animation over a MODELLED 22x16 lattice (Open-Meteo, 352 points), not the station barbs it used to draw. Cyrus 2026-09-25. The barbs answered 'what is the wind at this instrument'; a flow animation answers 'where is the air going', which is what a reader reads off a weather map. geom is 'poi' because the renderer is bespoke (map/wind.ts), so it must NOT be handed to the generic point renderer — the symbol field is kept for the legend glyph only. HONESTY: this is modelled data; the weather_stations layer is the OBSERVED counterpart and both are one click apart, because conflating a model with a measurement is the dishonest option. Zero MapLibre layers are created, so nothing needs clearing — visibility belongs to the deck.gl overlay, like the 3D layer.",
    "id": "wind_field",
-   "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
+   "source": "open_meteo_wind_grid",
    "render": "status_grid",
-   "geom": "point",
+   "geom": "poi",
    "symbol": "wind-barb",
    "title": {
-    "tc": "風場（實測站插值）",
-    "en": "Wind field (station IDW)"
+    "tc": "氣流（模式格網）",
+    "en": "Wind flow (modelled)"
    },
    "popup": null,
    "filters": {

@@ -738,6 +738,25 @@
       "license": "Open-Meteo — CC BY 4.0，非商業免費層"
     },
     {
+      "id": "open_meteo_wind_grid",
+      "group": "weather",
+      "name": "Open-Meteo 風場格網（352 點，供氣流動畫）",
+      "name_en": "Open-Meteo Wind Field Grid (352 points, for the flow animation)",
+      "type": "json",
+      "url": "https://api.open-meteo.com/v1/forecast?latitude={LATS}&longitude={LONS}&current=wind_speed_10m,wind_direction_10m&timezone=Asia%2FHong_Kong",
+      "_url_note": "{LATS}/{LONS} are substituted at request time by lib/windgrid.ts with a 22x16 lattice over 113.80,22.13,114.48,22.60 — the template is here so the source stays traceable and licensed, exactly like the radar URL's {YYYYMMDDHHMM}. The lattice is generated rather than committed because a 350-coordinate query is not a URL a human maintains.",
+      "_why_proxy": "NOT a browser fetch, unlike its open_meteo sibling. MEASURED 2026-09-25: two of my own probe bursts got HTTP 429 from Open-Meteo, so 144KB fetched per visitor would break for real users on a busy day. Through the Worker the 60s edge cache means one upstream request serves everyone, which is the same reasoning as every other proxied source.",
+      "auth": "none",
+      "cadence": "15 minutes",
+      "hk_filter": true,
+      "notes": "The only registered source that returns a LATTICE rather than a point, so it is the only one that can drive a flow animation. MEASURED: 352 points in one request, 144KB, ~0.9s, every point populated (sample day: speed 4.1-18.4 km/h, direction 37-68°). This is MODELLED data and the legend says so — the weather_stations layer is the OBSERVED counterpart, and conflating the two would be the dishonest option.",
+      "kind": "api",
+      "fetch": "proxy",
+      "cors_note": "ACAO=* (so browser-direct also works, but the rate limit is why we proxy)",
+      "cost": "free",
+      "license": "Open-Meteo — CC BY 4.0，非商業免費層"
+    },
+    {
       "id": "cc_fuel_price",
       "group": "prices",
       "name": "消委會 油價資訊通（車用燃油價格）",

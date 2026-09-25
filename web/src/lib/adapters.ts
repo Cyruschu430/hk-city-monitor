@@ -33,6 +33,9 @@ export interface AdapterResult {
     so adapters stay importable from Node tests. */
 export interface Rasterizer {
   nowcast(grid: P.NowcastGrid, bbox: [number, number, number, number], opacity: number): Promise<string>;
+  /** One data URL per forecast horizon, in time order. The map layer animates
+   *  these; `nowcast` above is the single-frame form the panel uses. */
+  nowcastFrames(grids: P.NowcastGrid[], bbox: [number, number, number, number], opacity: number): Promise<string[]>;
   tcTrack(track: { name: string; points: P.TcPoint[] }): Promise<string>;
 }
 
@@ -491,20 +494,46 @@ const ADAPTERS: Record<string, Adapter> = {
 
   async hko_rain_nowcast(src, panel, ctx) {
     const bbox = (panel.params?.["bbox"] as [number, number, number, number]) ?? [22.15, 113.83, 22.56, 114.44];
-    const grid = P.parseNowcast(await text(await get(src)), bbox);
+    // ALL horizons, not just the next slot. MEASURED 2026-09-25: the CSV carries
+    // four half-hourly frames (+30/+60/+90/+120 min) and the old parser discarded
+    // three of them, so the map could only ever show one still.
+    const frames = P.parseNowcastFrames(await text(await get(src)), bbox);
+    const grid = frames[0];
     if (!grid) throw new Error("格網資料為空");
     const opacity = Number(panel.params?.["opacity"] ?? 0.6);
     const observedAt = new Date(
       `${grid.updated.slice(0, 4)}-${grid.updated.slice(4, 6)}-${grid.updated.slice(6, 8)}T${grid.updated.slice(8, 10)}:${grid.updated.slice(10, 12)}:00+08:00`,
     );
-    const legend = lang() === "tc" ? `0 → ${grid.max.toFixed(1)} 毫米（未來半小時）` : `0 → ${grid.max.toFixed(1)} mm (next 30 min)`;
-    // All-zero grids are the honest "no rain" state: a transparent canvas is
-    // indistinguishable from a broken image, so the panel says so plainly.
-    if (grid.max < 0.1) {
+    // The peak across the WHOLE forecast, not just the first frame: "rain later"
+    // is the reason a reader looks at a nowcast at all, and reporting only the
+    // +30min peak would understate a system that arrives in an hour.
+    const peak = frames.reduce((m, g) => Math.max(m, g.max), 0);
+    const legend =
+      lang() === "tc"
+        ? `0 → ${peak.toFixed(1)} 毫米（未來 2 小時）`
+        : `0 → ${peak.toFixed(1)} mm (next 2 h)`;
+    // All-zero across every horizon is the honest "no rain" state: a transparent
+    // canvas is indistinguishable from a broken image, so the panel says so.
+    if (peak < 0.1) {
       return { data: { kind: "raster_map", src: "", alt: "格網降雨臨近預報", empty: true, legend }, observedAt };
     }
-    const rendered = await ctx.raster.nowcast(grid, bbox, opacity);
-    return { data: { kind: "raster_map", src: rendered, alt: "格網降雨臨近預報", legend }, observedAt };
+    const rendered = await ctx.raster.nowcastFrames(frames, bbox, opacity);
+    // `src` is frame 1 so the panel and any single-image consumer keep working;
+    // `frames` is what the MAP animates. Each carries its own ending time, so the
+    // scrubber can label a frame without recomputing the calendar.
+    const labelled = rendered
+      .map((s, i) => ({ src: s, ending: frames[i]?.ending ?? "" }))
+      .filter((f) => f.src.length > 0);
+    return {
+      data: {
+        kind: "raster_map",
+        src: labelled[0]?.src ?? "",
+        frames: labelled,
+        alt: "格網降雨臨近預報",
+        legend,
+      },
+      observedAt,
+    };
   },
 
   async yahoo_hk_quotes(src, panel, _ctx) {

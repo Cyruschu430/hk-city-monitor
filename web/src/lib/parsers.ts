@@ -316,43 +316,71 @@ export interface NowcastGrid {
 }
 
 export function parseNowcast(csv: string, bbox: [number, number, number, number]): NowcastGrid | null {
+  const frames = parseNowcastFrames(csv, bbox);
+  return frames.length ? frames[0]! : null;
+}
+
+/**
+ * Every forecast horizon in the nowcast, in time order.
+ *
+ * MEASURED 2026-09-25: the CSV carries FOUR half-hourly horizons, not one —
+ * `202609250824` updated, ending `0854`, `0924`, `0954`, `1024`. The old parser
+ * `break`s at the first horizon change ("first forecast horizon only — the map
+ * shows the next slot"), which threw away three quarters of the payload and made
+ * an animation impossible.
+ *
+ * Frames are keyed by their own ENDING stamp rather than by position, so a
+ * re-ordered or partially-published file still produces correctly labelled
+ * frames instead of silently mislabelling +60min as +30min.
+ */
+export function parseNowcastFrames(csv: string, bbox: [number, number, number, number]): NowcastGrid[] {
   const [minLat, minLon, maxLat, maxLon] = bbox;
   const pad = 0.06;
   const lines = csv.split(/\r?\n/);
-  let updated = "";
-  let ending = "";
-  const cells = new Map<string, number>();
+  // ending -> accumulated cells. The published file groups by horizon, but
+  // keying on the stamp means a differently-ordered file cannot mislabel a frame.
+  const byEnding = new Map<string, { updated: string; cells: Map<string, number> }>();
   let step = Infinity;
   let prevLat = 0;
   for (let i = 1; i < lines.length; i++) {
     const c = lines[i]!.split(",");
     if (c.length < 5) continue;
-    if (!ending) {
-      updated = c[0]!;
-      ending = c[1]!;
-    } else if (c[1] !== ending) {
-      break; // first forecast horizon only — the map shows the next slot
-    }
+    const updated = c[0]!;
+    const ending = c[1]!;
     const lat = Number(c[2]);
     const lon = Number(c[3]);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
     if (prevLat && Math.abs(lat - prevLat) > 1e-9) step = Math.min(step, Math.abs(lat - prevLat));
     prevLat = lat;
     if (lat < minLat - pad || lat > maxLat + pad || lon < minLon - pad || lon > maxLon + pad) continue;
-    cells.set(`${lat.toFixed(3)},${lon.toFixed(3)}`, Number(c[4]));
+    let f = byEnding.get(ending);
+    if (!f) {
+      f = { updated, cells: new Map() };
+      byEnding.set(ending, f);
+    }
+    f.cells.set(`${lat.toFixed(3)},${lon.toFixed(3)}`, Number(c[4]));
   }
-  if (!cells.size) return null;
-  const lats = [...new Set([...cells.keys()].map((k) => Number(k.split(",")[0])))].sort((a, b) => b - a);
-  const lons = [...new Set([...cells.keys()].map((k) => Number(k.split(",")[1])))].sort((a, b) => a - b);
-  let max = 0;
-  const vals = lats.map((la) =>
-    lons.map((lo) => {
-      const v = cells.get(`${la.toFixed(3)},${lo.toFixed(3)}`) ?? 0;
-      if (v > max) max = v;
-      return v;
-    }),
-  );
+  if (byEnding.size === 0) return [];
   if (!Number.isFinite(step) || step === Infinity) step = 0.02;
-  return { updated, ending, step, lats, lons, vals, max };
+
+  // Ascending by stamp == ascending by time, because the format is fixed-width
+  // YYYYMMDDHHMM (a lexical sort is a chronological one).
+  return [...byEnding.entries()]
+    .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+    .map(([ending, f]) => {
+      const lats = [...new Set([...f.cells.keys()].map((k) => Number(k.split(",")[0])))].sort((a, b) => b - a);
+      const lons = [...new Set([...f.cells.keys()].map((k) => Number(k.split(",")[1])))].sort((a, b) => a - b);
+      let max = 0;
+      const vals = lats.map((la) =>
+        lons.map((lo) => {
+          const v = f.cells.get(`${la.toFixed(3)},${lo.toFixed(3)}`) ?? 0;
+          if (v > max) max = v;
+          return v;
+        }),
+      );
+      return { updated: f.updated, ending, step, lats, lons, vals, max };
+    })
+    .filter((g) => g.lats.length > 0 && g.lons.length > 0);
 }
 
 // --- Tropical cyclones -------------------------------------------------------------

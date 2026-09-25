@@ -99,7 +99,18 @@ export type PanelData =
   | { kind: "table"; columns: string[]; rows: TableCell[][] }
   | { kind: "image_single"; src: string; alt: string; note?: string }
   | { kind: "image_wall"; images: WallImage[] }
-  | { kind: "raster_map"; src: string; alt: string; legend?: string; empty?: boolean }
+  | {
+      kind: "raster_map";
+      src: string;
+      alt: string;
+      legend?: string;
+      empty?: boolean;
+      /** Every forecast horizon, in time order, for the MAP's animation. Optional
+       *  because most raster sources publish one frame; `src` stays frame 1 so a
+       *  single-image consumer keeps working. Not a ninth render type — the same
+       *  `raster_map` with more to show. */
+      frames?: { src: string; ending: string }[];
+    }
   | { kind: "gauge_grid"; cells: Gauge[] }
   | { kind: "status_grid"; cells: StatusCell[] };
 

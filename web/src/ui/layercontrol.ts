@@ -113,6 +113,11 @@ function collapseTitle(isCollapsed: boolean): string {
 
 export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on: boolean) => void): LayerControl {
   let rows: LayerRow[] = [];
+  /** Rows the user has removed with the ✕. Held by LAYER ID and cleared when the
+   *  mode's layer set changes, so a layer dismissed in 總覽 comes back when the user
+   *  asks for the mode that needs it. */
+  const dismissed = new Set<string>();
+  let lastSignature = "";
 
   /** Repaint the collapsed state. Called by `build()` (so a rebuilt control
       keeps the user's choice) and by the head's click handler (so the two paths
@@ -180,6 +185,9 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
     }
 
     for (const row of rows) {
+      // A layer the user removed stays removed for as long as the mode asks for the
+      // same set of layers (see the ✕ handler).
+      if (dismissed.has(row.def.id)) continue;
       const glyph = glyphFor(row.def);
       const label = row.label ?? row.def.title;
 
@@ -231,7 +239,43 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
         note.hidden = !note.hidden;
       });
 
-      const wrap = h("div", { class: "lyr-item" }, h("div", { class: "lyr-line" }, btn, info));
+      // ✕ — REMOVE THE LAYER FROM THE LIST.
+      //
+      // Cyrus 2026-09-25: "加一多個功能, user remove layer from the legend, 依家開完
+      // 一個 mode, layer 會 keep 住". Opening a mode fills this panel, and once a row
+      // is there the only way to be rid of it was to leave the mode entirely — so a
+      // reader who does not want 1,047 camera points had to give up the whole mode
+      // to say so.
+      //
+      // Removal is DISMISSAL, not deletion: it turns the layer off (through the
+      // same `onToggle` the checkbox uses, so there is still one implementation of
+      // "off") and drops the row. The dismissal is held by layer id and is cleared
+      // when the MODE changes, detected below by the row signature — otherwise a
+      // layer dismissed in overview would stay missing after the user asked for the
+      // mode that needs it.
+      const remove = h(
+        "button",
+        {
+          class: "lyr-remove",
+          type: "button",
+          "aria-label": lang() === "tc" ? "移除此圖層" : "Remove this layer",
+          title: lang() === "tc" ? "移除此圖層" : "Remove this layer",
+        },
+        "✕",
+      );
+      remove.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dismissed.add(row.def.id);
+        const checked = btn.getAttribute("aria-checked") === "true";
+        if (checked) onToggle(row, false);
+        build();
+      });
+
+      const wrap = h(
+        "div",
+        { class: "lyr-item", "data-row": row.def.id },
+        h("div", { class: "lyr-line" }, btn, info, remove),
+      );
       const note = h(
         "div",
         { class: "lyr-note", hidden: "true", "data-note-for": row.def.id },
@@ -258,6 +302,16 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
   return {
     setRows(next: LayerRow[]) {
       rows = next;
+      // A mode switch means a different layer set, and the user's removals were
+      // about the OLD one — so they are cleared here rather than in the mode code,
+      // which keeps the rule in one place. The signature is the layer ids in order,
+      // which is what "a different set" actually means; comparing counts would miss
+      // a swap.
+      const signature = next.map((r) => r.def.id).join("|");
+      if (signature !== lastSignature) {
+        dismissed.clear();
+        lastSignature = signature;
+      }
       // No longer hides on an empty set: the control now always carries the
       // rail's toggles, so it has content in every mode. Hiding it was what made
       // it look absent entirely in overview (measured: hidden=true, rows=0).
@@ -278,12 +332,20 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
   };
 }
 
-/** Re-label without losing toggle state (language switch). */
+/** Re-label without losing toggle state (language switch).
+ *
+ *  Rows are matched by their `data-row` id, NOT by position. The previous version
+ *  paired `.lyr-item[n]` with `rows[n]`, which was already fragile and became plain
+ *  wrong once a row can be REMOVED (✕): the list on screen would be shorter than
+ *  `rows`, so every label after the removed one would be relabelled with its
+ *  neighbour's text — a language switch would scramble the panel. Match on the
+ *  thing that identifies the row. */
 export function relabelLayerControl(el: HTMLElement, rows: LayerRow[]): void {
-  const items = el.querySelectorAll<HTMLElement>(".lyr-item");
-  rows.forEach((row, i) => {
-    const item = items[i];
-    const label = item?.querySelector<HTMLElement>(".lyr-label");
+  const byId = new Map(rows.map((r) => [r.def.id, r]));
+  for (const item of el.querySelectorAll<HTMLElement>(".lyr-item")) {
+    const row = byId.get(item.dataset["row"] ?? "");
+    if (!row) continue;
+    const label = item.querySelector<HTMLElement>(".lyr-label");
     if (label) {
       const text = row.label ?? row.def.title;
       label.textContent = lang() === "tc" ? text.tc : text.en;
@@ -299,12 +361,18 @@ export function relabelLayerControl(el: HTMLElement, rows: LayerRow[]): void {
       if (a) a.textContent = `${text} ↗`;
       else note.textContent = text;
     }
-    const info = item?.querySelector<HTMLElement>(".lyr-info");
+    const info = item.querySelector<HTMLElement>(".lyr-info");
     if (info) {
       info.setAttribute("aria-label", lang() === "tc" ? "來源" : "Source");
       info.title = row.sourceUrl ? `${row.sourceName} ↗` : row.sourceName;
     }
-  });
+    const remove = item.querySelector<HTMLElement>(".lyr-remove");
+    if (remove) {
+      const text = lang() === "tc" ? "移除此圖層" : "Remove this layer";
+      remove.setAttribute("aria-label", text);
+      remove.title = text;
+    }
+  }
   const title = el.querySelector<HTMLElement>(".lyr-title");
   if (title) title.textContent = lang() === "tc" ? "圖層" : "LAYERS";
   // The head's tooltip is user-facing copy too, so it is re-derived on a

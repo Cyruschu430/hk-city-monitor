@@ -4,14 +4,14 @@
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
  "geocode_note": "lat/lng come from the OGCIO Address Lookup Service (als.gov.hk), the registered als_address_lookup source, applied to the first clause of each notice address. A notice that did not resolve keeps lat=null and is drawn at DISTRICT level -- we never substitute a district centroid, because a confident pin in the wrong place is worse than an honest district highlight.",
- "generated": "2026-09-25T17:39:36+08:00",
+ "generated": "2026-09-25T18:09:36+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
   "records": 165,
-  "active": 8,
+  "active": 6,
   "located": 165,
   "district_only": 0,
-  "active_located": 8,
+  "active_located": 6,
   "active_district_only": 0
  },
  "districts": [
@@ -2413,11 +2413,11 @@
    "district_en": "North",
    "nature": "緊急停水",
    "suspend_at": "2026-09-25T14:49:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-25T16:49:00+08:00",
    "address": "掃管埔村 近燈柱VA3912一帶",
    "address_en": "AREA AROUND LAMP POST VA3912 SO KWUN PO TSUEN",
    "cause": "緊急維修水管工程",
-   "status": "現正停水",
+   "status": "供水已恢復",
    "lat": 22.50027,
    "lng": 114.13083
   },
@@ -2503,11 +2503,11 @@
    "district_en": "Sham Shui Po",
    "nature": "緊急停水",
    "suspend_at": "2026-09-25T16:31:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-25T17:26:00+08:00",
    "address": "鴨寮街82,84號",
    "address_en": "NO.82,84 AP LIU STREET",
    "cause": "緊急維修水管工程",
-   "status": "現正停水",
+   "status": "供水已恢復",
    "lat": 22.32829,
    "lng": 114.16471
   }
@@ -2515,11 +2515,9 @@
  "active_ids": [
   "2026092513723",
   "2026092513724",
-  "2026092513752",
   "2026092513754",
   "2026092513761",
   "2026092513762",
-  "2026092513763",
-  "2026092513764"
+  "2026092513763"
  ]
 }

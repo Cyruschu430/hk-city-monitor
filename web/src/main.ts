@@ -15,7 +15,7 @@ import { activeVertical, type State, type VerticalDef } from "./lib/trigger.ts";
 import { adaptPanel } from "./lib/adapters.ts";
 import { h, clear } from "./lib/dom.ts";
 import { lang, onLangChange, t } from "./lib/i18n.ts";
-import { loadRegistry, clearDataCache, type VerticalDefRaw } from "./lib/sources.ts";
+import { loadRegistry, clearDataCache, sourceLabel, type VerticalDefRaw } from "./lib/sources.ts";
 import { createMap, landsdBadge, setBasemap } from "./map/basemap.ts";
 import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./map/cameras.ts";
 import { applyVerticalLayers, clearVerticalLayers, type WaterPoint } from "./map/overlays.ts";
@@ -241,7 +241,7 @@ async function boot(): Promise<void> {
         return {
           def,
           mapLayerIds: mapIdsFor(def),
-          sourceName: src?.name ?? def.source,
+          sourceName: sourceLabel(src, def.source),
           sourceUrl: src?.url,
           kind: "vertical" as const,
         };
@@ -267,7 +267,7 @@ async function boot(): Promise<void> {
       rows.push({
         def: synthetic,
         mapLayerIds: railMapIds(rl.id),
-        sourceName: src?.name ?? rl.label.tc,
+        sourceName: sourceLabel(src, lang() === "tc" ? rl.label.tc : rl.label.en),
         sourceUrl: src?.url,
         kind: "rail",
         railId: rl.id,

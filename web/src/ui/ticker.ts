@@ -31,7 +31,7 @@
 import { clear, h } from "../lib/dom.ts";
 import { parseRss, parseSpecialTraffic } from "../lib/parsers.ts";
 import { fetchSource, type Registry } from "../lib/sources.ts";
-import { lang } from "../lib/i18n.ts";
+import { lang, onLangChange } from "../lib/i18n.ts";
 
 const POLL_MS = 5 * 60_000;
 const SPACER = "　▪　";
@@ -272,6 +272,23 @@ export function createTicker(root: HTMLElement, registry: Registry): void {
       if (gen === collectGen) paint(r);
     });
   }, POLL_MS);
+
+  // A LANGUAGE SWITCH IS A NEW COLLECTION, not just a repaint.
+  //
+  // MEASURED 2026-09-25: the ticker had no language listener, so switching to EN
+  // relabelled nothing and kept showing the Chinese feed — 71 Chinese headlines
+  // in the one strip a reader watches continuously. The feeds themselves are
+  // language-specific (sources.json url/url_en), so the fix is to re-collect, and
+  // the tab labels and category pills have to be rebuilt in the same pass.
+  // The generation token makes the in-flight Chinese fetch harmless if it lands
+  // after the switch.
+  onLangChange(() => {
+    paintTabs();
+    const gen = ++collectGen;
+    void collect().then((r) => {
+      if (gen === collectGen) paint(r);
+    });
+  });
 
   // QA hooks: the classification is a claim about the DOM, so it must be
   // assertable without scraping rendered text.

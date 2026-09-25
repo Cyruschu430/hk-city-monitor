@@ -281,6 +281,31 @@ export function parseFlights(json: HkiaDay[], maxRows: number): { columns: strin
 // --- HA A&E waiting ------------------------------------------------------------------
 export interface AeRow { hospName: string; t45p50: string; t45p95: string }
 
+/** "2026年9月25日 下午6時15分" — the Hospital Authority's A&E update stamp.
+ *
+ * MEASURED 2026-09-25 against the live feed (`ha_ae_waiting`, aedwtdata2-tc.json):
+ * `updateTime` is this exact Chinese form, and `parseAeWaiting` fed it to
+ * `new Date()`, which cannot parse it — so `observedAt` was **always null**.
+ *
+ * Not cosmetic. With no timestamp the panel never degrades, so a frozen HA feed
+ * would go on looking live indefinitely — the one failure this whole app exists to
+ * prevent (constraint 2, "never present stale data as live"). The fixture carries
+ * the same unparseable string, so a test that had asserted the timestamp would
+ * have caught it; none did.
+ *
+ * Handles 上午 (AM) and 下午 (PM) including the 12-hour edges: 上午12時 is 00 and
+ * 下午12時 is 12, which the naive `+12` gets wrong. */
+export function parseHkChineseDate(s: string): Date | null {
+  const m = /(\d{4})年\s*(\d{1,2})月\s*(\d{1,2})日\s*(上午|下午)?\s*(\d{1,2})\s*[時时](?:\s*(\d{1,2})\s*分?)?/.exec(s);
+  if (!m) return null;
+  const [, y, mo, d, half, hRaw, minRaw] = m;
+  let h = Number(hRaw);
+  if (half === "下午" && h < 12) h += 12;
+  if (half === "上午" && h === 12) h = 0;
+  const p = (n: number) => String(n).padStart(2, "0");
+  return iso(`${y}-${p(Number(mo))}-${p(Number(d))}T${p(h)}:${p(Number(minRaw ?? 0))}:00+08:00`);
+}
+
 export function parseAeWaiting(json: { waitTime: AeRow[]; updateTime?: string }): { cells: Gauge[]; observedAt: Date | null } {
   const cells: Gauge[] = (json.waitTime ?? []).map((w) => {
     const mins = zhDurationMinutes(w.t45p50);
@@ -289,7 +314,10 @@ export function parseAeWaiting(json: { waitTime: AeRow[]; updateTime?: string })
     const level = mins <= 60 ? "ok" : mins <= 120 ? "warn" : "alert";
     return { label: w.hospName, value: w.t45p50, level };
   });
-  return { cells, observedAt: json.updateTime ? iso(json.updateTime) : null };
+  // Fall back to the English/ISO form too, in case HA ever switches — a parser
+  // that only understands one spelling of its own source is how this broke.
+  const at = json.updateTime ? (parseHkChineseDate(json.updateTime) ?? iso(json.updateTime)) : null;
+  return { cells, observedAt: at };
 }
 
 // --- Leave planner (prebuilt static JSON) ----------------------------------------------

@@ -210,11 +210,11 @@ function drawWaterPoints(map: maplibregl.Map, id: string, pts: WaterPoint[]): vo
     const html = `
         <div style="padding:9px 11px;font:12px/1.55 var(--font-ui);max-width:280px">
           <b style="color:${drinking ? "#ff5d6c" : "#fbbf24"}">
-            ${String(p["water_type"] ?? "")} · ${String(p["nature"] ?? "")}
+            ${esc(p["water_type"] ?? "")} · ${esc(p["nature"] ?? "")}
           </b><br>
-          <b>${String(p["district"] ?? "")}</b> ${String(p["address"] ?? "")}<br>
-          <span style="color:#8ea6c4">${String(p["cause"] ?? "")}</span><br>
-          <span style="color:#8ea6c4">${tc ? "停水" : "from"} ${when}${back ? ` → ${back}` : ""}</span>
+          <b>${esc(p["district"] ?? "")}</b> ${esc(p["address"] ?? "")}<br>
+          <span style="color:#8ea6c4">${esc(p["cause"] ?? "")}</span><br>
+          <span style="color:#8ea6c4">${tc ? "停水" : "from"} ${esc(when)}${back ? ` → ${esc(back)}` : ""}</span>
         </div>`;
     new maplibregl.Popup({ closeButton: true, className: "cam-popup" }).setLngLat(e.lngLat).setHTML(html).addTo(map);
   });
@@ -747,8 +747,8 @@ async function controlPointLayer(map: maplibregl.Map, def: LayerDefRaw, args: La
       p["kind"] === "air" ? (tc ? "航空" : "Air") : p["kind"] === "sea" ? (tc ? "水路" : "Sea") : tc ? "陸路" : "Land";
     const html = `
         <div style="padding:9px 11px;font:12px/1.55 var(--font-ui);max-width:270px">
-          <b>${String(p[tc ? "tc" : "en"] ?? "")}</b><br>
-          <span style="color:#8ea6c4">${kindLabel} · ${code}</span><br>
+          <b>${esc(p[tc ? "tc" : "en"] ?? "")}</b><br>
+          <span style="color:#8ea6c4">${kindLabel} · ${esc(code)}</span><br>
           ${queue}
           ${
             code === "STK"

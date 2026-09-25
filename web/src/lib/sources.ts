@@ -7,6 +7,7 @@
 import { proxied } from "../config.ts";
 import { hkToday } from "./format.ts";
 import { lang } from "./i18n.ts";
+import { windLattice } from "./windgrid.ts";
 
 export interface SourceDef {
   id: string;
@@ -114,6 +115,15 @@ export function resolveUrl(src: SourceDef): string {
     url = url.replace(/date=\d{4}-\d{2}-\d{2}/, `date=${hkToday()}`);
     // arrivals feed answers the resident question (接機); cargo adds noise.
     if (!/arrival=/.test(url)) url += "&arrival=true&cargo=false";
+  }
+  // A generated lattice, not a fixed endpoint. The wind-flow layer needs a grid
+  // of ~350 coordinates, which is not a URL a human maintains — so the registry
+  // holds the TEMPLATE (for traceability, attribution and licence) and the
+  // coordinates come from lib/windgrid.ts, the single place that defines the
+  // sampling geometry. Same shape as the radar URL's {YYYYMMDDHHMM}.
+  if (url.includes("{LATS}") || url.includes("{LONS}")) {
+    const { lats, lons } = windLattice();
+    url = url.replace("{LATS}", lats).replace("{LONS}", lons);
   }
   return url;
 }

@@ -21,6 +21,7 @@ import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./ma
 import { applyVerticalLayers, clearVerticalLayers, type WaterPoint } from "./map/overlays.ts";
 import { createLayerControl, relabelLayerControl, type LayerRow } from "./ui/layercontrol.ts";
 import { toggle3d } from "./map/overlays3d.ts";
+import { toggleWind } from "./map/wind.ts";
 import type { LayerDefRaw } from "./lib/sources.ts";
 import { createDrawer } from "./ui/drawer.ts";
 import { createPanelEngine } from "./ui/panels.ts";
@@ -765,18 +766,23 @@ async function boot(): Promise<void> {
           break;
         }
         case "wind_field": {
-          // Wind barbs: only where a station measured it, fading to nothing by
-          // ~15km (ROADMAP B5). The fade is baked into each feature by the
-          // adapter, so the honesty rule is data, not a styling choice.
-          const def = registry.layers.find((l) => l.id === "wind_field");
-          if (!def) throw new Error("layers.json 冇 wind_field");
-          clearVerticalLayers(map, [def]);
-          if (!on) break;
-          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
-          if (!drawn.includes("wind_field")) throw new Error("風場圖層畫唔出");
+          // WIND FLOW, not station barbs (Cyrus 2026-09-25).
+          //
+          // The old barb layer drew ~30 real observations with a distance
+          // fade-out. Honest, but it answers "what is the wind at this
+          // instrument", not "where is the air going" — and a flow animation is
+          // what a reader actually reads off a weather map. It now runs a GPU
+          // particle animation over the MODELLED Open-Meteo lattice
+          // (map/wind.ts), while the CSDI station layer keeps drawing OBSERVED
+          // readings; the legend distinguishes the two.
+          //
+          // No MapLibre layer is created, so there is nothing for
+          // clearVerticalLayers to remove — visibility is the deck.gl overlay's,
+          // exactly like the 3D layer.
+          const src = registry.byId.get("open_meteo_wind_grid");
+          await toggleWind(map, on, src);
           break;
-        }
-        case "weather_stations": {
+        }        case "weather_stations": {
           // A STATIC reference layer (CSDI snapshot), so it follows the same
           // config path as everything else rather than a bespoke branch.
           const def = registry.layers.find((l) => l.id === "weather_stations");

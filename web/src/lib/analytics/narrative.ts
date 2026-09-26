@@ -42,8 +42,43 @@ export interface Brief {
   facts: NarrativeFact[];
   /** Tier 2 lines, phrased as co-occurrence */
   convergences: NarrativeFact[];
+  /** The SAME Tier 2 result, structured instead of phrased.
+   *
+   * `convergences` above is what the brief SAYS; this is what it is MADE OF, so a surface can
+   * lay it out by district and time rather than as prose. Both are derived from one
+   * `Convergence[]` in one function, so they cannot disagree about which groups exist — the
+   * failure mode of a second pipeline would be a timeline showing districts the sentence above
+   * it does not mention.
+   *
+   * Times are ISO strings, not Dates: this crosses into ui/ and a Date that has been
+   * structurally confused with a string renders as `Invalid Date` with no error anywhere. */
+  convergenceDetail: ConvergenceDetail[];
   /** honest statement of what could NOT be said yet */
   accumulating: { signal: string; days: number; required: number }[];
+}
+
+/** One event on a district timeline. Every field is copied from the Tier 1 Event that fired —
+ *  nothing is recomputed here, so the row and the rule that produced it cannot drift. */
+export interface TimelineEvent {
+  at: string;
+  domain: string;
+  severity: 1 | 2 | 3;
+  ruleId: string;
+  headline: { tc: string; en: string };
+  observed: number;
+  threshold: number;
+}
+
+/** A Tier 2 group, laid out for a timeline: which district, which domains, how bad, and the
+ *  events in the order they happened. */
+export interface ConvergenceDetail {
+  district: string;
+  domains: string[];
+  score: number;
+  maxSeverity: 1 | 2 | 3;
+  from: string;
+  to: string;
+  events: TimelineEvent[];
 }
 
 /** The severity wording, so a 3 never renders as "notable". */
@@ -114,12 +149,35 @@ export function templateBrief(
     required: m.required,
   }));
 
+  // Sorted oldest first: a timeline that is not in time order is a list wearing a timeline's
+  // name, and the whole point of this view is that the reader can see the sequence.
+  const convergenceDetail: ConvergenceDetail[] = convergences.map((c) => ({
+    district: c.district,
+    domains: c.domains,
+    score: c.score,
+    maxSeverity: c.maxSeverity,
+    from: c.from.toISOString(),
+    to: c.to.toISOString(),
+    events: [...c.events]
+      .sort((a, b) => a.at.getTime() - b.at.getTime())
+      .map((e) => ({
+        at: e.at.toISOString(),
+        domain: e.domain,
+        severity: e.severity,
+        ruleId: e.ruleId,
+        headline: e.headline,
+        observed: e.observed,
+        threshold: e.threshold,
+      })),
+  }));
+
   void lang; // the fact text carries both languages already
   return {
     generatedAt: now.toISOString(),
     mode: "template",
     facts,
     convergences: convFacts,
+    convergenceDetail,
     accumulating,
   };
 }

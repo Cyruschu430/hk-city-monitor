@@ -33,7 +33,15 @@ import { pickWallCameras, wallImages } from "../map/cameras.ts";
  * setting this to true — nothing else needs to change; `setAnalysis` is still
  * wired and still called from main.ts.
  */
-const ANALYSIS_PANEL_ENABLED = false;
+const ANALYSIS_PANEL_ENABLED = true;
+
+/** Panels the engine is FED, never fetches.
+ *
+ * The analysis panel is a conclusion drawn from the other panels, not a source, so it has no
+ * registry entry and no adapter. Without this it is fetched like any other panel, lands in the
+ * error state the moment `adaptPanel` finds no source for it, and is overwritten by the next
+ * `setAnalysis` — a panel that flashes red every 30 seconds for a reason that is not true. */
+const FED_PANEL_IDS = new Set(["analysis_brief"]);
 
 interface Entry {
   panel: PanelDefRaw;
@@ -91,7 +99,70 @@ export interface AnalysisBrief {
   mode: "template" | "llm";
   facts: { text: { tc: string; en: string }; ruleId?: string; severity?: 1 | 2 | 3 }[];
   convergences: { text: { tc: string; en: string }; sources: string[] }[];
+  /** Structured Tier 2 groups for the timeline. Optional in the TYPE because this is a
+   *  structural interface over a module ui/ deliberately does not import, so a brief from an
+   *  older build must degrade to the phrased lines rather than render an empty timeline. */
+  convergenceDetail?: {
+    district: string;
+    domains: string[];
+    score: number;
+    maxSeverity: 1 | 2 | 3;
+    from: string;
+    to: string;
+    events: {
+      at: string;
+      domain: string;
+      severity: 1 | 2 | 3;
+      ruleId: string;
+      headline: { tc: string; en: string };
+      observed: number;
+      threshold: number;
+    }[];
+  }[];
   accumulating: { signal: string; days: number; required: number }[];
+}
+
+/** HH:MM in the reader's own clock. An unparseable timestamp renders as --:-- rather than
+ *  `Invalid Date` — a broken value should look broken, not like a plausible time. */
+function hhmm(iso: string): string {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "--:--" : d.toTimeString().slice(0, 5);
+}
+
+/** One Tier 2 group as a timeline block.
+ *
+ * Pure: takes the structured group the brief carries, returns a node. The rows are in the order
+ * `narrative.ts` sorted them, which is the point of the view — a district with three domains
+ * firing inside the hour is the claim this project makes and a sentence buries it, because
+ * `同時發生：水／交通／醫療（沙田區，3 宗）` reads as one line of prose while the same data as rows
+ * shows the reader the sequence and the gap between the events.
+ *
+ * observed/threshold stays visible on every row: ANALYTICS.md's rule is that a claim a reader
+ * cannot check is not traceable, and the numbers are the check. */
+function timelineGroup(g: NonNullable<AnalysisBrief["convergenceDetail"]>[number]): HTMLElement {
+  const span = g.from === g.to ? hhmm(g.from) : `${hhmm(g.from)}–${hhmm(g.to)}`;
+  return h(
+    "div",
+    { class: "tl-g" },
+    h(
+      "div",
+      { class: "tl-gh" },
+      h("span", { class: "tl-d" }, g.district),
+      h("span", { class: "tl-score" }, String(g.score)),
+      h("span", { class: "tl-dom" }, g.domains.join(" · ")),
+      h("span", { class: "tl-span" }, span),
+    ),
+    ...g.events.map((e) =>
+      h(
+        "div",
+        { class: `tl-ev s${e.severity}` },
+        h("time", {}, hhmm(e.at)),
+        h("span", { class: "tl-domain" }, e.domain),
+        h("span", { class: "tl-txt" }, lang() === "tc" ? e.headline.tc : e.headline.en),
+        h("span", { class: "tl-num" }, `${e.observed} / ${e.threshold}`),
+      ),
+    ),
+  );
 }
 
 const EMPTY_TEXT: Record<string, { tc: string; en: string }> = {
@@ -137,7 +208,11 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
   /** A panel's category comes from its SOURCE, never from a field on the panel:
       one registry, so a tab cannot disagree with sources.json. */
   const groupOf = (entry: Entry): string => registry.byId.get(entry.panel.source)?.group ?? "";
-  const passes = (entry: Entry): boolean => groupFilter === null || groupOf(entry) === groupFilter;
+  // A fed panel is a cross-cutting conclusion, not a member of a category, so a category tab
+  // never hides it — hiding the answer when the reader narrows the question is the wrong way
+  // round.
+  const passes = (entry: Entry): boolean =>
+    FED_PANEL_IDS.has(entry.panel.id) || groupFilter === null || groupOf(entry) === groupFilter;
 
   function wallData(panel: PanelDefRaw): { data: PanelData; observedAt: Date } {
     const isHko = panel.source === "hko_webcam";
@@ -315,6 +390,9 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       }
       const entry: Entry = { panel, data: null, honesty: LOADING, timer: null };
       entries.set(id, entry);
+      // Registered but not fetched: setAnalysis paints it, and `order` still contains it so
+      // mount() places it correctly.
+      if (FED_PANEL_IDS.has(id)) continue;
       paint(id);
       void refresh(id).then(() => {
         const e = entries.get(id);
@@ -328,6 +406,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
   window.setInterval(() => {
     const now = new Date();
     for (const entry of entries.values()) {
+      if (FED_PANEL_IDS.has(entry.panel.id)) continue; // fed panels have no cadence to be late
       const src = registry.byId.get(entry.panel.source);
       const next = degrade(entry.honesty, quietSeconds(src?.cadence), now);
       if (next.state !== entry.honesty.state) {
@@ -346,7 +425,9 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       // `if (entry && entry.data) paint(id); else if (entry) paint(id);`, whose
       // two branches were identical: a guard that looked meaningful and was not,
       // which invites the next reader to "preserve" it.
-      if (entry) paint(id);
+      // A fed panel is not repainted from data it does not have — paint() would replace the
+      // analysis node with a skeleton on every language switch.
+      if (entry && !FED_PANEL_IDS.has(id)) paint(id);
     }
   });
 
@@ -400,6 +481,9 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       for (const id of order) {
         const entry = entries.get(id);
         if (!entry) continue;
+        // A fed panel has no source to be healthy or late, so counting it would report a
+        // permanently missing panel in the coverage line.
+        if (FED_PANEL_IDS.has(id)) continue;
         // The coverage line describes what is ON SCREEN, so a panel hidden by
         // the tab filter is not counted — otherwise hiding a broken panel would
         // silently improve the number.
@@ -428,13 +512,15 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
 
       const body = h("div", { class: "an-body" });
 
-      if (brief.convergences.length > 0) {
+      // Tier 2 as a TIMELINE. The phrased lines are NOT also printed: they say the same thing
+      // in one sentence, and the same content in two places reads as a duplicate rather than as
+      // emphasis (measured elsewhere in this project). The prose is still on the brief for
+      // anyone reading `window.__hkcm.analysisBrief()`.
+      if (brief.convergenceDetail && brief.convergenceDetail.length > 0) {
         body.append(
           h("div", { class: "an-sec" },
-            h("div", { class: "an-h" }, lang() === "tc" ? "同時發生" : "Co-occurring"),
-            ...brief.convergences.map((c) =>
-              h("div", { class: "an-conv" }, lang() === "tc" ? c.text.tc : c.text.en),
-            ),
+            h("div", { class: "an-h" }, lang() === "tc" ? "同一時段同一區" : "Same district, same window"),
+            ...brief.convergenceDetail.map(timelineGroup),
           ),
         );
       }
@@ -454,7 +540,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
         );
       }
 
-      if (brief.facts.length === 0 && brief.convergences.length === 0) {
+      if (brief.facts.length === 0 && !(brief.convergenceDetail && brief.convergenceDetail.length > 0)) {
         body.append(h("p", { class: "p-empty" }, lang() === "tc" ? "現時無異常事件" : "No anomalies right now"));
       }
 

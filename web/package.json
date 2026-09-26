@@ -19,7 +19,8 @@
     "test": "node src/lib/trigger.test.ts && node src/lib/context.test.ts && node src/lib/honesty.test.ts && node src/lib/render.test.ts && node src/lib/parsers.test.ts && node src/lib/analytics.test.ts",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:all": "npm run check:static && npm run test && npm run check:layout && npm run check:contrast",
-    "check:layout": "node scripts/check-layout.mjs"
+    "check:layout": "node scripts/check-layout.mjs",
+    "measure:boot": "node scripts/measure-boot.mjs"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",

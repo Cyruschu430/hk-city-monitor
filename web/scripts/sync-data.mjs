@@ -47,6 +47,7 @@ const files = [
   // data, not a feed — see the _method note in the file for how each coordinate
   // was checked before it was allowed in.
   ["data/control_points.json", "control_points.json"],
+  // sources.json is COPIED, not shipped as-is: see the slim pass below.
   ["sources.json", "sources.json"],
 ];
 
@@ -67,6 +68,41 @@ for (const [src, dst] of optional) {
     console.warn(`sync-data: no ${src} yet — the app will use an empty baseline store`);
   }
 }
+
+// --- sources.json: ship only what the front end reads -------------------------
+//
+// MEASURED 2026-09-27. The registry is 153KB pretty-printed and it is on the CRITICAL PATH:
+// the app fetches data/sources.json during boot for panel footers and layer names. Its two
+// biggest per-entry fields are `notes` (38% of all field bytes) and `candidates` (9%), and
+// NEITHER IS READ BY THE FRONT END — grepping src/ for `.notes`, `.candidates`, `.license`,
+// `.cors_note`, `.cost`, `.kind` and `.auto` returns nothing. They are registry
+// documentation: the data pipeline and a human reviewer need them, and they stay in the
+// root sources.json completely untouched. This is not deleting documentation; it is
+// declining to download it.
+//
+// `_comment` and `_schema` DO ship. Nothing reads them either, but the shipped file is a
+// public artefact and this one is small (1.3KB) and is what tells a reader what the shape
+// they are looking at means.
+//
+// The keep-list is a literal, not derived from the TS interface, because a build script
+// cannot read a type. That makes this the failure to watch: ADD A FIELD HERE WHEN YOU READ
+// IT IN src/. A field missing from this list is undefined at runtime while the registry
+// looks perfectly fine, and nothing else in the build will tell you.
+const SHIPPED_SOURCE_FIELDS = ["id", "group", "name", "name_en", "url_en", "type", "url", "auth", "cadence", "fetch"];
+const sourcesRaw = JSON.parse(readFileSync(join(root, "sources.json"), "utf8"));
+const slimSources = {
+  ...sourcesRaw,
+  sources: sourcesRaw.sources.map((entry) => {
+    const kept = {};
+    for (const k of SHIPPED_SOURCE_FIELDS) if (entry[k] !== undefined) kept[k] = entry[k];
+    return kept;
+  }),
+};
+// Compact, not pretty: this file is fetched by a browser, never read in a diff.
+writeFileSync(join(out, "sources.json"), JSON.stringify(slimSources));
+const before = readFileSync(join(root, "sources.json")).length;
+const after = readFileSync(join(out, "sources.json")).length;
+console.log(`sync-data: sources.json ${before} -> ${after} bytes (${Math.round((1 - after / before) * 100)}% smaller on the critical path)`);
 
 // --- basemap style -----------------------------------------------------------
 // R1 (docs/SOURCE_COVERAGE_REVIEW.md). These URLs used to be HARDCODED here, so

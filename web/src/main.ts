@@ -39,6 +39,10 @@ import { createGroupTabs, labelFor, type GroupTab } from "./ui/grouptabs.ts";
 /** The vertical-free default view. Ordered as a World-Monitor-style dense
     wall: imagery heads the column, then life-safety and civic reads. */
 const OVERVIEW = [
+  // The conclusion panel goes FIRST: it is the only surface that answers "so what", and every
+  // other panel is evidence for it. It is FED rather than fetched (see FED_PANEL_IDS in
+  // ui/panels.ts) because it is drawn FROM the other panels, not from a source.
+  "analysis_brief",
   // ONE live wall with region tabs, not two panels side by side. The camera wall is a
   // city's own eyes (1,013 TD + 34 HKO cameras, an asset no global project has) and the
   // news wall is what the world is saying about it; two panels meant two ~300px blocks
@@ -961,6 +965,17 @@ async function boot(): Promise<void> {
         otherwise the analysis checks would be asserting on DOM that no longer
         renders, i.e. passing by finding nothing. */
     analysisBrief: () => lastBrief,
+    /** Feed the analysis panel a brief directly.
+     *
+     * A QA seam, and an honest one: the timeline view cannot be reached from live data until
+     * the Tier 0 baselines mature, and a baseline needs 14 days of real readings before a
+     * baseline-aware rule may fire. Without this the only way to check that the panel renders
+     * a timeline would be to wait two weeks and hope two domains trip in one district inside
+     * the hour — i.e. the check would pass by never running.
+     *
+     * It writes only to this page's own engine. Same reasoning as clearDataCache and
+     * refreshAll above, which exist for the same reason. */
+    feedAnalysis: (brief: unknown) => engine.setAnalysis(brief as Parameters<typeof engine.setAnalysis>[0]),
     drawnLayers: () => [...currentLayerIds],
     /** layers the user currently has ON — QA reads this instead of guessing
         from the rail's aria-pressed state */

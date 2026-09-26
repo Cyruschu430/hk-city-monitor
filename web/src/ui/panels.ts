@@ -41,6 +41,10 @@ interface Entry {
   honesty: Honesty;
   timer: number | null;
   state?: unknown;
+  /** Which region tab the reader picked on a wall that has them. null is 全部. Held on
+   *  the ENTRY, not on the panel def: panels.json is a shared registry read by every
+   *  consumer, and a per-reader choice must not be written back into it. */
+  region?: string | null;
 }
 
 export interface PanelEngineDeps {
@@ -147,9 +151,15 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     };
   }
 
-  async function load(panel: PanelDefRaw): Promise<{ data: PanelData; observedAt: Date | null; state?: unknown }> {
+  async function load(entry: Entry): Promise<{ data: PanelData; observedAt: Date | null; state?: unknown }> {
+    // The picked region reaches the adapter as a panel param — the same channel as any
+    // other per-panel parameter in panels.json, so the adapter keeps one signature and
+    // the choice stays config-shaped. A copy, never a mutation of the shared registry.
+    const panel: PanelDefRaw = entry.region
+      ? { ...entry.panel, params: { ...entry.panel.params, region: entry.region } }
+      : entry.panel;
     // Camera walls draw from the prebuilt camera lists — but ONLY the two
-    // camera-wall sources. Any other image_wall panel (the live-stream wall)
+    // camera-wall sources. Any other image_wall panel (the live wall)
     // goes through its own adapter; the list-source shortcut must not capture
     // panels it was never meant for.
     if (panel.render === "image_wall" && (panel.source === "td_snapshot" || panel.source === "hko_webcam")) {
@@ -239,6 +249,14 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
         emptyText: EMPTY_TEXT[entry.panel.source],
         onRetry: () => void refresh(id),
         onImageClick: deps.onWallImage,
+        // The engine owns the picked region and re-runs the adapter, so the renderer
+        // never holds selection state (see withRegionTabs in lib/render.ts).
+        onRegionPick: (r) => {
+          const e = entries.get(id);
+          if (!e || (e.region ?? null) === r) return;
+          e.region = r;
+          void refresh(id);
+        },
         // Row cap comes from panels.json `params.max` — config, not a
         // hardcoded opinion about which lists are too long.
         maxRows: typeof entry.panel.params?.["max"] === "number" ? (entry.panel.params["max"] as number) : undefined,
@@ -255,7 +273,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     else entry.honesty = { ...entry.honesty, state: "live" };
     paint(id);
     try {
-      const { data, observedAt, state } = await load(entry.panel);
+      const { data, observedAt, state } = await load(entry);
       if (!entries.has(id)) return; // panel was switched away mid-flight
       entry.data = data;
       // Degrade immediately, not on the next 30s tick: a payload whose own

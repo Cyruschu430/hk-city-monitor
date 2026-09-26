@@ -316,14 +316,27 @@ a:hover{color:var(--cyan)}
 .spark path{vector-effect:non-scaling-stroke}
 
 /* ---------- layout ---------- */
-#layout{flex:1 1 auto;display:grid;grid-template-columns:56px 1fr minmax(340px,44%);min-height:0}
-#mapWrap{position:relative;min-height:0;min-width:0}
+/* MEASURED 2026-09-27 — THE SHAPE WAS THE GAP.
+   Three columns put the map at 1019px of 1920 (53% wide) and ran the panel column 2301px past the
+   viewport: four screens of scrolling with 4 of 13 panels visible. World Monitor at the same
+   1600x1000 viewport is a full-width map band over a panel band, everything visible at once.
+
+   The stacked shape was ALREADY here for `max-width:880px` (`grid-template-rows:58vh 1fr`), so
+   this applies the arrangement that was already proven rather than inventing a third one.
+   Rows split evenly: 495px each of the 990 under the chrome. 1.42:1 was tried first and gave the
+   band 409px against a tallest panel of 502px, so the biggest cards were cut in half. Even split
+   fits the 502px card almost exactly, and the map is still full width. The rail still spans both rows: the modes are this project's differentiator.
+
+   The narrow-screen rule below re-flattens this, because there the rail leaves the grid entirely. */
+#layout{flex:1 1 auto;display:grid;grid-template-columns:56px minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr) minmax(0,1fr);min-height:0}
+#mapWrap{grid-column:2;grid-row:1;position:relative;min-height:0;min-width:0}
 #map{position:absolute;inset:0;background:var(--void)}
 #mapHud{position:absolute;inset:0;pointer-events:none;z-index:5}
 #mapHud>*{pointer-events:auto}
 
 /* ---------- left rail ---------- */
-#rail{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;
+#rail{grid-column:1;grid-row:1/-1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;
   border-right:1px solid var(--hairline);background:rgba(7,11,19,.72);z-index:20;overflow-y:auto}
 .rail-btn{position:relative;width:44px;height:44px;display:grid;place-items:center;
   border-radius:10px;color:var(--faint);transition:color .12s}
@@ -380,8 +393,8 @@ a:hover{color:var(--cyan)}
    sibling of the scroller (not a child) so they stay put while the grid
    scrolls. Border and background live here, not on #panels, so the tab strip
    sits on the same surface as the panels it filters. */
-#panelCol{display:grid;grid-template-rows:auto auto 1fr;min-height:0;min-width:0;
-  border-left:1px solid var(--hairline);
+#panelCol{grid-column:2;grid-row:2;display:grid;grid-template-rows:auto auto 1fr;min-height:0;min-width:0;
+  border-top:1px solid var(--hairline);
   background:var(--surface-grad)}
 #panelTabs{display:flex;flex-wrap:wrap;gap:4px;padding:9px 10px 8px;
   border-bottom:1px solid var(--hairline)}
@@ -408,8 +421,13 @@ a:hover{color:var(--cyan)}
 .ptab[aria-selected="true"]{color:var(--on-cyan);background:var(--cyan);border-color:var(--cyan)}
 .ptab .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
 #panels{overflow-y:auto;overscroll-behavior:contain;
-   padding:8px;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-   align-content:start;gap:6px;
+   padding:8px;min-height:0;display:grid;
+   /* auto-fill rather than a fixed 2: the band is 1864px wide now, and a hand-picked count would
+      have to be re-picked at every width. 400px floor keeps a card at least as wide as the 411px
+      it had in the old 44% column, so no panel loses width in the move. THE `max-content` +
+      `dense` TRACKS BELOW ARE LOAD-BEARING — see the A/B note. */
+   grid-template-columns:repeat(auto-fill,minmax(400px,1fr));
+   align-content:start;align-items:start;gap:6px;
    /* ---------------------------------------------------------------------
       THE ROW TRACK MUST BE `max-content`, AND THIS WAS MEASURED BY A/B TEST.
 
@@ -705,6 +723,7 @@ a:hover{color:var(--cyan)}
 /* ---------- mobile ---------- */
 @media (max-width:880px){
   #layout{grid-template-columns:1fr;grid-template-rows:58vh 1fr}
+  #mapWrap,#panelCol{grid-column:1;grid-row:auto}
   #rail{position:fixed;left:0;right:0;bottom:0;top:auto;flex-direction:row;justify-content:flex-start;
     overflow-x:auto;border-right:0;border-top:1px solid var(--hairline);padding:6px 8px;z-index:45}
   .rail-btn{width:44px;height:44px;flex:0 0 auto}

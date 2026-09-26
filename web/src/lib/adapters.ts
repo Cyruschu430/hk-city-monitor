@@ -591,8 +591,18 @@ const ADAPTERS: Record<string, Adapter> = {
   async gov_news_law_order(src) {
     // The official 治安 / crime-and-order announcements feed — the "突發新聞"
     // backbone (TECH_SPEC §3.7). RSS, through the proxy (CORS-closed).
-    const { items, observedAt } = P.parseRss(await text(await get(src)), 25);
-    return { data: { kind: "list", items }, observedAt };
+    //
+    // `observedAt` here is FETCH time, not the newest article's date, and the difference is the
+    // whole point. MEASURED 2026-09-27: the newest 治安 article was dated three days earlier, so
+    // this panel's badge read "+73小時" — on a feed that had answered successfully seconds before.
+    // A list is not a measurement. "Here is the current list" is a claim about NOW, and each
+    // article's age is already on its own row as "3 日前". Using the article date as the panel's
+    // freshness made a healthy panel look broken, and a reader cannot tell "the feed is dead"
+    // from "the government has not published lately" — which is its own kind of dishonesty.
+    // parseRss still returns the newest item's date for the ticker, which does want it.
+    const fetchedAt = new Date();
+    const { items } = P.parseRss(await text(await get(src)), 25);
+    return { data: { kind: "list", items }, observedAt: fetchedAt };
   },
 
   async hko_stations_network(src) {

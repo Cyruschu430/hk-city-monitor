@@ -3194,6 +3194,22 @@
       "notes": "VERIFIED 200, image/jpeg, ACAO=* — Esri's World Imagery tile service is publicly readable with no key and no billing, which is why projects like gods-eye-view boot keyless on it. NOTE the tile order is {z}/{y}/{x}, not {z}/{x}/{y} — the opposite of the LandsD tiles, and the classic source of a blank or wrong-place map. Immediate source of a global satellite basemap around Hong Kong's edges, where LandsD coverage stops.",
       "cost": "free",
       "license": "Esri World Imagery — 見 Esri 使用條款（僅作後備底圖）"
+    },
+    {
+      "id": "world_news_live",
+      "group": "news",
+      "name": "國際新聞直播（社群策展）",
+      "name_en": "World News Live (community curated)",
+      "type": "video",
+      "url": "data/live_news.json",
+      "auth": "none",
+      "cadence": "manual",
+      "todo": false,
+      "notes": "NOT official open data: 16 curated 24/7 international news channels (data/live_news.json). Live state resolved at runtime via the hqdefault_live.jpg probe; off-air tiles say 現時無直播. Selected only from channels that brand themselves 24/7 - see the _selection_rule in the data file for why event feeds are excluded. No Hong Kong entry by design: see _hk_gap.",
+      "kind": "custom",
+      "fetch": "n/a",
+      "cors_note": "瀏覽器直接 load YouTube 縮圖／embed，唔經 proxy",
+      "cost": "free"
     }
   ]
 }

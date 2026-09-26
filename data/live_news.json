@@ -1,0 +1,105 @@
+{
+  "_comment": "CURATED COMMUNITY LIST (not official open data): 24/7 international news channels the project owner chose for the 國際新聞直播 panel. Every tile is labelled 第三方 / third-party. Live state is resolved at runtime by probeLive (hqdefault_live.jpg).",
+  "_verification": "Audit every id with `node web/scripts/probe-livestreams.mjs` (point it at this file) or re-resolve channels with `node web/scripts/resolve-live-news.mjs`. MEASURED 2026-09-27.",
+  "_selection_rule": "ONLY channels that stream 24/7 and brand themselves as such go in this file. The resolver surfaces plenty of ids that are today's EVENT feed — @financialtimes returned a weekend festival, @tbsnewsdig and @ANNnewsCH put the date in the live title and rotate daily, @ETtoday returned a single rally. Hardcoding any of those recreates the GxMB-EH_lJs bug documented in live_streams.json: the id dies with the event and the tile silently 404s. If a title contains a date or an event name, it does NOT belong in this file.",
+  "_hk_gap": "There is no Hong Kong entry here, deliberately. RTHK only does event feeds, and TVB / i-CABLE / now / HOY keep their news channels inside their own apps — none of them offers a free 24/7 YouTube news stream. See hkcm-live-news.md for the 12 handles that were tested and returned 404 or no live. HK coverage stays on the camera wall, which is a genuine strength: 1,013 TD + 34 HKO cameras is a density no global project has.",
+  "source_name": "第三方 YouTube 國際新聞直播",
+  "streams": [
+    {
+      "id": "Ry--eMIjYLQ",
+      "title": "鳳凰衛視 24小時直播間",
+      "channel": "鳳凰衛視",
+      "region": "greater-china"
+    },
+    {
+      "id": "vNVp6bxkL1c",
+      "title": "CCTV 中文國際（亞洲）",
+      "channel": "CCTV",
+      "region": "greater-china"
+    },
+    {
+      "id": "0i7n3r01L2U",
+      "title": "CGTN LIVE 24/7",
+      "channel": "CGTN",
+      "region": "greater-china"
+    },
+    {
+      "id": "XWq5kBlakcQ",
+      "title": "CNA 24/7（新加坡）",
+      "channel": "Channel NewsAsia",
+      "region": "asia-pacific"
+    },
+    {
+      "id": "IimtbuqYIE8",
+      "title": "NHK WORLD-JAPAN News",
+      "channel": "NHK",
+      "region": "asia-pacific"
+    },
+    {
+      "id": "iH4wyxHWyLU",
+      "title": "YTN 24小時新聞（韓國）",
+      "channel": "YTN",
+      "region": "asia-pacific"
+    },
+    {
+      "id": "OlUMDZchivQ",
+      "title": "Bloomberg Originals LIVE",
+      "channel": "Bloomberg",
+      "region": "finance"
+    },
+    {
+      "id": "9NyxcX3rhQs",
+      "title": "CNBC LIVE",
+      "channel": "CNBC",
+      "region": "finance"
+    },
+    {
+      "id": "KQp-e_XQnDE",
+      "title": "Yahoo Finance 24/7",
+      "channel": "Yahoo Finance",
+      "region": "finance"
+    },
+    {
+      "id": "gCNeDWCI0vo",
+      "title": "Al Jazeera English Live",
+      "channel": "Al Jazeera",
+      "region": "world"
+    },
+    {
+      "id": "LuKwFajn37U",
+      "title": "DW News Livestream",
+      "channel": "DW",
+      "region": "world"
+    },
+    {
+      "id": "pykpO5kQJ98",
+      "title": "Euronews English Live",
+      "channel": "Euronews",
+      "region": "world"
+    },
+    {
+      "id": "a47ckXKZjxI",
+      "title": "FRANCE 24 – EN DIRECT",
+      "channel": "France 24",
+      "region": "world"
+    },
+    {
+      "id": "wCzFV6XV1yI",
+      "title": "NBC News NOW",
+      "channel": "NBC",
+      "region": "world"
+    },
+    {
+      "id": "N9mqdbh9s3Y",
+      "title": "ABC News Live",
+      "channel": "ABC",
+      "region": "world"
+    },
+    {
+      "id": "GotlA1KKWoo",
+      "title": "CNN Headlines 24/7",
+      "channel": "CNN",
+      "region": "world"
+    }
+  ]
+}

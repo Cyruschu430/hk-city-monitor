@@ -142,26 +142,40 @@ function withUrl(src: SourceDef, url: string): SourceDef {
   return { ...src, url };
 }
 
-// One code path for every curated live-stream list.
+// The live wall: one panel, region tabs, two very different scales of coverage.
 //
-// It follows the source's OWN `url` instead of hardcoding data/live_streams.json, so a
-// second list (world_news_live) is a sources.json entry and nothing else — the adapter
-// registry just points both ids at this function.
+// The regions are DERIVED FROM THE FILE — set, order and labels all read out of
+// data/live_streams.json (region on each row, region_labels for the text). So adding a
+// region is a data change and the adapter does not grow an opinion about which regions
+// exist. Order is first-seen, which keeps the tabs stable across reloads instead of
+// reordering themselves when a count changes.
 //
-// `region` is an optional panel param: absent means the whole file, which is what the
-// Hong Kong camera wall wants. A wrong region yields an empty wall, and an empty wall is
-// honest (render.ts has an empty state) whereas silently showing every region would not be.
+// `region` is a panel param: absent means every stream, which is what the 全部 tab is.
+// A region with no streams yields an empty wall, and an empty wall is honest (render.ts
+// has an empty state) whereas silently falling back to everything would not be.
 async function liveWall(src: SourceDef, panel: PanelDefRaw): Promise<AdapterResult> {
-  // A curated COMMUNITY list — not official data, and every panel built on it says so.
+  // A curated COMMUNITY list — not official data, and the panel says so.
   // Live state is resolved at runtime via the hqdefault_live.jpg probe; an off-air tile
   // reads 現時無直播 rather than playing a black rectangle.
   const res = await fetch(src.url, { cache: "no-store" });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const j = (await res.json()) as {
+    region_labels?: Record<string, { tc: string; en: string }>;
     streams: { id: string; title: string; channel?: string; region?: string }[];
   };
-  const region = panel.params?.["region"] ? String(panel.params["region"]) : null;
-  const pool = region ? j.streams.filter((s) => s.region === region) : j.streams;
+  const labels = j.region_labels ?? {};
+  const order: string[] = [];
+  const counts = new Map<string, number>();
+  for (const s of j.streams) {
+    const r = s.region ?? "";
+    if (!counts.has(r)) order.push(r);
+    counts.set(r, (counts.get(r) ?? 0) + 1);
+  }
+  // An unlabelled region falls back to its raw id: ugly, but honest. A silent drop would
+  // hide real streams — the same reasoning as the main tab strip in ui/grouptabs.ts.
+  const regions = order.map((id) => ({ id, label: labels[id] ?? { tc: id, en: id }, count: counts.get(id) ?? 0 }));
+  const active = panel.params?.["region"] ? String(panel.params["region"]) : null;
+  const pool = active ? j.streams.filter((s) => (s.region ?? "") === active) : j.streams;
   const max = Number(panel.params?.["max"] ?? 8);
   const images = [];
   for (const s of pool.slice(0, max)) {
@@ -173,7 +187,7 @@ async function liveWall(src: SourceDef, panel: PanelDefRaw): Promise<AdapterResu
       video: { id: s.id, live: live, channel: s.channel },
     });
   }
-  return { data: { kind: "image_wall", images }, observedAt: new Date() };
+  return { data: { kind: "image_wall", images, regions, activeRegion: active }, observedAt: new Date() };
 }
 
 const ADAPTERS: Record<string, Adapter> = {
@@ -720,8 +734,7 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
-  hk_live_cams_community: liveWall,
-  world_news_live: liveWall,
+  live_community: liveWall,
 
   async hko_tc_track(src, _panel, ctx) {
     const list = P.parseTcList(await text(await get(src)));

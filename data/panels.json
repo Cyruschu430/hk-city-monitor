@@ -83,6 +83,26 @@
       }
     },
     {
+      "id": "live_wall",
+      "source": "live_community",
+      "render": "image_wall",
+      "title": {
+        "tc": "直播牆（第三方）",
+        "en": "Live Wall (third-party)"
+      },
+      "params": {
+        "max": 6
+      },
+      "cadence_note": {
+        "tc": "直播狀態即時偵測",
+        "en": "Live state detected"
+      },
+      "disclaimer": {
+        "tc": "所有頻道均為第三方 YouTube 直播，本項目只作嵌入轉載，不代表其內容立場。",
+        "en": "All channels are third-party YouTube streams embedded for reference; the project does not endorse their content."
+      }
+    },
+    {
       "id": "warnings_list",
       "source": "hko_warnsum",
       "render": "list",
@@ -314,38 +334,6 @@
       "cadence_note": {
         "tc": "即時",
         "en": "Real-time"
-      }
-    },
-    {
-      "id": "live_cams_wall",
-      "source": "hk_live_cams_community",
-      "render": "image_wall",
-      "title": {
-        "tc": "香港直播（第三方）",
-        "en": "HK Live Streams (third-party)"
-      },
-      "params": {
-        "max": 6
-      },
-      "cadence_note": {
-        "tc": "直播狀態即時偵測",
-        "en": "Live state detected"
-      }
-    },
-    {
-      "id": "world_news_wall",
-      "source": "world_news_live",
-      "render": "image_wall",
-      "title": {
-        "tc": "國際新聞直播（第三方）",
-        "en": "World News Live (third-party)"
-      },
-      "params": {
-        "max": 6
-      },
-      "cadence_note": {
-        "tc": "直播狀態即時偵測",
-        "en": "Live state detected"
       }
     },
     {

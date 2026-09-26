@@ -98,7 +98,15 @@ export type PanelData =
   | { kind: "list"; items: ListItem[] }
   | { kind: "table"; columns: string[]; rows: TableCell[][] }
   | { kind: "image_single"; src: string; alt: string; note?: string }
-  | { kind: "image_wall"; images: WallImage[] }
+  | {
+      kind: "image_wall";
+      images: WallImage[];
+      /** Region tabs, derived from the DATA by the adapter — never a list hardcoded here.
+       *  Absent (the camera walls) means no strip renders; one region is not a choice, so
+       *  the strip also stays away until there are at least two. */
+      regions?: { id: string; label: L10n; count: number }[];
+      activeRegion?: string | null;
+    }
   | {
       kind: "raster_map";
       src: string;
@@ -149,6 +157,10 @@ export interface RenderOpts {
   /** text for a live-but-empty panel, e.g. 現時無生效警告 */
   emptyText?: L10n;
   onImageClick?: (img: WallImage) => void;
+  /** A region tab was picked; null is 全部. The ENGINE owns the choice and re-runs the
+   *  adapter with it, so the renderer stays a pure function of the data handed to it and
+   *  never holds selection state of its own. */
+  onRegionPick?: (id: string | null) => void;
   /** Collapse a long list/table to this many rows. Comes from panels.json
       `params.max`, so the cap is config, not a hardcoded opinion. Measured
       need: special_traffic_list rendered 1304px tall in a 910px column, i.e.
@@ -157,6 +169,42 @@ export interface RenderOpts {
 }
 
 const DEFAULT_EMPTY: L10n = { tc: "現時無相關資料", en: "Nothing to report right now" };
+
+/** Wrap an image wall in its region tabs.
+ *
+ *  Rendered in render.ts rather than as a separate component because the tab set arrives
+ *  WITH the data — the adapter derives it from the source file, so the strip is a pure
+ *  function of what was fetched and cannot drift from the rows on screen. The styling is
+ *  ui/grouptabs.ts's `.ptab` pill, reused rather than reinvented.
+ *
+ *  The strip renders even when the active region is EMPTY. Rendering it only alongside
+ *  tiles would strand the reader: pick a region with nothing live right now and the tabs
+ *  would vanish, leaving no way back to 全部. */
+function withRegionTabs(wall: HTMLElement, data: PanelData & { kind: "image_wall" }, opts: RenderOpts): HTMLElement {
+  const regions = data.regions;
+  if (!regions || regions.length < 2) return wall;
+  const total = regions.reduce((n, r) => n + r.count, 0);
+  const tab = (key: string | null, label: L10n, count: number): HTMLElement =>
+    h(
+      "button",
+      {
+        class: "ptab",
+        type: "button",
+        role: "tab",
+        "data-region": key ?? "",
+        "aria-selected": String((data.activeRegion ?? null) === key),
+        onclick: () => opts.onRegionPick?.(key),
+      },
+      lang() === "tc" ? label.tc : label.en,
+      h("span", { class: "n" }, String(count)),
+    );
+  return h(
+    "div",
+    { class: "wallwrap" },
+    h("div", { class: "walltabs", role: "tablist" }, tab(null, { tc: "全部", en: "All" }, total), ...regions.map((x) => tab(x.id, x.label, x.count))),
+    wall,
+  );
+}
 
 function chip(honesty: Honesty): HTMLElement {
   switch (honesty.state) {
@@ -325,8 +373,10 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
       );
 
     case "image_wall": {
-      if (data.images.length === 0) return emptyBox(opts.emptyText ?? DEFAULT_EMPTY);
-      return h(
+      const wall =
+        data.images.length === 0
+          ? emptyBox(opts.emptyText ?? DEFAULT_EMPTY)
+          : h(
         "div",
         { class: "wall" },
         ...data.images.map((img) => {
@@ -359,6 +409,7 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
           return tile;
         }),
       );
+      return withRegionTabs(wall, data, opts);
     }
 
     case "raster_map":

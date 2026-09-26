@@ -26,6 +26,7 @@ const LABELS: Record<string, L10n> = {
   marine: { tc: "海事", en: "Marine" },
   market: { tc: "財經", en: "Markets" },
   global: { tc: "國際", en: "Global" },
+  live: { tc: "直播", en: "Live" },
 };
 
 const ALL: L10n = { tc: "全部", en: "All" };

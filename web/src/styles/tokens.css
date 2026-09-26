@@ -15,7 +15,7 @@
   /* ink */
   --txt:         #e9f2ff;
   --dim:         #8ea6c4;
-  --faint:       #5d7a9b;
+  --faint:       #6481a3;
 
   /* signal */
   --cyan:        #22d3ee;   /* 運輸署 cameras, primary accent, live */
@@ -60,6 +60,32 @@
   --map-face-weak:#7b90a8;  /* captions and counts on the map */
   --map-face-bg:  rgba(5,8,13,.82);
   --map-face-line:rgba(140,190,255,.16);
+
+  /* ---- ALWAYS-DARK SURFACE INK: the ticker, the rail and the LAYERS control ----------------
+     Their backgrounds are hardcoded dark in BOTH themes, so ink drawn on them must not be a
+     themed token. These alias the map-face family rather than restating values — one place to
+     change, and the reason is the same one.
+
+     MEASURED 2026-09-27: `.ticker-track` used `var(--txt)` on `rgba(10,16,26,.92)`. In light
+     theme that is #0b1626 on near-black — contrast 1.05:1, i.e. 150 news headlines rendered
+     invisible. Identical defect class to the `.lyr-label` incident the map-face tokens were
+     created for; the ticker simply was not in that check's class list, and a class list cannot
+     be complete. `scripts/check-contrast.mjs` measures the rendered result instead. */
+  --night:        var(--map-face-bg);
+  --night-txt:    var(--map-face);
+  --night-dim:    var(--map-face-dim);
+  --night-faint:  var(--map-face-weak);
+  --night-accent: #8fd8ea;   /* cyan that survives on a dark strip in both themes (11.96:1) */
+
+  /* A FILL that white text can sit on. --alert (#ff5d6c) is an ACCENT: white on it is 2.99:1,
+     which is what the LIVE chips measured. 5.62:1 at 4.5 required. */
+  --alert-fill:   #b3243a;
+
+  /* Ink for a SOLID ACCENT FILL. Which ink works flips with the theme, because --cyan does:
+     dark --cyan is bright (#22d3ee, wants dark ink at 11.14:1) and light --cyan is dark
+     (#0e7f97, wants white ink at 4.67:1). Hardcoding either one breaks the other theme — the
+     first fix for the light-theme ptab used #fff and immediately measured 1.81:1 in dark. */
+  --on-cyan:      #05070d;
 }
 
 /* Light theme. NOT an inversion: the signal colours keep their meaning (red =
@@ -79,7 +105,7 @@
 
   --txt:         #0b1626;
   --dim:         #46617f;
-  --faint:       #6b7f96;
+  --faint:       #586c82;
 
   --cyan:        #0e7f97;
   --violet:      #6d28d9;
@@ -96,4 +122,5 @@
   --sheet:        rgba(255,255,255,.92);
   --cyan-tint:    rgba(14,127,151,.12);
   --surface-grad: linear-gradient(180deg,rgba(255,255,255,.94),rgba(244,248,252,.97));
+  --on-cyan:      #ffffff;
 }

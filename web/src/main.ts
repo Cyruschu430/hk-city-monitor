@@ -101,7 +101,13 @@ const RAIL_LAYERS: RailLayer[] = [
   // glance and every existing `includes("風場")` selector keeps working.
   { id: "wind_field", label: { tc: "風場（模式格網）", en: "Wind flow (modelled)" } },
   { id: "weather_stations", label: { tc: "氣象站", en: "Weather stations" } },
-  { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" } },
+  // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
+  // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
+  // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its
+  // label). The other three satellite layers stay off: ae_hospitals, water_suspension and
+  // control_points are VERTICAL-driven by design, and turning them on here would fight the
+  // config-not-code architecture the verticals exist to prove.
+  { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" }, on: true },
   { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
   { id: "buildings3d", label: { tc: "3D 樓宇（載入慢）", en: "3D buildings (heavy)" } },
 ];

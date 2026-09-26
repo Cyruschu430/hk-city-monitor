@@ -76,7 +76,26 @@ const TILE_MISS_LIMIT_PER_MIN = 120;
 // Tiles are cached for 24h, so a hit is a pure CDN read; panning a map legitimately
 // asks for a burst of them. This ceiling only exists to bound the Workers request
 // budget, not to model upstream load, so it is deliberately loose.
-const TILE_TOTAL_LIMIT_PER_MIN = 1200;
+const TILE_TOTAL_LIMIT_PER_MIN = 600;
+
+// THE REAL CEILING IS THE FREE PLAN'S DAILY REQUEST QUOTA, NOT ANY NUMBER ABOVE.
+//
+// Cloudflare Workers Free is 100,000 requests per day, and exceeding it returns Error
+// 1027 to EVERYONE until midnight UTC — the whole dashboard down, not a bill. Every
+// request reaching this Worker spends one of those, cache HIT or MISS alike; the cache
+// saves the upstream publisher, not our quota. A cold page load issues about 49 proxy
+// requests, so the site's honest capacity is roughly 2,000 cold loads a day.
+//
+// The limits above are PER ISOLATE and PER IP, so N isolates multiply them, and one
+// hostile IP at the old 1,200+600/min could spend the entire daily quota in well under an
+// hour. No arithmetic here can fix that: bounding a global quota needs global state, and
+// the per-request KV write a counter would need is far outside the free KV tier.
+//
+// The fix belongs at the edge, not in this file. Add ONE Cloudflare rate-limiting rule
+// (free plan): path /proxy, block an IP above ~120 requests/minute. Edge-blocked requests
+// never invoke the Worker, so they never spend the quota. See SECURITY.md section 4.
+// ponytail: per-isolate tripwire only. A shared counter (Durable Object) is the real fix
+// and needs the paid plan, which the project's US$0 budget rules out.
 
 // --- rate limiter ------------------------------------------------------------
 // Ceiling: this bucket is per-isolate in-memory state, so it is best-effort —
@@ -96,7 +115,17 @@ function isLimited(key, limit, now) {
   // Lazy eviction so a flood of distinct IPs cannot grow the map without bound.
   if (buckets.size > 10_000) {
     for (const [k, v] of buckets) if (now >= v.resetAt) buckets.delete(k);
-    if (buckets.size > 10_000) buckets.clear();
+    // Evict the oldest live buckets instead of clearing the map. `buckets.clear()` reset
+    // the count for whoever was over the limit right now, so a flood of distinct IPs
+    // bought everyone a clean slate. Map iterates in insertion order and resetAt only
+    // moves forward, so the first entries are the ones that expire soonest.
+    if (buckets.size > 10_000) {
+      let drop = buckets.size - 10_000;
+      for (const k of buckets.keys()) {
+        if (drop-- <= 0) break;
+        buckets.delete(k);
+      }
+    }
   }
   return b.count > limit;
 }
@@ -136,6 +165,101 @@ function isTileLike(url, contentType) {
   if (TILE_PATH_RE.test(url.pathname)) return true;
   const ct = (contentType || "").toLowerCase();
   return ct.startsWith("image/") || ct === "application/octet-stream";
+}
+
+// --- upstream fetch with a re-validated redirect chain ------------------------
+//
+// MEASURED 2026-09-27: 5 of the 67 registry hosts answer with a 3xx to a host that is
+// NOT in the registry (api.adsbdb.com -> www.adsbdb.com, cd.epic.epd.gov.hk ->
+// www.epd.gov.hk, es.hkfsd.gov.hk -> hkfsd.gov.hk, rthk.hk -> www.rthk.hk,
+// sls.hkpl.gov.hk -> www.hkpl.gov.hk). With `redirect: "follow"` the Worker fetched
+// those, and the host check above only ever ran on the URL the CLIENT supplied — so the
+// registry was not the boundary it claimed to be.
+//
+// None of the five is an open redirect, so the destination was not attacker-chosen and
+// nothing was exploitable; the fix is not a response to a breach. It is that a boundary
+// which one hop can leave is not a boundary, and the next registry host that grows a
+// `?url=` redirect turns this into a real SSRF.
+//
+// `redirect: "manual"` on its own would be wrong the other way: 14 of the 19 redirecting
+// hosts point at http->https or apex->www moves that MUST be followed or the source
+// breaks. So: follow, up to a cap, re-validating every hop.
+const MAX_REDIRECTS = 3;
+
+// A redirect may leave the whitelisted HOST as long as it stays on the same REGISTRABLE
+// DOMAIN. That is the line that matters: rthk.hk -> rthk9.rthk.hk is the publisher moving
+// you around its own site, rthk.hk -> attacker.net is somebody else's site.
+//
+// MEASURED 2026-09-27: the obvious rule - "the redirect target must itself be in the
+// registry" - broke FIVE live sources. Every RTHK news RSS feed redirects
+// rthk.hk/<feed>.xml -> rthk9.rthk.hk in two hops, and rthk9.rthk.hk is not in
+// sources.json because nothing links to it directly. The ticker and the breaking-news
+// panel read those five feeds.
+//
+// Suffix list is short and explicit rather than vendoring the full public suffix list:
+// these are the suffixes this registry actually contains. An unlisted multi-label suffix
+// falls back to the last two labels, which makes the rule STRICTER, never looser - it can
+// only refuse a redirect that a full PSL would have allowed.
+const TWO_LABEL_SUFFIXES = new Set([
+  "gov.hk", "com.hk", "org.hk", "edu.hk", "net.hk",
+  "co.uk", "com.au", "co.jp", "com.tw", "com.sg",
+]);
+
+function registrableDomain(host) {
+  const parts = host.toLowerCase().split(".");
+  if (parts.length <= 2) return parts.join(".");
+  const lastTwo = parts.slice(-2).join(".");
+  return TWO_LABEL_SUFFIXES.has(lastTwo) ? parts.slice(-3).join(".") : lastTwo;
+}
+
+// An intermediate hop may also be plain http, but ONLY within the same site.
+//
+// MEASURED 2026-09-27, the actual chain of every RTHK news feed:
+//   hop 0  301  https://rthk.hk/<feed>.xml            -> http://rthk9.rthk.hk/<feed>.xml
+//   hop 1  302  http://rthk9.rthk.hk/<feed>.xml       -> https://rthk9.rthk.hk/<feed>.xml
+//   hop 2  200
+// RTHK bounces through an http URL to upgrade itself. Demanding https on every hop
+// therefore broke all five news feeds. The registrable-domain check is the real boundary
+// here, and it still holds on that hop: an on-path attacker could rewrite the http
+// Location, but only to a host on the same site, and the payload they would be rewriting
+// is a 302 — the content still arrives over https at hop 2.
+//
+// A hop that is NOT on the same site gets the strict rule: https, and its host must be in
+// the registry. The https-only rule on the CLIENT's own url is unchanged.
+async function fetchValidated(startUrl, init, timeoutMs) {
+  const startHost = new URL(startUrl).host;
+  let current = startUrl;
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const res = await fetch(current, { ...init, redirect: "manual", signal: AbortSignal.timeout(timeoutMs) });
+    if (res.status < 300 || res.status >= 400) return res;
+    const loc = res.headers.get("Location");
+    if (!loc) return res;
+    const next = new URL(loc, current); // throws on an unparseable Location
+    const sameSite = registrableDomain(next.host) === registrableDomain(startHost);
+    const allowed = sameSite
+      ? next.protocol === "https:" || next.protocol === "http:"
+      : next.protocol === "https:" && ALLOWED_HOSTS.has(next.host.toLowerCase());
+    if (!allowed) {
+      throw new Error(`redirect left the registry and the site: ${current} -> ${next.toString()}`);
+    }
+    current = next.toString();
+  }
+  throw new Error(`more than ${MAX_REDIRECTS} redirects from ${startUrl}`);
+}
+
+// Content-Length is simply absent on a chunked response, so the header check below
+// silently passes them through at any size. Count real bytes as they stream.
+function capBytes(stream, limit) {
+  let seen = 0;
+  return stream.pipeThrough(
+    new TransformStream({
+      transform(chunk, ctrl) {
+        seen += chunk.byteLength;
+        if (seen > limit) ctrl.error(new Error(`upstream body exceeded ${limit} bytes`));
+        else ctrl.enqueue(chunk);
+      },
+    }),
+  );
 }
 
 // --- routes ------------------------------------------------------------------
@@ -197,12 +321,11 @@ async function handleProxy(request, ctx) {
 
   let upstream;
   try {
-    upstream = await fetch(target.toString(), {
-      method: "GET",
-      headers: { "User-Agent": UA, Accept: request.headers.get("Accept") || "*/*" },
-      redirect: "follow",
-      signal: AbortSignal.timeout(SLOW_HOSTS.has(target.host) ? SLOW_HOST_TIMEOUT_MS : UPSTREAM_TIMEOUT_MS),
-    });
+    upstream = await fetchValidated(
+      target.toString(),
+      { method: "GET", headers: { "User-Agent": UA, Accept: request.headers.get("Accept") || "*/*" } },
+      SLOW_HOSTS.has(target.host) ? SLOW_HOST_TIMEOUT_MS : UPSTREAM_TIMEOUT_MS,
+    );
   } catch (err) {
     const timeout = err && (err.name === "TimeoutError" || err.name === "AbortError");
     // Server-side only: the client gets a generic code, the operator gets the
@@ -233,9 +356,11 @@ async function handleProxy(request, ctx) {
 
   if (upstream.status === 200) {
     headers.set("X-HKCM-Cache", "MISS");
-    const store = new Response(upstream.body, { status: 200, headers });
+    // The Content-Length check above cannot see a chunked response, so cap the stream too.
+    const store = new Response(capBytes(upstream.body, MAX_UPSTREAM_BYTES), { status: 200, headers });
     // waitUntil keeps the response streaming to the client while the edge write lands.
-    if (ctx && ctx.waitUntil) ctx.waitUntil(cache.put(cacheKey, store.clone()));
+    // A capped stream can error mid-flight, which would reject this promise unhandled.
+    if (ctx && ctx.waitUntil) ctx.waitUntil(cache.put(cacheKey, store.clone()).catch(() => {}));
     return store;
   }
 
@@ -245,6 +370,22 @@ async function handleProxy(request, ctx) {
   return new Response(upstream.body, { status: upstream.status, headers });
 }
 
+// Each of these is a public tile endpoint, which is why handing it to a browser is fine.
+// A KEYED url is not.
+//
+// wrangler.toml documents the upgrade path for when LandsD starts enforcing a key: "the
+// keyed URL goes in as a secret with the SAME NAME ... a keyed URL must never be
+// committed." That is correct, and this endpoint defeats it: whatever holds
+// TILES3D_BUILDING_URL is returned here to anyone who asks, so a secret in that variable
+// is a published secret. The two statements cannot both hold.
+//
+// Refusing beats redacting. A silent rewrite would ship a tileset that does not load with
+// no clue why; this 503 names its reason in `wrangler tail` the moment the key arrives,
+// which is a bug report instead of an incident. The way to serve a keyed tileset is
+// /proxy: data.map.gov.hk is already in the registry, and a secret injected in
+// handleProxy never reaches a client.
+const KEYED_URL_RE = /[?&](?:key|api[_-]?key|apikey|token|access[_-]?token|signature|sig)=/i;
+
 function handleConfig3d(env) {
   const wgs84 = {
     building: env.TILES3D_BUILDING_URL,
@@ -253,6 +394,12 @@ function handleConfig3d(env) {
   };
   if (!wgs84.building || !wgs84.infrastructure || !wgs84.tilemodel) {
     return jsonError(503, "config_missing", "TILES3D_* URLs are not configured server-side");
+  }
+  const keyed = Object.entries(wgs84).filter(([, u]) => KEYED_URL_RE.test(u));
+  if (keyed.length) {
+    console.error(`/config/3d refused: keyed URL(s) in ${keyed.map(([k]) => k).join(", ")}`);
+    return jsonError(503, "config_keyed",
+      "a TILES3D_* URL carries a credential; serve it through /proxy instead");
   }
   return json({ wgs84 }, DATA_CACHE_SECONDS);
 }
@@ -280,3 +427,8 @@ export default {
     }
   },
 };
+
+// Exported for worker/test/probe-redirect-policy.mjs, which exercises the redirect rule
+// against the REAL redirect chains of the live sources. Testing it by re-implementing the
+// rule in the test would only prove the test agrees with itself.
+export { fetchValidated, registrableDomain };

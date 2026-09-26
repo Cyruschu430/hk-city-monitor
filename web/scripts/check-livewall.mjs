@@ -37,7 +37,9 @@ const r = await page.evaluate(() => {
   };
 });
 
-await page.screenshot({ path: "C:\\hk-city-monitor\\web\\scripts\\rev\\livewall.png", fullPage: false });
+// No screenshot: deep-review.mjs already captures the same page, and this project's own rule is
+// that the numbers are the evidence and the image is context. A second PNG would also churn
+// ~850KB in git on every run.
 console.log(JSON.stringify(r, null, 2));
 console.log("\nconsole errors:", errs.length ? errs.slice(0, 5) : "0");
 console.log("failed/4xx:", [...new Set(bad)].slice(0, 6));

@@ -17,17 +17,17 @@ a:hover{color:var(--cyan)}
 #ticker[hidden]{display:none}
 .ticker-frame{display:flex;align-items:center;gap:0;width:100%}
 .ticker-tag{flex:0 0 auto;margin:0 10px 0 10px;padding:3px 9px;border-radius:var(--radius-pill);
-  background:var(--alert);color:#fff;font-size:10px;font-weight:600;letter-spacing:.12em}
+  background:var(--alert-fill);color:#fff;font-size:10px;font-weight:600;letter-spacing:.12em}
 .ticker-tabs{flex:0 0 auto;display:flex;gap:3px;margin-right:10px;padding-right:10px;
   border-right:1px solid var(--hairline)}
-.ticker-tab{padding:3px 10px;border-radius:var(--radius-pill);font-size:10.5px;color:var(--dim);
+.ticker-tab{padding:3px 10px;border-radius:var(--radius-pill);font-size:10.5px;color:var(--night-dim);
   border:1px solid transparent;letter-spacing:.06em;line-height:1.35}
-.ticker-tab:hover{color:var(--txt)}
-.ticker-tab[aria-selected="true"]{color:var(--cyan);border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.1)}
+.ticker-tab:hover{color:var(--night-txt)}
+.ticker-tab[aria-selected="true"]{color:var(--night-accent);border-color:rgba(143,216,234,.45);background:rgba(34,211,238,.1)}
 /* the marquee's own clip box: the sliding text can never reach the controls */
 .ticker-viewport{flex:1 1 auto;min-width:0;overflow:hidden;position:relative}
 .ticker-frame .ticker-track{white-space:nowrap;display:inline-block;
-  font-family:var(--font-mono);font-size:11px;color:var(--txt);line-height:26px;
+  font-family:var(--font-mono);font-size:11px;color:var(--night-txt);line-height:26px;
   /* duration is set from JS (constant px/s across tabs); the shorthand here
      must stay animation-NAME only so it cannot clobber animationDuration */
   animation-name:ticker-scroll;animation-timing-function:linear;animation-iteration-count:infinite}
@@ -243,7 +243,7 @@ a:hover{color:var(--cyan)}
    map-face colour or in light mode it is dark-on-dark. The background stays
    transparent on purpose so the bar does not box in the map. */
 .maplibregl-ctrl-scale{background:transparent!important;border-color:rgba(140,190,255,.55)!important;
-  color:var(--map-face-dim);font-size:10px;text-shadow:0 1px 2px rgba(5,7,13,.9)}
+  color:var(--map-face-dim)!important;font-size:10px;text-shadow:0 1px 2px rgba(5,7,13,.9)}
 
 /* live tiles are video thumbs → 16:9 instead of the cameras' 4:3 */
 .cam.live{aspect-ratio:16/9}
@@ -405,7 +405,7 @@ a:hover{color:var(--cyan)}
   background:transparent;border:1px solid var(--hairline);border-radius:var(--radius-pill);
   padding:3px 9px;cursor:pointer;transition:color .16s,border-color .16s,background .16s}
 .ptab:hover{color:var(--txt);border-color:var(--hairline-hi)}
-.ptab[aria-selected="true"]{color:var(--void);background:var(--cyan);border-color:var(--cyan)}
+.ptab[aria-selected="true"]{color:var(--on-cyan);background:var(--cyan);border-color:var(--cyan)}
 .ptab .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
 #panels{overflow-y:auto;overscroll-behavior:contain;
    padding:8px;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
@@ -603,9 +603,10 @@ a:hover{color:var(--cyan)}
 .cam .lab{position:absolute;left:0;right:0;bottom:0;padding:2px 5px;font-size:9.5px;line-height:1.3;
   background:linear-gradient(0deg,rgba(3,7,14,.94),transparent);color:#dbeafe;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cam .fresh{position:absolute;top:3px;right:3px;font-size:9.5px;padding:1px 5px}
+.cam .fresh{position:absolute;top:3px;right:3px;font-size:9.5px;padding:1px 5px;
+  color:var(--night-txt);background:var(--night);border-color:var(--map-face-line)}
 .cam.dead::after{content:attr(data-dead);position:absolute;inset:0;display:grid;place-items:center;
-  color:var(--dim);font-size:9px;text-align:center;padding:2px;background:rgba(3,7,14,.86)}
+  color:var(--night-dim);font-size:9px;text-align:center;padding:2px;background:rgba(3,7,14,.86)}
 .cam.dead img{opacity:.2}
 /* Live-stream tiles carry a channel name and a play affordance, so they stay
    2-up at 16:9 — at 84px wide the channel text is unreadable and the tile

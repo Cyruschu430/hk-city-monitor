@@ -51,3 +51,8 @@ web/preview.log
 cmsg.tmp
 commit-msg.tmp
 msg.tmp
+
+# Any log anywhere. MEASURED 2026-09-27: the family matcher covered web/*.log and
+# *-dev.log but not a bare verify.log at the repo root, which is how three of them sat
+# untracked-but-present in a directory the user browses. Match the shape, not each name.
+*.log

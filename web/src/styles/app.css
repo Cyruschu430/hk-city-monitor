@@ -620,6 +620,22 @@ a:hover{color:var(--cyan)}
    scrolls: six region chips fit two rows at the wall's width, and a horizontally
    scrolling strip inside a panel is a control nobody finds. */
 .wallwrap{display:flex;flex-direction:column;gap:6px}
+/* Tier 2 timeline (異常與匯聚 panel). A left rule per group makes the district a HEADING rather
+   than a field, which is what turns a list of events into a reading of one place over time. */
+.tl-g{border-left:2px solid var(--hairline-hi);padding-left:9px;margin-bottom:9px}
+.tl-gh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.tl-d{font-size:12px;color:var(--txt);font-weight:600}
+.tl-score{font-size:12px;color:var(--cyan);font-variant-numeric:tabular-nums}
+.tl-dom{font-size:11px;color:var(--dim)}
+.tl-span{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums;margin-left:auto}
+.tl-ev{display:grid;grid-template-columns:42px 46px 1fr auto;gap:8px;align-items:baseline;
+  font-size:12px;padding:2px 0;border-left:2px solid transparent;margin-left:-11px;padding-left:9px}
+.tl-ev.s2{border-left-color:var(--amber)}
+.tl-ev.s3{border-left-color:var(--alert)}
+.tl-ev time{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+.tl-domain{font-size:11px;color:var(--dim)}
+.tl-txt{color:var(--txt);overflow-wrap:anywhere}
+.tl-num{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
 .walltabs{display:flex;flex-wrap:wrap;gap:4px}
 .cam{position:relative;border-radius:5px;overflow:hidden;border:1px solid var(--hairline);
   background:#0a1220;aspect-ratio:4/3;cursor:pointer}

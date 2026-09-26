@@ -17,6 +17,24 @@
   },
   "panels": [
     {
+      "id": "analysis_brief",
+      "source": "analysis",
+      "render": "list",
+      "title": {
+        "tc": "異常與匯聚",
+        "en": "Anomalies & convergence"
+      },
+      "params": {},
+      "cadence_note": {
+        "tc": "規則引擎（確定性）",
+        "en": "Rule engine (deterministic)"
+      },
+      "disclaimer": {
+        "tc": "本面板由確定性規則引擎產生，非人手判斷、亦非政府公告。每個數字都標明觀察值同門檻。",
+        "en": "Produced by a deterministic rule engine - not human judgement, and not an official notice. Every figure shows its observed value and threshold."
+      }
+    },
+    {
       "id": "tc_track_image",
       "source": "hko_tc_track",
       "render": "image_single",

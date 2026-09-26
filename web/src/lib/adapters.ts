@@ -142,6 +142,40 @@ function withUrl(src: SourceDef, url: string): SourceDef {
   return { ...src, url };
 }
 
+// One code path for every curated live-stream list.
+//
+// It follows the source's OWN `url` instead of hardcoding data/live_streams.json, so a
+// second list (world_news_live) is a sources.json entry and nothing else — the adapter
+// registry just points both ids at this function.
+//
+// `region` is an optional panel param: absent means the whole file, which is what the
+// Hong Kong camera wall wants. A wrong region yields an empty wall, and an empty wall is
+// honest (render.ts has an empty state) whereas silently showing every region would not be.
+async function liveWall(src: SourceDef, panel: PanelDefRaw): Promise<AdapterResult> {
+  // A curated COMMUNITY list — not official data, and every panel built on it says so.
+  // Live state is resolved at runtime via the hqdefault_live.jpg probe; an off-air tile
+  // reads 現時無直播 rather than playing a black rectangle.
+  const res = await fetch(src.url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const j = (await res.json()) as {
+    streams: { id: string; title: string; channel?: string; region?: string }[];
+  };
+  const region = panel.params?.["region"] ? String(panel.params["region"]) : null;
+  const pool = region ? j.streams.filter((s) => s.region === region) : j.streams;
+  const max = Number(panel.params?.["max"] ?? 8);
+  const images = [];
+  for (const s of pool.slice(0, max)) {
+    const live = await probeLive(s.id);
+    images.push({
+      id: s.id,
+      name: s.title,
+      src: liveThumb(s.id),
+      video: { id: s.id, live: live, channel: s.channel },
+    });
+  }
+  return { data: { kind: "image_wall", images }, observedAt: new Date() };
+}
+
 const ADAPTERS: Record<string, Adapter> = {
   async mtr_next_train(src, panel) {
     const line = String(panel.params?.["line"] ?? "ISL");
@@ -686,26 +720,8 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
-  async hk_live_cams_community(src, panel) {
-    // A curated COMMUNITY list (data/live_streams.json) — not official data, and
-    // the panel is labelled as such. Live state is resolved at runtime.
-    void src;
-    const res = await fetch("data/live_streams.json", { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const j = (await res.json()) as { streams: { id: string; title: string; channel?: string }[] };
-    const max = Number(panel.params?.["max"] ?? 8);
-    const images = [];
-    for (const s of j.streams.slice(0, max)) {
-      const live = await probeLive(s.id);
-      images.push({
-        id: s.id,
-        name: s.title,
-        src: liveThumb(s.id),
-        video: { id: s.id, live: live, channel: s.channel },
-      });
-    }
-    return { data: { kind: "image_wall", images }, observedAt: new Date() };
-  },
+  hk_live_cams_community: liveWall,
+  world_news_live: liveWall,
 
   async hko_tc_track(src, _panel, ctx) {
     const list = P.parseTcList(await text(await get(src)));

@@ -1,399 +1,416 @@
 {
- "_comment": "Panel registry. source must exist in sources.json; render must be one of the 8 closed types in PRIMITIVES.md. title carries BOTH official languages (tc = 繁體中文, en = English).",
- "_renders": [
-  "big_number",
-  "list",
-  "table",
-  "image_single",
-  "image_wall",
-  "raster_map",
-  "gauge_grid",
-  "status_grid"
- ],
- "_withdrawn_panels": {
-  "_comment": "Panels removed from the shipped set, with the reasoning and the restore path. A withdrawn panel goes HERE, never as an element of the panels array below. MEASURED 2026-09-24: an id-less object inside `panels` is NOT inert. It reaches the runtime registry (sources.ts passes panelsJ.panels straight through), and ui/palette.ts buildIndex() reads p.title.tc on every entry — so a comment-only element throws TypeError and BREAKS ⌘K SILENTLY (the keydown listener fires and dies before opening the palette, with no error near the palette itself).",
-  "crypto_prices": "WITHDRAWN 2026-09-24 (Cyrus). CoinGecko's free tier rate-limits Cloudflare's egress IPs, so the panel returned HTTP 429 on EVERY production load while working from a home IP — measured repeatedly through the deployed Worker, not transient. It was the last error state on the dashboard, and a panel permanently broken in the only environment users see is worse than no panel. It is also the least Hong-Kong-specific surface on the page (BTC/ETH in HKD), so it was the one to cut rather than fix. Restore: re-add { id:'crypto_prices', source:'coingecko', render:'list', title:{tc:'加密貨幣（港元）',en:'Crypto (HKD)'}, params:{}, cadence_note:{tc:'即時',en:'Live'} } to the panels array, put it back in main.ts OVERVIEW, and first confirm the 429 is gone from a Cloudflare egress IP. The adapter (coingecko), parsers.parseCoingecko and their tests are untouched.",
-  "holiday_leave_table": "WITHDRAWN 2026-09-24 (Cyrus), along with the whole `leave` vertical. It answered 'how do I turn the fewest annual-leave days into the longest run off' — a planning tool, not situational awareness. Every other panel answers 'what is happening in Hong Kong right now', and a mode that appears in the same rail as 颱風/口岸/停水 but does nothing time-critical made the rail inconsistent. The data (data/leave_plan.json from scripts/build_leave_plan.py), the adapter (hk_public_holidays) and the source entry are all LEFT IN PLACE, so restoring is: re-add { id:'holiday_leave_table', source:'hk_public_holidays', render:'table', title:{tc:'請假攻略',en:'Leave Planner'}, params:{computed_by:'scripts/build_leave_plan.py'}, cadence_note:{tc:'跟官方年曆更新',en:'Follows the official calendar'} }, restore the `leave` vertical in verticals.json, and add it to main.ts OVERVIEW if it should also sit on the overview."
- },
- "panels": [
-  {
-   "id": "tc_track_image",
-   "source": "hko_tc_track",
-   "render": "image_single",
-   "title": {
-    "tc": "熱帶氣旋路徑",
-    "en": "Tropical Cyclone Track"
-   },
-   "params": {
-    "fallback_source": "hko_tc_besttrack"
-   },
-   "cadence_note": {
-    "tc": "有更新即出",
-    "en": "As issued"
-   }
+  "_comment": "Panel registry. source must exist in sources.json; render must be one of the 8 closed types in PRIMITIVES.md. title carries BOTH official languages (tc = 繁體中文, en = English).",
+  "_renders": [
+    "big_number",
+    "list",
+    "table",
+    "image_single",
+    "image_wall",
+    "raster_map",
+    "gauge_grid",
+    "status_grid"
+  ],
+  "_withdrawn_panels": {
+    "_comment": "Panels removed from the shipped set, with the reasoning and the restore path. A withdrawn panel goes HERE, never as an element of the panels array below. MEASURED 2026-09-24: an id-less object inside `panels` is NOT inert. It reaches the runtime registry (sources.ts passes panelsJ.panels straight through), and ui/palette.ts buildIndex() reads p.title.tc on every entry — so a comment-only element throws TypeError and BREAKS ⌘K SILENTLY (the keydown listener fires and dies before opening the palette, with no error near the palette itself).",
+    "crypto_prices": "WITHDRAWN 2026-09-24 (Cyrus). CoinGecko's free tier rate-limits Cloudflare's egress IPs, so the panel returned HTTP 429 on EVERY production load while working from a home IP — measured repeatedly through the deployed Worker, not transient. It was the last error state on the dashboard, and a panel permanently broken in the only environment users see is worse than no panel. It is also the least Hong-Kong-specific surface on the page (BTC/ETH in HKD), so it was the one to cut rather than fix. Restore: re-add { id:'crypto_prices', source:'coingecko', render:'list', title:{tc:'加密貨幣（港元）',en:'Crypto (HKD)'}, params:{}, cadence_note:{tc:'即時',en:'Live'} } to the panels array, put it back in main.ts OVERVIEW, and first confirm the 429 is gone from a Cloudflare egress IP. The adapter (coingecko), parsers.parseCoingecko and their tests are untouched.",
+    "holiday_leave_table": "WITHDRAWN 2026-09-24 (Cyrus), along with the whole `leave` vertical. It answered 'how do I turn the fewest annual-leave days into the longest run off' — a planning tool, not situational awareness. Every other panel answers 'what is happening in Hong Kong right now', and a mode that appears in the same rail as 颱風/口岸/停水 but does nothing time-critical made the rail inconsistent. The data (data/leave_plan.json from scripts/build_leave_plan.py), the adapter (hk_public_holidays) and the source entry are all LEFT IN PLACE, so restoring is: re-add { id:'holiday_leave_table', source:'hk_public_holidays', render:'table', title:{tc:'請假攻略',en:'Leave Planner'}, params:{computed_by:'scripts/build_leave_plan.py'}, cadence_note:{tc:'跟官方年曆更新',en:'Follows the official calendar'} }, restore the `leave` vertical in verticals.json, and add it to main.ts OVERVIEW if it should also sit on the overview."
   },
-  {
-   "id": "radar_image",
-   "source": "hko_radar",
-   "render": "image_single",
-   "title": {
-    "tc": "天氣雷達（256 公里）",
-    "en": "Weather Radar (256 km)"
-   },
-   "params": {},
-   "cadence_note": {
-    "tc": "每 6 分鐘",
-    "en": "Every 6 minutes"
-   }
-  },
-  {
-   "id": "satellite_image",
-   "source": "hko_satellite",
-   "render": "image_single",
-   "title": {
-    "tc": "衛星雲圖",
-    "en": "Satellite Imagery"
-   },
-   "params": {},
-   "cadence_note": {
-    "tc": "每 30 分鐘",
-    "en": "Every 30 minutes"
-   }
-  },
-  {
-   "id": "rain_nowcast_map",
-   "source": "hko_rain_nowcast",
-   "render": "raster_map",
-   "title": {
-    "tc": "格網降雨臨近預報",
-    "en": "Gridded Rainfall Nowcast"
-   },
-   "params": {
-    "bbox": [
-     22.15,
-     113.83,
-     22.56,
-     114.44
-    ],
-    "opacity": 0.6
-   },
-   "cadence_note": {
-    "tc": "每 12 分鐘",
-    "en": "Every 12 minutes"
-   }
-  },
-  {
-   "id": "warnings_list",
-   "source": "hko_warnsum",
-   "render": "list",
-   "title": {
-    "tc": "天氣警告",
-    "en": "Weather Warnings"
-   },
-   "params": {
-    "expand": "hko_warninginfo"
-   },
-   "cadence_note": {
-    "tc": "即時",
-    "en": "Real-time"
-   }
-  },
-  {
-   "id": "special_traffic_list",
-   "source": "td_specialtrafficnews",
-   "render": "list",
-   "title": {
-    "tc": "特別交通消息",
-    "en": "Special Traffic News"
-   },
-   "params": {
-    "max": 12
-   },
-   "cadence_note": {
-    "tc": "即時",
-    "en": "Real-time"
-   }
-  },
-  {
-   "id": "flight_table",
-   "source": "hkia_flights",
-   "render": "table",
-   "title": {
-    "tc": "機場航班",
-    "en": "Airport Flights"
-   },
-   "params": {
-    "max_rows": 40,
-    "fields": [
-     "time",
-     "flight",
-     "origin",
-     "status"
-    ]
-   },
-   "cadence_note": {
-    "tc": "即時",
-    "en": "Real-time"
-   }
-  },
-  {
-   "id": "cameras_wall",
-   "source": "td_snapshot",
-   "render": "image_wall",
-   "title": {
-    "tc": "交通快拍",
-    "en": "Traffic Snapshots"
-   },
-   "params": {
-    "list_source": "td_camera_list",
-    "prefer_grid": [
-     "sea",
-     "low-lying",
-     "tunnel"
-    ]
-   },
-   "cadence_note": {
-    "tc": "每 2 分鐘",
-    "en": "Every 2 minutes"
-   }
-  },
-  {
-   "id": "hko_cameras_wall",
-   "source": "hko_webcam",
-   "render": "image_wall",
-   "title": {
-    "tc": "天氣攝影機",
-    "en": "Weather Cameras"
-   },
-   "params": {
-    "list_source": "hko_webcam_index",
-    "max": 34
-   },
-   "cadence_note": {
-    "tc": "每 5 分鐘",
-    "en": "Every 5 minutes"
-   }
-  },
-  {
-   "id": "tp_queue_grid",
-   "source": "immd_cp_queue",
-   "render": "status_grid",
-   "title": {
-    "tc": "管制站輪候時間",
-    "en": "Control Point Queue Times"
-   },
-   "params": {
-    "stations": [
-     "HYW",
-     "HZM",
-     "LMC",
-     "LSC",
-     "LWS",
-     "MKT"
-    ]
-   },
-   "cadence_note": {
-    "tc": "每 15 分鐘",
-    "en": "Every 15 minutes"
-   }
-  },
-  {
-   "id": "crossboundary_ferry_table",
-   "source": "mardep_crossboundary_ferry",
-   "render": "table",
-   "title": {
-    "tc": "跨境渡輪班次",
-    "en": "Cross-boundary Ferry Services"
-   },
-   "params": {
-    "max_rows": 20
-   },
-   "cadence_note": {
-    "tc": "每 5 分鐘",
-    "en": "Every 5 minutes"
-   }
-  },
-  {
-   "id": "water_suspension_list",
-   "source": "wsd_water_suspension",
-   "render": "list",
-   "title": {
-    "tc": "臨時停水通知",
-    "en": "Temporary Water Suspension Notices"
-   },
-   "params": {
-    "max": 10
-   },
-   "cadence_note": {
-    "tc": "每 5 分鐘",
-    "en": "Every 5 minutes"
-   }
-  },
-  {
-   "id": "ae_waiting_grid",
-   "source": "ha_ae_waiting",
-   "render": "gauge_grid",
-   "title": {
-    "tc": "急症室輪候時間",
-    "en": "A&E Waiting Times"
-   },
-   "params": {},
-   "cadence_note": {
-    "tc": "每 15 分鐘",
-    "en": "Every 15 minutes"
-   }
-  },
-  {
-   "id": "hk_market_table",
-   "source": "yahoo_hk_quotes",
-   "render": "table",
-   "title": {
-    "tc": "港股（延遲報價）",
-    "en": "HK Market (delayed)"
-   },
-   "params": {
-    "symbols": [
-     "^HSI",
-     "^HSCE",
-     "0700.HK",
-     "9988.HK"
-    ]
-   },
-   "cadence_note": {
-    "tc": "延遲報價，唔係即時",
-    "en": "Delayed, not real-time"
-   },
-   "wide": true
-  },
-  {
-   "id": "breaking_news_list",
-   "source": "gov_news_law_order",
-   "render": "list",
-   "title": {
-    "tc": "突發新聞（治安消息）",
-    "en": "Breaking News (law & order)"
-   },
-   "params": {
-    "max": 8
-   },
-   "cadence_note": {
-    "tc": "即時",
-    "en": "Live"
-   },
-   "disclaimer": {
-    "tc": "只轉載政府新聞網原文，不代表本項目立場。本項目與香港特區政府無關，亦非其轄下系統。",
-    "en": "Official government releases reprinted verbatim. This does not represent the project's position; the project is not affiliated with the HKSAR Government."
-   }
-  },
-  {
-   "id": "aqhi_gauge_grid",
-   "source": "aqhi_city_dashboard",
-   "render": "gauge_grid",
-   "title": {
-    "tc": "空氣質素指數 AQHI",
-    "en": "Air Quality Health Index"
-   },
-   "params": {},
-   "cadence_note": {
-    "tc": "每小時",
-    "en": "Hourly"
-   }
-  },
-  {
-   "id": "carpark_vacancy_list",
-   "source": "td_carpark_vacancy",
-   "render": "table",
-   "title": {
-    "tc": "停車場空位",
-    "en": "Carpark Vacancy"
-   },
-   "params": {
-    "max_rows": 12
-   },
-   "wide": true,
-   "cadence_note": {
-    "tc": "即時",
-    "en": "Real-time"
-   }
-  },
-  {
-   "id": "live_cams_wall",
-   "source": "hk_live_cams_community",
-   "render": "image_wall",
-   "title": {
-    "tc": "香港直播（第三方）",
-    "en": "HK Live Streams (third-party)"
-   },
-   "params": {
-    "max": 6
-   },
-   "cadence_note": {
-    "tc": "直播狀態即時偵測",
-    "en": "Live state detected"
-   }
-  },
-  {
-   "_comment": "aircraft_status WITHDRAWN 2026-09-23. adsb.fi and adsb.lol both block Cloudflare egress IPs (200 from a home IP, 403/429 from the Worker), so the panel could only ever show an error once deployed. The layers.json entry, the adapter and the plane glyph all remain: restore a panel block here and add 'aircraft_status' back to OVERVIEW in main.ts when a source that tolerates cloud egress exists, or when a PC-side collector publishes static JSON (the water-suspension pattern).",
-   "id": "wind_status",
-   "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
-   "render": "status_grid",
-   "title": {
-    "tc": "風勢（天文台 10 分鐘風）",
-    "en": "Wind (HKO 10-min stations)"
-   },
-   "params": {},
-   "cadence_note": {
-    "tc": "每 10 分鐘",
-    "en": "Every 10 minutes"
-   }
-  },
-  {
-   "id": "stations_status",
-   "source": "hko_stations_network",
-   "render": "status_grid",
-   "title": {
-    "tc": "氣象站網絡（CSDI）",
-    "en": "Weather station network (CSDI)"
-   },
-   "params": {},
-   "cadence_note": {
-    "tc": "官方靜態參考圖層",
-    "en": "Official static reference layer"
-   }
-  },
-  {
-   "id": "mtr_next_train_list",
-   "source": "mtr_next_train",
-   "render": "list",
-   "title": {
-    "tc": "港鐵 下一班列車",
-    "en": "MTR Next Train"
-   },
-   "params": {
-    "line": "ISL",
-    "sta": "ADM"
-   },
-   "cadence_note": {
-    "tc": "實時（每 30 秒）",
-    "en": "Real-time (30s)"
-   }
-  },
-  {
-   "id": "kmb_eta_table",
-   "source": "kmb_eta",
-   "render": "table",
-   "title": {
-    "tc": "九巴 到站時間",
-    "en": "KMB Arrivals"
-   },
-   "params": {
-    "stop_id": "18492910339410B1",
-    "max": 10
-   },
-   "wide": true,
-   "cadence_note": {
-    "tc": "每 1 分鐘",
-    "en": "Every minute"
-   }
-  }
- ]}
+  "panels": [
+    {
+      "id": "tc_track_image",
+      "source": "hko_tc_track",
+      "render": "image_single",
+      "title": {
+        "tc": "熱帶氣旋路徑",
+        "en": "Tropical Cyclone Track"
+      },
+      "params": {
+        "fallback_source": "hko_tc_besttrack"
+      },
+      "cadence_note": {
+        "tc": "有更新即出",
+        "en": "As issued"
+      }
+    },
+    {
+      "id": "radar_image",
+      "source": "hko_radar",
+      "render": "image_single",
+      "title": {
+        "tc": "天氣雷達（256 公里）",
+        "en": "Weather Radar (256 km)"
+      },
+      "params": {},
+      "cadence_note": {
+        "tc": "每 6 分鐘",
+        "en": "Every 6 minutes"
+      }
+    },
+    {
+      "id": "satellite_image",
+      "source": "hko_satellite",
+      "render": "image_single",
+      "title": {
+        "tc": "衛星雲圖",
+        "en": "Satellite Imagery"
+      },
+      "params": {},
+      "cadence_note": {
+        "tc": "每 30 分鐘",
+        "en": "Every 30 minutes"
+      }
+    },
+    {
+      "id": "rain_nowcast_map",
+      "source": "hko_rain_nowcast",
+      "render": "raster_map",
+      "title": {
+        "tc": "格網降雨臨近預報",
+        "en": "Gridded Rainfall Nowcast"
+      },
+      "params": {
+        "bbox": [
+          22.15,
+          113.83,
+          22.56,
+          114.44
+        ],
+        "opacity": 0.6
+      },
+      "cadence_note": {
+        "tc": "每 12 分鐘",
+        "en": "Every 12 minutes"
+      }
+    },
+    {
+      "id": "warnings_list",
+      "source": "hko_warnsum",
+      "render": "list",
+      "title": {
+        "tc": "天氣警告",
+        "en": "Weather Warnings"
+      },
+      "params": {
+        "expand": "hko_warninginfo"
+      },
+      "cadence_note": {
+        "tc": "即時",
+        "en": "Real-time"
+      }
+    },
+    {
+      "id": "special_traffic_list",
+      "source": "td_specialtrafficnews",
+      "render": "list",
+      "title": {
+        "tc": "特別交通消息",
+        "en": "Special Traffic News"
+      },
+      "params": {
+        "max": 12
+      },
+      "cadence_note": {
+        "tc": "即時",
+        "en": "Real-time"
+      }
+    },
+    {
+      "id": "flight_table",
+      "source": "hkia_flights",
+      "render": "table",
+      "title": {
+        "tc": "機場航班",
+        "en": "Airport Flights"
+      },
+      "params": {
+        "max_rows": 40,
+        "fields": [
+          "time",
+          "flight",
+          "origin",
+          "status"
+        ]
+      },
+      "cadence_note": {
+        "tc": "即時",
+        "en": "Real-time"
+      }
+    },
+    {
+      "id": "cameras_wall",
+      "source": "td_snapshot",
+      "render": "image_wall",
+      "title": {
+        "tc": "交通快拍",
+        "en": "Traffic Snapshots"
+      },
+      "params": {
+        "list_source": "td_camera_list",
+        "prefer_grid": [
+          "sea",
+          "low-lying",
+          "tunnel"
+        ]
+      },
+      "cadence_note": {
+        "tc": "每 2 分鐘",
+        "en": "Every 2 minutes"
+      }
+    },
+    {
+      "id": "hko_cameras_wall",
+      "source": "hko_webcam",
+      "render": "image_wall",
+      "title": {
+        "tc": "天氣攝影機",
+        "en": "Weather Cameras"
+      },
+      "params": {
+        "list_source": "hko_webcam_index",
+        "max": 34
+      },
+      "cadence_note": {
+        "tc": "每 5 分鐘",
+        "en": "Every 5 minutes"
+      }
+    },
+    {
+      "id": "tp_queue_grid",
+      "source": "immd_cp_queue",
+      "render": "status_grid",
+      "title": {
+        "tc": "管制站輪候時間",
+        "en": "Control Point Queue Times"
+      },
+      "params": {
+        "stations": [
+          "HYW",
+          "HZM",
+          "LMC",
+          "LSC",
+          "LWS",
+          "MKT"
+        ]
+      },
+      "cadence_note": {
+        "tc": "每 15 分鐘",
+        "en": "Every 15 minutes"
+      }
+    },
+    {
+      "id": "crossboundary_ferry_table",
+      "source": "mardep_crossboundary_ferry",
+      "render": "table",
+      "title": {
+        "tc": "跨境渡輪班次",
+        "en": "Cross-boundary Ferry Services"
+      },
+      "params": {
+        "max_rows": 20
+      },
+      "cadence_note": {
+        "tc": "每 5 分鐘",
+        "en": "Every 5 minutes"
+      }
+    },
+    {
+      "id": "water_suspension_list",
+      "source": "wsd_water_suspension",
+      "render": "list",
+      "title": {
+        "tc": "臨時停水通知",
+        "en": "Temporary Water Suspension Notices"
+      },
+      "params": {
+        "max": 10
+      },
+      "cadence_note": {
+        "tc": "每 5 分鐘",
+        "en": "Every 5 minutes"
+      }
+    },
+    {
+      "id": "ae_waiting_grid",
+      "source": "ha_ae_waiting",
+      "render": "gauge_grid",
+      "title": {
+        "tc": "急症室輪候時間",
+        "en": "A&E Waiting Times"
+      },
+      "params": {},
+      "cadence_note": {
+        "tc": "每 15 分鐘",
+        "en": "Every 15 minutes"
+      }
+    },
+    {
+      "id": "hk_market_table",
+      "source": "yahoo_hk_quotes",
+      "render": "table",
+      "title": {
+        "tc": "港股（延遲報價）",
+        "en": "HK Market (delayed)"
+      },
+      "params": {
+        "symbols": [
+          "^HSI",
+          "^HSCE",
+          "0700.HK",
+          "9988.HK"
+        ]
+      },
+      "cadence_note": {
+        "tc": "延遲報價，唔係即時",
+        "en": "Delayed, not real-time"
+      },
+      "wide": true
+    },
+    {
+      "id": "breaking_news_list",
+      "source": "gov_news_law_order",
+      "render": "list",
+      "title": {
+        "tc": "突發新聞（治安消息）",
+        "en": "Breaking News (law & order)"
+      },
+      "params": {
+        "max": 8
+      },
+      "cadence_note": {
+        "tc": "即時",
+        "en": "Live"
+      },
+      "disclaimer": {
+        "tc": "只轉載政府新聞網原文，不代表本項目立場。本項目與香港特區政府無關，亦非其轄下系統。",
+        "en": "Official government releases reprinted verbatim. This does not represent the project's position; the project is not affiliated with the HKSAR Government."
+      }
+    },
+    {
+      "id": "aqhi_gauge_grid",
+      "source": "aqhi_city_dashboard",
+      "render": "gauge_grid",
+      "title": {
+        "tc": "空氣質素指數 AQHI",
+        "en": "Air Quality Health Index"
+      },
+      "params": {},
+      "cadence_note": {
+        "tc": "每小時",
+        "en": "Hourly"
+      }
+    },
+    {
+      "id": "carpark_vacancy_list",
+      "source": "td_carpark_vacancy",
+      "render": "table",
+      "title": {
+        "tc": "停車場空位",
+        "en": "Carpark Vacancy"
+      },
+      "params": {
+        "max_rows": 12
+      },
+      "wide": true,
+      "cadence_note": {
+        "tc": "即時",
+        "en": "Real-time"
+      }
+    },
+    {
+      "id": "live_cams_wall",
+      "source": "hk_live_cams_community",
+      "render": "image_wall",
+      "title": {
+        "tc": "香港直播（第三方）",
+        "en": "HK Live Streams (third-party)"
+      },
+      "params": {
+        "max": 6
+      },
+      "cadence_note": {
+        "tc": "直播狀態即時偵測",
+        "en": "Live state detected"
+      }
+    },
+    {
+      "id": "world_news_wall",
+      "source": "world_news_live",
+      "render": "image_wall",
+      "title": {
+        "tc": "國際新聞直播（第三方）",
+        "en": "World News Live (third-party)"
+      },
+      "params": {
+        "max": 6
+      },
+      "cadence_note": {
+        "tc": "直播狀態即時偵測",
+        "en": "Live state detected"
+      }
+    },
+    {
+      "_comment": "aircraft_status WITHDRAWN 2026-09-23. adsb.fi and adsb.lol both block Cloudflare egress IPs (200 from a home IP, 403/429 from the Worker), so the panel could only ever show an error once deployed. The layers.json entry, the adapter and the plane glyph all remain: restore a panel block here and add 'aircraft_status' back to OVERVIEW in main.ts when a source that tolerates cloud egress exists, or when a PC-side collector publishes static JSON (the water-suspension pattern).",
+      "id": "wind_status",
+      "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
+      "render": "status_grid",
+      "title": {
+        "tc": "風勢（天文台 10 分鐘風）",
+        "en": "Wind (HKO 10-min stations)"
+      },
+      "params": {},
+      "cadence_note": {
+        "tc": "每 10 分鐘",
+        "en": "Every 10 minutes"
+      }
+    },
+    {
+      "id": "stations_status",
+      "source": "hko_stations_network",
+      "render": "status_grid",
+      "title": {
+        "tc": "氣象站網絡（CSDI）",
+        "en": "Weather station network (CSDI)"
+      },
+      "params": {},
+      "cadence_note": {
+        "tc": "官方靜態參考圖層",
+        "en": "Official static reference layer"
+      }
+    },
+    {
+      "id": "mtr_next_train_list",
+      "source": "mtr_next_train",
+      "render": "list",
+      "title": {
+        "tc": "港鐵 下一班列車",
+        "en": "MTR Next Train"
+      },
+      "params": {
+        "line": "ISL",
+        "sta": "ADM"
+      },
+      "cadence_note": {
+        "tc": "實時（每 30 秒）",
+        "en": "Real-time (30s)"
+      }
+    },
+    {
+      "id": "kmb_eta_table",
+      "source": "kmb_eta",
+      "render": "table",
+      "title": {
+        "tc": "九巴 到站時間",
+        "en": "KMB Arrivals"
+      },
+      "params": {
+        "stop_id": "18492910339410B1",
+        "max": 10
+      },
+      "wide": true,
+      "cadence_note": {
+        "tc": "每 1 分鐘",
+        "en": "Every minute"
+      }
+    }
+  ]
+}

@@ -9,7 +9,11 @@
 // apart here.
 import { readFileSync } from "node:fs";
 
-const j = JSON.parse(readFileSync("../data/live_streams.json", "utf8"));
+// Which file to audit. No argument means the HK camera wall, resolved against THIS FILE
+// so the script works from any cwd; an argument is taken as typed, relative to cwd.
+//   node scripts/probe-livestreams.mjs ../data/live_news.json
+const FILE = process.argv[2] ?? new URL("../../data/live_streams.json", import.meta.url);
+const j = JSON.parse(readFileSync(FILE, "utf8"));
 const streams = Array.isArray(j) ? j : j.streams ?? j.items ?? [];
 console.log(`${streams.length} curated streams\n`);
 console.log(`${"id".padEnd(14)} ${"live".padEnd(5)} ${"std".padEnd(5)} ${"max".padEnd(5)} verdict   title`);

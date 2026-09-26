@@ -133,10 +133,95 @@ grep -rEn '([0-9]{1,3}\.){3}[0-9]{1,3}' --include='*.json' --include='*.md' --in
 
 ## 7. 已經確認安全嘅嘢（唔使再擔心）
 
-- ✅ 我哋 164 個源**全部免 key** —— 冇一個需要 secret 先攞到數據
+- ✅ 我哋 171 個源**全部免 key** —— 冇一個需要 secret 先攞到數據
+  （⚠️ 2026-09-27 更正：**呢句唔再全對**。TomTom / AISStream / OpenAQ / NASA FIRMS
+   四個源要 key，但**未接入**。接入嗰日要跟 §8.3 嘅規矩：key 只可以喺 Worker，
+   而且**永遠唔可以經過 `/config/3d`**。）
 - ✅ 大部分數據係政府公開資料，發佈本身唔涉 PII
 - ✅ `.gitignore` 已擋 `.env`
 - ✅ 前端只做 GET，冇寫入操作
 
 **即係話：只要唔亂加新源、唔加 key、唔加報料功能，呢個專案本身就係低風險。**
 風險係後來加嘅嘢帶入嚟嘅，唔係而家。
+
+---
+
+## 8. 2026-09-27 審計：兩個已修復 + 一個要你手動做
+
+實測方法：喺 `worker/test/` 跑 probe，唔靠讀 code 話「睇落冇問題」。
+
+### 8.1 【最重要】真正嘅天花板係免費層每日 10 萬 request
+
+Cloudflare 官方文件：**Workers Free = 100,000 requests/day**，超額 → **Error 1027**，
+即係**全部人**到午夜 UTC 之前都入唔到。唔係收錢，係**全站死**。
+
+**每一 request 都燒一格配額，唔論 cache HIT 定 MISS。** Cache 幫嘅係上游發佈者，
+唔係我哋嘅配額。冷啟動一次載入 ≈ 49 個 proxy request，所以**誠實容量大約每日 2,000 次冷載入**。
+
+**問題**：`DATA_TOTAL_LIMIT_PER_MIN` 同 `TILE_TOTAL_LIMIT_PER_MIN` 係**每 isolate、
+每 IP**。isolate 有 N 個就乘 N。舊值 1,200 + 600 = 1,800/min，即係**單一個 IP
+唔使一個鐘就可以燒光成日配額**。
+
+**呢個喺 code 度解決唔到** —— 要限一個全局配額就要全局狀態，而每 request 寫一次 KV
+遠遠超出免費 KV 額度（1,000 writes/day）。所以：
+
+#### 👉 你要做：去 Cloudflare dashboard 加一條 rate limiting rule（免費層有一條）
+
+```
+Path:   /proxy
+When:   同一 IP 超過 120 requests/minute
+Action: Block（唔係 Challenge —— blocked 唔會觸發 Worker）
+```
+
+**關鍵**：喺 edge 被 block 嘅 request **唔會 invoke Worker，所以唔會燒配額**。
+呢個係唯一真正有效嘅一層。
+
+### 8.2 Worker 跟 redirect 但冇重驗每一跳 → 已修
+
+原本 `fetch(..., { redirect: "follow" })`：驗完 host 就交俾 fetch，跟完 redirect
+**冇再驗**。實測 67 個 host 有 9 個喺實際路徑上會 redirect。
+
+**修法嘅陷阱（實測踩到）**：第一版寫「每一跳都要喺 whitelist」→ **整死 5 條 RTHK 新聞
+RSS**，因為：
+```
+hop 0  301  https://rthk.hk/<feed>.xml       -> http://rthk9.rthk.hk/<feed>.xml   ← 係 http
+hop 1  302  http://rthk9.rthk.hk/<feed>.xml  -> https://rthk9.rthk.hk/<feed>.xml
+hop 2  200
+```
+`rthk9.rthk.hk` 唔喺 sources.json（冇人直接連佢），而且中間跳係 **http**。
+
+**最終規則**：`redirect: "manual"` + 最多 3 跳，每跳重驗：
+同一 **registrable domain**（唔係 whitelist）→ 容許 http/https；
+跨出 domain → 必須 https **而且** host 喺 whitelist。
+
+界線係 domain 唔係 host：`rthk.hk → rthk9.rthk.hk` 係發佈者帶你行自己個站，
+`rthk.hk → attacker.net` 就係別人個站。
+
+**驗證**：`node test/probe-redirect-policy.mjs` → **21 passed, 0 failed**
+（11 個 domain 規則 case + 9 個活源真網絡 case + 1 個對照）。
+呢個檔案就係用嚟捉上面嗰個 regression —— 佢真係捉到。
+
+### 8.3 `/config/3d` 唔准公開 keyed URL → 已修
+
+`wrangler.toml` 寫「LandsD 要 key 嗰日，將 keyed URL 放入 secret」—— 啱。
+但 `/config/3d` 會將 `env.TILES3D_*` **公開派俾任何人**。兩件事唔可以並存。
+
+已加 guard：任何 `TILES3D_*` URL 含 `key=` / `token=` / `signature=` 等參數 →
+**回 503 並寫 log**，唔會靜靜哋派出去。
+
+**要出 keyed tileset 嘅話，走 `/proxy`** —— `data.map.gov.hk` 已經喺 whitelist，
+secret 喺 `handleProxy` 注入就永遠唔會去到 client。
+
+### 8.4 另外兩個細修正
+
+- **`MAX_UPSTREAM_BYTES` 只靠 Content-Length** → chunked response 完全繞過。已加
+  串流 byte 計數。
+- **`buckets.clear()` 會清空所有計數器**（一次流量高峰或大量 IP 就令所有人重新有額度）
+  → 改為只清過期，唔夠就淘汰最舊。
+
+### 8.5 已驗證做對嘅（唔使改）
+
+- `CF-Connecting-IP` 而唔係 `X-Forwarded-For`（XFF 可以偽造）
+- HTTPS only、拒 URL 內 credentials、`Set-Cookie` 唔轉發、只准 GET
+- 上游錯誤唔入 cache
+- CORS `*` 但冇 credentials

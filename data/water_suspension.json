@@ -4,14 +4,14 @@
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
  "geocode_note": "lat/lng come from the OGCIO Address Lookup Service (als.gov.hk), the registered als_address_lookup source, applied to the first clause of each notice address. A notice that did not resolve keeps lat=null and is drawn at DISTRICT level -- we never substitute a district centroid, because a confident pin in the wrong place is worse than an honest district highlight.",
- "generated": "2026-09-27T01:59:36+08:00",
+ "generated": "2026-09-27T02:09:36+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
   "records": 102,
-  "active": 2,
+  "active": 1,
   "located": 101,
   "district_only": 1,
-  "active_located": 2,
+  "active_located": 1,
   "active_district_only": 0
  },
  "districts": [
@@ -1542,11 +1542,11 @@
    "district_en": "Wong Tai Sin",
    "nature": "緊急停水",
    "suspend_at": "2026-09-26T21:00:00+08:00",
-   "resume_at": null,
+   "resume_at": "2026-09-27T01:33:00+08:00",
    "address": "樂善道15, 26, 28號, 石鼓壟道遊樂場",
    "address_en": "NOS 15, 26, 28 TUNG LEI ROAD, SHEK KU LUNG ROAD PLAYGROUND",
    "cause": "緊急維修水管工程",
-   "status": "現正停水",
+   "status": "供水已恢復",
    "lat": 22.33183,
    "lng": 114.1925
   },
@@ -1567,7 +1567,6 @@
   }
  ],
  "active_ids": [
-  "2026092613787",
   "2026092613788"
  ]
 }

@@ -20,6 +20,13 @@ const cases = [
   ["localhost", "https://localhost:8787/health", 403],
   ["internal RFC1918", "https://192.168.1.1/", 403],
   ["port on allowed host", "https://data.weather.gov.hk:8080/", 403],
+  // Redirect handling end-to-end. The Worker follows redirects but re-validates EVERY hop
+  // against the registrable domain. Nine registry sources redirect on their real paths, and
+  // all five RTHK news feeds bounce rthk.hk -> http://rthk9.rthk.hk -> https://rthk9.rthk.hk.
+  // A rule that refuses those breaks the ticker and the breaking-news panel in silence, so
+  // this case is the regression guard. probe-redirect-policy.mjs tests the rule itself and
+  // needs no running Worker; this is the echo through the whole stack.
+  ["redirecting host still fetches (RTHK RSS)", "https://rthk.hk/rthk/news/rss/c_expressnews_clocal.xml", 200],
 ];
 
 let pass = 0, fail = 0;

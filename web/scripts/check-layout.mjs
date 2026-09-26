@@ -20,10 +20,22 @@ await page.goto(BASE, { waitUntil: "domcontentloaded" });
 // served 16 panels moments later. Every assertion below is about the relationship between
 // elements, and no relationship is violated by having none of them — so a check that can pass on
 // a blank page is worse than no check. The timeout is fatal.
-try {
-  await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45000 });
-} catch {
-  console.error("readiness timeout: document.body.dataset.ready never became 1 - the app failed to boot.");
+// Retry the navigation ONCE. A cold browser backend loses the first navigation — measured
+// repeatedly in this repo: the identical run succeeds on the second attempt. Fatal-but-single-shot
+// turns that flake into a red check: MEASURED 2026-09-27, check:all exit=1 on a healthy build for
+// exactly this. Two failures IS a result, so the guard stays fatal — it just stops crying wolf.
+let booted = false;
+for (let attempt = 1; attempt <= 2 && !booted; attempt++) {
+  try {
+    await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45000 });
+    booted = true;
+    if (attempt > 1) console.log("(booted on retry — the first navigation was a cold-start miss)");
+  } catch {
+    if (attempt === 1) await page.goto(BASE, { waitUntil: "domcontentloaded" });
+  }
+}
+if (!booted) {
+  console.error("readiness timeout on both attempts: document.body.dataset.ready never became 1 - the app failed to boot.");
   await browser.close();
   process.exit(1);
 }

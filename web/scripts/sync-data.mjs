@@ -42,6 +42,10 @@ const files = [
   // Curated community live-stream list (YouTube, third-party — see source entry)
   // One curated list, region-tabbed: 17 HK cameras + 16 international news channels.
   ["data/live_streams.json", "live_streams.json"],
+  // Collector output (scripts/build_carpark_info.py). Slimmed from TD's 554KB basic_info_all.json
+  // to the three fields the panel reads — see the note in the source entry. This is the file a
+  // browser was downloading all of on every cold load.
+  ["data/carpark_info.json", "carpark_info.json"],
   // Immigration control points with VALIDATED WGS84 positions, so 口岸模式 can
   // plot the crossings as POIs with popups instead of only camera dots. Reference
   // data, not a feed — see the _method note in the file for how each coordinate

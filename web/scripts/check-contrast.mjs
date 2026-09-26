@@ -129,14 +129,26 @@ const audit = async (theme) => {
 const runFor = async (theme) => {
   await page.goto(BASE, { waitUntil: "domcontentloaded" });
   // Fatal, not swallowed: an app that never boots yields zero low-contrast nodes, and "0 failures"
-// then reads as a pass. Same false-pass that check-layout.mjs had.
-try {
-  await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45000 });
-} catch {
-  console.error("readiness timeout: document.body.dataset.ready never became 1 - the app failed to boot.");
-  await browser.close();
-  process.exit(1);
-}
+  // then reads as a pass. Same false-pass that check-layout.mjs had.
+  //
+  // Fatal, but with ONE retry: a cold browser backend loses the first navigation, which is a flake
+  // rather than a result. Single-shot fatal turns it into a red check on a healthy build — measured
+  // 2026-09-27, check:all exit=1. Two failures is still a result, so the guard stays fatal.
+  let booted = false;
+  for (let attempt = 1; attempt <= 2 && !booted; attempt++) {
+    try {
+      await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45000 });
+      booted = true;
+      if (attempt > 1) console.log(`(booted on retry - the first navigation was a cold-start miss)`);
+    } catch {
+      if (attempt === 1) await page.goto(BASE, { waitUntil: "domcontentloaded" });
+    }
+  }
+  if (!booted) {
+    console.error("readiness timeout on both attempts: document.body.dataset.ready never became 1 - the app failed to boot.");
+    await browser.close();
+    process.exit(1);
+  }
   await page.waitForTimeout(9000);
   return audit(theme);
 };

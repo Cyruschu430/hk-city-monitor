@@ -165,16 +165,34 @@ Cloudflare 官方文件：**Workers Free = 100,000 requests/day**，超額 → *
 **呢個喺 code 度解決唔到** —— 要限一個全局配額就要全局狀態，而每 request 寫一次 KV
 遠遠超出免費 KV 額度（1,000 writes/day）。所以：
 
-#### 👉 你要做：去 Cloudflare dashboard 加一條 rate limiting rule（免費層有一條）
+#### ⚠️ 更正（同日稍後）：原本叫你加 dashboard rule —— **你嘅設定做唔到**
 
-```
-Path:   /proxy
-When:   同一 IP 超過 120 requests/minute
-Action: Block（唔係 Challenge —— blocked 唔會觸發 Worker）
-```
+我查咗官方文件，兩個事實推翻咗上面個方案：
 
-**關鍵**：喺 edge 被 block 嘅 request **唔會 invoke Worker，所以唔會燒配額**。
-呢個係唯一真正有效嘅一層。
+1. **WAF rate limiting rule 係 zone 綁定。** 官方原文：「Create a rate limiting rule in
+   the dashboard **for a zone**」。我哋個 Worker 冇 `routes`、行 `*.workers.dev`
+   → **根本冇 zone 可以加 rule**。
+2. **Workers 有 Rate Limiting binding**（`[[ratelimits]]`），唔需要 zone。但官方文件
+   寫明「Rate limits that are applied **after your Worker starts**」—— 佢跑喺 Worker
+   入面，**invocation 已經計咗落 10 萬配額**。救唔到配額，只係一個好啲嘅 abuse 絆線。
+
+**所以：免費層 + workers.dev，冇任何方法阻止人燒你 10 萬配額。**
+
+#### 👉 真正嘅答案唔係限速，係架構
+
+ANALYTICS.md 其實已經決定咗：「cron 預先計好寫 static JSON，瀏覽器零 API key、
+零 per-visitor 成本」。生產路徑就應該係咁：
+
+| 層 | 做咩 | 配額風險 |
+|---|---|---|
+| **Cloudflare Pages** | 派 static JSON + 前端 | **零**（無限頻寬、唔計 request 配額） |
+| **Worker** | 只服務 cron / 開發時即時補充 | 唔喺訪客路徑 → 冇人燒到 |
+| **PC cron** | 收集數據 → 寫入 repo／R2 | 自己控制 |
+
+**訪客唔經 Worker，配額問題就消失。** 唔係緩解，係消除。
+
+如果將來真係要 Worker 落訪客路徑，唯一有效嘅方法係**自備一個 domain 放上 Cloudflare**
+（免費 plan 都俾 zone-level rule）—— 但嗰條路要一個 domain，唔喺 US$0 範圍。
 
 ### 8.2 Worker 跟 redirect 但冇重驗每一跳 → 已修
 

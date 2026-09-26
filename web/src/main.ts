@@ -39,12 +39,12 @@ import { createGroupTabs, labelFor, type GroupTab } from "./ui/grouptabs.ts";
 /** The vertical-free default view. Ordered as a World-Monitor-style dense
     wall: imagery heads the column, then life-safety and civic reads. */
 const OVERVIEW = [
-  "live_cams_wall",
-  // The two live walls sit together on purpose: the camera wall is a city's own eyes
-  // (1,013 TD + 34 HKO cameras, an asset no global project has) and the news wall is
-  // what the world is saying about it. Same map, two scales — keeping them adjacent is
-  // what makes that read as a pair rather than two unrelated panels.
-  "world_news_wall",
+  // ONE live wall with region tabs, not two panels side by side. The camera wall is a
+  // city's own eyes (1,013 TD + 34 HKO cameras, an asset no global project has) and the
+  // news wall is what the world is saying about it; two panels meant two ~300px blocks
+  // scrolling past each other and neither said they were related. The tab set comes from
+  // data/live_streams.json, so the regions are data and this stays a single id.
+  "live_wall",
   "warnings_list",
   "breaking_news_list",
   "wind_status",

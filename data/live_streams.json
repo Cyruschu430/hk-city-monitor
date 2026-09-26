@@ -1,25 +1,229 @@
 {
-  "_comment": "CURATED COMMUNITY LIST (not official open data): 17 Hong Kong live cam streams the project owner chose for the 直播 panel. Every tile is labelled 第三方直播 / third-party, and each stream's live state is resolved at runtime (probeLive) — an off-air tile says 現時無直播 instead of playing a black rectangle. If any channel dies, remove its row here.",
-  "_verification": "Run `node web/scripts/probe-livestreams.mjs` to audit every id. It distinguishes a REMOVED video (404 on hqdefault_live.jpg AND hqdefault.jpg AND maxresdefault.jpg) from one that is merely not streaming right now (standard thumbnail still 200). MEASURED 2026-09-24: 17/18 live, 1 dead.",
-  "_removed": "GxMB-EH_lJs (香港電台 RTHK 直播) was REMOVED 2026-09-24: all three thumbnail variants 404 and YouTube's oEmbed returns Forbidden, so the video is gone. It surfaced as an intermittent harness failure — a 404 on i.ytimg.com that looked like a flaky request but was a dead entry. NOT replaced, deliberately: RTHK's youtube.com/@RTHK/live resolves to whatever is CURRENTLY streaming, and on the day of this check that was a one-off event feed (【特朗普為習近平舉行歡迎儀式】現場直播, id UL31CyRcu0w). Hardcoding that would 404 again as soon as the event ended, recreating this exact bug. The remaining 17 are stable 24/7 cams, which is a stronger list than one transient channel id. To re-add RTHK: pick the id at the moment you ship, and expect to maintain it.",
-  "source_name": "第三方 YouTube 香港直播",
+  "_comment": "CURATED COMMUNITY LIST (not official open data): the project's own live-video wall. 17 Hong Kong live cameras and 16 international news channels, the ones the project owner chose. Every tile is labelled 第三方 / third-party. Live state is resolved at runtime by probeLive (hqdefault_live.jpg) - an off-air tile says 現時無直播 instead of playing a black rectangle. If a channel dies, remove its row.",
+  "_verification": "Audit every id with `node web/scripts/probe-livestreams.mjs` (defaults to this file). Re-resolve a channel handle to its CURRENT live id with `node web/scripts/resolve-live-news.mjs <@handle>` - that script must run from a residential IP; YouTube answers a datacenter range with a shell page that has no video id in it.",
+  "_selection_rule": "News entries must stream 24/7 AND brand themselves as such. The resolver surfaces plenty of ids that are today's EVENT feed - @financialtimes returned a weekend festival, @tbsnewsdig and @ANNnewsCH put the date in the live title and rotate daily, @ETtoday returned a single rally. Hardcoding any of those recreates the GxMB-EH_lJs failure: the id dies with the event and the tile 404s in silence. If a title contains a date or an event name it does NOT belong here.",
+  "_hk_gap": "There is exactly one Hong Kong NEWS source category missing, deliberately: RTHK only does event feeds, and TVB / i-CABLE / now / HOY keep their news channels in their own apps, so no free 24/7 YouTube HK news stream exists. Twelve handles were tested and every one returned 404 or no live. HK coverage stays on the camera side, which is a genuine strength rather than a consolation: 1,013 TD + 34 HKO cameras is a density no global project has.",
+  "_regions": "region is the tab this stream appears under. The tab set, their order and their labels are ALL derived from this file - adding a region is a data change, not a code change. Order is first-seen, so 香港 leads because the HK entries are written first.",
+  "region_labels": {
+    "hk": {
+      "tc": "香港",
+      "en": "Hong Kong"
+    },
+    "greater-china": {
+      "tc": "大中華",
+      "en": "Greater China"
+    },
+    "asia-pacific": {
+      "tc": "亞太",
+      "en": "Asia-Pacific"
+    },
+    "finance": {
+      "tc": "財經",
+      "en": "Finance"
+    },
+    "world": {
+      "tc": "世界",
+      "en": "World"
+    }
+  },
   "streams": [
-    { "id": "gjN3_AIowt8", "title": "HOY TV 直播", "channel": "HOY 媒體網絡" },
-    { "id": "XN-ArdUrqtc", "title": "實時東九龍維港 Live", "channel": "Country & Folk bgm" },
-    { "id": "cmGz913hKFI", "title": "太子景觀 24/7", "channel": "語音天氣報告｜減壓音樂" },
-    { "id": "jmwM1hA3JE0", "title": "TST 尖沙咀 Live", "channel": "陪您休閒上班看風景" },
-    { "id": "B_PPdZmkpwo", "title": "香港仔海峽 Live", "channel": "HK Live Aberdeen Harbour" },
-    { "id": "ygC5wni2DMQ", "title": "香港國際機場 ATC 即時追蹤", "channel": "VHHH/HKG" },
-    { "id": "TIYZVyzOk4k", "title": "太平山頂 24/7 實景直播", "channel": "Relaxing Music BGM" },
-    { "id": "6YYmUo2TgJ0", "title": "維多利亞港東面直播", "channel": "HK Live Cam" },
-    { "id": "3dDD5F0euCY", "title": "香港天氣台 LIVE", "channel": "颱風路徑追蹤｜地震速報" },
-    { "id": "WkcmApaOvWc", "title": "銅鑼灣 Live", "channel": "4K 減壓音樂" },
-    { "id": "Fwr8lBTaBtE", "title": "尖沙咀鬧市風景直播", "channel": "沉浸式減壓音樂" },
-    { "id": "O1oQhMlBiOA", "title": "葵青區開揚天空直播", "channel": "即時天氣｜雲朵流動" },
-    { "id": "RqwBvGHOcnQ", "title": "鴨脷洲海怡半島 24/7", "channel": "HK Live" },
-    { "id": "JPREngCARsA", "title": "香港機場 24/7 3D 空中交通", "channel": "VHHH ATC" },
-    { "id": "l8SwiH3vr0M", "title": "茶果嶺村寮屋區直播", "channel": "Cha Kwo Ling Village" },
-    { "id": "dEtt5bzoHjc", "title": "鴨脷洲南景繞射", "channel": "Nature Sound" },
-    { "id": "eSm_NTKduV4", "title": "香港實時天氣地圖 24 小時直播", "channel": "HKWind 各區風速雨量" }
+    {
+      "id": "gjN3_AIowt8",
+      "title": "HOY TV ç›´æ’­",
+      "channel": "HOY åª’é«”ç¶²çµ¡",
+      "region": "hk"
+    },
+    {
+      "id": "XN-ArdUrqtc",
+      "title": "å¯¦æ™‚æ±ä¹é¾ç¶­æ¸¯ Live",
+      "channel": "Country & Folk bgm",
+      "region": "hk"
+    },
+    {
+      "id": "cmGz913hKFI",
+      "title": "å¤ªå­æ™¯è§€ 24/7",
+      "channel": "èªžéŸ³å¤©æ°£å ±å‘Šï½œæ¸›å£“éŸ³æ¨‚",
+      "region": "hk"
+    },
+    {
+      "id": "jmwM1hA3JE0",
+      "title": "TST å°–æ²™å’€ Live",
+      "channel": "é™ªæ‚¨ä¼‘é–’ä¸Šç­çœ‹é¢¨æ™¯",
+      "region": "hk"
+    },
+    {
+      "id": "B_PPdZmkpwo",
+      "title": "é¦™æ¸¯ä»”æµ·å³½ Live",
+      "channel": "HK Live Aberdeen Harbour",
+      "region": "hk"
+    },
+    {
+      "id": "ygC5wni2DMQ",
+      "title": "é¦™æ¸¯åœ‹éš›æ©Ÿå ´ ATC å³æ™‚è¿½è¹¤",
+      "channel": "VHHH/HKG",
+      "region": "hk"
+    },
+    {
+      "id": "TIYZVyzOk4k",
+      "title": "å¤ªå¹³å±±é ‚ 24/7 å¯¦æ™¯ç›´æ’­",
+      "channel": "Relaxing Music BGM",
+      "region": "hk"
+    },
+    {
+      "id": "6YYmUo2TgJ0",
+      "title": "ç¶­å¤šåˆ©äºžæ¸¯æ±é¢ç›´æ’­",
+      "channel": "HK Live Cam",
+      "region": "hk"
+    },
+    {
+      "id": "3dDD5F0euCY",
+      "title": "é¦™æ¸¯å¤©æ°£å° LIVE",
+      "channel": "é¢±é¢¨è·¯å¾‘è¿½è¹¤ï½œåœ°éœ‡é€Ÿå ±",
+      "region": "hk"
+    },
+    {
+      "id": "WkcmApaOvWc",
+      "title": "éŠ…é‘¼ç£ Live",
+      "channel": "4K æ¸›å£“éŸ³æ¨‚",
+      "region": "hk"
+    },
+    {
+      "id": "Fwr8lBTaBtE",
+      "title": "å°–æ²™å’€é¬§å¸‚é¢¨æ™¯ç›´æ’­",
+      "channel": "æ²‰æµ¸å¼æ¸›å£“éŸ³æ¨‚",
+      "region": "hk"
+    },
+    {
+      "id": "O1oQhMlBiOA",
+      "title": "è‘µé’å€é–‹æšå¤©ç©ºç›´æ’­",
+      "channel": "å³æ™‚å¤©æ°£ï½œé›²æœµæµå‹•",
+      "region": "hk"
+    },
+    {
+      "id": "RqwBvGHOcnQ",
+      "title": "é´¨è„·æ´²æµ·æ€¡åŠå³¶ 24/7",
+      "channel": "HK Live",
+      "region": "hk"
+    },
+    {
+      "id": "JPREngCARsA",
+      "title": "é¦™æ¸¯æ©Ÿå ´ 24/7 3D ç©ºä¸­äº¤é€š",
+      "channel": "VHHH ATC",
+      "region": "hk"
+    },
+    {
+      "id": "l8SwiH3vr0M",
+      "title": "èŒ¶æžœå¶ºæ‘å¯®å±‹å€ç›´æ’­",
+      "channel": "Cha Kwo Ling Village",
+      "region": "hk"
+    },
+    {
+      "id": "dEtt5bzoHjc",
+      "title": "é´¨è„·æ´²å—æ™¯ç¹žå°„",
+      "channel": "Nature Sound",
+      "region": "hk"
+    },
+    {
+      "id": "eSm_NTKduV4",
+      "title": "é¦™æ¸¯å¯¦æ™‚å¤©æ°£åœ°åœ– 24 å°æ™‚ç›´æ’­",
+      "channel": "HKWind å„å€é¢¨é€Ÿé›¨é‡",
+      "region": "hk"
+    },
+    {
+      "id": "Ry--eMIjYLQ",
+      "title": "鳳凰衛視 24小時直播間",
+      "channel": "鳳凰衛視",
+      "region": "greater-china"
+    },
+    {
+      "id": "vNVp6bxkL1c",
+      "title": "CCTV 中文國際（亞洲）",
+      "channel": "CCTV",
+      "region": "greater-china"
+    },
+    {
+      "id": "0i7n3r01L2U",
+      "title": "CGTN LIVE 24/7",
+      "channel": "CGTN",
+      "region": "greater-china"
+    },
+    {
+      "id": "XWq5kBlakcQ",
+      "title": "CNA 24/7（新加坡）",
+      "channel": "Channel NewsAsia",
+      "region": "asia-pacific"
+    },
+    {
+      "id": "IimtbuqYIE8",
+      "title": "NHK WORLD-JAPAN News",
+      "channel": "NHK",
+      "region": "asia-pacific"
+    },
+    {
+      "id": "iH4wyxHWyLU",
+      "title": "YTN 24小時新聞（韓國）",
+      "channel": "YTN",
+      "region": "asia-pacific"
+    },
+    {
+      "id": "OlUMDZchivQ",
+      "title": "Bloomberg Originals LIVE",
+      "channel": "Bloomberg",
+      "region": "finance"
+    },
+    {
+      "id": "9NyxcX3rhQs",
+      "title": "CNBC LIVE",
+      "channel": "CNBC",
+      "region": "finance"
+    },
+    {
+      "id": "KQp-e_XQnDE",
+      "title": "Yahoo Finance 24/7",
+      "channel": "Yahoo Finance",
+      "region": "finance"
+    },
+    {
+      "id": "gCNeDWCI0vo",
+      "title": "Al Jazeera English Live",
+      "channel": "Al Jazeera",
+      "region": "world"
+    },
+    {
+      "id": "LuKwFajn37U",
+      "title": "DW News Livestream",
+      "channel": "DW",
+      "region": "world"
+    },
+    {
+      "id": "pykpO5kQJ98",
+      "title": "Euronews English Live",
+      "channel": "Euronews",
+      "region": "world"
+    },
+    {
+      "id": "a47ckXKZjxI",
+      "title": "FRANCE 24 – EN DIRECT",
+      "channel": "France 24",
+      "region": "world"
+    },
+    {
+      "id": "wCzFV6XV1yI",
+      "title": "NBC News NOW",
+      "channel": "NBC",
+      "region": "world"
+    },
+    {
+      "id": "N9mqdbh9s3Y",
+      "title": "ABC News Live",
+      "channel": "ABC",
+      "region": "world"
+    },
+    {
+      "id": "GotlA1KKWoo",
+      "title": "CNN Headlines 24/7",
+      "channel": "CNN",
+      "region": "world"
+    }
   ]
 }

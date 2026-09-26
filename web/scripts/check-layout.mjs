@@ -15,7 +15,18 @@ const exe = process.env.HKCM_CHROME ?? "C:\\Users\\cyrus\\AppData\\Local\\ms-pla
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, locale: "zh-HK" });
 await page.goto(BASE, { waitUntil: "domcontentloaded" });
-await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45000 }).catch(() => {});
+// A swallowed readiness timeout measures an EMPTY shell and then reports LAYOUT OK. MEASURED
+// 2026-09-27: a cold preview start produced "panels 0/0 ... LAYOUT OK" while the same server
+// served 16 panels moments later. Every assertion below is about the relationship between
+// elements, and no relationship is violated by having none of them — so a check that can pass on
+// a blank page is worse than no check. The timeout is fatal.
+try {
+  await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45000 });
+} catch {
+  console.error("readiness timeout: document.body.dataset.ready never became 1 - the app failed to boot.");
+  await browser.close();
+  process.exit(1);
+}
 await page.waitForTimeout(10000);
 
 const r = await page.evaluate(() => {
@@ -73,6 +84,8 @@ console.log(`panels     ${r.visibleOnFirstScreen}/${r.panelCount} on the first s
 console.log(`row tracks ${r.rowTrackCount} summing ${r.rowTrackSum}px vs scrollHeight ${r.panelColScroll.scrollH}px`);
 
 const problems = [];
+// No panels means every other assertion is vacuously true.
+if (r.panelCount === 0) problems.push("0 panels rendered - the geometry below describes an empty shell, not the app");
 if (r.overlapCount > 0) problems.push(`${r.overlapCount} panel overlaps (must be 0)`);
 // scrollHeight is row tracks PLUS the container's padding and the gaps between tracks — the
 // first version of this check compared the two raw and reported a 52px "failure" that was exactly

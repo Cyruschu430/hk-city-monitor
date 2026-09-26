@@ -128,7 +128,15 @@ const audit = async (theme) => {
 
 const runFor = async (theme) => {
   await page.goto(BASE, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45000 }).catch(() => {});
+  // Fatal, not swallowed: an app that never boots yields zero low-contrast nodes, and "0 failures"
+// then reads as a pass. Same false-pass that check-layout.mjs had.
+try {
+  await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45000 });
+} catch {
+  console.error("readiness timeout: document.body.dataset.ready never became 1 - the app failed to boot.");
+  await browser.close();
+  process.exit(1);
+}
   await page.waitForTimeout(9000);
   return audit(theme);
 };
@@ -160,4 +168,12 @@ for (const [theme, res] of Object.entries(results)) {
 }
 
 console.log(`\n${total === 0 ? "CONTRAST OK" : `CONTRAST FAILURES: ${total}`}  (${unknownTotal} nodes over canvas/img not judgeable from CSS — see above)`);
+// A page that rendered nothing has nothing to fail. Require evidence that there was something
+// to audit before accepting a clean result.
+const MIN_NODES = 200;
+const audited = Math.min(...Object.values(results).map((r) => r.checked));
+if (audited < MIN_NODES) {
+  console.error(`only ${audited} text nodes were audited (expected at least ${MIN_NODES}) - the app likely did not render`);
+  process.exit(1);
+}
 process.exit(total === 0 ? 0 : 1);

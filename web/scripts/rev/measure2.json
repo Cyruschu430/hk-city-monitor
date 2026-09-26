@@ -1,0 +1,261 @@
+{
+  "groups": {
+    "13px": {
+      "n": 1,
+      "minContrast": 18.2,
+      "worst": {
+        "text": "HK CITY MONITOR",
+        "color": "rgb(11, 22, 38)",
+        "bg": "rgb(255,255,255)",
+        "sel": "h1"
+      },
+      "topClasses": [
+        "h1"
+      ]
+    },
+    "10px": {
+      "n": 51,
+      "minContrast": 1.9,
+      "worst": {
+        "text": "SUN, 27 SEPT 2026 01:26:06 HKT",
+        "color": "rgb(159, 180, 204)",
+        "bg": "rgb(238,242,248)",
+        "sel": "span.mh-clock"
+      },
+      "topClasses": [
+        "sub",
+        "ticker-tag",
+        "maplibregl-ctrl",
+        "maplibregl-ctrl-attrib-inner",
+        "mh-clock",
+        "a"
+      ]
+    },
+    "9.5px": {
+      "n": 239,
+      "minContrast": 2.9,
+      "worst": {
+        "text": "2分鐘",
+        "color": "rgb(70, 97, 127)",
+        "bg": "rgb(10,18,32)",
+        "sel": "span.fresh"
+      },
+      "topClasses": [
+        "stat-label",
+        "cover-text",
+        "tk-cat",
+        "lyr-title",
+        "lyr-key-n",
+        "lyr-key-t"
+      ]
+    },
+    "11px": {
+      "n": 218,
+      "minContrast": 1,
+      "worst": {
+        "text": "維園「世界綵燈大街」參觀人流眾多　晚上10時將停止排隊入展區",
+        "color": "rgb(11, 22, 38)",
+        "bg": "rgb(10,16,26)",
+        "sel": "span.tk-title"
+      },
+      "topClasses": [
+        "span",
+        "tk-title",
+        "tip",
+        "view3d",
+        "ptab",
+        "n"
+      ]
+    },
+    "10.5px": {
+      "n": 58,
+      "minContrast": 1.2,
+      "worst": {
+        "text": "香港即時態勢",
+        "color": "rgb(207, 224, 245)",
+        "bg": "rgb(238,242,248)",
+        "sel": "span.mh-scope"
+      },
+      "topClasses": [
+        "button",
+        "ticker-tab",
+        "mh-scope",
+        "lyr-label",
+        "chip",
+        "meta"
+      ]
+    },
+    "12.5px": {
+      "n": 20,
+      "minContrast": 6.4,
+      "worst": {
+        "text": "現時無相關資料",
+        "color": "rgb(70, 97, 127)",
+        "bg": "rgb(255,255,255)",
+        "sel": "div.p-empty"
+      },
+      "topClasses": [
+        "a",
+        "li",
+        "p-empty"
+      ]
+    },
+    "12px": {
+      "n": 50,
+      "minContrast": 5.3,
+      "worst": {
+        "text": "-1.01%",
+        "color": "rgb(11, 122, 88)",
+        "bg": "rgb(255,255,255)",
+        "sel": "td.mkt-down"
+      },
+      "topClasses": [
+        "td",
+        "mkt-down"
+      ]
+    },
+    "17px": {
+      "n": 18,
+      "minContrast": 5.2,
+      "worst": {
+        "text": "1.5 小時",
+        "color": "rgb(150, 98, 10)",
+        "bg": "rgb(255,255,255)",
+        "sel": "div.gv"
+      },
+      "topClasses": [
+        "gv"
+      ]
+    }
+  },
+  "surf": {
+    "body": {
+      "bg": "rgb(238, 242, 248)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "13px",
+      "pad": "0px",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ]
+    },
+    "header": {
+      "bg": "rgba(255, 255, 255, 0.92)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "13px",
+      "pad": "0px",
+      "rect": [
+        0,
+        0,
+        1920,
+        64
+      ]
+    },
+    "#rail": {
+      "bg": "rgba(7, 11, 19, 0.72)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "13px",
+      "pad": "10px 0px",
+      "rect": [
+        0,
+        90,
+        56,
+        990
+      ]
+    },
+    "#map": {
+      "bg": "rgb(238, 242, 248)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "12px",
+      "pad": "0px",
+      "rect": [
+        56,
+        90,
+        1019,
+        990
+      ]
+    },
+    ".panel": {
+      "bg": "rgba(255, 255, 255, 0.84)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "13px",
+      "pad": "0px",
+      "rect": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    ".panel-head": {
+      "bg": "rgba(140, 190, 255, 0.043)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "13px",
+      "pad": "7px 12px",
+      "rect": [
+        1085,
+        142,
+        409,
+        37
+      ]
+    },
+    ".panel-body": {
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "13px",
+      "pad": "10px 12px",
+      "rect": [
+        1085,
+        179,
+        409,
+        351
+      ]
+    },
+    "#statusbar": {
+      "bg": "rgba(255, 255, 255, 0.92)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "13px",
+      "pad": "0px",
+      "rect": [
+        0,
+        0,
+        1920,
+        64
+      ]
+    },
+    "#ticker": {
+      "bg": "rgba(10, 16, 26, 0.92)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "13px",
+      "pad": "0px",
+      "rect": [
+        0,
+        64,
+        1920,
+        26
+      ]
+    },
+    ".layer-control": {
+      "bg": "rgba(5, 8, 13, 0.82)",
+      "color": "rgb(11, 22, 38)",
+      "fs": "13px",
+      "pad": "0px",
+      "rect": [
+        66,
+        791,
+        226,
+        238
+      ]
+    }
+  },
+  "gaps": [
+    {
+      "note": "column content bottom",
+      "y": 3381,
+      "viewportH": 1080,
+      "overflowPx": 2301
+    }
+  ]
+}

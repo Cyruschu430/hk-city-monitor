@@ -636,6 +636,17 @@ a:hover{color:var(--cyan)}
 .tl-domain{font-size:11px;color:var(--dim)}
 .tl-txt{color:var(--txt);overflow-wrap:anywhere}
 .tl-num{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+/* Domain co-occurrence (the 異常與匯聚 panel). Rendered as a LIST OF EDGES rather than a force
+   graph: the panel is ~340px, a node-link drawing at that width is a hairball nobody can read,
+   and the only thing a reader wants from this view is which two domains pair up and how often.
+   One rule per pair, strongest first. */
+.pair{display:grid;grid-template-columns:auto auto 1fr auto;gap:5px;align-items:baseline;
+  font-size:12px;padding:3px 0;border-bottom:1px solid var(--hairline)}
+.pair:last-child{border-bottom:0}
+.pair-a,.pair-b{color:var(--txt)}
+.pair-x{color:var(--faint)}
+.pair-n{color:var(--cyan);font-variant-numeric:tabular-nums}
+.pair-d{grid-column:1/-1;font-size:11px;color:var(--faint);margin-top:-3px}
 .walltabs{display:flex;flex-wrap:wrap;gap:4px}
 .cam{position:relative;border-radius:5px;overflow:hidden;border:1px solid var(--hairline);
   background:#0a1220;aspect-ratio:4/3;cursor:pointer}

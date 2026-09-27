@@ -654,6 +654,15 @@ a:hover{color:var(--cyan)}
 .rfz-pop b{display:block;margin-bottom:3px;color:var(--txt)}
 .rfz-pop span{color:var(--faint);margin-right:4px}
 .rfz-pop .rfz-note{margin-top:4px;font-size:11px;color:var(--faint);font-style:italic}
+/* AED popup. The public-access line is the headline, not a field: an AED anyone can reach and one
+   behind a locked door are the same dot without it. Green for yes, amber for no — amber and not
+   red, because a restricted AED is still an AED and a red mark beside "AED" reads as "no AED". */
+.aed-pop{max-width:280px;font-size:12px;line-height:1.45}
+.aed-pop b{display:block;margin-bottom:3px;color:var(--txt)}
+.aed-pop span{color:var(--faint);margin-right:4px}
+.aed-pop .aed-pub{margin-top:5px;padding-top:4px;border-top:1px solid var(--hairline);font-weight:600}
+.aed-pop .aed-pub.yes{color:#4ade80}
+.aed-pop .aed-pub.no{color:var(--amber)}
 
 .walltabs{display:flex;flex-wrap:wrap;gap:4px}
 .cam{position:relative;border-radius:5px;overflow:hidden;border:1px solid var(--hairline);

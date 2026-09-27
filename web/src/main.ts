@@ -115,6 +115,10 @@ const RAIL_LAYERS: RailLayer[] = [
   // switch has no generic default, it THROWS, and an earlier draft of this change assumed
   // otherwise and shipped a toggle that answered `unknown layer drone_rfz`.
   { id: "drone_rfz", label: { tc: "無人機禁飛區", en: "Drone restricted zones" } },
+  // Life-safety, and the only layer here that does not come from a feed about the city — it is
+  // about the reader. OFF by default at 707KB, so a reader who needs it turns it on and a reader
+  // who does not never pays for it.
+  { id: "aed_locations", label: { tc: "公眾 AED", en: "Public AEDs" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its
@@ -883,6 +887,17 @@ async function boot(): Promise<void> {
           if (!on) break;
           const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
           if (!drawn.includes("weather_stations")) throw new Error("氣象站圖層畫唔出");
+          break;
+        }
+        case "aed_locations": {
+          // Same config path as every other point layer; the clustering lives in overlays.ts's
+          // pointLayer and needs nothing here.
+          const def = registry.layers.find((l) => l.id === "aed_locations");
+          if (!def) throw new Error("layers.json 冇 aed_locations");
+          clearVerticalLayers(map, [def]);
+          if (!on) break;
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
+          if (!drawn.includes("aed_locations")) throw new Error("AED 圖層畫唔出");
           break;
         }
         case "drone_rfz": {

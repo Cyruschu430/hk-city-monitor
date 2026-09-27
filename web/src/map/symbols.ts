@@ -36,7 +36,41 @@ export type GlyphId =
   | "wind-flow"
   // Rail toggles that are not map layers at all (deck.gl 3D, the raster basemap).
   | "blocks"
-  | "aerial";
+  | "aerial"
+  // Public defibrillators. A life-safety layer: the ONE thing a passer-by needs is to know a
+  // unit is HERE, so the disc is the red of the emergency services rather than the cyan/violet
+  // the agency-symbol family uses for "this is a datapoint".
+  | "aed";
+
+/** AED: the universal defibrillator mark — a heart with a bolt through it. */
+function drawAed(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  const k = size / 44;
+  ctx.scale(k, k);
+  // Heart, as two arcs plus a V — a path rather than an emoji, because the glyph is drawn into a
+  // canvas at 44px and a text glyph would depend on the renderer's font.
+  ctx.beginPath();
+  ctx.moveTo(0, 13);
+  ctx.bezierCurveTo(-15, 2, -11, -11, 0, -5);
+  ctx.bezierCurveTo(11, -11, 15, 2, 0, 13);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(255,255,255,.96)";
+  ctx.fill();
+  // The bolt, in the disc's own red so it reads as a cut-out rather than an overlay.
+  ctx.beginPath();
+  ctx.moveTo(2.5, -8);
+  ctx.lineTo(-4, 1.5);
+  ctx.lineTo(-0.5, 1.5);
+  ctx.lineTo(-2.5, 8);
+  ctx.lineTo(4.5, -1.5);
+  ctx.lineTo(0.8, -1.5);
+  ctx.closePath();
+  ctx.fillStyle = "#c81e3c";
+  ctx.fill();
+  ctx.restore();
+}
 
 interface GlyphSpec {
   /** draw the glyph centred in a size×size box */
@@ -417,6 +451,7 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   "cp-sea": { draw: drawControlPoint, disc: "#22d3ee" },
   "cp-air": { draw: drawControlPoint, disc: "#38bdf8" },
   "no-water": { draw: drawNoWater, disc: "#ff5d6c" },
+  "aed": { draw: drawAed, disc: "#ef3d5b" },
   "no-water-salt": { draw: drawNoWater, disc: "#fbbf24" },
   "wind-flow": { draw: drawWindFlow },
   blocks: { draw: drawBlocks },

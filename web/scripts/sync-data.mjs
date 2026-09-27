@@ -50,6 +50,9 @@ const files = [
   // exists; the registry note records this). 290 polygons, 3MB, loaded only when the RAIL toggle
   // is switched on, so it never touches first paint.
   ["data/drone_restricted_zone.geojson", "drone_restricted_zone.geojson"],
+  // Collector output (scripts/build_aed.py) — 4,652 public defibrillators, slimmed from an 866KB
+  // CSV that could only be reached through the Worker.
+  ["data/aed.json", "aed.json"],
   // Immigration control points with VALIDATED WGS84 positions, so 口岸模式 can
   // plot the crossings as POIs with popups instead of only camera dots. Reference
   // data, not a feed — see the _method note in the file for how each coordinate

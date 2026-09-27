@@ -13,16 +13,19 @@ sources.
 **Not** affiliated with the HKSAR Government, and **not** part of the government's
 「AI城市大腦」 programme — never use that name as the product name or imply official status.
 
-## Current state (as of 2026-09-25 — read this before you plan anything)
+## Current state (as of 2026-09-27 — read this before you plan anything)
 
 **v0.2 is built, deployed, and working. The run sequence below is history** — it is how the app
 was built and it explains the architecture, but do not re-run it.
 
 What is in `web/` right now:
-- **22 panels** (`data/panels.json`), **9 layers**, **3 verticals**, **176 sources**, of which
-  **26 reach the screen through the config registries** and 25 have a runtime adapter — see
-  `docs/SOURCE_COVERAGE_REVIEW.md` (measured 2026-09-25; do not quote a coverage number from
-  memory, re-run the count).
+- **17 mounted panels** (16 source-backed + the analysis panel), **9 layers**, **3 verticals**,
+  **176 sources**. Do not quote a coverage number from memory — re-run the count.
+- **The analysis panel is BACK and enabled** (`ANALYSIS_PANEL_ENABLED`). It renders Tier 2 as a
+  district TIMELINE plus a domain co-occurrence view, and it is FED rather than fetched
+  (`FED_PANEL_IDS` in `ui/panels.ts` — it is a conclusion drawn from the other panels, not a
+  source). Do not give it a registry entry or an adapter. Verified by `npm run check:analysis`,
+  a table of 10 scenarios (midnight, empty group, unmapped domain, long district name, …).
   Every panel is config-driven; `render` is one of the eight types (a ninth is a spec
   change, not a coding decision). Withdrawn panels (and the restore path for each) are recorded
   in `panels.json._withdrawn_panels` — do not re-add one without reading why it went.
@@ -44,14 +47,19 @@ What is in `web/` right now:
 
 **Live at `https://hk-city-monitor.pages.dev`** (Worker: `hk-city-monitor.cyrus738.workers.dev`).
 
-**Gates — all must be green before you report done:**
+**Gates — all must be green before you report done. Run them as ONE command and trust its exit
+code; do not grep the transcript to decide whether a check passed (Pitfall 40):**
 ```
 npm run typecheck                       # 0 errors
-npm run check:static                    # CSS tokens + UTF-8 encoding
-npm test                                # 6 assert-style suites
-python scripts/validate_config.py       # exit 0
-node scripts/verify-browser.mjs <url>   # 69 DOM checks (run against PRODUCTION too)
+npm run check:all                       # exit 0 — this is the gate
 ```
+`check:all` runs, in order: `check:static` (CSS tokens + UTF-8 encoding + basemap),
+`test` (6 assert-style suites), `check:layout`, `check:contrast`, `check:analysis` (10 Tier 2
+scenarios), `check:carpark` (panel renders AND the upstream URL is absent from network entries),
+`check:quota` (cold-load Worker request count against the free-tier budget).
+
+`npm run measure:boot` prints the first-paint weight and FAILS if a 3D/lazy chunk reaches the
+critical path. `python scripts/validate_config.py` validates the registries.
 
 Still true and worth reading as reference: `legacy/index.html` (v0.1 prototype, live, do
 not delete) and `scripts/build_cameras.py` (idempotent, has `--check`).
@@ -841,3 +849,120 @@ Two rules follow, and both are cheap:
 The same run also re-checked the Worker's security boundary directly, since a Worker change had just
 been deployed: non-registry host → `403 host_not_allowed`; whitelisted host → `200` with real CSV;
 `file://` and `http://127.0.0.1` → `400 https_only` (SSRF closed).
+
+### Pitfall 36 — a timestamp without its date is only unambiguous while the reader assumes today
+
+The Tier 2 timeline rendered `HH:MM` for every event and for its group span. `convergence.ts`
+groups a **fixed 60-minute window anchored on the group's first event**, so a group starting at
+23:50 ends tomorrow — rendered, that span read `23:50–00:30`, which reads as a typo. The same
+clock also made an event dated YESTERDAY render as `23:50`, reading as this morning.
+
+Neither is a contrived input. Midnight takes one group, and one group is the default window.
+
+The fix carries the date whenever the local day is not today, and lets the START decide whether
+the end carries one as well (a span crossing midnight needs both ends dated or the pair looks
+backwards). Two consequences worth keeping:
+
+- **`hhmm()` was also the browser's zone.** `d.toTimeString()` is the reader's clock. The header
+  clock is HKT, the carpark panel formats HKT, and this is Hong Kong city data — a reader in
+  another timezone seeing a HK suspension in their own local time, beside a panel whose own
+  "reported" time is HKT, is the inconsistency. Format HKT (+8, no DST) and say so.
+- **A formatting helper is where this bug hides**, because it is small, pure, used everywhere, and
+  looks obviously correct. It was found by a scenario, not by reading it.
+
+`check:analysis` scenario "a group that crosses midnight" asserts the date is present AND that the
+span does not contain `23:50–00:30`. A mutant build with `stamp()` reverted to time-only was
+measured failing that exact assertion — the check is load-bearing, not merely green.
+
+### Pitfall 37 — a browser was downloading 554KB for three fields, and the doc comment is why it survived
+
+`basic_info_all.json` loaded on **every cold load**: **554,726 bytes**, the single largest item on
+the critical path, 30% of the whole first paint. `parseCarpark` reads THREE fields out of its 554
+records — `park_id`, `name_tc`, `name_en`.
+
+Where the weight went, measured: `remark_en/sc/tc` at **52%** of the content (mostly the empty
+string `"高度限制: \n"`), the duplicated simplified-Chinese copies at 21%, `website_*` at 10%
+(mostly null), `carpark_photo` at 8%. None of it read.
+
+**The doc comment is the part to remember.** `parsers.ts` carried a paragraph enumerating the
+whole key list — `park_id / name_* / displayAddress_* / latitude / longitude / district_* /
+contactNo / opening_status / height / remark_* / website_* / carpark_photo` — and then used three
+of them. It is ACCURATE, which is exactly what made it convincing: a reader checking the comment
+against the payload finds agreement and concludes the payload is needed.
+
+**Rule: compare `Object.keys(payload)` against the fields the parser actually destructures, not
+against what the documentation says exists.** The three lists (payload keys, type declaration,
+actual reads) disagree in healthy-looking code, and only the payload costs the user anything.
+
+Fix: `scripts/build_carpark_info.py` writes the three fields, compact — 554,726 → 53,001 bytes,
+90% smaller, panel identical (12 rows, real names, 0 dashes, measured in the DOM). It REFUSES to
+write if the record count drops more than 5%, if a record loses its `park_id`, or if a park loses
+both names — a shrunken file is invisible in the UI, because the panel just shows fewer rows and
+looks entirely healthy. `--check` re-fetches and compares without writing.
+
+Committed rather than cronned: the registry says cadence `irregular`, and these are car park NAMES
+and coordinates, not a feed. A cron would spend a request a day to learn nothing changed.
+
+### Pitfall 38 — a fatal readiness guard with no retry reports a flake as a defect
+
+`check-layout` and `check-contrast` gained a fatal readiness guard (Pitfall 23 — a check that
+cannot fail is worse than no check). `check:all` then went **exit=1 on a healthy build**, because
+a cold browser backend loses the FIRST navigation. Measured repeatedly: the identical run succeeds
+on the second attempt.
+
+**Retry the navigation once; keep the guard fatal after that.** Two failures is a result, one is a
+flake. And apply the retry to **EVERY browser check at once** — patching only the check that bit
+you leaves its siblings reporting the same flake as a defect.
+
+`measure-boot.mjs` had the retry from the start; the other two did not, and that asymmetry is what
+produced a red check on a clean build.
+
+### Pitfall 39 — a number computed from a source list is not a measurement
+
+`SECURITY.md` §8.1 stated: *"cold load ≈ 49 proxy requests, so the honest capacity is about 2,000
+cold loads/day"*, and used it to justify migrating 104 sources to a cron-built static JSON
+pipeline on Pages.
+
+**The 49 was counted from the registry's source list, not from a load.** Measured with a real
+browser: **26**, and 26 distinct targets — **~3,846 cold loads/day**, so the estimate had
+understated capacity by nearly half.
+
+The architecture proposal is not wrong in principle, but it was argued from a threat with 3,846x
+headroom against a failure mode that costs nothing and self-heals at midnight UTC (Error 1027; no
+bill, no data loss). **Saying so was the deliverable.** Before acting on a capacity, quota or
+latency figure, ask whether anything ever OBSERVED it.
+
+`npm run check:quota` keeps it honest: cold-loads the app, counts the requests that actually reach
+the Worker, attributes each to its upstream target so a regression points at a source rather than
+a number, and fails above 34. Nothing else in the build notices when a new panel makes the free
+tier smaller.
+
+Two related findings from the same measurement, both of which look like waste and are not:
+- The **8 HKO camera requests are proxied because the MAP draws them as WebGL icons**, and a WebGL
+  texture requires a CORS-clean image. The `<img>` wall alone would not need it — but serving the
+  wall direct would DOUBLE the requests (two URLs, no browser dedupe), so the proxy is
+  load-bearing.
+- **All 22 `<img>` tags already carry `loading="lazy"`.** The 8 that still fire at 580ms do so
+  because Chrome's lazy margin reaches ~1250px, which lands on the 8th panel. That is the native
+  feature working, not a missing attribute.
+
+### Pitfall 40 — silence from a check reads as a pass
+
+`check:encoding` ran on every verification and its verdict goes to **stderr**. Every check was run
+as `... 2>&1 | Select-Object -Last N`, which prints nothing for a command that crashed — and
+"nothing" read as clean.
+
+A double-encoded `app.css` survived **six commits** this way. Its own first line still read
+`/* HK City Monitor v0.2 â€” hand-written CSS`, and `check:all` was green every time.
+
+**The trap is worst when the command IS a check**, because a build that prints nothing is
+suspicious while a VERIFIER that prints nothing looks like a clean run.
+
+- Run the whole aggregate (`npm run check:all`) as ONE command and let its **exit code** decide.
+  Never grep the transcript to decide whether a check passed.
+- When a check's output is quiet by design, print a positive line anyway.
+- **A negative test must not restore the file it mutated through the shell.** Patching a threshold
+  to prove a guard fires (`Set-Content -Encoding UTF8` on a `Get-Content -Raw` capture) corrupts
+  every non-ASCII character — measured: it produced `â€”` mojibake in a clean checker and the NEXT
+  check failed for a reason unrelated to the change. Mutate a COPY, or re-upload the pristine file
+  from the source of truth afterwards.

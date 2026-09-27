@@ -58,6 +58,15 @@ const files = [
   // data, not a feed — see the _method note in the file for how each coordinate
   // was checked before it was allowed in.
   ["data/control_points.json", "control_points.json"],
+  // Collector output (scripts/build_facilities.py) — CSDI: public cargo working areas, HKIA
+  // approach restricted areas, oil storage installations. Two files because a layer's `geom`
+  // picks one renderer: a polygon layer draws -fill/-line/-label, a point layer clusters.
+  ["data/facility_areas.geojson", "facility_areas.geojson"],
+  // NOTE: build_facilities.py ALSO writes data/facility_pins.geojson (23 oil storage installations, 7,932
+  // bytes) and it is intentionally NOT synced yet. A `point` layer must name a `symbol`, and pointLayer
+  // throws without one (overlays.ts:347); every glyph in symbols.ts is a canvas draw function behind a
+  // closed GlyphId type, so the pins need a tank glyph written before they can be wired. Shipping an
+  // unwired file would just be 8KB nothing reads.
   // sources.json is COPIED, not shipped as-is: see the slim pass below.
   ["sources.json", "sources.json"],
 ];

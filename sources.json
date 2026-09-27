@@ -3209,6 +3209,21 @@
       "cost": "free",
       "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
       "notes": "290 zones, all Polygon, published by the Civil Aviation Department as the exact RFZ boundaries — this is the dataset the previous passes could not reach, because data.gov.hk and CSDI carry no RFZ layer and the only source is the eSUA notice map, which offers no export URL. So it is EXPORTED BY HAND and committed, the same shape as the other collector outputs: a human refreshes it, and cadence 'irregular' is the honest description of that. Each feature carries its own `fill`/`stroke`, so the publisher's styling draws the map and a restyle upstream needs no code change. MEASURED 2026-09-27: 3,083,323 bytes / 290 features. Properties are ENGLISH ONLY (name / effectiveDateTime / description2) — the popup labels the fields in the UI language and shows the publisher's values verbatim, because inventing a Chinese name for a regulated zone would create an official-sounding name that does not exist. Ranges: 'Cheung Sheung (Low-altitude Economy Regulatory Sandbox)' and 4 other sandbox zones (2025-2026) plus older police-post and Frontier Closed Area zones (2022)."
+    },
+    {
+      "id": "hk_facility_areas",
+      "group": "transport",
+      "name": "香港貨運及機場設施（範圍）",
+      "name_en": "Hong Kong Cargo & Airport Facilities (areas)",
+      "type": "geojson",
+      "url": "data/facility_areas.geojson",
+      "auth": "none",
+      "cadence": "irregular",
+      "todo": false,
+      "fetch": "browser",
+      "cost": "free",
+      "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
+      "notes": "CSDI, two official publishers in one file: 海事處 公眾貨物裝卸區 (120 berth polygons, MARDEP) and 民航處 機場進場限制區 (8 polygons, MARDEP). Collector output — see scripts/build_facilities.py. MEASURED 2026-09-27: 128 features, 134,075 bytes. WHY THESE TWO AND NOT MORE: every CSDI facility candidate was probed first. Public Piers (531) and Coordinates of ferry piers (74) carry exactly one attribute each - STRUCTURE_ = 'HP077', STOP_ID = '101101' - with no name, so 605 anonymous dots is visual noise rather than information, and they are deliberately not shipped. WHY THE LIVE BERTH VACANCY IS NOT HERE: the cargo-area service also returns a real-time berth vacancy flag (Vacant Y/N). This file is static, and a live flag baked into a committed snapshot is a stale number presented as current. The berths ship as durable infrastructure; live vacancy needs its own collector with a cadence and a timestamp."
     }
   ]
 }

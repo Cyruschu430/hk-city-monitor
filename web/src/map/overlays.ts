@@ -571,6 +571,9 @@ const POPUP_LABELS: Record<string, { tc: string; en: string }> = {
   sog: { tc: "船速（節）", en: "Speed (kt)" },
   cog: { tc: "航向", en: "Course" },
   destination: { tc: "目的地", en: "Destination" },
+  // Facility fields (build_facilities.py). `Name` is the head slot and needs no label here.
+  Type: { tc: "類型", en: "Type" },
+  Restriction: { tc: "限制", en: "Restriction" },
 };
 
 /** Keys that carry no information for a reader. `_sc` is Simplified Chinese —

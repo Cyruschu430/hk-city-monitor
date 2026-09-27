@@ -72,6 +72,11 @@ const LAYER_ICONS: Record<string, string> = {
   // A heart with a bolt: the universal defibrillator mark, and the only rail icon that is about
   // the person looking at the screen rather than about the city.
   aed_locations: "M12 20s-7-4.4-7-9.2A4 4 0 0112 8a4 4 0 017 2.8C19 15.6 12 20 12 20z|M12.8 10l-2 3h2l-1 3 3-3.6h-2z",
+  // A ship over a berth line: the cargo working areas are waterfront, and the glyph has to
+  // differ from the aircraft this layer also carries.
+  hk_facility_areas: "M3 18h18|M5 14l1.5 3h11L19 14|M12 4l6 3v5H6V7z",
+  // A tank: the oil storage installations are vertical cylinders, not boxes.
+  hk_facility_pins: "M7 9h10v9a2 2 0 01-2 2H9a2 2 0 01-2-2z|M7 9a5 3 0 0110 0|M12 3v3",
 };
 
 export interface RailLayer {

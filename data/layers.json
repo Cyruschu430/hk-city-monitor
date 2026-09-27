@@ -206,6 +206,22 @@
         "scope": "hk"
       },
       "_comment": "23 licensed oil storage installations. A `point` layer must name a `symbol` and pointLayer throws without one (overlays.ts:347); the glyph is `oil-tank` in symbols.ts. Small enough (7,932 bytes) that size is NOT the reason it is off by default — being one mode's subject is: a layer that appears in 總覽 without being asked for is what the verticals exist to prevent."
+    },
+    {
+      "id": "aircraft",
+      "source": "adsb_lol_hk",
+      "render": "list",
+      "geom": "point",
+      "symbol": "plane",
+      "title": {
+        "tc": "航機（社群 ADS-B）",
+        "en": "Aircraft (community ADS-B)"
+      },
+      "popup": "aircraft_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "Live ADS-B traffic. Restored with the same change that restored the panel: the layer was withdrawn because adsb.lol blocks cloud egress, and the map now reads data/aircraft.json published by the PC collector instead of the upstream host. `symbol: plane` plus a per-feature icon-rotate is the existing path in overlays.ts pointLayer — the glyph and the rotation were left intact through the withdrawal, so this is a config entry and not new drawing code. OFF by default: 28 aircraft is small, but a moving layer nobody asked for is still a layer on every reader's map."
     }
   ]
 }

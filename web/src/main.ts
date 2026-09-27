@@ -42,6 +42,9 @@ const OVERVIEW = [
   // other panel is evidence for it. It is FED rather than fetched (see FED_PANEL_IDS in
   // ui/panels.ts) because it is drawn FROM the other panels, not from a source.
   "analysis_brief",
+  // RESTORED 2026-09-27 with the PC collector. A city with the world's busiest cargo airport on its
+  // doorstep should say what is overhead without being asked.
+  "aircraft_status",
   // ONE live wall with region tabs, not two panels side by side. The camera wall is a
   // city's own eyes (1,013 TD + 34 HKO cameras, an asset no global project has) and the
   // news wall is what the world is saying about it; two panels meant two ~300px blocks
@@ -98,7 +101,10 @@ const RAIL_LAYERS: RailLayer[] = [
   // rotation): re-add the rail entry and the overview panel when a source that
   // tolerates cloud egress is found, or when a PC-side collector publishes a
   // static JSON the front end can read (the water-suspension pattern).
-  // { id: "aircraft", label: { tc: "航機（ADS-B）", en: "Aircraft (ADS-B)" } },
+  // RESTORED 2026-09-27. The withdrawal note named its own restore condition — a PC-side collector
+  // publishing static JSON — and scripts/collect_aircraft.py is that collector. The layer reads
+  // data/aircraft.json, so api.adsb.lol's block on cloud egress is no longer in the path.
+  { id: "aircraft", label: { tc: "航機（社群 ADS-B）", en: "Aircraft (community ADS-B)" } },
   // 「（模式格網）」 is not decoration. This layer is Open-Meteo MODEL output, and
   // `weather_stations` one row below is the OBSERVED counterpart — two layers with
   // the same subject and different epistemics, one click apart. The rail label is

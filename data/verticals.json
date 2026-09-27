@@ -240,6 +240,7 @@
         "hk_market_table"
       ],
       "layers": [
+        "hk_facility_areas",
         "control_points",
         "cameras_all"
       ],

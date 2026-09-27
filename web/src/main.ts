@@ -118,6 +118,14 @@ const RAIL_LAYERS: RailLayer[] = [
   // about the reader. OFF by default at 707KB, so a reader who needs it turns it on and a reader
   // who does not never pays for it.
   { id: "aed_locations", label: { tc: "公眾 AED", en: "Public AEDs" } },
+  // 公眾貨物裝卸區（海事處）＋機場進場限制區（民航處）. 128 polygons from CSDI, 134KB, OFF by default.
+  // These are the facilities 貨運模式's panels are ABOUT — before this the mode listed flight and
+  // traffic rows with nothing on the map saying where the cargo actually moves.
+  { id: "hk_facility_areas", label: { tc: "貨運及機場設施", en: "Cargo & airport facilities" } },
+  // 23 貯油裝置（屋宇署牌照名單）, 8KB. Small enough to be on by default, but it stays off: it is
+  // one mode's subject, and a layer that appears in 總覽 without being asked for is the thing the
+  // verticals exist to prevent.
+  { id: "hk_facility_pins", label: { tc: "貯油裝置", en: "Oil storage installations" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its
@@ -872,8 +880,26 @@ async function boot(): Promise<void> {
           if (!drawn.includes("drone_rfz")) throw new Error("無人機禁飛區圖層畫唔出");
           break;
         }
-        default:
-          throw new Error(`unknown layer ${id}`);
+        default: {
+          // ONE generic path for any layers.json entry the renderer knows how to draw.
+          //
+          // aed_locations and drone_rfz each carry a hand-written block doing these same four
+          // steps, and the facility layers would have been the third and fourth copies. Three
+          // copies of eight lines is a pattern; adding two more is the point where the
+          // duplication is the bug rather than the fix. The `if (!def) throw` below keeps the
+          // failure loud for an id that is NOT in layers.json, which is what `default:` was
+          // guarding and is the part worth keeping.
+          const def = registry.layers.find((l) => l.id === id);
+          if (!def) throw new Error(`unknown layer ${id}`);
+          clearVerticalLayers(map, [def]);
+          if (!on) break;
+          // The drawn list is checked, not the absence of a throw: a layer that draws NOTHING
+          // returns normally, and a toggle that turns on, reports success and paints nothing is
+          // the dead-control failure this project has hit three times.
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
+          if (!drawn.includes(id)) throw new Error(`圖層 ${id} 畫唔出`);
+          break;
+        }
       }
     } catch (err) {
       // A layer that cannot load says so on its own control — with the network

@@ -56,3 +56,7 @@ msg.tmp
 # *-dev.log but not a bare verify.log at the repo root, which is how three of them sat
 # untracked-but-present in a directory the user browses. Match the shape, not each name.
 *.log
+# Secrets that a collector reads from disk. NEVER commit either: an AIS key and a GitHub token are
+# both account-level, and this repository is public.
+.aisstream_key
+.github_token

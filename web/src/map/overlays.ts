@@ -569,6 +569,7 @@ const POPUP_LABELS: Record<string, { tc: string; en: string }> = {
   // aircraft popup showed a raw unlabelled `bearing` row. Measured from the live payload.
   bearing: { tc: "航向", en: "Bearing" },
   onGround: { tc: "地面", en: "On ground" },
+  Vacancy: { tc: "泊位狀況", en: "Berth status" },
   verticalFpm: { tc: "升降率（呎/分）", en: "Vertical rate (ft/min)" },
   mmsi: { tc: "MMSI", en: "MMSI" },
   shipName: { tc: "船名", en: "Vessel" },

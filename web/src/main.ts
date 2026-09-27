@@ -20,7 +20,6 @@ import { createMap, landsdBadge, setBasemap } from "./map/basemap.ts";
 import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./map/cameras.ts";
 import { applyVerticalLayers, clearVerticalLayers, type WaterPoint } from "./map/overlays.ts";
 import { createLayerControl, relabelLayerControl, type LayerRow } from "./ui/layercontrol.ts";
-import { toggle3d } from "./map/overlays3d.ts";
 import { toggleWind } from "./map/wind.ts";
 import type { LayerDefRaw } from "./lib/sources.ts";
 import { createDrawer } from "./ui/drawer.ts";
@@ -127,7 +126,6 @@ const RAIL_LAYERS: RailLayer[] = [
   // config-not-code architecture the verticals exist to prove.
   { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" }, on: true },
   { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
-  { id: "buildings3d", label: { tc: "3D 樓宇（載入慢）", en: "3D buildings (heavy)" } },
 ];
 
 async function boot(): Promise<void> {
@@ -222,46 +220,6 @@ async function boot(): Promise<void> {
   // which would have been a second place for the three to disagree.
 
   // ---- 2D / 3D VIEW SWITCH ---------------------------------------------------
-  // Cyrus 2026-09-25: "3D 個 tile 轉個 button 比 user Switch 去 3D view". The 3D
-  // buildings existed only as a rail toggle labelled 「3D 樓宇（載入慢）」, which
-  // describes a DATASET and a cost, not a VIEW. The thing a reader actually wants
-  // — "show me this in 3D" — had no control at all.
-  //
-  // The button switches the VIEW, and turns the tiles on as part of doing so:
-  // extruded buildings seen from directly overhead are just a confusing flat map,
-  // which is why the two belong to one press. It drives the RAIL button rather
-  // than calling toggle3d, for the same reason the LAYERS rows do — one
-  // implementation of "3D is on", so this cannot disagree with the rail.
-  //
-  // Its label follows the MAP'S PITCH, not the rail: that is the property the user
-  // can see, and it stays truthful even if they toggle the tiles from the rail.
-  const view3dBtn = h("button", { class: "view3d", type: "button", "aria-pressed": "false" });
-  const PITCH_3D = 62;
-  const syncView3d = () => {
-    const tilted = map.getPitch() > 15;
-    view3dBtn.setAttribute("aria-pressed", tilted ? "true" : "false");
-    view3dBtn.textContent = tilted ? "2D" : "3D";
-    view3dBtn.title = tilted
-      ? lang() === "tc"
-        ? "返去平面檢視"
-        : "Back to the flat view"
-      : lang() === "tc"
-        ? "3D 樓宇檢視（載入較慢）"
-        : "3D building view (heavier)";
-  };
-  view3dBtn.addEventListener("click", () => {
-    if (map.getPitch() > 15) {
-      map.easeTo({ pitch: 0, duration: 700 });
-      return;
-    }
-    const btn = rail.layerButton("buildings3d");
-    if (btn && btn.getAttribute("aria-pressed") !== "true") btn.click();
-    map.easeTo({ pitch: PITCH_3D, duration: 900 });
-  });
-  map.on("moveend", syncView3d);
-  onLangChange(syncView3d);
-  hudEl.append(view3dBtn);
-  syncView3d();
 
   /** The MapLibre layer ids a single registry layer owns once drawn. */
   function mapIdsFor(def: LayerDefRaw): string[] {
@@ -299,9 +257,9 @@ async function boot(): Promise<void> {
   /** MapLibre layer ids owned by a RAIL toggle.
    *
    * The rail carries two kinds of toggle. Most correspond to a layers.json
-   * definition (aircraft, wind_field, weather_stations, rain_nowcast). Two do
-   * not: `imagery` swaps the BASEMAP raster, and `buildings3d` is deck.gl, so
-   * neither has a `vl-` layer of its own. They are listed here anyway because
+   * definition (aircraft, wind_field, weather_stations, rain_nowcast). One does
+   * not: `imagery` swaps the BASEMAP raster, so
+   * it has no `vl-` layer of its own. It is listed here anyway because
    * the control's job is to describe what the USER can switch, not only what
    * layers.json happens to define. */
   function railMapIds(id: string): string[] {
@@ -312,8 +270,6 @@ async function boot(): Promise<void> {
         return ["cameras-hko-cluster", "cameras-hko-count", "cameras-hko-point"];
       case "imagery":
         return ["landsd-imagery"];
-      case "buildings3d":
-        return []; // deck.gl overlay, not a MapLibre layer — visibility handled by toggle3d
       default: {
         const def = registry.layers.find((l) => l.id === id);
         return def ? mapIdsFor(def) : [];
@@ -746,7 +702,7 @@ async function boot(): Promise<void> {
     statusbar.setMode(
       v ? (lang() === "tc" ? v.name.tc : v.name.en) : lang() === "tc" ? "總覽" : "Overview",
     );
-    mapHead.setScope(v ? v.name.tc : "香港即時態勢", v ? v.name.en : "HONG KONG SITUATION");
+    mapHead.setScope(v ? v.name.tc : "香港實時情況", v ? v.name.en : "HONG KONG LIVE");
     engine.setPanels(v ? v.order : OVERVIEW);
     refreshTabs();
     void applyModeLayers(v ? v.layers : []);
@@ -914,11 +870,6 @@ async function boot(): Promise<void> {
           if (!on) break;
           const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
           if (!drawn.includes("drone_rfz")) throw new Error("無人機禁飛區圖層畫唔出");
-          break;
-        }
-        case "buildings3d": {
-          await toggle3d(map, on);
-          rail.setLayerError(id, null);
           break;
         }
         default:

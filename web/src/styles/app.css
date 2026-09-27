@@ -380,13 +380,10 @@ a:hover{color:var(--cyan)}
    bottom-left and the LandsD attribution bottom-right, so this cannot collide
    with either. Sized past the 24px target minimum and using the map-face token
    scale, because it is drawn on the map and stays dark in every theme. */
-.view3d{position:absolute;right:10px;top:10px;width:40px;height:28px;padding:0;
   display:grid;place-items:center;border-radius:7px;cursor:pointer;
   background:var(--map-face-bg);border:1px solid var(--map-face-line);
   backdrop-filter:var(--glass);color:var(--map-face);
   font:600 11px/1 var(--font-ui);letter-spacing:.1em}
-.view3d:hover{border-color:var(--map-face-dim);color:#fff}
-.view3d[aria-pressed="true"]{background:var(--cyan);border-color:var(--cyan);color:#06121a}
 
 /* ---------- panels column (340px) ---------- */
 /* Panel column = category tabs + the scrollable panel grid. The tabs are a

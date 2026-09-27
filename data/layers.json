@@ -222,6 +222,21 @@
         "scope": "hk"
       },
       "_comment": "Live ADS-B traffic. Restored with the same change that restored the panel: the layer was withdrawn because adsb.lol blocks cloud egress, and the map now reads data/aircraft.json published by the PC collector instead of the upstream host. `symbol: plane` plus a per-feature icon-rotate is the existing path in overlays.ts pointLayer — the glyph and the rotation were left intact through the withdrawal, so this is a config entry and not new drawing code. OFF by default: 28 aircraft is small, but a moving layer nobody asked for is still a layer on every reader's map."
+    },
+    {
+      "id": "berth_vacancy",
+      "source": "hk_berth_vacancy",
+      "render": "list",
+      "geom": "polygon",
+      "title": {
+        "tc": "泊位空缺（實時）",
+        "en": "Berth vacancy (live)"
+      },
+      "popup": "facility_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "Live berth vacancy at the public cargo working areas. Polygon, like hk_facility_areas and for the same reason: the publisher draws each berth AS this boundary. This is the layer that makes 貨運模式 answer a question about NOW rather than about where things are — 27 vacant of 120, and the popup carries the collection time so a stale reading cannot pass as a live one. OFF by default, and it is the one facility layer that would be defensible ON: it is small, and it is the only live signal in the mode."
     }
   ]
 }

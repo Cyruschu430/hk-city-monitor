@@ -328,8 +328,25 @@ a:hover{color:var(--cyan)}
    fits the 502px card almost exactly, and the map is still full width. The rail still spans both rows: the modes are this project's differentiator.
 
    The narrow-screen rule below re-flattens this, because there the rail leaves the grid entirely. */
-#layout{flex:1 1 auto;display:grid;grid-template-columns:56px minmax(0,1fr);
-  grid-template-rows:minmax(0,1fr) minmax(0,1fr);min-height:0}
+/* SPLIT LAYOUT — rail | map | panel column, read left to right.
+   ------------------------------------------------------------------------
+   Cyrus, 2026-09-27: "嗰堆儀表板擺喺右邊，user 可以scroll down … 咁樣我相信大量嘅panel都應該搞得掂".
+   It used to be two stacked ROWS (map on top, a panel band below, each 1fr), which is fine for six panels
+   and wrong for sixty: the map got 50% of the height whether or not the reader was looking at it, and the
+   panel band scrolled the whole page rather than itself.
+
+   THE GRID IS UNCHANGED IN KIND — same `#layout`, same `display:grid`, same children. Only the axis moves,
+   which is why this is a handful of lines and not a restructure. #mapWrap and #panelCol already existed as
+   siblings and both already carried grid placement.
+
+   The panel column is `clamp(320px, 30vw, 560px)`: a floor wide enough for one 400px card plus its
+   padding, a ceiling so a 2560px monitor does not give the map away, and 30vw in between. Panels stack in
+   ONE column inside it, so "scroll down" reads as a list rather than a mosaic.
+
+   The 880px media query below still collapses this back to stacked rows, so nothing about the narrow
+   behaviour changes. */
+#layout{flex:1 1 auto;display:grid;grid-template-columns:56px minmax(0,1fr) clamp(320px,30vw,560px);
+  grid-template-rows:minmax(0,1fr);min-height:0}
 #mapWrap{grid-column:2;grid-row:1;position:relative;min-height:0;min-width:0}
 #map{position:absolute;inset:0;background:var(--void)}
 #mapHud{position:absolute;inset:0;pointer-events:none;z-index:5}
@@ -376,23 +393,52 @@ a:hover{color:var(--cyan)}
   border-radius:6px;font-size:11px;color:var(--map-face-dim);letter-spacing:.03em}
 .landsd-badge a{color:var(--map-face-dim)}
 .landsd-badge a:hover{color:var(--map-face)}
-/* 2D / 3D view switch. Top-right of the map face: the LAYERS list owns
-   bottom-left and the LandsD attribution bottom-right, so this cannot collide
-   with either. Sized past the 24px target minimum and using the map-face token
-   scale, because it is drawn on the map and stays dark in every theme. */
-  display:grid;place-items:center;border-radius:7px;cursor:pointer;
-  background:var(--map-face-bg);border:1px solid var(--map-face-line);
-  backdrop-filter:var(--glass);color:var(--map-face);
-  font:600 11px/1 var(--font-ui);letter-spacing:.1em}
+/* The `.view3d` rules stood here. Removed with the 3D button 2026-09-27, but only the SELECTOR line
+   was deleted, leaving eight declarations with no selector. A CSS parser cannot recover from that: it
+   consumes the following rules, and the rule it consumed was `#panelCol`.
+   MEASURED consequence: the panel column lost `display:flex`, `overflow:hidden` and its grid
+   placement, so it never scrolled (4693px of panels inside a 988px column, scrollHeight ==
+   clientHeight) while every neighbouring rule parsed fine. That is what made it read as a layout bug.
+   esbuild named the file, line and column; the browser and the built bundle named neither.
+   If a rule is removed in future, remove its whole body, not just its selector. */
 
 /* ---------- panels column (340px) ---------- */
 /* Panel column = category tabs + the scrollable panel grid. The tabs are a
    sibling of the scroller (not a child) so they stay put while the grid
    scrolls. Border and background live here, not on #panels, so the tab strip
    sits on the same surface as the panels it filters. */
-#panelCol{grid-column:2;grid-row:2;display:grid;grid-template-rows:auto auto 1fr;min-height:0;min-width:0;
-  border-top:1px solid var(--hairline);
-  background:var(--surface-grad)}
+/* `minmax(0,1fr)` AND NOT `1fr`, and this is the whole reason the panel column would not scroll.
+   ----------------------------------------------------------------------------------------
+   MEASURED on the first build of this layout: #panelCol 988px tall, #panels 4930px tall, and
+   `scrollHeight === clientHeight` on the scroller — so `overflow-y:auto` had nothing to scroll. A bare
+   `1fr` resolves to `minmax(auto, 1fr)`, and that `auto` MINIMUM is the content's own size, so the track
+   grew to 4930px and took the scroller's height with it. `minmax(0, 1fr)` pins the minimum to zero and the
+   track becomes exactly the space left over, which is what makes the child scroll.
+
+   Same defect family as the `grid-auto-rows:max-content` note on `#panels` below: in both cases an
+   implicit `auto` was silently resolving to "as big as the content" and defeating an overflow rule that
+   looked correct. */
+/* FLEX, NOT GRID, and the reason is a trap that cost two attempts.
+   ----------------------------------------------------------------------------------------
+   As a grid with `grid-template-rows: auto auto minmax(0,1fr)` this NEVER scrolled, and neither did `1fr`:
+   MEASURED twice — #panelCol 988px, #panels 4930px then 4648px, `scrollHeight === clientHeight`, so
+   `overflow-y:auto` had nothing to scroll.
+
+   The cause is that `#panelTabs` and `#panelRestore` are `[hidden]` (display:none), so they are not grid
+   items at all. `#panels` is then the FIRST item and lands in the FIRST track — an `auto` one — while the
+   `minmax(0,1fr)` track sits empty with nothing in it. Grid places items into tracks by ORDER OF EXISTENCE,
+   not by the track you had in mind, so a template that describes three children silently mis-assigns
+   itself the moment two of them are `display:none`.
+
+   Flex does not have that failure mode: `flex:1 1 auto` + `min-height:0` on the scroller sizes it to the
+   space that is actually left, whatever the children turn out to be. `min-height:0` is load-bearing — a
+   flex item's default `min-height:auto` refuses to shrink below its content, which is the same defect in a
+   different syntax. */
+/* IT SCROLLS ITSELF — #panels inside is the scroller and the column must not grow past the viewport, or the
+   whole page scrolls and the map goes with it. The comment lives OUTSIDE the block: an inline comment here
+   is valid CSS, but this rule was being dropped whole while its neighbours applied, and moving the comment
+   out is the cheapest way to falsify that. */
+#panelCol{grid-column:3;grid-row:1;display:flex;flex-direction:column;min-height:0;min-width:0;border-left:1px solid var(--hairline);background:var(--surface-grad);overflow:hidden}
 #panelTabs{display:flex;flex-wrap:wrap;gap:4px;padding:9px 10px 8px;
   border-bottom:1px solid var(--hairline)}
 #panelTabs[hidden],#panelRestore[hidden]{display:none}
@@ -417,13 +463,16 @@ a:hover{color:var(--cyan)}
 .ptab:hover{color:var(--txt);border-color:var(--hairline-hi)}
 .ptab[aria-selected="true"]{color:var(--on-cyan);background:var(--cyan);border-color:var(--cyan)}
 .ptab .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
-#panels{overflow-y:auto;overscroll-behavior:contain;
+#panels{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
    padding:8px;min-height:0;display:grid;
    /* auto-fill rather than a fixed 2: the band is 1864px wide now, and a hand-picked count would
       have to be re-picked at every width. 400px floor keeps a card at least as wide as the 411px
       it had in the old 44% column, so no panel loses width in the move. THE `max-content` +
       `dense` TRACKS BELOW ARE LOAD-BEARING — see the A/B note. */
-   grid-template-columns:repeat(auto-fill,minmax(400px,1fr));
+   /* ONE COLUMN in the side rail. `min(400px,100%)` rather than a bare 400px so a column narrower than the
+      card floor shrinks the card instead of overflowing the rail — the auto-fill mosaic was written for a
+      1864px band and would silently produce horizontal overflow at 320px. */
+   grid-template-columns:repeat(auto-fill,minmax(min(400px,100%),1fr));
    align-content:start;align-items:start;gap:6px;
    /* ---------------------------------------------------------------------
       THE ROW TRACK MUST BE `max-content`, AND THIS WAS MEASURED BY A/B TEST.
@@ -768,9 +817,12 @@ a:hover{color:var(--cyan)}
   font-family:var(--font-mono);font-size:11px;color:var(--faint)}
 
 /* ---------- mobile ---------- */
+/* Narrow: back to stacked rows (map band, then the panel band), which is what a phone wants and what this
+   rule already did. Only the base layout moved. */
 @media (max-width:880px){
   #layout{grid-template-columns:1fr;grid-template-rows:58vh 1fr}
   #mapWrap,#panelCol{grid-column:1;grid-row:auto}
+  #panelCol{border-left:0}
   #rail{position:fixed;left:0;right:0;bottom:0;top:auto;flex-direction:row;justify-content:flex-start;
     overflow-x:auto;border-right:0;border-top:1px solid var(--hairline);padding:6px 8px;z-index:45}
   .rail-btn{width:44px;height:44px;flex:0 0 auto}
@@ -839,6 +891,21 @@ a:hover{color:var(--cyan)}
    ========================================================================== */
 
 /* ---- panels: the container ------------------------------------------------- */
+/* DEFERRED RENDERING — a native platform feature, so no JS and no dependency.
+   ------------------------------------------------------------------------
+   `content-visibility:auto` lets the browser SKIP layout, paint and hit-testing for a panel that is off
+   screen inside the scroller, then render it when it comes into view. `contain-intrinsic-size` is what
+   makes that safe: without a placeholder size the scroller would not know how tall the skipped panel is, so
+   the scrollbar would jump as you scroll past it.
+
+   220px is the placeholder, not the real height — it only has to be close enough that the scrollbar does
+   not lurch. MEASURED on the current 23 panels before relying on it: the median panel is ~200px tall.
+
+   THIS IS THE RENDER HALF ONLY. The network half — `panels.ts` still runs `for (const id of order) void
+   refresh(id)` at boot, i.e. every panel fetches immediately — is NOT fixed here and is the next piece.
+   `content-visibility` buys the frame time; it does not buy the requests. */
+.panel{content-visibility:auto;contain-intrinsic-size:auto 220px}
+
 [data-theme="palantir"] .panel{
   background: var(--panel);
   backdrop-filter: none;

@@ -20,7 +20,7 @@ import { createMap, landsdBadge, setBasemap } from "./map/basemap.ts";
 import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./map/cameras.ts";
 import { applyVerticalLayers, clearVerticalLayers, type WaterPoint } from "./map/overlays.ts";
 import { createLayerControl, relabelLayerControl, type LayerRow } from "./ui/layercontrol.ts";
-import { toggleWind } from "./map/wind.ts";
+import { toggleWind } from "./map/wind2d.ts";
 import type { LayerDefRaw } from "./lib/sources.ts";
 import { createDrawer } from "./ui/drawer.ts";
 import { createPanelEngine } from "./ui/panels.ts";

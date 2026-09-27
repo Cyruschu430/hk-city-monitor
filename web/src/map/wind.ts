@@ -172,7 +172,35 @@ async function build(map: maplibregl.Map, src: SourceDef): Promise<WindOverlay> 
       width: 1.6,
       colorRamp: ramp(field.minSpeed, field.maxSpeed),
       speedRange: [field.minSpeed, field.maxSpeed],
-      animate: visible,
+      // `animate: true` — CORRECT, BUT IT DOES NOT FIX THE FREEZE. Read this before trying it again.
+      //
+      // MEASURED on a real GPU (RTX 3050 Laptop, headed run, ANGLE/D3D11, 2026-09-27): every QA hook
+      // reports success — `__windField.samples 352`, `speeds [3.4, 28.4]`, `deckCanvases 2`,
+      // `layerCount 1`, `hasParticle true`, no error state — and the deck canvas changes **0.006% of
+      // its pixels across frames 2.5s apart**, which is the map's own baseline noise (measured without
+      // the layer: 27-33 pixels of 623,776). The particles are drawn once and never step.
+      //
+      // THREE HYPOTHESES HAVE NOW BEEN TESTED AND FAILED:
+      //   · `interleaved: true` — blamed and fixed 2026-09-25; the freeze survived it (that session
+      //     measured "0 of 7875, twice", this session measured the same on different hardware).
+      //   · this line reading `animate: visible` — plausible, because `load()` runs from `refresh()`
+      //     BEFORE `setVisible(true)`, so the first layer was built inert and then re-created under the
+      //     same `id: "wind-flow"` (deck matches by id+type and does not re-run `initializeState()`).
+      //     Changed to `animate: true`, rebuilt, re-measured on the same GPU: **0.006% — unchanged.**
+      //   · so the layer DOES reach deck with animation enabled and still does not step.
+      //
+      // The library's loop is `draw() -> requestStep() -> setTimeout(FPS) -> step() -> setNeedsRedraw()`
+      // (maplibre-gl-wind dist/index.js:473,623-635). The remaining candidate is the last link: a
+      // `setNeedsRedraw()` that no one acts on, because `MapboxOverlay` is driven by Maplibre's render
+      // event and Maplibre repaints on interaction rather than continuously. The untested fix is a
+      // `requestAnimationFrame` loop calling `deck.redraw()` while visible — it needs the Deck instance,
+      // which is not reachable from the page (`map._controls` is minified, so a probe cannot find the
+      // overlay and the experiment has to be made in this file, not from outside).
+      //
+      // `animate: true` is kept rather than reverted because it is the honest value: `load()` is only
+      // ever called when the layer is being switched ON, so there is no case in which the first
+      // construction wants `false`. It is a correction, not a fix.
+      animate: true,
     });
     overlay.setProps({ layers: visible ? [particle] : [] });
 

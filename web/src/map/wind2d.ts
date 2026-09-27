@@ -68,6 +68,22 @@ const TRAIL = 34;
 const REF_PX_PER_FRAME = 0.22;
 /** Wind speed that maps to `REF_PX_PER_FRAME`. HKO's 10-minute mean rarely exceeds this. */
 const REF_SPEED_KMH = 20;
+/** Core stroke width at the reference speed, in CSS px. Scaled per particle by its own speed. */
+const CORE_PX = 1.25;
+/**
+ * The bloom pass: a second, wider stroke under the core at this multiple of its width and this alpha.
+ *
+ * Esri's Flow renderer ships a BLOOM layer effect enabled by default on dark basemaps, and that glow —
+ * not the lines — is most of what makes the published examples look good. The literal Canvas 2D
+ * equivalent is `ctx.shadowBlur`, and it is not usable here: canvas shadows rasterise per stroke, so at
+ * 700 particles x 60fps it is a second full-surface blur every frame. A wide translucent stroke
+ * underneath costs one more `stroke()` and produces the same read at a fraction of the work.
+ *
+ * `ponytail:` if the glow ever needs to be a real gaussian, that is a `filter: blur()` on an offscreen
+ * canvas composited once per frame — but measure first, because this already looks like the reference.
+ */
+const BLOOM_WIDTH = 4.2;
+const BLOOM_ALPHA = 0.16;
 const STREAK_FRAMES = 55;
 
 interface Grid {
@@ -233,15 +249,40 @@ export async function toggleWind(map: maplibregl.Map, on: boolean, src: SourceDe
         // THE STREAK: from where the particle was STREAK_FRAMES ago to where it is now. Both ends are
         // projected at the current view, so the streak stays attached to the ground under pan and zoom
         // rather than sliding with the screen.
-        if (head.x > -30 && head.y > -30 && head.x < cv.width / dpr + 30 && head.y < cv.height / dpr + 30) {
+        if (head.x > -40 && head.y > -40 && head.x < cv.width / dpr + 40 && head.y < cv.height / dpr + 40) {
           const tLon = nLon - (uu / mag) * inv * STREAK_FRAMES;
           const tLat = nLat - (vv / mag) * inv * STREAK_FRAMES;
           const tail = map.project([tLon, tLat] as maplibregl.LngLatLike);
-          ctx.strokeStyle = ramp((sp - grid.min) / Math.max(grid.max - grid.min, 0.1));
-          ctx.globalAlpha = 0.75;
+          const hx = head.x * dpr, hy = head.y * dpr, tx = tail.x * dpr, ty = tail.y * dpr;
+          // Normalised magnitude drives colour AND width, which is Esri's own rule: "Fast winds create
+          // faster, thicker lines". Width carrying the magnitude means the flow is readable when the
+          // colour ramp is unreadable — over a dark basemap, on a colour-blind reader, in a screenshot.
+          const n = Math.min(Math.max((sp - grid.min) / Math.max(grid.max - grid.min, 0.1), 0), 1);
+          const col = ramp(n);
+          const w = CORE_PX * (0.55 + 0.85 * n) * dpr;
+
+          // 1) BLOOM — wide, faint, no taper. Drawn first so the core sits inside it.
+          ctx.strokeStyle = col;
+          ctx.globalAlpha = BLOOM_ALPHA;
+          ctx.lineWidth = w * BLOOM_WIDTH;
           ctx.beginPath();
-          ctx.moveTo(tail.x * dpr, tail.y * dpr);
-          ctx.lineTo(head.x * dpr, head.y * dpr);
+          ctx.moveTo(tx, ty);
+          ctx.lineTo(hx, hy);
+          ctx.stroke();
+
+          // 2) CORE — TAPERED, and the taper is the thing a plain stroke cannot do: a single gradient
+          // along the streak, transparent at the tail and solid at the head. Esri's flowlines thin to a
+          // point at the back; a uniform line reads as a stick no matter how it is coloured.
+          const g = ctx.createLinearGradient(tx, ty, hx, hy);
+          g.addColorStop(0, "rgba(0,0,0,0)");
+          g.addColorStop(0.45, col);
+          g.addColorStop(1, col);
+          ctx.strokeStyle = g;
+          ctx.globalAlpha = 0.95;
+          ctx.lineWidth = w;
+          ctx.beginPath();
+          ctx.moveTo(tx, ty);
+          ctx.lineTo(hx, hy);
           ctx.stroke();
         }
         px[i] = nLon;

@@ -135,18 +135,25 @@ ok(railSync.btnPressed !== null, "no .rail-btn[data-rail=cameras_td] — the rai
 ok(railSync.btnPressed === railSync.rowChecked,
   `the row and the rail disagree about TD being on: row=${railSync.rowChecked} rail=${railSync.btnPressed}`);
 
-// ── 6. The 3D toggle resolves and flips its own state (it does NOT wait for the tileset — see the
-//      header note). A blocking-forever toggle, or one that silently no-ops, is what this rules out.
-const t3d = Date.now();
-await clickRow("buildings3d");
-await page.waitForTimeout(1200);
-const d3 = await rowInfo("buildings3d");
-const ms = Date.now() - t3d;
-ok(d3.present, "no .lyr-item[data-row=buildings3d] — the 3D layer row is gone");
-ok(d3.checked === "true", `clicking the 3D row did not switch it on, aria-checked=${d3.checked}`);
-ok(ms < 8000, `the 3D toggle took ${ms}ms to settle — it must not block on the tileset`);
-await clickRow("buildings3d");
-await page.waitForTimeout(1200);
+// ── 6. 3D IS GONE, and this asserts it stays gone.
+//
+// This used to toggle `buildings3d` and assert it switched on. There is no `buildings3d` any more:
+// Cyrus removed the layer AND the HUD 3D button on 2026-09-27 ("3D buildings (heavy) Remove呢個layer,
+// 出唔到又冇用" / "3D 個button出唔到個3D tiles既"), because `/data/tiles3d.json` returned the SPA
+// fallback — the tileset was never configured — while the control reported success and set no error.
+//
+// The check caught the removal, correctly: it was told to verify a control that no longer exists. A
+// stale assertion is a red gate that hides the next real failure, so it is rewritten to guard the
+// ABSENCE rather than deleted. If someone restores the layer they will have to come here and say so,
+// which is the point — the restored version must also configure a tileset, and that is the bug this
+// removal was standing in for.
+const hud3d = await page.evaluate(() =>
+  [...document.querySelectorAll("button")].some((x) => /^3D$/.test(x.textContent.trim())));
+ok(!hud3d, "the HUD 3D button is back — the tileset was never configured, see the removal note");
+ok(!(await page.evaluate(() => !!document.querySelector('.lyr-item[data-row="buildings3d"]'))),
+  "a buildings3d LAYERS row is back — it draws nothing without a tileset URL");
+ok(!(await page.evaluate(() => !!document.querySelector('.rail-btn[data-rail="buildings3d"]'))),
+  "a buildings3d rail button is back — it draws nothing without a tileset URL");
 
 // ── 7. THE DRONE RFZ LAYER — the first polygon layer since the water tint was removed, and the
 //      only layer here that must NOT load until it is asked for. 290 polygons is 3MB: more than the
@@ -198,7 +205,7 @@ console.log(`drone RFZ: lazy=${!loadedBefore} default=${rfz.checked} features=${
 console.log(`entry points: ${entries.btns.length} rail buttons, ${entries.rows.length} rows, 0 orphaned`);
 console.log(`TD camera layer: default=${td0.checked} "${td0.label}"  off=${JSON.stringify(Object.values(vOff))}  on=${JSON.stringify(Object.values(vOn))}`);
 console.log(`HKO camera layer: "${hko0.label}"  off=${JSON.stringify(Object.values(hkoOff))}`);
-console.log(`3D toggle settled in ${ms}ms`);
+console.log("3D: removed from the UI (no tileset was ever configured) — absence asserted");
 if (fail.length) {
   console.log("");
   for (const f of fail) console.log(`FAIL  ${f}`);

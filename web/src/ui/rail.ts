@@ -50,6 +50,9 @@ const LAYER_ICONS: Record<string, string> = {
   // this one has to read as an AREA, because that is the difference between this layer and every
   // other marker layer on the rail.
   drone_rfz: "M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9zM7.5 7.5l9 9",
+  // A heart with a bolt: the universal defibrillator mark, and the only rail icon that is about
+  // the person looking at the screen rather than about the city.
+  aed_locations: "M12 20s-7-4.4-7-9.2A4 4 0 0112 8a4 4 0 017 2.8C19 15.6 12 20 12 20z|M12.8 10l-2 3h2l-1 3 3-3.6h-2z",
 };
 
 export interface RailLayer {

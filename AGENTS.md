@@ -209,7 +209,7 @@ Hermes (on the VPS) wrote the specs, the source registry, the validators and the
 coding agent builds the app. The clone stands on its own — nothing here needs the VPS to be up.
 
 **Public repo: `github.com/Cyruschu430/hk-city-monitor`** — public, and hosting is Cloudflare
-(`git push` deploys).
+(CORRECTED 2026-09-27: `git push` does NOT deploy — see below).
 
 **First vertical: 停水模式 (water supply).** Deliberately the smallest — one panel, one layer,
 one source. It exists to falsify the primitive design cheaply. If it needs a code change beyond
@@ -966,3 +966,39 @@ suspicious while a VERIFIER that prints nothing looks like a clean run.
   every non-ASCII character — measured: it produced `â€”` mojibake in a clean checker and the NEXT
   check failed for a reason unrelated to the change. Mutate a COPY, or re-upload the pristine file
   from the source of truth afterwards.
+
+
+---
+
+## Deploying — measured 2026-09-27, and the old note here was wrong
+
+This file used to say ``(`git push` deploys)``. **It does not.** Measured:
+
+```
+gh api repos/Cyruschu430/hk-city-monitor/commits/<sha>/status  ->  state: pending, statuses: []
+gh api repos/Cyruschu430/hk-city-monitor/check-runs            ->  []
+gh api repos/Cyruschu430/hk-city-monitor/deployments           ->  []
+```
+
+Cloudflare Pages is **not connected to this GitHub repo**. There is no Git integration, no CI workflow
+(no `.github/workflows`), and no deployment status on any commit. Pushing 33 commits changed nothing on
+the live site — it kept serving `assets/index-DmsgbxpK.js`, a bundle missing the Tier 2 timeline, the
+co-domain view, the merged live wall, the carpark collector and the 64% sources slimming. Every one of
+those looked deployed because the push had succeeded.
+
+The deployment is a **direct upload from the PC**:
+
+```
+cd web && npm run build
+npx wrangler pages deploy dist --project-name=hk-city-monitor --branch=main --commit-dirty=true
+```
+
+Credentials live at `%APPDATA%\xdg.config\.wrangler\config\default.toml` (OAuth, scope `pages:write`,
+account `9f46e2dc63aff99f84e969d419964ad0`, project `hk-city-monitor`). The access token carries an
+`expiration_time`; wrangler refreshes it from the stored `refresh_token`, which is why `whoami` works
+after expiry.
+
+**A build that is green says nothing about a site that is live.** Verify with the artifact, not the
+push: fetch the deployed `index.html`, read the `assets/index-*.js` hash, and grep that bundle for a
+string the change introduced. That is how the staleness above was found — and it is the only reason
+it was found.

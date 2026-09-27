@@ -106,7 +106,11 @@ const expected = r.rowTrackSum + r.panelPadY + r.panelGapY;
 if (Math.abs(expected - r.panelColScroll.scrollH) > 4)
   problems.push(`row tracks + padding + gaps = ${expected} but scrollHeight is ${r.panelColScroll.scrollH} — the documented trap`);
 if (r.horizontalOverflow) problems.push("horizontal page overflow");
-if (mapShareW < 85) problems.push(`map is only ${mapShareW}% wide`);
+// 85% was written for the stacked layout, where the map spanned the full window. In the split it shares
+// the width with the rail (56px) and the panel column (clamp 320-560px), so at 1920px the map gets 1304px
+// = 68%. The number that matters now is that the map still keeps the large majority of the window; the
+// panel column's own clamp is asserted by the single-column + scroll checks below.
+if (mapShareW < 60) problems.push(`map is only ${mapShareW}% wide — the split must still leave it the majority`);
 // The panel column is now a SIDE-RAIL scroller, so one column is correct — the old bottom-band layout
 // wanted three across and this line asserted it. What must hold instead is that the column actually
 // scrolls. That is the whole point of `#panelCol`, and it is exactly what broke: an orphaned CSS block

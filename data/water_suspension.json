@@ -4,14 +4,14 @@
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
  "geocode_note": "lat/lng come from the OGCIO Address Lookup Service (als.gov.hk), the registered als_address_lookup source, applied to the first clause of each notice address. A notice that did not resolve keeps lat=null and is drawn at DISTRICT level -- we never substitute a district centroid, because a confident pin in the wrong place is worse than an honest district highlight.",
- "generated": "2026-09-27T16:59:36+08:00",
+ "generated": "2026-09-27T23:19:37+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
-  "records": 103,
-  "active": 2,
-  "located": 102,
+  "records": 107,
+  "active": 3,
+  "located": 106,
   "district_only": 1,
-  "active_located": 2,
+  "active_located": 3,
   "active_district_only": 0
  },
  "districts": [
@@ -1579,10 +1579,71 @@
    "status": "現正停水",
    "lat": 22.40763,
    "lng": 113.96769
+  },
+  {
+   "id": "2026092713794",
+   "water_type": "鹹水",
+   "district": "九龍城區",
+   "district_en": "Kowloon City",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-27T16:50:00+08:00",
+   "resume_at": null,
+   "address": "廣播道34-44號(雙數), 47-83(單數)",
+   "address_en": "NOS.34-44 (EVENS.), NOS.47-83 (ODDS.)BROADCAST DRIVE",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水",
+   "lat": 22.34252,
+   "lng": 114.18321
+  },
+  {
+   "id": "2026092713795",
+   "water_type": "食水",
+   "district": "大埔區",
+   "district_en": "Tai Po",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-27T17:34:00+08:00",
+   "resume_at": "2026-09-27T19:11:00+08:00",
+   "address": "圍頭村",
+   "address_en": "WAI TAU TSUEN",
+   "cause": "水掣測試工作",
+   "status": "供水已恢復",
+   "lat": 22.46354,
+   "lng": 114.1482
+  },
+  {
+   "id": "2026092713796",
+   "water_type": "食水",
+   "district": "油尖旺區",
+   "district_en": "Yau Tsim Mong",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-27T18:40:00+08:00",
+   "resume_at": "2026-09-27T20:28:00+08:00",
+   "address": "覺士道7號",
+   "address_en": "7 COX'S ROAD",
+   "cause": "緊急維修水管工程",
+   "status": "供水已恢復",
+   "lat": 22.30475,
+   "lng": 114.17293
+  },
+  {
+   "id": "2026092713797",
+   "water_type": "食水",
+   "district": "東區",
+   "district_en": "Eastern",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-27T19:40:00+08:00",
+   "resume_at": "2026-09-27T21:39:00+08:00",
+   "address": "羅屋民俗館",
+   "address_en": "Law Uk Folk Museum",
+   "cause": "緊急維修水管工程",
+   "status": "供水已恢復",
+   "lat": 22.43602,
+   "lng": 114.18874
   }
  ],
  "active_ids": [
   "2026092613788",
-  "2026092713792"
+  "2026092713792",
+  "2026092713794"
  ]
 }

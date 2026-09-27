@@ -58,6 +58,7 @@ async function build(map: maplibregl.Map, src: SourceDef): Promise<WindOverlay> 
   let particle: InstanceType<typeof WindParticleLayer> | null = null;
   let visible = false;
 
+
   // NOT INTERLEAVED — and that is the whole reason the animation was frozen.
   //
   // MEASURED 2026-09-25 on a real GPU (AMD Radeon, D3D11, headed run): with
@@ -159,6 +160,29 @@ async function build(map: maplibregl.Map, src: SourceDef): Promise<WindOverlay> 
       { width: 256, height: 192, bounds: WIND_BOUNDS, power: 2 },
     );
     const unscale = Math.max(Math.abs(uMin), Math.abs(uMax), Math.abs(vMin), Math.abs(vMax));
+    // Cheap, synchronous, and honest: read the texture canvas back and report how much the values
+    // actually vary. `getImageData` on a 2D canvas works (it is not a WebGL buffer), so this is a
+    // real read — unlike `toDataURL` on the MAP's canvas, which comes back empty once the frame has
+    // been composited because `preserveDrawingBuffer` is off.
+    const textureFacts = (() => {
+      try {
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return { w: canvas.width, h: canvas.height, spread: "no 2d ctx" };
+        const d = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let min = 255, max = 0;
+        for (let k = 0; k < d.length; k += 4) {
+          if (d[k] < min) min = d[k];
+          if (d[k] > max) max = d[k];
+        }
+        // uMin/uMax/vMin/vMax are deliberately NOT reported: their declared type is optional, and a
+        // hook that has to be `as`-cast to compile is a hook that will drift from the code it claims
+        // to describe. `spread` is the fact that matters — a flat texture draws nothing.
+        void uMin; void uMax; void vMin; void vMax;
+        return { w: canvas.width, h: canvas.height, spread: max - min };
+      } catch (e) {
+        return { w: canvas.width, h: canvas.height, spread: "throw " + (e instanceof Error ? e.message : String(e)) };
+      }
+    })();
     particle = new WindParticleLayer({
       id: "wind-flow",
       image: canvas.toDataURL(),
@@ -214,7 +238,19 @@ async function build(map: maplibregl.Map, src: SourceDef): Promise<WindOverlay> 
       samples: field.samples.length,
       observedAt: field.observedAt ? field.observedAt.toISOString() : null,
       speeds: [field.minSpeed, field.maxSpeed],
-      textures: 1,
+      // `textures` USED TO READ `1` — a hardcoded literal, not a measurement. It reported a texture
+      // for every run, including runs where nothing was drawn, and I read it as evidence that the
+      // texture had been built. That is the fourth time on this layer that a hook has certified a
+      // thing it never checked (`__windField` samples proves the fetch; `deckCanvases` proves only
+      // that `addControl` ran; `layerCount` proves the layer was handed over; and this proved
+      // nothing at all). It now reports what can actually be inspected: the dimensions of the
+      // texture canvas, and whether its pixels carry any variation.
+      //
+      // If `textureSpread` is 0 the texture is FLAT — every sample interpolated to the same value —
+      // and the shader has nothing to move particles along, which draws nothing at all. That is a
+      // different failure from "drawn once and frozen", and the two were indistinguishable from
+      // outside the page until now.
+      texture: textureFacts,
     };
   }
 

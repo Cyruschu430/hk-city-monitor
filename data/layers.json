@@ -175,6 +175,21 @@
         "scope": "hk"
       },
       "_comment": "4,652 public defibrillators, clustered by the generic point path (clusterRadius 46, clusterMaxZoom 13) exactly like the camera layers — no bespoke clustering code, because the pattern already existed and re-writing it for one layer is how two cluster behaviours end up on one map. OFF by default: it is 707KB, and a layer that loads by default is a layer every reader pays for. The popup answers ONE question first — can the public use it — because an AED behind a locked office door and one on a street corner are the same dot otherwise."
+    },
+    {
+      "id": "hk_facility_areas",
+      "source": "hk_facility_areas",
+      "render": "list",
+      "geom": "polygon",
+      "title": {
+        "tc": "貨運及機場設施",
+        "en": "Cargo & airport facilities"
+      },
+      "popup": "facility_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "公眾貨物裝卸區 + 機場進場限制區. The facilities 貨運模式's panels are ABOUT: before this the mode listed flight and traffic rows with the map saying nothing about where cargo actually moves, which is the panel-to-map link missing in the one mode where the map should lead. Polygon is right here for the same reason it is right for the drone RFZ and wrong for the water district tint: the publishers draw the zone AS this boundary, so the polygon IS the data rather than a generalisation of it. OFF by default - 128 polygons is 134KB, and a layer that loads unasked is a layer every reader pays for. Popup properties follow the CSDI shape attributeHtml expects (Name as the head, Type_tc/Type_en as a labelled row) - short keys render as '未命名' plus raw unlabelled keys."
     }
   ]
 }

@@ -190,6 +190,22 @@
         "scope": "hk"
       },
       "_comment": "公眾貨物裝卸區 + 機場進場限制區. The facilities 貨運模式's panels are ABOUT: before this the mode listed flight and traffic rows with the map saying nothing about where cargo actually moves, which is the panel-to-map link missing in the one mode where the map should lead. Polygon is right here for the same reason it is right for the drone RFZ and wrong for the water district tint: the publishers draw the zone AS this boundary, so the polygon IS the data rather than a generalisation of it. OFF by default - 128 polygons is 134KB, and a layer that loads unasked is a layer every reader pays for. Popup properties follow the CSDI shape attributeHtml expects (Name as the head, Type_tc/Type_en as a labelled row) - short keys render as '未命名' plus raw unlabelled keys."
+    },
+    {
+      "id": "hk_facility_pins",
+      "source": "hk_facility_pins",
+      "render": "list",
+      "geom": "point",
+      "symbol": "oil-tank",
+      "title": {
+        "tc": "貯油裝置",
+        "en": "Oil storage installations"
+      },
+      "popup": "facility_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "23 licensed oil storage installations. A `point` layer must name a `symbol` and pointLayer throws without one (overlays.ts:347); the glyph is `oil-tank` in symbols.ts. Small enough (7,932 bytes) that size is NOT the reason it is off by default — being one mode's subject is: a layer that appears in 總覽 without being asked for is what the verticals exist to prevent."
     }
   ]
 }

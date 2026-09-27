@@ -46,6 +46,10 @@ const LAYER_ICONS: Record<string, string> = {
   aircraft: "M12 2l2 7 7 3v2l-7-1v5l2.5 2v1.6L12 20.5l-4.5 1.1V20l2.5-2v-5l-7 1v-2l7-3z",
   wind_field: "M3 8h11a3 3 0 10-3-3|M3 12h15a3 3 0 11-3 3|M3 16h9",
   weather_stations: "M12 4v16|M7 9h10|M9 4h6|M5 20h14",
+  // A hexagon with a slash: a zone, and a prohibition. The camera and station glyphs are objects;
+  // this one has to read as an AREA, because that is the difference between this layer and every
+  // other marker layer on the rail.
+  drone_rfz: "M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9zM7.5 7.5l9 9",
 };
 
 export interface RailLayer {

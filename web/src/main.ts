@@ -110,6 +110,11 @@ const RAIL_LAYERS: RailLayer[] = [
   // glance and every existing `includes("風場")` selector keeps working.
   { id: "wind_field", label: { tc: "風場（模式格網）", en: "Wind flow (modelled)" } },
   { id: "weather_stations", label: { tc: "氣象站", en: "Weather stations" } },
+  // OFF by default, and it stays that way: 290 polygons is 3MB, which is more than the entire
+  // first paint of this app. It needs a `case` in toggleLayer() like every other layer — that
+  // switch has no generic default, it THROWS, and an earlier draft of this change assumed
+  // otherwise and shipped a toggle that answered `unknown layer drone_rfz`.
+  { id: "drone_rfz", label: { tc: "無人機禁飛區", en: "Drone restricted zones" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its
@@ -878,6 +883,22 @@ async function boot(): Promise<void> {
           if (!on) break;
           const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
           if (!drawn.includes("weather_stations")) throw new Error("氣象站圖層畫唔出");
+          break;
+        }
+        case "drone_rfz": {
+          // Config-driven like rain_nowcast and weather_stations: one layers.json definition, one
+          // renderer. The polygon support itself lives in map/overlays.ts (`polygonLayer`).
+          //
+          // The guard below is not decoration. `applyVerticalLayers` catches per-layer failures and
+          // re-throws, but a layer that draws NOTHING returns normally — and a toggle that turns on,
+          // reports success and paints no polygons is the dead-control failure this project has hit
+          // three times. So the drawn list is checked rather than the absence of a throw.
+          const def = registry.layers.find((l) => l.id === "drone_rfz");
+          if (!def) throw new Error("layers.json 冇 drone_rfz");
+          clearVerticalLayers(map, [def]);
+          if (!on) break;
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
+          if (!drawn.includes("drone_rfz")) throw new Error("無人機禁飛區圖層畫唔出");
           break;
         }
         case "buildings3d": {

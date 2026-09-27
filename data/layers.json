@@ -1,149 +1,164 @@
 {
- "_comment": "Map layer registry. geom ∈ point/polygon/line/raster/poi/none.",
- "geoms": [
-  "point",
-  "polygon",
-  "line",
-  "raster",
-  "poi",
-  "none"
- ],
- "layers": [
-  {
-   "id": "control_points",
-   "source": "immd_cp_queue",
-   "render": "status_grid",
-   "geom": "poi",
-   "symbol": "cp-land",
-   "title": {
-    "tc": "出入境管制站",
-    "en": "Immigration Control Points"
-   },
-   "_comment": "The POIs 口岸模式 is ABOUT. Before this the mode drew only camera dots: three panels of queue and ferry times with nothing on the map saying which crossings they referred to — the panel-to-map link was missing in the one mode where the map should lead. Positions come from data/control_points.json (reference data with a validation trail: each coordinate checked against an official anchor and rejected beyond 1.5km, which caught four wrong lookups). The popup joins the LIVE queue reading from the trigger state, so it answers the panel's question rather than restating the name. 深圳灣 has no coordinate — it is resolved at district level instead of being given a confident wrong pin.",
-   "popup": "control_point_popup",
-   "filters": {
-    "scope": "hk"
-   }
-  },
-  {
-   "id": "cameras_all",
-   "source": "td_camera_list",
-   "render": "image_wall",
-   "geom": "point",
-   "symbol": "cam-td",
-   "title": {
-    "tc": "交通快拍相機",
-    "en": "Traffic Cameras"
-   },
-   "popup": "camera_popup",
-   "filters": {
-    "scope": "hk"
-   }
-  },
-  {
-   "id": "hko_cameras",
-   "source": "hko_webcam_index",
-   "render": "image_wall",
-   "geom": "point",
-   "symbol": "cam-hko",
-   "title": {
-    "tc": "天氣攝影機",
-    "en": "Weather Cameras"
-   },
-   "popup": "camera_popup",
-   "filters": {
-    "scope": "hk"
-   }
-  },
-  {
-   "id": "rain_nowcast",
-   "source": "hko_rain_nowcast",
-   "render": "raster_map",
-   "geom": "raster",
-   "title": {
-    "tc": "降雨臨近預報",
-    "en": "Rainfall Nowcast"
-   },
-   "popup": null,
-   "filters": {
-    "scope": "hk"
-   }
-  },
-  {
-   "id": "ae_hospitals",
-   "source": "ha_ae_waiting",
-   "render": "gauge_grid",
-   "geom": "none",
-   "title": {
-    "tc": "急症室",
-    "en": "A&E Departments"
-   },
-   "popup": "ae_popup",
-   "filters": {
-    "scope": "hk"
-   }
-  },
-  {
-   "id": "water_suspension",
-   "source": "wsd_water_suspension",
-   "render": "list",
-   "geom": "none",
-   "title": {
-    "tc": "停水通知",
-    "en": "Water Suspensions"
-   },
-   "popup": null,
-   "filters": {
-    "scope": "district"
-   }
-  },
-  {
-   "id": "water_suspension_districts",
-   "source": "wsd_water_suspension",
-   "render": "list",
-   "geom": "point",
-   "symbol": "no-water",
-   "title": {
-    "tc": "停水位置",
-    "en": "Suspension locations"
-   },
-   "_title_note": "MEASURED 2026-09-24: an earlier title 停水位置（大廈／街道）＋受影響地區 was 17 characters and the LAYERS control is 230px wide, so it ellipsised mid-word to 停水位置（大廈／街道）＋受… — a layer name the reader could not finish. Now that the district tint is gone the name is simply 停水位置, which fits with room to spare.",
-   "_comment": "Cyrus 2026-09-25: 'boundary polygon 有誤導性; 我覺得顯示 point location 就夠' — so this is now PINS ONLY, and the district TINT is deleted. He is right, and the numbers say why: the tint was a whole 18-district CSDI polygon painted for an outage that is usually ONE building, so 「觀塘區」 went red because of a single 牛頭角道 notice. The pins come from the collector's ALS geocode of each notice's own street address, so they are the actual claim the data supports; the polygon was an inference drawn on top of it and it overstated the affected area every single time. Pins stay two-tone — alert red for 食水 (drinking water, the life-safety case) and amber for 鹹水 (flushing water) — and the layer title no longer mentions districts because it no longer draws any. CONSEQUENCE: the CSDI 18-district source `wsd_water_suspension_districts` and its geometry are now unused, and `polygonLayer`/`normaliseDistricts` were deleted with it. If the tint ever returns, the 深水埗區 trailing-CRLF fix that `normaliseDistricts` existed for is in git history — and it is a real upstream defect, not a rumour.",
-   "popup": null,
-   "filters": {
-    "scope": "hk"
-   }
-  },
-  {
-   "_comment": "WIND FLOW — a GPU particle animation over a MODELLED 22x16 lattice (Open-Meteo, 352 points), not the station barbs it used to draw. Cyrus 2026-09-25. The barbs answered 'what is the wind at this instrument'; a flow animation answers 'where is the air going', which is what a reader reads off a weather map. geom is 'none' because zero MapLibre layers are created — map/wind.ts draws the whole thing through a deck.gl MapboxOverlay, so visibility belongs to that overlay, like the 3D layer, and clearVerticalLayers has nothing to clear. It used to be 'poi' with a stale 'wind-barb' symbol, which worked only by accident: 'poi' MEANS the curated border-crossing POI renderer, so listing this layer in a vertical would have handed a modelled wind field to the control-point drawer. HONESTY: this is modelled data; the weather_stations layer is the OBSERVED counterpart and both are one click apart, because conflating a model with a measurement is the dishonest option. Zero MapLibre layers are created, so nothing needs clearing.",
-   "id": "wind_field",
-   "source": "open_meteo_wind_grid",
-   "render": "status_grid",
-   "geom": "none",
-   "symbol": "wind-flow",
-   "title": {
-    "tc": "風場（模式格網）",
-    "en": "Wind flow (modelled)"
-   },
-   "popup": null,
-   "filters": {
-    "scope": "hk"
-   }
-  },
-  {
-   "id": "weather_stations",
-   "source": "hko_stations_network",
-   "render": "status_grid",
-   "geom": "point",
-   "symbol": "station-wind",
-   "title": {
-    "tc": "氣象站位置",
-    "en": "Weather stations"
-   },
-   "popup": null,
-   "filters": {
-    "scope": "hk"
-   }
-  }
- ]
+  "_comment": "Map layer registry. geom ∈ point/polygon/line/raster/poi/none.",
+  "geoms": [
+    "point",
+    "polygon",
+    "line",
+    "raster",
+    "poi",
+    "none"
+  ],
+  "layers": [
+    {
+      "id": "control_points",
+      "source": "immd_cp_queue",
+      "render": "status_grid",
+      "geom": "poi",
+      "symbol": "cp-land",
+      "title": {
+        "tc": "出入境管制站",
+        "en": "Immigration Control Points"
+      },
+      "_comment": "The POIs 口岸模式 is ABOUT. Before this the mode drew only camera dots: three panels of queue and ferry times with nothing on the map saying which crossings they referred to — the panel-to-map link was missing in the one mode where the map should lead. Positions come from data/control_points.json (reference data with a validation trail: each coordinate checked against an official anchor and rejected beyond 1.5km, which caught four wrong lookups). The popup joins the LIVE queue reading from the trigger state, so it answers the panel's question rather than restating the name. 深圳灣 has no coordinate — it is resolved at district level instead of being given a confident wrong pin.",
+      "popup": "control_point_popup",
+      "filters": {
+        "scope": "hk"
+      }
+    },
+    {
+      "id": "cameras_all",
+      "source": "td_camera_list",
+      "render": "image_wall",
+      "geom": "point",
+      "symbol": "cam-td",
+      "title": {
+        "tc": "交通快拍相機",
+        "en": "Traffic Cameras"
+      },
+      "popup": "camera_popup",
+      "filters": {
+        "scope": "hk"
+      }
+    },
+    {
+      "id": "hko_cameras",
+      "source": "hko_webcam_index",
+      "render": "image_wall",
+      "geom": "point",
+      "symbol": "cam-hko",
+      "title": {
+        "tc": "天氣攝影機",
+        "en": "Weather Cameras"
+      },
+      "popup": "camera_popup",
+      "filters": {
+        "scope": "hk"
+      }
+    },
+    {
+      "id": "rain_nowcast",
+      "source": "hko_rain_nowcast",
+      "render": "raster_map",
+      "geom": "raster",
+      "title": {
+        "tc": "降雨臨近預報",
+        "en": "Rainfall Nowcast"
+      },
+      "popup": null,
+      "filters": {
+        "scope": "hk"
+      }
+    },
+    {
+      "id": "ae_hospitals",
+      "source": "ha_ae_waiting",
+      "render": "gauge_grid",
+      "geom": "none",
+      "title": {
+        "tc": "急症室",
+        "en": "A&E Departments"
+      },
+      "popup": "ae_popup",
+      "filters": {
+        "scope": "hk"
+      }
+    },
+    {
+      "id": "water_suspension",
+      "source": "wsd_water_suspension",
+      "render": "list",
+      "geom": "none",
+      "title": {
+        "tc": "停水通知",
+        "en": "Water Suspensions"
+      },
+      "popup": null,
+      "filters": {
+        "scope": "district"
+      }
+    },
+    {
+      "id": "water_suspension_districts",
+      "source": "wsd_water_suspension",
+      "render": "list",
+      "geom": "point",
+      "symbol": "no-water",
+      "title": {
+        "tc": "停水位置",
+        "en": "Suspension locations"
+      },
+      "_title_note": "MEASURED 2026-09-24: an earlier title 停水位置（大廈／街道）＋受影響地區 was 17 characters and the LAYERS control is 230px wide, so it ellipsised mid-word to 停水位置（大廈／街道）＋受… — a layer name the reader could not finish. Now that the district tint is gone the name is simply 停水位置, which fits with room to spare.",
+      "_comment": "Cyrus 2026-09-25: 'boundary polygon 有誤導性; 我覺得顯示 point location 就夠' — so this is now PINS ONLY, and the district TINT is deleted. He is right, and the numbers say why: the tint was a whole 18-district CSDI polygon painted for an outage that is usually ONE building, so 「觀塘區」 went red because of a single 牛頭角道 notice. The pins come from the collector's ALS geocode of each notice's own street address, so they are the actual claim the data supports; the polygon was an inference drawn on top of it and it overstated the affected area every single time. Pins stay two-tone — alert red for 食水 (drinking water, the life-safety case) and amber for 鹹水 (flushing water) — and the layer title no longer mentions districts because it no longer draws any. CONSEQUENCE: the CSDI 18-district source `wsd_water_suspension_districts` and its geometry are now unused, and `polygonLayer`/`normaliseDistricts` were deleted with it. If the tint ever returns, the 深水埗區 trailing-CRLF fix that `normaliseDistricts` existed for is in git history — and it is a real upstream defect, not a rumour.",
+      "popup": null,
+      "filters": {
+        "scope": "hk"
+      }
+    },
+    {
+      "_comment": "WIND FLOW — a GPU particle animation over a MODELLED 22x16 lattice (Open-Meteo, 352 points), not the station barbs it used to draw. Cyrus 2026-09-25. The barbs answered 'what is the wind at this instrument'; a flow animation answers 'where is the air going', which is what a reader reads off a weather map. geom is 'none' because zero MapLibre layers are created — map/wind.ts draws the whole thing through a deck.gl MapboxOverlay, so visibility belongs to that overlay, like the 3D layer, and clearVerticalLayers has nothing to clear. It used to be 'poi' with a stale 'wind-barb' symbol, which worked only by accident: 'poi' MEANS the curated border-crossing POI renderer, so listing this layer in a vertical would have handed a modelled wind field to the control-point drawer. HONESTY: this is modelled data; the weather_stations layer is the OBSERVED counterpart and both are one click apart, because conflating a model with a measurement is the dishonest option. Zero MapLibre layers are created, so nothing needs clearing.",
+      "id": "wind_field",
+      "source": "open_meteo_wind_grid",
+      "render": "status_grid",
+      "geom": "none",
+      "symbol": "wind-flow",
+      "title": {
+        "tc": "風場（模式格網）",
+        "en": "Wind flow (modelled)"
+      },
+      "popup": null,
+      "filters": {
+        "scope": "hk"
+      }
+    },
+    {
+      "id": "weather_stations",
+      "source": "hko_stations_network",
+      "render": "status_grid",
+      "geom": "point",
+      "symbol": "station-wind",
+      "title": {
+        "tc": "氣象站位置",
+        "en": "Weather stations"
+      },
+      "popup": null,
+      "filters": {
+        "scope": "hk"
+      }
+    },
+    {
+      "id": "drone_rfz",
+      "source": "drone_rfz",
+      "render": "list",
+      "geom": "polygon",
+      "title": {
+        "tc": "無人機禁飛區",
+        "en": "Drone restricted zones"
+      },
+      "popup": "rfz_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "The first polygon layer since 2026-09-25. That removal was specific to the water district tint, whose polygon asserted more than the notice said (a district outline around a water suspension reads as the whole district being cut off). Nothing about that reason applies here: CAD publishes the zone AS this boundary, so the polygon IS the data rather than a generalisation of it. OFF by default — 290 polygons at 3MB is not first paint."
+    }
+  ]
 }

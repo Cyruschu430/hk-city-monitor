@@ -46,6 +46,10 @@ const files = [
   // to the three fields the panel reads — see the note in the source entry. This is the file a
   // browser was downloading all of on every cold load.
   ["data/carpark_info.json", "carpark_info.json"],
+  // Drone restricted flight zones — exported by hand from the eSUA notice map (no export URL
+  // exists; the registry note records this). 290 polygons, 3MB, loaded only when the RAIL toggle
+  // is switched on, so it never touches first paint.
+  ["data/drone_restricted_zone.geojson", "drone_restricted_zone.geojson"],
   // Immigration control points with VALIDATED WGS84 positions, so 口岸模式 can
   // plot the crossings as POIs with popups instead of only camera dots. Reference
   // data, not a feed — see the _method note in the file for how each coordinate

@@ -71,10 +71,11 @@ export function createStatusBar(root: HTMLElement): StatusBar {
     system: { tc: "自動", en: "Auto" },
     light: { tc: "淺色", en: "Light" },
     dark: { tc: "深色", en: "Dark" },
+    palantir: { tc: "指揮", en: "Palantir" },
   };
   const themeBox = h("div", { id: "themeSwitch", role: "group", "aria-label": "theme" });
   const themeButtons = new Map<Theme, HTMLElement>();
-  for (const code of ["system", "light", "dark"] as Theme[]) {
+  for (const code of ["system", "light", "dark", "palantir"] as Theme[]) {
     const b = h("button", { type: "button", onclick: () => setTheme(code) }, "");
     themeButtons.set(code, b);
     themeBox.append(b);

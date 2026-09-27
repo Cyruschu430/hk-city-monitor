@@ -58,6 +58,9 @@ const files = [
   // data, not a feed — see the _method note in the file for how each coordinate
   // was checked before it was allowed in.
   ["data/control_points.json", "control_points.json"],
+  // Collector output (scripts/collect_aircraft.py, PC scheduled task every 2 min). Live ADS-B over
+  // Hong Kong — the front end reads this because api.adsb.lol blocks Cloudflare egress.
+  ["data/aircraft.json", "aircraft.json"],
   // Collector output (scripts/build_facilities.py) — CSDI: public cargo working areas, HKIA
   // approach restricted areas, oil storage installations. Two files because a layer's `geom`
   // picks one renderer: a polygon layer draws -fill/-line/-label, a point layer clusters.

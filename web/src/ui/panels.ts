@@ -53,6 +53,10 @@ interface Entry {
    *  the ENTRY, not on the panel def: panels.json is a shared registry read by every
    *  consumer, and a per-reader choice must not be written back into it. */
   region?: string | null;
+  /** True while this panel is waiting for its first scroll into view. Set by
+   *  setPanels, cleared by the observer or by any explicit refresh, so a retry
+   *  button can never leave a panel stuck in the deferred state. */
+  deferred?: boolean;
 }
 
 export interface PanelEngineDeps {
@@ -393,11 +397,65 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
         maxRows: typeof entry.panel.params?.["max"] === "number" ? (entry.panel.params["max"] as number) : undefined,
       }),
     );
+    // Re-observed after EVERY paint, because mount() REPLACES the node: an
+    // observation on the old node dies with it, and a panel the reader has already
+    // scrolled to would then never load.
+    if (entry.deferred) {
+      const el = root.querySelector<HTMLElement>(`[data-panel="${id}"]`);
+      if (el) observeForFetch(el);
+    }
+  }
+
+  // --- Deferred fetch: only on-screen panels touch the network -----------------
+  // MEASURED on World Monitor: 86 panels defined, 8 mounted, 78 deferred shells.
+  // HKCM fetched every panel in `order` at once, so a 100-panel mode would fire 100
+  // requests before the first one painted. `content-visibility` in app.css removes the
+  // off-screen RENDER cost; this removes the off-screen FETCH cost, which is the half
+  // that can actually run the free tier out of quota.
+  // The guard lives in the two fetch-all paths (setPanels, refreshAll) rather than at
+  // each caller, so no future caller can route around it by accident.
+  let io: IntersectionObserver | null = null;
+  function observeForFetch(el: HTMLElement): void {
+    io ??= new IntersectionObserver(
+      (hits) => {
+        for (const hit of hits) {
+          if (!hit.isIntersecting) continue;
+          io?.unobserve(hit.target);
+          const pid = (hit.target as HTMLElement).dataset["panel"];
+          if (!pid) continue;
+          const entry = entries.get(pid);
+          if (!entry?.deferred) continue;
+          entry.deferred = false;
+          syncDeferredTag();
+          void refresh(pid).then(() => {
+            const e = entries.get(pid);
+            if (e) schedule(e);
+          });
+        }
+      },
+      // root is #panels, the scroller itself. 400px of margin is roughly one panel
+      // ahead of the fold: enough that a normal scroll never waits on a fetch, small
+      // enough that the far end of a long column costs nothing.
+      { root, rootMargin: "400px" },
+    );
+    io.observe(el);
+  }
+
+  // Derived on demand rather than kept as a running count: a counter that is
+  // incremented in one path and decremented in another drifts the first time a path is
+  // missed, and this number is what check-layout.mjs reads to prove the guard is live.
+  function syncDeferredTag(): void {
+    let n = 0;
+    for (const e of entries.values()) if (e.deferred) n++;
+    document.body.dataset["deferredPanels"] = String(n);
   }
 
   async function refresh(id: string): Promise<void> {
     const entry = entries.get(id);
     if (!entry) return;
+    // An explicit refresh outranks the deferral: a retry button that left the panel
+    // deferred would read as a button that does nothing.
+    entry.deferred = false;
     // A first load shows the skeleton; a REFRESH keeps the last good data on
     // screen (with its timestamp) instead of blanking a working panel.
     if (entry.data === null) entry.honesty = LOADING;
@@ -449,12 +507,13 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       // Registered but not fetched: setAnalysis paints it, and `order` still contains it so
       // mount() places it correctly.
       if (FED_PANEL_IDS.has(id)) continue;
+      // Deferred, not fetched. paint() mounts the skeleton and hands the node to the
+      // observer; the fetch fires when the panel comes within 400px of the fold, so a
+      // panel already above it loads on the next frame.
+      entry.deferred = true;
       paint(id);
-      void refresh(id).then(() => {
-        const e = entries.get(id);
-        if (e) schedule(e);
-      });
     }
+    syncDeferredTag();
   }
 
   // Staleness is a function of time, not of requests: without this, a source
@@ -527,7 +586,14 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     },
     currentIds: () => [...order],
     refreshAll() {
-      for (const id of order) void refresh(id);
+      // Deliberately does NOT wake a deferred panel. refreshAll is the "settle
+      // everything" call (mode switch, back online): a panel the reader has never
+      // scrolled to has nothing on screen to settle, and its honest state is exactly
+      // "not asked yet" — which is what it keeps. Scrolling to it fetches it then.
+      for (const id of order) {
+        const e = entries.get(id);
+        if (e && !e.deferred) void refresh(id);
+      }
     },
     stats() {
       // Deduplicated by SOURCE, not by panel: two panels reading the same

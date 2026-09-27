@@ -124,3 +124,73 @@
   --surface-grad: linear-gradient(180deg,rgba(255,255,255,.94),rgba(244,248,252,.97));
   --on-cyan:      #ffffff;
 }
+
+/* ============================================================================
+   "palantir" — a dense, matte, flat theme.
+   ============================================================================
+   Every value below is taken from Palantir's OWN open-source design system, Blueprint
+   (github.com/palantir/blueprint, Apache-2.0) — `packages/colors/src/_colors.scss` for the palette,
+   `common/_variables.scss` for the 4px spacing grid and the type scale, `common/_color-aliases.scss`
+   for the intent mapping. Palantir's Foundry Slate is built on Blueprint, so this is the real thing
+   rather than a screenshot impression of it.
+
+   WHY IT IS A SEPARATE THEME AND NOT A REPLACEMENT. The dark theme is glass and glow — translucent
+   panels, backdrop blur, big soft shadows, a bright cyan accent. This one is the OPPOSITE material:
+   opaque, matte, no blur, no shadow, near-square corners, and a much quieter accent. Those are two
+   different design languages and neither is "better"; a reader who wants one should not have to give
+   up the other, and `[data-theme]` already existed, so this costs one block rather than a migration.
+
+   THE ACCENTS ARE DELIBERATELY DULLER. --cyan becomes Blueprint's $blue3 (#2d72d2) rather than
+   #22d3ee. That is not a compromise, it is the whole point: Palantir encodes severity in the DATA and
+   keeps the chrome neutral, so a bright chrome accent competes with the thing the reader is looking
+   for. Signal colours keep their meaning (red stays critical and red stays "up" under the HK market
+   convention) — see `--mkt-up` / `--mkt-down`, which are not touched here.
+   ========================================================================== */
+[data-theme="palantir"]{
+  color-scheme: dark;
+
+  /* surfaces — opaque, and that is the material change. $black and $dark-gray1/3. */
+  --void:        #111418;             /* $black */
+  --panel:       #1c2127;             /* $dark-gray1 — opaque, NOT rgba */
+  --panel-solid: #1c2127;
+  --shade:       #111418;
+  --hairline:    rgba(255,255,255,.10);
+  --hairline-hi: rgba(255,255,255,.22);
+
+  /* ink — $light-gray5 / $gray4 / $gray3 */
+  --txt:         #f6f7f9;
+  --dim:         #abb3bf;
+  --faint:       #8f99a8;
+
+  /* signal — Blueprint intents: $blue3 / $indigo3 / $orange3 / $red3 / $green3 */
+  --cyan:        #2d72d2;
+  --violet:      #7961db;
+  --amber:       #c87619;
+  --alert:       #cd4246;
+  --ok:          #238551;
+
+  /* depth — FLAT. No blur, no glow, no gradient. Panels are separated by a 1px line and nothing
+     else, which is what lets a screen this dense stay readable: shadow is a second, softer edge
+     competing with the hairline that actually carries the structure. */
+  --shadow:       none;
+  --glass:        none;
+  --radius-sm:    2px;
+  --radius:       3px;
+  --radius-pill:  3px;
+  --surface-grad: none;
+
+  /* Because --panel is opaque, every translucent sheet built on it has to be opaque too or the map
+     reads straight through the panels. */
+  --sheet:      #1c2127;
+  --cyan-tint:  rgba(45,114,210,.16);
+
+  /* The accent is dark enough that WHITE ink on it is the readable choice (4.9:1 on #2d72d2),
+     where the glass theme's bright cyan needs dark ink. */
+  --on-cyan:      #ffffff;
+  /* Blueprint's $red3 (#cd4246) is an ICON/BORDER intent, not a fill: white on it is 4.05:1. The
+     fill for white text stays one step darker, which is the same correction the glass theme makes. */
+  --alert-fill:   #b3243a;
+
+  /* Map-face tokens are NOT overridden — the map stays dark in every theme, and these already are.
+     They are restated here only so that a future reader does not have to check. */
+}

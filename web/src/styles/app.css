@@ -809,3 +809,200 @@ a:hover{color:var(--cyan)}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .live-pulse{box-shadow:none}
 }
+
+/* ============================================================================
+   COMPONENT LAYER — "palantir".
+   ============================================================================
+   Everything here is scoped to the palantir theme, so no rule in this block can
+   reach the glass theme or the light theme. That is deliberate: this is a whole
+   component pass, and an unscoped one would be a redesign of the app by accident.
+
+   WHAT ACTUALLY MAKES IT READ AS PALANTIR — and none of it is colour:
+
+   1. DENSITY. Blueprint's spacing unit is 4px ($pt-spacing) and its base font is
+      14px. Padding is a multiple of 4 and rows are closer together. Density is
+      the single largest difference and it is not a colour change.
+
+   2. NUMBERS ARE TABULAR MONO. Every figure the reader compares down a column is
+      monospaced with tabular numerals, so digits line up instead of wobbling.
+      `font-variant-numeric` is the whole trick.
+
+   3. MICRO-LABELS ARE UPPERCASE + LETTERSPACED. Labels get smaller and quieter;
+      values get bigger and louder. That contrast is the hierarchy, instead of
+      colour or size alone.
+
+   4. HAIRLINES DO THE STRUCTURE. Rows are separated by a 1px line, not by gaps
+      or shadows. Fewer visual devices, used consistently.
+
+   5. HOVER IS A TINT, ACTIVE IS A BAR. No glow, no lift, no shadow. An active
+      row gets a 2px accent edge; a hovered row gets 4% white.
+   ========================================================================== */
+
+/* ---- panels: the container ------------------------------------------------- */
+[data-theme="palantir"] .panel{
+  background: var(--panel);
+  backdrop-filter: none;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+[data-theme="palantir"] .panel-head{
+  padding: 5px 10px;
+  background: rgba(255,255,255,.028);
+  border-bottom: 1px solid var(--hairline);
+}
+[data-theme="palantir"] .panel-head h2{
+  font-size: 11px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 600;
+}
+[data-theme="palantir"] .panel-body{ padding: 8px 10px; }
+[data-theme="palantir"] .panel-foot{
+  padding: 5px 10px 6px;
+  border-top: 1px solid var(--hairline);
+  font-size: 11px;
+}
+[data-theme="palantir"] .panel-foot time,
+[data-theme="palantir"] .panel-foot .src{ font-family: var(--font-mono); }
+[data-theme="palantir"] .panel.flash{ animation: none; }   /* no glow */
+
+/* ---- stats: the KPI unit --------------------------------------------------- */
+[data-theme="palantir"] .stat{ padding: 4px 0; border-bottom: 1px solid var(--hairline); }
+[data-theme="palantir"] .stat:last-child{ border-bottom: 0; }
+[data-theme="palantir"] .stat-label{
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+[data-theme="palantir"] .stat-value{
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--txt);
+}
+
+/* ---- lists and tables: aligned columns ------------------------------------- */
+[data-theme="palantir"] .plist > *{ border-bottom: 1px solid var(--hairline); }
+[data-theme="palantir"] .plist > *:last-child{ border-bottom: 0; }
+[data-theme="palantir"] .plist > *:hover,
+[data-theme="palantir"] .ptable tbody tr:hover{ background: rgba(255,255,255,.04); }
+[data-theme="palantir"] .ptable{ font-size: 12px; }
+[data-theme="palantir"] .ptable th{
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  font-weight: 600;
+  border-bottom: 1px solid var(--hairline-hi);
+  text-align: left;
+  padding: 4px 6px;
+}
+[data-theme="palantir"] .ptable td{
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--hairline);
+  font-variant-numeric: tabular-nums;
+}
+/* Right-align a column by putting a `num` class on the cell — numbers are compared
+   down the column, and left-aligned figures cannot be compared at a glance. */
+[data-theme="palantir"] .ptable td.num,
+[data-theme="palantir"] .ptable th.num{ text-align: right; font-family: var(--font-mono); }
+
+/* ---- key/value: the attribute grid ----------------------------------------- */
+[data-theme="palantir"] .kv{
+  display: grid;
+  grid-template-columns: minmax(72px,auto) 1fr;
+  gap: 3px 10px;
+  font-size: 12px;
+}
+[data-theme="palantir"] .kv > :nth-child(odd){
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  align-self: center;
+}
+[data-theme="palantir"] .kv > :nth-child(even){ font-family: var(--font-mono); }
+
+/* ---- the rail: active is a BAR, not a glow --------------------------------- */
+[data-theme="palantir"] .rail-btn{
+  border-radius: var(--radius);
+  box-shadow: none;
+  border-left: 2px solid transparent;
+}
+[data-theme="palantir"] .rail-btn[aria-pressed="true"]{
+  border-left-color: var(--cyan);
+  background: rgba(45,114,210,.14);
+  box-shadow: none;
+}
+[data-theme="palantir"] .rail-btn:hover{ background: rgba(255,255,255,.05); }
+
+/* ---- layer rows: square boxes, mono counts --------------------------------- */
+[data-theme="palantir"] .lyr-box{ border-radius: 2px; }
+[data-theme="palantir"] .lyr-count,
+[data-theme="palantir"] .lyr-key-n{
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+[data-theme="palantir"] .lyr-row{ border-left: 2px solid transparent; }
+[data-theme="palantir"] .lyr-row[aria-checked="true"]{ border-left-color: var(--cyan); }
+
+/* ---- chips and tabs: square, no pill --------------------------------------- */
+[data-theme="palantir"] .chip,
+[data-theme="palantir"] .ptab{
+  border-radius: 2px;
+  box-shadow: none;
+}
+[data-theme="palantir"] .ptab[aria-selected="true"],
+[data-theme="palantir"] .chip[aria-pressed="true"]{
+  background: rgba(45,114,210,.18);
+  border-color: var(--cyan);
+}
+
+/* ---- ticker: denser, and the tag is a micro-label --------------------------- */
+[data-theme="palantir"] .ticker-tag,
+[data-theme="palantir"] .tk-cat{
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+
+/* ---- popups: a dense attribute card, not a card ---------------------------- */
+[data-theme="palantir"] .maplibregl-popup-content,
+[data-theme="palantir"] .attr-popupup,
+[data-theme="palantir"] .attr-popup{
+  border-radius: 2px;
+  box-shadow: 0 6px 20px -10px rgba(0,0,0,.9);
+  border: 1px solid var(--hairline-hi);
+}
+[data-theme="palantir"] .attr-k,
+[data-theme="palantir"] .attr-coords{
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+[data-theme="palantir"] .attr-v{ font-family: var(--font-mono); }
+
+/* ---- the command palette ---------------------------------------------------- */
+[data-theme="palantir"] .palette{ border-radius: var(--radius); box-shadow: 0 24px 60px -24px #000; }
+[data-theme="palantir"] .palette-item{ border-radius: 2px; }
+[data-theme="palantir"] .palette-item[aria-selected="true"]{
+  background: rgba(45,114,210,.2);
+  box-shadow: none;
+}
+[data-theme="palantir"] .palette-kind{
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* ---- camera tiles ---------------------------------------------------------- */
+[data-theme="palantir"] .cam,
+[data-theme="palantir"] .live-frame{ border-radius: 2px; }

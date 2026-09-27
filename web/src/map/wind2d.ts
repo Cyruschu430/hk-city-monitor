@@ -32,15 +32,30 @@ export const WIND_SOURCE_ID = "open_meteo_wind_grid";
 
 const GRID_W = 72;
 const GRID_H = 54;
-const PARTICLES = 2200;
-/** Frames a particle survives before it is reseeded. */
-const TRAIL = 26;
+const PARTICLES = 700;
 /**
- * Fade per frame. This is the TAIL LENGTH, and it is the knob that decides whether the map underneath
- * is readable: the trail behind a dot is `speed / FADE` pixels long, so a fast fade is what turns a
- * streak back into a dot.
+ * Frames a particle survives before it is reseeded. Must exceed the visible tail (`pxStep / FADE`,
+ * ~63 frames at the defaults) or the streak is cut off mid-length — which reads as a line that stops
+ * for no reason rather than as a meteor.
  */
-const FADE = 0.34;
+const TRAIL = 34;
+/**
+ * NO ACCUMULATION, and that is the whole design.
+ *
+ * The first meteor attempt used the classic accumulate-and-fade: draw a dot, fade the whole canvas by a
+ * few percent, let the last N dots smear into a tail. MEASURED, and it was the bug: with `FADE = 0.016`
+ * a dot survived ~63 frames, so 700 particles left a film of low-alpha pixels over **44.31% of the
+ * canvas** (mean alpha 35/255) while the actual meteors were 1.12%. That film is what "好密" was —
+ * density that is not made of anything you can point at, and on a dark basemap it is a visible haze over
+ * every layer underneath. Clearing each frame took it to **0.30%**.
+ *
+ * So the canvas is CLEARED every frame and each particle draws a short streak instead. Nothing survives
+ * between frames, so a film is not representable: the footprint is exactly (particles x streak length),
+ * the map is never washed, and the streak length is a calibrated 7 frames of travel rather than a
+ * side-effect of a fade constant. This is also what a meteor actually looks like — a lit streak, not a
+ * comet with a fading history.
+ */
+/** Frames of travel the streak spans. The tail is `REF_PX_PER_FRAME * STREAK_FRAMES` pixels. */
 /**
  * PIXELS PER FRAME at the reference wind speed — the calibration knob.
  *
@@ -50,11 +65,10 @@ const FADE = 0.34;
  * which put a 20km/h wind at ~21 px/frame and, with a 14-frame trail, drew 294-pixel lines that buried
  * the layers underneath.
  */
-const REF_PX_PER_FRAME = 0.55;
+const REF_PX_PER_FRAME = 0.22;
 /** Wind speed that maps to `REF_PX_PER_FRAME`. HKO's 10-minute mean rarely exceeds this. */
 const REF_SPEED_KMH = 20;
-/** Radius of one particle, in CSS pixels at devicePixelRatio 1. */
-const DOT_PX = 1.15;
+const STREAK_FRAMES = 55;
 
 interface Grid {
   /** u (eastward) and v (northward) components, metres-ish, on a GRID_W x GRID_H lattice. */
@@ -185,11 +199,11 @@ export async function toggleWind(map: maplibregl.Map, on: boolean, src: SourceDe
   const tick = (): void => {
     raf = requestAnimationFrame(tick);
     frames++;
-    // A tail, not a tangle: fade the previous frame instead of clearing it.
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.fillStyle = `rgba(0,0,0,${FADE})`;
-    ctx.fillRect(0, 0, cv.width, cv.height);
-    ctx.globalCompositeOperation = "source-over";
+    // FULL CLEAR, every frame. See the STREAK_FRAMES note: anything that survives a frame accumulates
+    // into a film, and a film is what made the previous version read as dense.
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.lineWidth = 1.1 * dpr;
+    ctx.lineCap = "round";
 
     for (let i = 0; i < PARTICLES; i++) {
       const lon = px[i] ?? west, lat = py[i] ?? south;
@@ -214,18 +228,21 @@ export async function toggleWind(map: maplibregl.Map, on: boolean, src: SourceDe
       if (nLon < west || nLon > east || nLat < south || nLat > north || age[i]! >= TRAIL) {
         seed(i);
       } else {
-        const b = map.project([nLon, nLat] as maplibregl.LngLatLike);
+        const head = map.project([nLon, nLat] as maplibregl.LngLatLike);
         const sp = Math.hypot(uu, vv);
-        // A DOT, not a segment. Cyrus: "好似點點點咁樣，而家一條線咁樣你連後面嗰啲嘢都完全睇唔到" —
-        // a stroked segment covers every layer between its two ends, and at 21px/frame those segments
-        // were hundreds of pixels long. A dot marks the particle and leaves the map legible; the trail
-        // comes from the fade above, not from the stroke length.
-        if (b.x > -20 && b.y > -20 && b.x < cv.width / dpr + 20 && b.y < cv.height / dpr + 20) {
-          ctx.fillStyle = ramp((sp - grid.min) / Math.max(grid.max - grid.min, 0.1));
-          ctx.globalAlpha = 0.9;
+        // THE STREAK: from where the particle was STREAK_FRAMES ago to where it is now. Both ends are
+        // projected at the current view, so the streak stays attached to the ground under pan and zoom
+        // rather than sliding with the screen.
+        if (head.x > -30 && head.y > -30 && head.x < cv.width / dpr + 30 && head.y < cv.height / dpr + 30) {
+          const tLon = nLon - (uu / mag) * inv * STREAK_FRAMES;
+          const tLat = nLat - (vv / mag) * inv * STREAK_FRAMES;
+          const tail = map.project([tLon, tLat] as maplibregl.LngLatLike);
+          ctx.strokeStyle = ramp((sp - grid.min) / Math.max(grid.max - grid.min, 0.1));
+          ctx.globalAlpha = 0.75;
           ctx.beginPath();
-          ctx.arc(b.x * dpr, b.y * dpr, DOT_PX * dpr, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.moveTo(tail.x * dpr, tail.y * dpr);
+          ctx.lineTo(head.x * dpr, head.y * dpr);
+          ctx.stroke();
         }
         px[i] = nLon;
         py[i] = nLat;

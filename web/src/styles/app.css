@@ -647,6 +647,13 @@ a:hover{color:var(--cyan)}
 .pair-x{color:var(--faint)}
 .pair-n{color:var(--cyan);font-variant-numeric:tabular-nums}
 .pair-d{grid-column:1/-1;font-size:11px;color:var(--faint);margin-top:-3px}
+/* Drone RFZ popup. The property VALUES are the publisher's English (CAD ships no Chinese name),
+   so they are set in the UI's body colour at full strength while OUR labels sit quieter beside
+   them — a reader has to be able to tell which words are the regulator's. */
+.rfz-pop{max-width:260px;font-size:12px;line-height:1.45}
+.rfz-pop b{display:block;margin-bottom:3px;color:var(--txt)}
+.rfz-pop span{color:var(--faint);margin-right:4px}
+.rfz-pop .rfz-note{margin-top:4px;font-size:11px;color:var(--faint);font-style:italic}
 
 .walltabs{display:flex;flex-wrap:wrap;gap:4px}
 .cam{position:relative;border-radius:5px;overflow:hidden;border:1px solid var(--hairline);

@@ -763,23 +763,104 @@ async function controlPointLayer(map: maplibregl.Map, def: LayerDefRaw, args: La
   map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
 }
 
+/** A polygon layer, drawn from its source's GeoJSON.
+ *
+ * The COLOUR comes from the feature, not from this file. The CAD export carries its own `fill`
+ * and `stroke` per zone, so the publisher's styling drives the map and a restyle upstream needs no
+ * change here — `coalesce` handles a zone that omits them. Opacity is OURS and deliberately low:
+ * the data's own 0.5 buries the basemap, and the point of this layer is "where can I not fly",
+ * which a reader can only judge against what is underneath.
+ *
+ * A 200 carrying no features is a real state and it THROWS. This project's own rule is that a 200
+ * is not evidence of data (SOURCE_COVERAGE_REVIEW §6.5), and an empty layer would draw nothing
+ * while leaving the toggle on — the dead control the readiness guards exist to catch.
+ */
+async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs): Promise<void> {
+  const src = args.registry.byId.get(def.source);
+  if (!src) throw new Error(`layer ${def.id}: source ${def.source} 唔存在`);
+  const gen = args.gen ?? 0;
+  const res = await fetch(fetchUrl(src), { signal: AbortSignal.timeout(25_000) });
+  if (stale(args, gen)) throw new Error("obsolete layer request");
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = (await res.json()) as GeoJSON.FeatureCollection;
+  const n = data?.features?.length ?? 0;
+  if (n === 0) throw new Error("geojson 冇 feature");
+
+  const id = `${PREFIX}${def.id}`;
+  if (stale(args, gen)) throw new Error("obsolete layer request");
+  map.addSource(id, { type: "geojson", data });
+  map.addLayer({
+    id: `${id}-fill`,
+    type: "fill",
+    source: id,
+    paint: {
+      "fill-color": ["coalesce", ["get", "fill"], "#ff5d6c"] as never,
+      "fill-opacity": 0.18,
+    },
+  });
+  map.addLayer({
+    id: `${id}-line`,
+    type: "line",
+    source: id,
+    paint: {
+      "line-color": ["coalesce", ["get", "stroke"], "#ffd166"] as never,
+      "line-width": 1.4,
+      "line-opacity": 0.9,
+    },
+  });
+  if (stale(args, gen)) throw new Error("obsolete layer request");
+
+  // The publisher's fields are ENGLISH-ONLY (name / effectiveDateTime / description2), so the
+  // labels are ours and the values are theirs, verbatim. Translating a regulator's zone name
+  // would invent an official name that does not exist; a reader has to be able to match what they
+  // see here against the eSUA notice. The last line says so rather than leaving it to be guessed.
+  const T = lang() === "tc"
+    ? { eff: "生效", by: "指定機構", note: "以上為民航處原文（英文）" }
+    : { eff: "Effective", by: "Designated by", note: "Verbatim from the CAD dataset" };
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+
+  map.on("click", `${id}-fill`, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const html =
+      `<div class="rfz-pop">` +
+      `<b>${esc(p["name"])}</b>` +
+      (p["effectiveDateTime"] ? `<div><span>${T.eff}</span> ${esc(p["effectiveDateTime"])}</div>` : "") +
+      (p["description2"] ? `<div><span>${T.by}</span> ${esc(p["description2"])}</div>` : "") +
+      `<div class="rfz-note">${T.note}</div>` +
+      `</div>`;
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup" }).setLngLat(e.lngLat).setHTML(html).addTo(map);
+  });
+  map.on("mouseenter", `${id}-fill`, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", `${id}-fill`, () => (map.getCanvas().style.cursor = ""));
+}
+
 export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[], args: LayerArgs): Promise<string[]> {
   const drawn: string[] = [];
   for (const def of defs) {
     try {
       switch (def.geom) {
         case "polygon":
-          // There are NO polygon layers any more. The last one was the water
-          // district tint, removed 2026-09-25 (Cyrus: "boundary polygon 有誤導性;
-          // 我覺得顯示 point location 就夠") — see layers.json
-          // `water_suspension_districts` `_comment`. This THROWS rather than
-          // falling through to `default`, so re-adding a polygon layer is loud: a
-          // silent no-op would leave the toggle on with nothing drawn, which reads
-          // as a broken layer. The removal machinery is untouched — `layersOf()`
-          // still clears the `-fill`/`-line`/`-label` family and `mapIdsFor()`
-          // still maps it — so restoring one means restoring this function, not
-          // re-deriving it.
-          throw new Error(`圖層 ${def.id}：polygon 圖層已經移除（見 layers.json 停水位置 _comment）`);
+          // RESTORED 2026-09-27 for the drone restricted flight zones.
+          //
+          // This branch threw for two days. Polygon layers were removed together with the water
+          // district tint (2026-09-25, Cyrus: "boundary polygon 有誤導性; 我覺得顯示 point
+          // location 就夠") — and that reason was about THAT layer specifically: a district
+          // outline drawn around a water suspension asserts the whole district is affected, which
+          // the notice does not say. It does not generalise, and reading it as a blanket ban on
+          // polygons is what kept this disabled.
+          //
+          // A drone RFZ is the opposite case. The Civil Aviation Department publishes the zone AS
+          // that exact boundary, so the polygon is not an approximation of the data — it IS the
+          // data, and drawing 290 zones as points would be the misleading version. The removal
+          // machinery was deliberately left intact (`layersOf()` still clears the
+          // `-fill`/`-line`/`-label` family, `mapIdsFor()` still maps it), which is why restoring
+          // it is this one call and not a re-derivation.
+          await polygonLayer(map, def, args);
+          drawn.push(def.id);
+          break;
         case "raster": {
           // A raster layer needs its panel's bbox/opacity; panels carry those.
           const panel = args.registry.panels.find((p) => p.source === def.source && p.render === "raster_map");

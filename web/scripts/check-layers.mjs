@@ -148,7 +148,53 @@ ok(ms < 8000, `the 3D toggle took ${ms}ms to settle — it must not block on the
 await clickRow("buildings3d");
 await page.waitForTimeout(1200);
 
+// ── 7. THE DRONE RFZ LAYER — the first polygon layer since the water tint was removed, and the
+//      only layer here that must NOT load until it is asked for. 290 polygons is 3MB: more than the
+//      entire first paint of this app. Two things therefore have to hold, and a screenshot of a
+//      settled map proves neither: the file is absent from the network until the toggle is pressed,
+//      and once pressed the source really carries the features rather than an empty collection.
+const rfz = await rowInfo("drone_rfz");
+ok(rfz.present, "no .lyr-item[data-row=drone_rfz] — the drone RFZ layer row is gone");
+ok(rfz.checked === "false", `the RFZ layer must default to OFF (3MB), aria-checked=${rfz.checked}`);
+ok(/無人機禁飛區|Drone restricted/.test(rfz.label), `unexpected RFZ label: "${rfz.label}"`);
+
+const loadedBefore = await page.evaluate(() =>
+  performance.getEntriesByType("resource").some((e) => e.name.includes("drone_restricted_zone")));
+ok(!loadedBefore, "the 3MB GeoJSON was fetched BEFORE the toggle was pressed — it is not lazy");
+
+const toggleRfz = (id) => page.evaluate((r) => {
+  const btn = document.querySelector(`.rail-btn[data-rail="${r}"]`);
+  if (!btn) return false;
+  btn.click();
+  return true;
+}, id);
+const rfzFeat = () => page.evaluate(() => {
+  const s = window.__map?.getSource("vl-drone_rfz");
+  const d = s?._data;
+  const layers = ["vl-drone_rfz-fill", "vl-drone_rfz-line"];
+  return {
+    hasSource: !!s,
+    features: d?.features?.length ?? -1,
+    layers: layers.map((l) => [l, (() => { try { return window.__map.getLayoutProperty(l, "visibility") ?? "visible"; } catch { return "MISSING"; } })()]),
+    rendered: (() => { try { return window.__map.queryRenderedFeatures({ layers: ["vl-drone_rfz-fill"] }).length; } catch { return -1; } })(),
+  };
+});
+
+await toggleRfz("drone_rfz");
+await page.waitForTimeout(4000);
+const r0 = await rfzFeat();
+ok(r0.hasSource, "toggling the RFZ layer on did not create the vl-drone_rfz source");
+ok(r0.features === 290, `the source should carry all 290 zones, got ${r0.features}`);
+ok(!r0.layers.some(([, v]) => v === "MISSING"), `RFZ layer(s) missing from the style: ${JSON.stringify(r0.layers)}`);
+ok(r0.rendered > 0, "the RFZ fill layer is in the style but renders 0 features at the default view — a toggle that draws nothing reads as broken");
+
+await toggleRfz("drone_rfz");
+await page.waitForTimeout(1200);
+const r1 = await page.evaluate(() => !!window.__map?.getSource("vl-drone_rfz"));
+ok(!r1, "toggling the RFZ layer off left its source on the map — the toggle only adds");
+
 await browser.close();
+console.log(`drone RFZ: lazy=${!loadedBefore} default=${rfz.checked} features=${r0.features} rendered=${r0.rendered} removed=${!r1}`);
 console.log(`entry points: ${entries.btns.length} rail buttons, ${entries.rows.length} rows, 0 orphaned`);
 console.log(`TD camera layer: default=${td0.checked} "${td0.label}"  off=${JSON.stringify(Object.values(vOff))}  on=${JSON.stringify(Object.values(vOn))}`);
 console.log(`HKO camera layer: "${hko0.label}"  off=${JSON.stringify(Object.values(hkoOff))}`);

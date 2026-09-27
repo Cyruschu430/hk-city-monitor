@@ -18,7 +18,7 @@
     "check:static": "npm run check:css && npm run check:encoding && npm run check:basemap",
     "test": "node src/lib/trigger.test.ts && node src/lib/context.test.ts && node src/lib/honesty.test.ts && node src/lib/render.test.ts && node src/lib/parsers.test.ts && node src/lib/analytics.test.ts",
     "check:contrast": "node scripts/check-contrast.mjs",
-    "check:all": "npm run check:static && npm run test && npm run check:layout && npm run check:contrast && npm run check:analysis && npm run check:carpark && npm run check:layers && npm run check:quota",
+    "check:all": "node scripts/check-all.mjs",
     "check:layout": "node scripts/check-layout.mjs",
     "measure:boot": "node scripts/measure-boot.mjs",
     "check:analysis": "node scripts/verify-analysis.mjs",

@@ -3194,6 +3194,21 @@
       "fetch": "n/a",
       "cors_note": "瀏覽器直接 load YouTube 縮圖／embed，唔經 proxy",
       "cost": "free"
+    },
+    {
+      "id": "drone_rfz",
+      "group": "aviation",
+      "name": "無人機禁飛區（民航處禁飛區界線）",
+      "name_en": "Drone Restricted Flight Zones (CAD)",
+      "type": "geojson",
+      "url": "data/drone_restricted_zone.geojson",
+      "auth": "none",
+      "cadence": "irregular",
+      "todo": false,
+      "fetch": "browser",
+      "cost": "free",
+      "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
+      "notes": "290 zones, all Polygon, published by the Civil Aviation Department as the exact RFZ boundaries — this is the dataset the previous passes could not reach, because data.gov.hk and CSDI carry no RFZ layer and the only source is the eSUA notice map, which offers no export URL. So it is EXPORTED BY HAND and committed, the same shape as the other collector outputs: a human refreshes it, and cadence 'irregular' is the honest description of that. Each feature carries its own `fill`/`stroke`, so the publisher's styling draws the map and a restyle upstream needs no code change. MEASURED 2026-09-27: 3,083,323 bytes / 290 features. Properties are ENGLISH ONLY (name / effectiveDateTime / description2) — the popup labels the fields in the UI language and shows the publisher's values verbatim, because inventing a Chinese name for a regulated zone would create an official-sounding name that does not exist. Ranges: 'Cheung Sheung (Low-altitude Economy Regulatory Sandbox)' and 4 other sandbox zones (2025-2026) plus older police-post and Frontier Closed Area zones (2022)."
     }
   ]
 }

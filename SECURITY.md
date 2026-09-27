@@ -156,7 +156,26 @@ Cloudflare 官方文件：**Workers Free = 100,000 requests/day**，超額 → *
 即係**全部人**到午夜 UTC 之前都入唔到。唔係收錢，係**全站死**。
 
 **每一 request 都燒一格配額，唔論 cache HIT 定 MISS。** Cache 幫嘅係上游發佈者，
-唔係我哋嘅配額。冷啟動一次載入 ≈ 49 個 proxy request，所以**誠實容量大約每日 2,000 次冷載入**。
+唔係我哋嘅配額。
+
+**實測（2026-09-27，`node scripts/check-quota.mjs`）：冷啟動一次載入 26 個 proxy request，
+唔重複目標 26 個 → 誠實容量每日約 3,846 次冷載入。**
+
+嗰句原本寫「≈ 49 個 request → 每日約 2,000 次」。49 係**由 registry 嘅源數量估出嚟**，
+唔係量出嚟 —— 估高咗接近一倍。26 個嘅分佈：
+
+| 數量 | 目標 |
+|---|---|
+| 8 | HKO 天氣相機 JPEG（地圖圖層用 WebGL 貼圖，**需要 CORS-clean 圖片** → 唔可以走直連） |
+| 6 | RTHK 新聞 RSS |
+| 6 | news.gov.hk RSS |
+| 4 | Yahoo Finance（^HSI／^HSCE／0700.HK／9988.HK，逐個 symbol 一個 request） |
+| 2 | HKO 風速 CSV、雨量預報 CSV |
+| 1 | ImmD 排隊時間 |
+
+**呢個數字由 `npm run check:quota` 守住**（已入 `check:all`）：用真瀏覽器冷載入，數真正
+到 Worker 嘅 request，超過 34 就失敗，並且列出每個目標嘅次數 —— 咁樣一個 regression
+會指向某個源，而唔係只有一個數字。加咗面板令配額跌一半，build 係唔會知嘅。
 
 **問題**：`DATA_TOTAL_LIMIT_PER_MIN` 同 `TILE_TOTAL_LIMIT_PER_MIN` 係**每 isolate、
 每 IP**。isolate 有 N 個就乘 N。舊值 1,200 + 600 = 1,800/min，即係**單一個 IP

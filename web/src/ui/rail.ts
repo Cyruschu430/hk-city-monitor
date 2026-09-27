@@ -23,7 +23,17 @@ const ICONS: Record<string, string> = {
   overview: "M4 12h16M12 4v16|M12 3a9 9 0 100 18 9 9 0 000-18z",
   typhoon: "M12 12c0-4 3-7 7-7-1 4-3 7-7 7zM12 12c0 4-3 7-7 7 1-4 3-7 7-7z",
   border: "M4 8h16M4 16h16M9 4v16M15 4v16",
-  water: "M12 3c3 4 6 6.5 6 10a6 6 0 11-12 0c0-3.5 3-6 6-10z",
+  // Was keyed `water` while the vertical id is `water_supply`, so 停水模式 silently
+  // fell back to the generic 總覽 glyph. The maps degrade gracefully — which is why
+  // a dead key looks like nothing is wrong.
+  water_supply: "M12 3c3 4 6 6.5 6 10a6 6 0 11-12 0c0-3.5 3-6 6-10z",
+  weather: "M16 13h1a3 3 0 100-6 5 5 0 00-9.6 1.4A3.5 3.5 0 008 15h8z|M5 4l1.5 1.5|M3 9h2",
+  traffic: "M9 3h6v18H9z|M12 7h.01|M12 12h.01|M12 17h.01",
+  drone: "M12 10a2 2 0 100 4 2 2 0 000-4|M10.6 10.6L5.5 5.5|M13.4 10.6l5.1-5.1|M10.6 13.4l-5.1 5.1|M13.4 13.4l5.1 5.1|M4 4h3M17 4h3M4 4v3M20 4v3",
+  freight: "M3 7.5L12 2.5l9 5v9l-9 5-9-5z|M3 7.5l9 5 9-5|M12 12.5v9",
+  health: "M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z",
+  civic: "M4 21V9l6-4v16|M10 21V12l6-3v12|M3 21h18",
+  live: "M12 10a2 2 0 100 4 2 2 0 000-4|M8.5 8.5a5 5 0 000 7|M15.5 8.5a5 5 0 010 7|M6 6a8.5 8.5 0 000 12|M18 6a8.5 8.5 0 010 12",
 };
 
 /** Per-mode accent — keyed by the VERTICAL ID (verticals.json), so a mode is
@@ -35,6 +45,16 @@ const ACCENTS: Record<string, string> = {
   typhoon: "#ff5d6c",
   border: "#22d3ee",
   water_supply: "#38bdf8",
+  // Ten modes need ten hues that stay apart at 56px on a dark map face. Hue does the
+  // separating (indigo / amber / purple / orange / pink / emerald), not brightness —
+  // a palette that only varies lightness reads as one colour when it is this small.
+  weather: "#818cf8",
+  traffic: "#fbbf24",
+  drone: "#c084fc",
+  freight: "#fb923c",
+  health: "#f472b6",
+  civic: "#34d399",
+  live: "#ef4444",
 };
 
 const LAYER_ICONS: Record<string, string> = {

@@ -13,7 +13,7 @@ import { MIN_REFRESH_MS } from "../config.ts";
 import { adaptPanel, type AdapterCtx } from "../lib/adapters.ts";
 import { clear, h } from "../lib/dom.ts";
 import { cadenceSeconds, degrade, errored, live, LOADING, quietSeconds, type Honesty } from "../lib/honesty.ts";
-import { lang, onLangChange, t } from "../lib/i18n.ts";
+import { domainLabel, lang, onLangChange, t } from "../lib/i18n.ts";
 import { renderPanel, type PanelData, type PanelDef, type WallImage } from "../lib/render.ts";
 import { sourceLabel, type PanelDefRaw, type Registry } from "../lib/sources.ts";
 import type { Camera } from "../map/cameras.ts";
@@ -122,11 +122,63 @@ export interface AnalysisBrief {
   accumulating: { signal: string; days: number; required: number }[];
 }
 
-/** HH:MM in the reader's own clock. An unparseable timestamp renders as --:-- rather than
- *  `Invalid Date` — a broken value should look broken, not like a plausible time. */
-function hhmm(iso: string): string {
+/** HKT clock for a timeline row, carrying the date whenever the local day is not today.
+ *
+ * `HH:MM` alone is only unambiguous while the reader may assume today, and here that assumption
+ * breaks in the code's own default configuration: convergence.ts groups a FIXED 60-minute window
+ * anchored on the group's first event, so a group starting at 23:50 ends tomorrow, and an event
+ * from yesterday renders as this morning. Both are reachable from live data — midnight takes one
+ * group, not a contrived input.
+ *
+ * HKT and not the browser's zone: this is Hong Kong city data, the header clock is HKT, and the
+ * carpark panel formats HKT. Reading a HK water suspension in the reader's own timezone while the
+ * panel's own "reported" time is HKT would be the inconsistency, not the feature.
+ *
+ * An unparseable timestamp renders as `--:--`: a broken value should look broken, not like a
+ * plausible time. */
+function stamp(iso: string, forceDate = false): string {
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? "--:--" : d.toTimeString().slice(0, 5);
+  if (Number.isNaN(d.getTime())) return "--:--";
+  const h = new Date(d.getTime() + 8 * 3600_000);
+  const p = (n: number) => String(n).padStart(2, "0");
+  const hhmm = `${p(h.getUTCHours())}:${p(h.getUTCMinutes())}`;
+  const now = new Date(Date.now() + 8 * 3600_000);
+  const sameDay =
+    h.getUTCFullYear() === now.getUTCFullYear() &&
+    h.getUTCMonth() === now.getUTCMonth() &&
+    h.getUTCDate() === now.getUTCDate();
+  return forceDate || !sameDay ? `${h.getUTCMonth() + 1}/${h.getUTCDate()} ${hhmm}` : hhmm;
+}
+
+/** One edge of the co-occurrence view: two domains that fired inside the same district window. */
+interface DomainPair { a: string; b: string; n: number; districts: string[] }
+
+/** Which domains move together, and where.
+ *
+ *  A second view of the SAME `convergenceDetail` the timeline draws, not a second pipeline — the
+ *  two cannot disagree about what happened, only about how to lay it out. The timeline answers
+ *  "what happened in this district, in what order"; this answers "which signals keep arriving
+ *  together", which is the question a reader asks next and which no single district can show.
+ *
+ *  Pairs are unordered and deduplicated per district (two domains in one group is one edge, not
+ *  one per event), because the claim is co-occurrence of DOMAINS, not of events. */
+function domainPairs(groups: NonNullable<AnalysisBrief["convergenceDetail"]>): DomainPair[] {
+  const byKey = new Map<string, DomainPair>();
+  for (const g of groups) {
+    const ds = [...new Set(g.events.map((e) => e.domain))].sort();
+    for (let i = 0; i < ds.length; i++) {
+      for (let j = i + 1; j < ds.length; j++) {
+        const key = `${ds[i]}|${ds[j]}`;
+        const hit = byKey.get(key) ?? { a: ds[i]!, b: ds[j]!, n: 0, districts: [] };
+        hit.n++;
+        if (!hit.districts.includes(g.district)) hit.districts.push(g.district);
+        byKey.set(key, hit);
+      }
+    }
+  }
+  // Strongest first, then alphabetical so the order is stable across identical inputs — an
+  // unstable sort on equal counts makes a screenshot diff for no reason.
+  return [...byKey.values()].sort((x, y) => y.n - x.n || x.a.localeCompare(y.a) || x.b.localeCompare(y.b));
 }
 
 /** One Tier 2 group as a timeline block.
@@ -140,7 +192,11 @@ function hhmm(iso: string): string {
  * observed/threshold stays visible on every row: ANALYTICS.md's rule is that a claim a reader
  * cannot check is not traceable, and the numbers are the check. */
 function timelineGroup(g: NonNullable<AnalysisBrief["convergenceDetail"]>[number]): HTMLElement {
-  const span = g.from === g.to ? hhmm(g.from) : `${hhmm(g.from)}–${hhmm(g.to)}`;
+  // The start decides whether the end needs a date too: a span crossing midnight reads as
+  // `23:50–00:30` — backwards — unless both ends carry their day.
+  const from = stamp(g.from);
+  const to = stamp(g.to, from.includes("/"));
+  const span = from === to ? from : `${from}–${to}`;
   return h(
     "div",
     { class: "tl-g" },
@@ -149,15 +205,15 @@ function timelineGroup(g: NonNullable<AnalysisBrief["convergenceDetail"]>[number
       { class: "tl-gh" },
       h("span", { class: "tl-d" }, g.district),
       h("span", { class: "tl-score" }, String(g.score)),
-      h("span", { class: "tl-dom" }, g.domains.join(" · ")),
+      h("span", { class: "tl-dom" }, g.domains.map(domainLabel).join(" · ")),
       h("span", { class: "tl-span" }, span),
     ),
     ...g.events.map((e) =>
       h(
         "div",
         { class: `tl-ev s${e.severity}` },
-        h("time", {}, hhmm(e.at)),
-        h("span", { class: "tl-domain" }, e.domain),
+        h("time", {}, stamp(e.at)),
+        h("span", { class: "tl-domain" }, domainLabel(e.domain)),
         h("span", { class: "tl-txt" }, lang() === "tc" ? e.headline.tc : e.headline.en),
         h("span", { class: "tl-num" }, `${e.observed} / ${e.threshold}`),
       ),
@@ -523,6 +579,26 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
             ...brief.convergenceDetail.map(timelineGroup),
           ),
         );
+      }
+
+      if (brief.convergenceDetail && brief.convergenceDetail.length > 0) {
+        const pairs = domainPairs(brief.convergenceDetail);
+        if (pairs.length > 0) {
+          body.append(
+            h("div", { class: "an-sec" },
+              h("div", { class: "an-h" }, lang() === "tc" ? "邊兩個領域一齊動" : "Domains that move together"),
+              ...pairs.map((pr) =>
+                h("div", { class: "pair" },
+                  h("span", { class: "pair-a" }, domainLabel(pr.a)),
+                  h("span", { class: "pair-x" }, "+"),
+                  h("span", { class: "pair-b" }, domainLabel(pr.b)),
+                  h("span", { class: "pair-n" }, String(pr.n)),
+                  h("span", { class: "pair-d" }, pr.districts.join(" · ")),
+                ),
+              ),
+            ),
+          );
+        }
       }
 
       if (brief.facts.length > 0) {

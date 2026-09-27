@@ -33,12 +33,28 @@ export const WIND_SOURCE_ID = "open_meteo_wind_grid";
 const GRID_W = 72;
 const GRID_H = 54;
 const PARTICLES = 2200;
-/** Frames a particle streak survives. Short and the field reads as streaks; long and it tangles. */
-const TRAIL = 14;
-/** Fade per frame. 1 means never clear (a smear); ~0.08 leaves a visible tail. */
-const FADE = 0.075;
-/** Particle speed multiplier. Tuned so a 25km/h wind crosses the harbour in about a second. */
-const SPEED = 1.0;
+/** Frames a particle survives before it is reseeded. */
+const TRAIL = 26;
+/**
+ * Fade per frame. This is the TAIL LENGTH, and it is the knob that decides whether the map underneath
+ * is readable: the trail behind a dot is `speed / FADE` pixels long, so a fast fade is what turns a
+ * streak back into a dot.
+ */
+const FADE = 0.34;
+/**
+ * PIXELS PER FRAME at the reference wind speed — the calibration knob.
+ *
+ * Screen-constant, not ground-constant: this many pixels at every zoom, so the flow reads as the same
+ * wind whether the view is all of Hong Kong or one district. Cyrus, first build: "好似加速咁好唔合理
+ * 囉" — the previous version stepped in degrees with a `* 3.6` on a value that was ALREADY in km/h,
+ * which put a 20km/h wind at ~21 px/frame and, with a 14-frame trail, drew 294-pixel lines that buried
+ * the layers underneath.
+ */
+const REF_PX_PER_FRAME = 0.55;
+/** Wind speed that maps to `REF_PX_PER_FRAME`. HKO's 10-minute mean rarely exceeds this. */
+const REF_SPEED_KMH = 20;
+/** Radius of one particle, in CSS pixels at devicePixelRatio 1. */
+const DOT_PX = 1.15;
 
 interface Grid {
   /** u (eastward) and v (northward) components, metres-ish, on a GRID_W x GRID_H lattice. */
@@ -174,8 +190,6 @@ export async function toggleWind(map: maplibregl.Map, on: boolean, src: SourceDe
     ctx.fillStyle = `rgba(0,0,0,${FADE})`;
     ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.globalCompositeOperation = "source-over";
-    ctx.lineWidth = 1.1 * dpr;
-    ctx.lineCap = "round";
 
     for (let i = 0; i < PARTICLES; i++) {
       const lon = px[i] ?? west, lat = py[i] ?? south;
@@ -183,27 +197,35 @@ export async function toggleWind(map: maplibregl.Map, on: boolean, src: SourceDe
       const fy = ((lat - south) / (north - south)) * GRID_H;
       const [uu, vv] = sample(grid, fx, fy);
 
-      // Advance in DEGREES, not pixels, so the motion is the same physical speed at every zoom — a
-      // pixel-space step would make the flow crawl when zoomed out and scream when zoomed in.
-      const step = (0.014 * SPEED) / 111.0;
-      const nLon = lon + uu * step * 3.6;
-      const nLat = lat + vv * step * 3.6;
+      // Advance by a FIXED NUMBER OF PIXELS for the particle's own speed, converted to degrees at the
+      // current zoom. Longitude degrees per pixel is the Web Mercator resolution, 360/(512*2^z) for the
+      // 512px tile this app uses; latitude uses the same scale locally, which is exactly right at the
+      // Mercator distortion Hong Kong sits at and is why this does not need a cos(lat) term.
+      // NOT named `px`: that is the particle x-coordinate array a few lines up, and shadowing it makes
+      // every `px[i]` in this loop index a number. It compiles (Vite does not typecheck) and silently
+      // destroys the layer, which is how this was caught.
+      const pxStep = (Math.hypot(uu, vv) / REF_SPEED_KMH) * REF_PX_PER_FRAME;
+      const degPerPx = 360 / (512 * Math.pow(2, map.getZoom()));
+      const inv = pxStep * degPerPx;
+      const mag = Math.hypot(uu, vv) || 1;
+      const nLon = lon + (uu / mag) * inv;
+      const nLat = lat + (vv / mag) * inv;
 
       if (nLon < west || nLon > east || nLat < south || nLat > north || age[i]! >= TRAIL) {
         seed(i);
       } else {
-        const a = map.project([lon, lat] as maplibregl.LngLatLike);
         const b = map.project([nLon, nLat] as maplibregl.LngLatLike);
         const sp = Math.hypot(uu, vv);
-        // Only draw the segment when it lands on screen — the common case under pan/zoom, and it
-        // stops one long line being drawn from an off-screen particle to its on-screen successor.
-        if (b.x > -50 && b.y > -50 && b.x < cv.width / dpr + 50 && b.y < cv.height / dpr + 50) {
-          ctx.strokeStyle = ramp((sp - grid.min) / Math.max(grid.max - grid.min, 0.1));
-          ctx.globalAlpha = 0.85;
+        // A DOT, not a segment. Cyrus: "好似點點點咁樣，而家一條線咁樣你連後面嗰啲嘢都完全睇唔到" —
+        // a stroked segment covers every layer between its two ends, and at 21px/frame those segments
+        // were hundreds of pixels long. A dot marks the particle and leaves the map legible; the trail
+        // comes from the fade above, not from the stroke length.
+        if (b.x > -20 && b.y > -20 && b.x < cv.width / dpr + 20 && b.y < cv.height / dpr + 20) {
+          ctx.fillStyle = ramp((sp - grid.min) / Math.max(grid.max - grid.min, 0.1));
+          ctx.globalAlpha = 0.9;
           ctx.beginPath();
-          ctx.moveTo(a.x * dpr, a.y * dpr);
-          ctx.lineTo(b.x * dpr, b.y * dpr);
-          ctx.stroke();
+          ctx.arc(b.x * dpr, b.y * dpr, DOT_PX * dpr, 0, Math.PI * 2);
+          ctx.fill();
         }
         px[i] = nLon;
         py[i] = nLat;

@@ -159,6 +159,22 @@
         "scope": "hk"
       },
       "_comment": "The first polygon layer since 2026-09-25. That removal was specific to the water district tint, whose polygon asserted more than the notice said (a district outline around a water suspension reads as the whole district being cut off). Nothing about that reason applies here: CAD publishes the zone AS this boundary, so the polygon IS the data rather than a generalisation of it. OFF by default — 290 polygons at 3MB is not first paint."
+    },
+    {
+      "id": "aed_locations",
+      "source": "fsd_aed",
+      "render": "list",
+      "geom": "point",
+      "symbol": "aed",
+      "title": {
+        "tc": "公眾 AED（心臟去顫器）",
+        "en": "Public AEDs"
+      },
+      "popup": "aed_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "4,652 public defibrillators, clustered by the generic point path (clusterRadius 46, clusterMaxZoom 13) exactly like the camera layers — no bespoke clustering code, because the pattern already existed and re-writing it for one layer is how two cluster behaviours end up on one map. OFF by default: it is 707KB, and a layer that loads by default is a layer every reader pays for. The popup answers ONE question first — can the public use it — because an AED behind a locked office door and one on a street corner are the same dot otherwise."
     }
   ]
 }

@@ -23,6 +23,7 @@ function glyphColor(glyph: string): string {
   if (glyph.startsWith("cam-hko") || glyph === "station-wind") return "#a855f7";
   if (glyph === "aqhi") return "#34d399";
   if (glyph === "water") return "#38bdf8";
+  if (glyph === "aed") return "#ef3d5b";
   return "#22d3ee";
 }
 
@@ -506,7 +507,45 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // THE fix for "weather station layer click完冇attribute pop up": this path had
   // no click handler at all, so 氣象站 (and any point layer without its own
   // popup) was inert under the cursor.
-  attributePopup(map, `${id}-point`);
+  if (def.popup === "aed_popup") aedPopup(map, `${id}-point`);
+  else attributePopup(map, `${id}-point`);
+}
+
+/** Public defibrillators, with a popup that answers the only question that matters.
+ *
+ * The file's keys are one character (`n`/`a`/`w`/`p`) because the GeoJSON envelope already costs 81%
+ * of it, and those names are safe ONLY because this function exists: it is the reader that turns
+ * `p: "Yes"` into 「可否公眾使用：是」. Handing this source to the generic attributePopup would print
+ * `p: Yes` on a life-safety layer. The fields are labelled in
+ * the UI language and the publisher's values are shown verbatim beside them.
+ *
+ * "可否公眾使用" IS the headline and it is rendered first and coloured: an AED behind a locked
+ * office door and an AED on a street corner are the same dot otherwise, and the whole value of
+ * this layer is telling them apart. `pub` is 'Yes'/'No' in the FSD export.
+ */
+function aedPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const pub = /^y/i.test(String(p["p"] ?? ""));
+    const rows: string[] = [
+      `<b>${esc(p["n"])}</b>`,
+      p["a"] ? `<div><span>${tc ? "地址" : "Address"}</span> ${esc(p["a"])}</div>` : "",
+      p["w"] ? `<div><span>${tc ? "位置" : "Location"}</span> ${esc(p["w"])}</div>` : "",
+      `<div class="aed-pub ${pub ? "yes" : "no"}">${tc ? "可否公眾使用" : "Public access"}: ` +
+        `${pub ? (tc ? "是" : "Yes") : (tc ? "否" : "No")}</div>`,
+    ];
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
+      .setLngLat(e.lngLat)
+      .setHTML(`<div class="aed-pop">${rows.join("")}</div>`)
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
 }
 /** Field labels for the attribute popup. A key with no entry falls back to the
  *  raw key, which is honest ("you are seeing an unlabelled field") rather than

@@ -170,9 +170,13 @@ async function build(map: maplibregl.Map, src: SourceDef): Promise<WindOverlay> 
         if (!ctx) return { w: canvas.width, h: canvas.height, spread: "no 2d ctx" };
         const d = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
         let min = 255, max = 0;
+        // `?? 0` because of noUncheckedIndexedAccess: `d[k]` is `number | undefined` to the
+        // compiler even inside the loop bound. This project turns that flag on deliberately, so the
+        // fix is a real fallback rather than a `!`.
         for (let k = 0; k < d.length; k += 4) {
-          if (d[k] < min) min = d[k];
-          if (d[k] > max) max = d[k];
+          const v = d[k] ?? 0;
+          if (v < min) min = v;
+          if (v > max) max = v;
         }
         // uMin/uMax/vMin/vMax are deliberately NOT reported: their declared type is optional, and a
         // hook that has to be `as`-cast to compile is a hook that will drift from the code it claims

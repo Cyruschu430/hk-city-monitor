@@ -40,7 +40,10 @@ export type GlyphId =
   // Public defibrillators. A life-safety layer: the ONE thing a passer-by needs is to know a
   // unit is HERE, so the disc is the red of the emergency services rather than the cyan/violet
   // the agency-symbol family uses for "this is a datapoint".
-  | "aed";
+  | "aed"
+  // 貯油裝置 (oil storage installations). A tank rather than a generic pin: on this map the
+  // difference between an oil installation and every other point layer IS the layer.
+  | "oil-tank";
 
 /** AED: the universal defibrillator mark — a heart with a bolt through it. */
 function drawAed(ctx: CanvasRenderingContext2D, size: number): void {
@@ -69,6 +72,41 @@ function drawAed(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.closePath();
   ctx.fillStyle = "#c81e3c";
   ctx.fill();
+  ctx.restore();
+}
+
+/** 貯油裝置: a vertical storage tank — domed roof, two bands. A path rather than a font glyph
+ *  for the same reason as the AED heart: the box is 44px and a text glyph would depend on the
+ *  renderer's font. */
+function drawOilTank(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.scale(size / 44, size / 44);
+  // Body in white, so it holds at 44px on any basemap.
+  ctx.beginPath();
+  ctx.moveTo(-8, -5);
+  ctx.lineTo(-8, 9);
+  ctx.quadraticCurveTo(0, 14, 8, 9);
+  ctx.lineTo(8, -5);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(255,255,255,.96)";
+  ctx.fill();
+  // Dome and bands in the disc's own colour, so they read as cut-outs rather than overlays.
+  ctx.fillStyle = "#c87619";
+  ctx.beginPath();
+  ctx.moveTo(-10, -5);
+  ctx.quadraticCurveTo(0, -18, 10, -5);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "#c87619";
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(-8, 0);
+  ctx.lineTo(8, 0);
+  ctx.moveTo(-8, 5);
+  ctx.lineTo(8, 5);
+  ctx.stroke();
   ctx.restore();
 }
 
@@ -452,6 +490,9 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   "cp-air": { draw: drawControlPoint, disc: "#38bdf8" },
   "no-water": { draw: drawNoWater, disc: "#ff5d6c" },
   "aed": { draw: drawAed, disc: "#ef3d5b" },
+  // Amber, not the cyan/violet agency family: an oil installation is infrastructure, and this is
+  // the only layer whose glyph colour also matches its rail accent.
+  "oil-tank": { draw: drawOilTank, disc: "#c87619" },
   "no-water-salt": { draw: drawNoWater, disc: "#fbbf24" },
   "wind-flow": { draw: drawWindFlow },
   blocks: { draw: drawBlocks },

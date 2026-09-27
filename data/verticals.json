@@ -242,7 +242,8 @@
       "layers": [
         "hk_facility_areas",
         "control_points",
-        "cameras_all"
+        "cameras_all",
+        "hk_facility_pins"
       ],
       "window": "today",
       "location_scope": "hk",

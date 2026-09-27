@@ -75,8 +75,8 @@ const LAYER_ICONS: Record<string, string> = {
   // A ship over a berth line: the cargo working areas are waterfront, and the glyph has to
   // differ from the aircraft this layer also carries.
   hk_facility_areas: "M3 18h18|M5 14l1.5 3h11L19 14|M12 4l6 3v5H6V7z",
-  // A tank: the oil storage installations are vertical cylinders, not boxes.
   hk_facility_pins: "M7 9h10v9a2 2 0 01-2 2H9a2 2 0 01-2-2z|M7 9a5 3 0 0110 0|M12 3v3",
+  // A tank: the oil storage installations are vertical cylinders, not boxes.
 };
 
 export interface RailLayer {

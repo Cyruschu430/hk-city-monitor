@@ -3224,6 +3224,21 @@
       "cost": "free",
       "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
       "notes": "CSDI, two official publishers in one file: 海事處 公眾貨物裝卸區 (120 berth polygons, MARDEP) and 民航處 機場進場限制區 (8 polygons, MARDEP). Collector output — see scripts/build_facilities.py. MEASURED 2026-09-27: 128 features, 134,075 bytes. WHY THESE TWO AND NOT MORE: every CSDI facility candidate was probed first. Public Piers (531) and Coordinates of ferry piers (74) carry exactly one attribute each - STRUCTURE_ = 'HP077', STOP_ID = '101101' - with no name, so 605 anonymous dots is visual noise rather than information, and they are deliberately not shipped. WHY THE LIVE BERTH VACANCY IS NOT HERE: the cargo-area service also returns a real-time berth vacancy flag (Vacant Y/N). This file is static, and a live flag baked into a committed snapshot is a stale number presented as current. The berths ship as durable infrastructure; live vacancy needs its own collector with a cadence and a timestamp."
+    },
+    {
+      "id": "hk_facility_pins",
+      "group": "civic",
+      "name": "香港貯油裝置（屋宇署牌照名單）",
+      "name_en": "Hong Kong Oil Storage Installations",
+      "type": "geojson",
+      "url": "data/facility_pins.geojson",
+      "auth": "none",
+      "cadence": "irregular",
+      "todo": false,
+      "fetch": "browser",
+      "cost": "free",
+      "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
+      "notes": "CSDI 屋宇署 bd_rcd_1630980890272_70649 — 23 licensed oil storage installations, each a tank of 110,000 litres or more (Buildings Ordinance s.2(1)). Collector output, see scripts/build_facilities.py. MEASURED 2026-09-27: 23 features, 7,932 bytes; the publisher ships both languages, so every feature carries Name_tc/Name_en and Address_tc/Address_en and the popup follows the UI language. WHY THE ADDRESS IS THE HEAD: the dataset has no per-installation name — all 23 rows share the dataset title — so the address is the only field that tells one tank from another, and a popup with the same title on every pin answers nothing."
     }
   ]
 }

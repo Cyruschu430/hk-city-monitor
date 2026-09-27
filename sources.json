@@ -3240,6 +3240,21 @@
       "cost": "free",
       "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
       "notes": "CSDI 屋宇署 bd_rcd_1630980890272_70649 — 23 licensed oil storage installations, each a tank of 110,000 litres or more (Buildings Ordinance s.2(1)). Collector output, see scripts/build_facilities.py. MEASURED 2026-09-27: 23 features, 7,932 bytes; the publisher ships both languages, so every feature carries Name_tc/Name_en and Address_tc/Address_en and the popup follows the UI language. WHY THE ADDRESS IS THE HEAD: the dataset has no per-installation name — all 23 rows share the dataset title — so the address is the only field that tells one tank from another, and a popup with the same title on every pin answers nothing."
+    },
+    {
+      "id": "hk_berth_vacancy",
+      "group": "marine",
+      "name": "公眾貨物裝卸區泊位空缺（實時）",
+      "name_en": "Public Cargo Working Area berth vacancy (live)",
+      "type": "geojson",
+      "url": "data/berth_vacancy.json",
+      "auth": "none",
+      "cadence": "every 10 minutes (PC collector)",
+      "todo": false,
+      "fetch": "browser",
+      "cost": "free",
+      "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
+      "notes": "Live: MARDEP mardep_rcd_1638859086572_29125 via CSDI, collected by scripts/collect_berths.py on the PC. MEASURED 2026-09-28: 120 berths, 45,055 bytes, 27 vacant / 93 in use. WHY THIS IS A SEPARATE LAYER FROM hk_facility_areas: that one is static reference geometry — where the cargo working areas are, which does not change — while this one carries the `Vacant` flag, which changes hour to hour. Baking a live flag into a committed static snapshot is a stale number presented as current, so the live field gets its own file, its own cadence and its own timestamp. Every feature carries LastUpdate, not just a file header, because a reader who opens a popup should not have to trust that the file is fresh."
     }
   ]
 }

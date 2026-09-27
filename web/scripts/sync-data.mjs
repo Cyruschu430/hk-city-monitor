@@ -61,6 +61,9 @@ const files = [
   // Collector output (scripts/collect_aircraft.py, PC scheduled task every 2 min). Live ADS-B over
   // Hong Kong — the front end reads this because api.adsb.lol blocks Cloudflare egress.
   ["data/aircraft.json", "aircraft.json"],
+  // Collector output (scripts/collect_berths.py, PC scheduled task every 10 min). Live berth
+  // vacancy at the public cargo working areas — the one layer in 貨運模式 that answers "now".
+  ["data/berth_vacancy.json", "berth_vacancy.json"],
   // Collector output (scripts/build_facilities.py) — CSDI: public cargo working areas, HKIA
   // approach restricted areas, oil storage installations. Two files because a layer's `geom`
   // picks one renderer: a polygon layer draws -fill/-line/-label, a point layer clusters.

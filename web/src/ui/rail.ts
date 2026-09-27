@@ -115,6 +115,11 @@ export function createRail(
         {
           class: "rail-btn",
           type: "button",
+          // The LAYER ROWS already carry `data-rail` (layercontrol.syncRail addresses them by it);
+          // the rail's own buttons carried nothing, so no check and no QA script could reach the
+          // button a user actually clicks. One attribute, and the two entry points for a layer
+          // become addressable by the same id.
+          "data-rail": l.id,
           "aria-pressed": String(!!l.on),
           onclick: () => {
             const next = b.getAttribute("aria-pressed") !== "true";

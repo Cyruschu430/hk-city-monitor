@@ -647,6 +647,7 @@ a:hover{color:var(--cyan)}
 .pair-x{color:var(--faint)}
 .pair-n{color:var(--cyan);font-variant-numeric:tabular-nums}
 .pair-d{grid-column:1/-1;font-size:11px;color:var(--faint);margin-top:-3px}
+
 .walltabs{display:flex;flex-wrap:wrap;gap:4px}
 .cam{position:relative;border-radius:5px;overflow:hidden;border:1px solid var(--hairline);
   background:#0a1220;aspect-ratio:4/3;cursor:pointer}

@@ -565,6 +565,10 @@ const POPUP_LABELS: Record<string, { tc: string; en: string }> = {
   altFt: { tc: "高度（呎）", en: "Altitude (ft)" },
   gsKt: { tc: "地速（節）", en: "Ground speed (kt)" },
   trackDeg: { tc: "航向", en: "Track" },
+  // parseAdsb emits `bearing`, not `trackDeg` — the label map had the wrong key, so every
+  // aircraft popup showed a raw unlabelled `bearing` row. Measured from the live payload.
+  bearing: { tc: "航向", en: "Bearing" },
+  onGround: { tc: "地面", en: "On ground" },
   verticalFpm: { tc: "升降率（呎/分）", en: "Vertical rate (ft/min)" },
   mmsi: { tc: "MMSI", en: "MMSI" },
   shipName: { tc: "船名", en: "Vessel" },

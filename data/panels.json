@@ -1,5 +1,5 @@
 {
-  "_comment": "Panel registry. source must exist in sources.json; render must be one of the 8 closed types in PRIMITIVES.md. title carries BOTH official languages (tc = 繁體中文, en = English).",
+  "_comment": "Panel registry. source must exist in sources.json; render must be one of the 8 closed types in PRIMITIVES.md. title carries BOTH official languages (tc = 繁體中文, en = English). [2026-09-27] aircraft_status RESTORED: the withdrawn note named its own restore condition — a PC-side collector publishing static JSON — and scripts/collect_aircraft.py is that collector. The panel reads data/aircraft.json, not the upstream host, so Cloudflare egress is no longer in the path.",
   "_renders": [
     "big_number",
     "list",
@@ -355,7 +355,6 @@
       }
     },
     {
-      "_comment": "aircraft_status WITHDRAWN 2026-09-23. adsb.fi and adsb.lol both block Cloudflare egress IPs (200 from a home IP, 403/429 from the Worker), so the panel could only ever show an error once deployed. The layers.json entry, the adapter and the plane glyph all remain: restore a panel block here and add 'aircraft_status' back to OVERVIEW in main.ts when a source that tolerates cloud egress exists, or when a PC-side collector publishes static JSON (the water-suspension pattern).",
       "id": "wind_status",
       "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
       "render": "status_grid",
@@ -416,6 +415,24 @@
       "cadence_note": {
         "tc": "每 1 分鐘",
         "en": "Every minute"
+      }
+    },
+    {
+      "id": "aircraft_status",
+      "source": "adsb_lol_hk",
+      "render": "status_grid",
+      "title": {
+        "tc": "香港上空航班（社群 ADS-B）",
+        "en": "Aircraft over Hong Kong (community ADS-B)"
+      },
+      "params": {},
+      "cadence_note": {
+        "tc": "每 2 分鐘（PC 收集）",
+        "en": "Every 2 minutes (PC collector)"
+      },
+      "disclaimer": {
+        "tc": "社群接收數據，覆蓋唔完整；位置係接收器推算，唔可以當導航用。",
+        "en": "Community-received data with incomplete coverage; positions are receiver-derived and must not be used for navigation."
       }
     }
   ]

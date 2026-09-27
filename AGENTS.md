@@ -1002,3 +1002,40 @@ after expiry.
 push: fetch the deployed `index.html`, read the `assets/index-*.js` hash, and grep that bundle for a
 string the change introduced. That is how the staleness above was found — and it is the only reason
 it was found.
+
+
+---
+
+## Testing the deck.gl path — the gap AGENTS.md used to just note
+
+This file said "a headless pass says nothing about the deck.gl path" and left it there. **That is now
+solved, and the fix is four Chrome flags.** Playwright's bundled Chromium on the PC can be driven with
+the REAL GPU:
+
+```js
+const b = await chromium.launch({
+  executablePath: "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe",
+  headless: false,   // MUST be false — headless has no WebGL context at all
+  args: ["--window-position=-2400,0", "--use-angle=d3d11", "--enable-gpu", "--ignore-gpu-blocklist"],
+});
+// verify before trusting any result:
+//   canvas.getContext("webgl2") -> WEBGL_debug_renderer_info
+//   expected: "ANGLE (NVIDIA, NVIDIA GeForce RTX 3050 Laptop GPU, Direct3D11 vs_5_0 ps_5_0, D3D11)"
+```
+
+Measured 2026-09-27. Without `--use-angle=d3d11` the same headed launch reports **no WebGL at all**, and
+without `headless: false` every deck.gl conclusion is worthless. `--window-position=-2400,0` keeps the
+window off-screen so a headed run does not steal focus from whatever Cyrus is doing.
+
+**Verify the renderer string before believing ANY deck.gl measurement.** A run that silently fell back
+to software will still produce screenshots, still produce canvas counts, and will lie about animation.
+
+**How to measure an animation.** Screenshot the deck canvas three times ~2.5s apart and count changed
+pixels. A **baseline without the layer** is mandatory: this app's map changes 27-33 pixels of a 623,776
+pixel clip on its own (a blinking marker, the header clock), so "0.006% changed" means FROZEN, not
+"some motion". An animation must move orders of magnitude more than the baseline.
+
+**`window.__windOverlay` is the QA seam for this layer** — `deckCanvases()`, `layerCount()`,
+`hasParticle()`, `visible()`. Use it instead of digging through `map._controls`, whose entries come back
+**minified** (`constructor.name === "object"`), so a probe cannot find the MapboxOverlay and cannot reach
+the Deck instance from outside the page.

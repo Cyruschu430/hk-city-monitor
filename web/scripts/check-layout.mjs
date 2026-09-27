@@ -77,6 +77,11 @@ const r = await page.evaluate(() => {
     panelHeights: boxes.map((b) => b.h).sort((x, y) => y - x),
     gridColumns: getComputedStyle(panelsEl).gridTemplateColumns.split(/\s+/).length,
     distinctXPositions: cols.length,
+    // The off-screen fetch guard writes how many panels it is still holding back.
+    // Read it here rather than counting requests: a request count cannot tell a
+    // deferred panel from a camera thumbnail, which is exactly how a working guard
+    // was once read as broken.
+    deferredAtBoot: Number(document.body.dataset["deferredPanels"] ?? -1),
     overlaps: overlaps.slice(0, 10),
     overlapCount: overlaps.length,
     bodyScroll: { w: document.body.scrollWidth, h: document.body.scrollHeight },
@@ -85,6 +90,13 @@ const r = await page.evaluate(() => {
 });
 
 await page.screenshot({ path: "C:\\hk-layout.png" });
+
+// Scroll the column to the end and confirm the deferred panels actually wake up.
+// Being held back is only correct if scrolling releases them; a guard that never
+// releases reads as "fast" and shows the reader an empty panel forever.
+await page.evaluate(() => { const z = document.querySelector("#panels"); if (z) z.scrollTop = z.scrollHeight; });
+await page.waitForTimeout(8000);
+const deferredAfterScroll = await page.evaluate(() => Number(document.body.dataset["deferredPanels"] ?? -1));
 await browser.close();
 
 const mapShareW = r.map ? Math.round((r.map.w / r.viewport.w) * 100) : 0;
@@ -122,6 +134,16 @@ const pc = r.panelColScroll;
 if (r.gridColumns !== 1) problems.push(`panel column must be a single column, found ${r.gridColumns}`);
 if (pc.scrollH <= pc.clientH + 2)
   problems.push(`panel column does not scroll: scrollHeight ${pc.scrollH} <= clientHeight ${pc.clientH}`);
+
+if (r.deferredAtBoot < 0)
+  problems.push("no deferredPanels signal on <body> — the off-screen fetch guard is absent");
+else if (r.deferredAtBoot === 0)
+  problems.push("0 panels deferred at boot — every panel fetched immediately, the guard is not engaging");
+else if (r.deferredAtBoot >= r.panelCount)
+  problems.push(`all ${r.panelCount} panels deferred at boot — nothing loads until a scroll`);
+else console.log(`deferred   ${r.deferredAtBoot}/${r.panelCount} held back at boot, ${deferredAfterScroll} still held back after scrolling to the end`);
+if (deferredAfterScroll !== 0)
+  problems.push(`${deferredAfterScroll} panels still deferred after scrolling to the end — the guard never releases them`);
 
 console.log(problems.length ? `\nLAYOUT PROBLEMS:\n  - ${problems.join("\n  - ")}` : "\nLAYOUT OK");
 process.exit(problems.length ? 1 : 0);

@@ -10,7 +10,10 @@
 // the surfaces flip while the semantics stay put; the accents are darkened
 // because #22d3ee on white is unreadable as text.
 
-export type Theme = "system" | "light" | "dark";
+export type Theme = "system" | "light" | "dark" | "palantir";
+/** What actually lands on `<html data-theme>`. `system` resolves to one of the two natives; the
+    named themes pass straight through, which is why this is not just "light" | "dark". */
+export type ResolvedTheme = "light" | "dark" | "palantir";
 
 const KEY = "hkcm.theme";
 const listeners = new Set<(t: Theme) => void>();
@@ -18,7 +21,7 @@ const listeners = new Set<(t: Theme) => void>();
 function read(): Theme {
   try {
     const v = localStorage.getItem(KEY);
-    if (v === "system" || v === "light" || v === "dark") return v;
+    if (v === "system" || v === "light" || v === "dark" || v === "palantir") return v;
   } catch {
     /* private mode — fall through to the default */
   }
@@ -30,7 +33,7 @@ const mq = (): MediaQueryList | null =>
 
 let current: Theme = read();
 
-export function resolved(t: Theme = current): "light" | "dark" {
+export function resolved(t: Theme = current): ResolvedTheme {
   if (t === "system") return mq()?.matches ? "dark" : "light";
   return t;
 }

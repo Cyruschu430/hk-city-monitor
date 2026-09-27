@@ -4,14 +4,14 @@
  "why_pipeline": "esd.wsd.gov.hk only offers static-RSA TLS (AES128-SHA), which the Cloudflare Worker's BoringSSL refuses; a browser cannot read it either (no CORS). This file is the collector's output.",
  "license_note": "Open data published by the Water Supplies Department; addresses are as published.",
  "geocode_note": "lat/lng come from the OGCIO Address Lookup Service (als.gov.hk), the registered als_address_lookup source, applied to the first clause of each notice address. A notice that did not resolve keeps lat=null and is drawn at DISTRICT level -- we never substitute a district centroid, because a confident pin in the wrong place is worse than an honest district highlight.",
- "generated": "2026-09-27T03:19:36+08:00",
+ "generated": "2026-09-27T11:39:36+08:00",
  "cadence_note": "Upstream updates every 5 minutes; this file is as fresh as the last collector run.",
  "counts": {
-  "records": 102,
-  "active": 1,
-  "located": 101,
+  "records": 103,
+  "active": 2,
+  "located": 102,
   "district_only": 1,
-  "active_located": 1,
+  "active_located": 2,
   "active_district_only": 0
  },
  "districts": [
@@ -1564,9 +1564,25 @@
    "status": "現正停水",
    "lat": 22.28679,
    "lng": 114.13269
+  },
+  {
+   "id": "2026092713792",
+   "water_type": "鹹水",
+   "district": "屯門區",
+   "district_en": "Tuen Mun",
+   "nature": "緊急停水",
+   "suspend_at": "2026-09-27T04:45:00+08:00",
+   "resume_at": null,
+   "address": "良德街,部份新福路,豐連,盈豐園,寶怡花園",
+   "address_en": "LEUNG TAK STREET,PART OF SAN FUK ROAD,ORI,GOODRICH GARDEN,BLOSSOM GARDEN",
+   "cause": "緊急維修水管工程",
+   "status": "現正停水",
+   "lat": 22.40763,
+   "lng": 113.96769
   }
  ],
  "active_ids": [
-  "2026092613788"
+  "2026092613788",
+  "2026092713792"
  ]
 }

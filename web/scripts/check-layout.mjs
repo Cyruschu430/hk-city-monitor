@@ -107,7 +107,17 @@ if (Math.abs(expected - r.panelColScroll.scrollH) > 4)
   problems.push(`row tracks + padding + gaps = ${expected} but scrollHeight is ${r.panelColScroll.scrollH} — the documented trap`);
 if (r.horizontalOverflow) problems.push("horizontal page overflow");
 if (mapShareW < 85) problems.push(`map is only ${mapShareW}% wide`);
-if (r.gridColumns < 3) problems.push(`only ${r.gridColumns} panel columns`);
+// The panel column is now a SIDE-RAIL scroller, so one column is correct — the old bottom-band layout
+// wanted three across and this line asserted it. What must hold instead is that the column actually
+// scrolls. That is the whole point of `#panelCol`, and it is exactly what broke: an orphaned CSS block
+// from the 3D-button removal swallowed the `#panelCol` rule, so the column kept `display:block` and
+// `overflow:visible`, 4693px of panels sat inside a 988px column, scrollHeight equalled clientHeight, and
+// the panel list simply ran off the bottom of the window. Asserting the new contract would have caught
+// it; asserting the old one could only go permanently red and hide the next defect.
+const pc = r.panelColScroll;
+if (r.gridColumns !== 1) problems.push(`panel column must be a single column, found ${r.gridColumns}`);
+if (pc.scrollH <= pc.clientH + 2)
+  problems.push(`panel column does not scroll: scrollHeight ${pc.scrollH} <= clientHeight ${pc.clientH}`);
 
 console.log(problems.length ? `\nLAYOUT PROBLEMS:\n  - ${problems.join("\n  - ")}` : "\nLAYOUT OK");
 process.exit(problems.length ? 1 : 0);

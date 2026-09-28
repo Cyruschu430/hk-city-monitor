@@ -128,11 +128,52 @@ export function resolveUrl(src: SourceDef): string {
   return url;
 }
 
+/** Files a scheduled publisher force-pushes to the `live-data` branch.
+ *
+ * WHY THIS EXISTS. The deployed bundle carries a snapshot of every data file from
+ * build time. That is right for reference data and wrong for anything with a
+ * cadence: aircraft and berth vacancy change every couple of minutes, and rebuilding
+ * the site on that cadence is 720 deploys a day against a free tier that allows 500
+ * builds a month. So a collector writes the file, `scripts/publish_live.py`
+ * force-pushes ONE orphan commit, and the browser reads it from
+ * raw.githubusercontent.com — which sends `access-control-allow-origin: *` and needs
+ * no key. Nothing secret is exposed that a public repo did not already expose.
+ *
+ * The set is EXPLICIT, not "anything under data/": a live URL for a file nobody
+ * republishes is a 404 that turns a working panel red.
+ */
+export const LIVE_BASE = "https://raw.githubusercontent.com/Cyruschu430/hk-city-monitor/live-data";
+const LIVE_FILES = new Set(["aircraft.json", "berth_vacancy.json", "water_suspension.json"]);
+
+/** The live copy of a bundled `data/<file>` path, or null when there is none. */
+export function liveDataUrl(path: string): string | null {
+  const file = /^data\/([\w.-]+)$/.exec(path)?.[1];
+  return file && LIVE_FILES.has(file) ? `${LIVE_BASE}/${file}` : null;
+}
+
+/** Fetch a generated data file, preferring the live copy and falling back to the
+    snapshot in the bundle. Both carry the PUBLISHER's own timestamp (aircraft's
+    `now`, water's `generated`, each berth's `LastUpdate`), so the panel's freshness
+    reading stays honest on both paths — the fallback shows its age instead of
+    passing a committed snapshot off as current. */
+export async function fetchDataFile(path: string, init: RequestInit = {}): Promise<Response> {
+  const live = liveDataUrl(path);
+  if (live) {
+    try {
+      const res = await fetch(live, { ...init, signal: AbortSignal.timeout(10_000) });
+      if (res.ok) return res;
+    } catch {
+      /* fall through: a committed snapshot beats an empty panel */
+    }
+  }
+  return fetch(path, init);
+}
+
 /** The URL the app actually requests — direct when the registry says the
     browser may, through the whitelist proxy otherwise. */
 export function fetchUrl(src: SourceDef): string {
   const url = resolveUrl(src);
-  if (src.fetch === "browser") return url;
+  if (src.fetch === "browser") return liveDataUrl(url) ?? url;
   if (src.fetch === "proxy") return proxied(url);
   throw new Error(`source ${src.id} is marked n/a — it is not fetchable at runtime`);
 }
@@ -152,7 +193,20 @@ export async function fetchSource(src: SourceDef): Promise<Response> {
   const url = fetchUrl(src);
   const hit = memo.get(url);
   if (hit && Date.now() - hit.at < MEMO_MS) return hit.response.clone();
-  const res = await fetch(url, { signal: AbortSignal.timeout(25_000) });
+  // A generated file whose live copy is unreachable (offline, a network that blocks
+  // raw.githubusercontent, the branch deleted) must not blank a panel that has a
+  // committed snapshot behind it. The snapshot's OWN timestamp is what reports how
+  // old it is, so the fallback cannot pass a stale reading off as a fresh one — the
+  // panel degrades to amber on its own.
+  const bundled = liveDataUrl(resolveUrl(src)) ? resolveUrl(src) : null;
+  let res: Response | null = null;
+  try {
+    res = await fetch(url, { signal: AbortSignal.timeout(25_000) });
+    if (bundled && !res.ok) res = null; // a 404 on the branch is not an answer either
+  } catch (err) {
+    if (!bundled) throw err;
+  }
+  if (!res) res = await fetch(bundled as string, { signal: AbortSignal.timeout(25_000) });
   // The 60s worker edge cache already collapses clients; the 30s memo is only
   // about the same-tab double-fetch (panel + layer), so ttl can be short.
   if (res.ok && src.fetch === "proxy") memo.set(url, { at: Date.now(), response: res.clone() });

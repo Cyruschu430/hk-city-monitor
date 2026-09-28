@@ -31,6 +31,7 @@ const STEPS = [
   { name: "analysis  (10 Tier 2 scenarios)", cmd: "node", args: ["scripts/verify-analysis.mjs"] },
   { name: "carpark", cmd: "node", args: ["scripts/verify-carpark.mjs"] },
   { name: "layers", cmd: "node", args: ["scripts/check-layers.mjs"] },
+  { name: "livewall  (inline player)", cmd: "node", args: ["scripts/check-livewall.mjs"] },
   { name: "quota", cmd: "node", args: ["scripts/check-quota.mjs"] },
 ];
 

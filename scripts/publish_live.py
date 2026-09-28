@@ -16,12 +16,13 @@ ONE ORPHAN BRANCH, FORCE-PUSHED EVERY RUN. Force-push keeps it at exactly one co
 not grow the repository by hundreds of commits a day and the branch history carries no value worth
 keeping. Branch name: `live-data`.
 
-BLOCKED ON ONE MANUAL STEP. This PC cannot authenticate to GitHub — `credentialStore=wincredman`
-cannot persist a credential, and the SSH key that works lives on the VPS. Either:
-  - an SSH key on this PC added to the GitHub account, and the remote switched to SSH, or
-  - a fine-grained PAT in .github_token (gitignored, NEVER committed), or
-  - fix the credential store:  git config --global credential.credentialStore dpapi
-Until one of those is true this script exits 3 and says so, having pushed nothing.
+NEEDS A PUSH CREDENTIAL, AND SAYS SO WHEN IT HAS NONE. The HTTPS remote is the default, and a host
+without a credential cannot push to it: the dry-run probe then fails loudly, having pushed nothing,
+rather than the push failing halfway through building a temp repo. A host that does have one points
+$HKCM_REMOTE at the URL it can push to — an SSH remote backed by an account key or a repo-scoped
+deploy key, or a fine-grained PAT (`.github_token`, gitignored, NEVER committed). Which of those a
+machine has is an environment fact, not a code change. MEASURED 2026-09-28: exit 3 on the PC, which
+collects but cannot authenticate, and exit 0 from the VPS with a repo-scoped deploy key.
 
 Usage:  py publish_live.py data/aircraft.json data/berth_vacancy.json
 """
@@ -55,10 +56,16 @@ def main():
     # nothing useful. `ls-remote` is a READ, and this repository is public, so it succeeds even
     # when authentication is broken - which is exactly the trap this check exists to avoid
     # (an earlier session read a successful ls-remote as proof that push worked).
-    probe = git("push", "--dry-run", REPO, f"HEAD:refs/heads/{BRANCH}", cwd=ROOT)
+    #
+    # --force is NOT decoration. The real push below is forced (one orphan commit by design), so a
+    # probe without it tests a different operation: from the second run onwards the branch already
+    # exists at another commit and a non-forced update is rejected as a non-fast-forward, which
+    # this check then reported as "this PC cannot push to GitHub" on a host whose key was fine.
+    # MEASURED 2026-09-28, one run after the branch was created.
+    probe = git("push", "--dry-run", "--force", REPO, f"HEAD:refs/heads/{BRANCH}", cwd=ROOT)
     if probe.returncode != 0:
         tail = (probe.stderr or probe.stdout or "").strip().splitlines()[-1:] or [""]
-        print("BLOCKED this PC cannot push to GitHub: " + tail[0], file=sys.stderr)
+        print("BLOCKED this host cannot push to GitHub: " + tail[0], file=sys.stderr)
         print("BLOCKED see the docstring for the three ways to fix it. Nothing was published.",
               file=sys.stderr)
         return 3

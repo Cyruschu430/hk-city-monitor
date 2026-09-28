@@ -30,7 +30,14 @@ import os, subprocess, sys, tempfile, shutil
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, ".."))
 BRANCH = "live-data"
-REPO = "https://github.com/Cyruschu430/hk-city-monitor.git"
+# The HTTPS remote is the default because it is what a fresh checkout has, and it is
+# the honest answer for a machine with no push credential: the dry-run probe below
+# then fails loudly instead of the push failing halfway. A host that DOES have one
+# (an SSH key, a token) points $HKCM_REMOTE at the URL it can actually push to —
+# that override is the only difference between "blocked" and "published", and it is
+# an environment fact, not a code change.
+REPO = os.environ.get("HKCM_REMOTE") or "https://github.com/Cyruschu430/hk-city-monitor.git"
+RAW = "https://raw.githubusercontent.com/Cyruschu430/hk-city-monitor"
 
 
 def git(*args, cwd):
@@ -75,7 +82,7 @@ def main():
             print("FAIL push failed: " + (out.stderr or "").strip()[-300:], file=sys.stderr)
             return 1
         print(f"OK   pushed {len(files)} file(s) to {BRANCH}: " + ", ".join(os.path.basename(f) for f in files))
-        print(f"     browser URL: https://raw.githubusercontent.com/Cyruschu430/hk-city-monitor/{BRANCH}/<file>")
+        print(f"     browser URL: {RAW}/{BRANCH}/<file>")
         return 0
     finally:
         shutil.rmtree(tmp, ignore_errors=True)

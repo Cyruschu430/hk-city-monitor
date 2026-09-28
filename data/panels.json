@@ -427,8 +427,8 @@
       },
       "params": {},
       "cadence_note": {
-        "tc": "每 2 分鐘（PC 收集）",
-        "en": "Every 2 minutes (PC collector)"
+        "tc": "每 5 分鐘（收集器）",
+        "en": "Every 5 minutes (collector)"
       },
       "disclaimer": {
         "tc": "社群接收數據，覆蓋唔完整；位置係接收器推算，唔可以當導航用。",

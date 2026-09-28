@@ -133,8 +133,9 @@ const RAIL_LAYERS: RailLayer[] = [
   // verticals exist to prevent.
   { id: "hk_facility_pins", label: { tc: "貯油裝置", en: "Oil storage installations" } },
   // The only LIVE layer in 貨運模式 — 120 berths and how many are free right now, refreshed every
-  // 10 minutes by the PC collector. The three facility layers above it answer "where"; this one
-  // answers "now", which is the question the mode's panel is actually asking.
+  // 5 minutes by scripts/live_cycle.sh and published to the `live-data` branch. The three facility
+  // layers above it answer "where"; this one answers "now", which is the question the mode's panel
+  // is actually asking.
   { id: "berth_vacancy", label: { tc: "泊位空缺（實時）", en: "Berth vacancy (live)" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better

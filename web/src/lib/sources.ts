@@ -4,7 +4,7 @@
 // template its URL (a probed URL may carry a sample date — TECH_SPEC notes
 // the HKIA feed takes today, radar filenames take the current minute).
 
-import { proxied } from "../config.ts";
+import { proxied, LIVE_BASE } from "../config.ts";
 import { hkToday } from "./format.ts";
 import { lang } from "./i18n.ts";
 import { windLattice } from "./windgrid.ts";
@@ -140,9 +140,9 @@ export function resolveUrl(src: SourceDef): string {
  * no key. Nothing secret is exposed that a public repo did not already expose.
  *
  * The set is EXPLICIT, not "anything under data/": a live URL for a file nobody
- * republishes is a 404 that turns a working panel red.
+ * republishes is a 404 that turns a working panel red. The base is configurable
+ * (VITE_LIVE_BASE) because the shipped default names THIS project's branch.
  */
-export const LIVE_BASE = "https://raw.githubusercontent.com/Cyruschu430/hk-city-monitor/live-data";
 const LIVE_FILES = new Set(["aircraft.json", "berth_vacancy.json", "water_suspension.json"]);
 
 /** The live copy of a bundled `data/<file>` path, or null when there is none. */

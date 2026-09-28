@@ -27,6 +27,19 @@ export function proxied(url: string): string {
     the Worker edge-caches data for 60s, so faster polling buys nothing. */
 export const MIN_REFRESH_MS = 60_000;
 
+/** Where `data/<file>` live copies are published — the branch `scripts/live_cycle.sh`
+    force-pushes (see lib/sources.ts for which files and why).
+ *
+ * A FORK MUST POINT THIS AT ITS OWN REPO. The default names this project's branch, and
+ * reading someone else's live data is the one self-hosting trap that does not announce
+ * itself: the payload is well-formed and the timestamps are real, they are simply not
+ * yours. Set VITE_LIVE_BASE in `.env` to `<raw.githubusercontent.com>/<you>/<repo>/<branch>`.
+ * Build-time and guarded exactly like VITE_WORKER_BASE above. */
+export const LIVE_BASE = (
+  (import.meta as { env?: Record<string, string | undefined> }).env?.VITE_LIVE_BASE ??
+  "https://raw.githubusercontent.com/Cyruschu430/hk-city-monitor/live-data"
+).replace(/\/+$/, "");
+
 /** Map defaults: Hong Kong, city scale. */
 export const HK_CENTER: [number, number] = [114.1694, 22.3193];
 export const HK_ZOOM = 10.4;

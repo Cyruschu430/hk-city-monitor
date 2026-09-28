@@ -8,6 +8,8 @@
 // measurement: how much of the viewport the map actually gets, and how much of the panel set is
 // visible without scrolling.
 import { chromium } from "playwright-core";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const BASE = process.env.HKCM_URL ?? "http://127.0.0.1:4173/";
 const exe = process.env.HKCM_CHROME ?? "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
@@ -89,7 +91,10 @@ const r = await page.evaluate(() => {
   };
 });
 
-await page.screenshot({ path: "C:\\hk-layout.png" });
+// Debug evidence for a layout failure, in the OS temp dir — not a hardcoded C:\ path
+// (measured: on any machine that is not the PC that literal creates a junk file named
+// `C:\hk-layout.png` in the working tree, which is how it got committed once).
+await page.screenshot({ path: join(tmpdir(), "hkcm-layout.png") });
 
 // Scroll the column to the end and confirm the deferred panels actually wake up.
 // Being held back is only correct if scrolling releases them; a guard that never

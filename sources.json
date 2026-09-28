@@ -443,9 +443,9 @@
       "type": "geojson",
       "url": "data/aircraft.json",
       "auth": "none",
-      "cadence": "every 2 minutes (PC collector)",
+      "cadence": "every 5 minutes (collector → live-data branch)",
       "hk_filter": true,
-      "notes": "SLIMMED? NO — STORED VERBATIM. scripts/collect_aircraft.py runs on the PC and writes the upstream response unchanged, because lib/parsers.ts parseAdsb() already reads exactly this shape and its `now` field is what makes the payload age correctly in the UI; re-shaping it would mean a second parser kept in step for no gain. MEASURED 2026-09-27: 28 aircraft with a position in 16,738 bytes for a 100nm radius. WHY THE PC AND NOT THE WORKER: api.adsb.lol returns 403 to Cloudflare/VPS egress and 200 to this PC, which is why the panel was withdrawn in the first place. adsb.fi is the collector's fallback mirror. A failed run leaves the previous file in place and exits non-zero — an empty sky and a dead collector look identical to a reader otherwise. Falls back to data/adsb_fi_hk shape via the same adapter.",
+      "notes": "SLIMMED? NO — STORED VERBATIM. scripts/collect_aircraft.py writes the upstream response unchanged, because lib/parsers.ts parseAdsb() already reads exactly this shape and its `now` field is what makes the payload age correctly in the UI; re-shaping it would mean a second parser kept in step for no gain. MEASURED 2026-09-27: 28 aircraft with a position in 16,738 bytes for a 100nm radius. MEASURED 2026-09-28: api.adsb.lol answers 200 from the collector host, so the collection moved off the PC; the reason the file exists at all is unchanged (Cloudflare's egress is refused, so neither the Worker nor the browser can read the feed). One pass = scripts/live_cycle.sh: collect, then scripts/publish_live.py force-pushes the file to the `live-data` branch that web/src/lib/sources.ts reads, falling back to the committed snapshot when that branch is unreachable. A failed run leaves the previous file in place and exits non-zero — an empty sky and a dead collector look identical to a reader otherwise. Falls back to data/adsb_fi_hk shape via the same adapter.",
       "kind": "api",
       "fetch": "browser",
       "cors_note": "冇 ACAO → 頁面 fetch 唔到",
@@ -1605,7 +1605,7 @@
       "auth": "none",
       "cadence": "5 minutes",
       "todo": false,
-      "notes": "Temporary water suspension notices, every 5 minutes. Directly answers 'why is my water off' — pair with a map of the affected address. MEASURED 2026-09-19: this host negotiates TLS_RSA_WITH_AES_128_CBC_SHA (static RSA key exchange), which BoringSSL removed. OpenSSL/Node can still reach it at SECLEVEL=1, but the Cloudflare Worker cannot: workerd's fetch hangs and dies on the 10s timeout, so the proxy answers 504 — in dev AND in production, since Cloudflare's edge is BoringSSL too. A browser cannot read it either (no ACAO). THE PATH IS THEREFORE A COLLECTOR: scripts/build_water_suspension.py writes data/water_suspension.json, and the front end reads that (see also AGENTS.md pitfall 11 for the same pattern).",
+      "notes": "Temporary water suspension notices, every 5 minutes. Directly answers 'why is my water off' — pair with a map of the affected address. MEASURED 2026-09-19: this host negotiates TLS_RSA_WITH_AES_128_CBC_SHA (static RSA key exchange), which BoringSSL removed. OpenSSL/Node can still reach it at SECLEVEL=1, but the Cloudflare Worker cannot: workerd's fetch hangs and dies on the 10s timeout, so the proxy answers 504 — in dev AND in production, since Cloudflare's edge is BoringSSL too. A browser cannot read it either (no ACAO). THE PATH IS THEREFORE A COLLECTOR: scripts/build_water_suspension.py writes data/water_suspension.json, which scripts/live_cycle.sh force-pushes to the `live-data` branch for the browser to read (web/src/lib/sources.ts prefers that copy and falls back to the committed snapshot — see also AGENTS.md pitfall 11 for the same pattern).",
       "fetch": "n/a",
       "cors_note": "冇 ACAO；而且只支援 static-RSA TLS，Worker（BoringSSL）連唔到 → 一定要經 collector",
       "kind": "api",
@@ -3249,12 +3249,12 @@
       "type": "geojson",
       "url": "data/berth_vacancy.json",
       "auth": "none",
-      "cadence": "every 10 minutes (PC collector)",
+      "cadence": "every 5 minutes (collector → live-data branch)",
       "todo": false,
       "fetch": "browser",
       "cost": "free",
       "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
-      "notes": "Live: MARDEP mardep_rcd_1638859086572_29125 via CSDI, collected by scripts/collect_berths.py on the PC. MEASURED 2026-09-28: 120 berths, 45,055 bytes, 27 vacant / 93 in use. WHY THIS IS A SEPARATE LAYER FROM hk_facility_areas: that one is static reference geometry — where the cargo working areas are, which does not change — while this one carries the `Vacant` flag, which changes hour to hour. Baking a live flag into a committed static snapshot is a stale number presented as current, so the live field gets its own file, its own cadence and its own timestamp. Every feature carries LastUpdate, not just a file header, because a reader who opens a popup should not have to trust that the file is fresh."
+      "notes": "Live: MARDEP mardep_rcd_1638859086572_29125 via CSDI, collected by scripts/collect_berths.py and published to the `live-data` branch by scripts/live_cycle.sh. MEASURED 2026-09-28: 120 berths, 45,055 bytes, 27 vacant / 93 in use. WHY THIS IS A SEPARATE LAYER FROM hk_facility_areas: that one is static reference geometry — where the cargo working areas are, which does not change — while this one carries the `Vacant` flag, which changes hour to hour. Baking a live flag into a committed static snapshot is a stale number presented as current, so the live field gets its own file, its own cadence and its own timestamp. Every feature carries LastUpdate, not just a file header, because a reader who opens a popup should not have to trust that the file is fresh."
     }
   ]
 }

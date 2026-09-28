@@ -9,6 +9,7 @@
 
 import { fetchSource, resolveUrl, type PanelDefRaw, type Registry, type SourceDef } from "./sources.ts";
 import { fetchUrl } from "./sources.ts";
+import { fetchDataFile } from "./sources.ts";
 import * as P from "./parsers.ts";
 import { lang } from "./i18n.ts";
 import { liveThumb, probeLive } from "./live.ts";
@@ -233,7 +234,7 @@ const ADAPTERS: Record<string, Adapter> = {
     // the same pattern the repo already uses for CORS-closed news feeds.
     // `src` is still the source of truth for the footer link.
     void src;
-    const res = await fetch(`data/water_suspension.json`, { cache: "no-store" });
+    const res = await fetchDataFile("data/water_suspension.json", { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const j = (await res.json()) as {
       generated: string;

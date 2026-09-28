@@ -19,8 +19,25 @@ sources.
 was built and it explains the architecture, but do not re-run it.
 
 What is in `web/` right now:
-- **17 mounted panels** (16 source-backed + the analysis panel), **9 layers**, **3 verticals**,
-  **176 sources**. Do not quote a coverage number from memory — re-run the count.
+- **24 mounted panels** (23 source-backed + the analysis panel), **15 layers**, **10 verticals**,
+  **180 sources**. Do not quote a coverage number from memory — re-run the count
+  (`python scripts/validate_config.py` prints all four).
+- **Live files come from a git branch, not the bundle.** Aircraft, berth vacancy and water
+  suspension change every few minutes, and rebuilding the site on that cadence is 720 deploys a
+  day against a free tier that allows 500 a month. `scripts/live_cycle.sh` (one pass: collect,
+  then publish) force-pushes ONE orphan commit to `live-data`, and `lib/sources.ts` reads it from
+  raw.githubusercontent.com, falling back to the committed snapshot when the branch is
+  unreachable. The fallback is a READ of the same payload, which carries the publisher's own
+  timestamp — so it degrades to amber rather than passing a snapshot off as current.
+  `web/scripts/probe-live-data.mjs` checks both paths (BLOCK_LIVE=1 asserts the fallback).
+  The three files are the ONLY ones there: a live URL for a file nobody republishes is a 404
+  that turns a working panel red.
+- **Two panel behaviours a reader drives**: drag a panel by its head to reorder the column (the
+  placement is stored under `hkcm.panelsOrder` and applied on every render — `check:layout`
+  asserts the drop, the storage and a reload), and a confirmed-live stream plays INSIDE its
+  live-wall tile, several at once, with the tile badge as the stop control (`check:livewall`).
+  The drawer stays for cameras and off-air channels only, where the click buys information
+  rather than a second click.
 - **The analysis panel is BACK and enabled** (`ANALYSIS_PANEL_ENABLED`). It renders Tier 2 as a
   district TIMELINE plus a domain co-occurrence view, and it is FED rather than fetched
   (`FED_PANEL_IDS` in `ui/panels.ts` — it is a conclusion drawn from the other panels, not a

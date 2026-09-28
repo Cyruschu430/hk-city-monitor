@@ -265,6 +265,72 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       /* non-persistent is acceptable; the choice still holds for the session */
     }
   }
+
+  // User ORDER. Global, like the hidden set and for the same reason: where a panel sits
+  // is the reader's preference, not the vertical's. Stored as a flat list of ids, so a
+  // stale entry for a panel that no longer exists is inert and a new panel simply has no
+  // index yet (it keeps its configured position, after the ids the reader has placed).
+  const ORDER_KEY = "hkcm.panelsOrder";
+  const userOrder: string[] = ((): string[] => {
+    try {
+      const raw = localStorage.getItem(ORDER_KEY);
+      if (raw) return (JSON.parse(raw) as unknown[]).filter((x): x is string => typeof x === "string");
+    } catch {
+      /* private mode — the configured order stands */
+    }
+    return [];
+  })();
+  function applyOrder(ids: string[]): string[] {
+    const rank = (id: string): number => {
+      const i = userOrder.indexOf(id);
+      return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+    };
+    return ids.map((id, i) => [id, i] as const)
+      .sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1])
+      .map(([id]) => id);
+  }
+  /** Read the column back out of the DOM after a drop and keep it. The DOM moves during
+      the drag (that IS the feedback), so the drop only has to record what it already
+      shows — remembering a drop position instead would be a second source of truth that
+      a re-render could disagree with. */
+  function writeOrder(): void {
+    const next = [...root.querySelectorAll<HTMLElement>("[data-panel]")]
+      .map((el) => el.dataset.panel)
+      .filter((x): x is string => !!x);
+    userOrder.length = 0;
+    userOrder.push(...next);
+    try {
+      localStorage.setItem(ORDER_KEY, JSON.stringify(next));
+    } catch {
+      /* session-only is acceptable; the column shows the new order either way */
+    }
+    order = applyOrder(order);
+  }
+  /** Drag a panel by its head. The head is the handle rather than the whole card, or a
+      drag would start from any image text selection on the panel. */
+  function makeDraggable(node: HTMLElement, head: Element | null, id: string): void {
+    const handle = head as HTMLElement | null;
+    if (!handle || handle.draggable) return;
+    handle.draggable = true;
+    handle.classList.add("p-grab");
+    handle.addEventListener("dragstart", (e) => {
+      e.dataTransfer?.setData("text/plain", id);
+      node.classList.add("dragging");
+    });
+    handle.addEventListener("dragend", () => node.classList.remove("dragging"));
+    node.addEventListener("dragover", (e) => {
+      e.preventDefault(); // without this the browser never fires a drop
+      const dragged = root.querySelector<HTMLElement>(".panel.dragging");
+      if (!dragged || dragged === node) return;
+      const box = node.getBoundingClientRect();
+      node.parentElement?.insertBefore(dragged, e.clientY > box.top + box.height / 2 ? node.nextSibling : node);
+    });
+    node.addEventListener("drop", (e) => {
+      e.preventDefault();
+      node.classList.remove("dragging");
+      writeOrder();
+    });
+  }
   /** A panel's category comes from its SOURCE, never from a field on the panel:
       one registry, so a tab cannot disagree with sources.json. */
   const groupOf = (entry: Entry): string => registry.byId.get(entry.panel.source)?.group ?? "";
@@ -351,6 +417,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
     if (userHidden.has(id)) node.hidden = true;
     const head = node.querySelector(".panel-head");
     if (head && !head.querySelector(".p-hide")) head.append(hideButton(id));
+    makeDraggable(node, head, id);
     const existing = root.querySelector(`[data-panel="${id}"]`);
     if (existing) {
       // Cancel BEFORE detaching, or the decode error fires on removal.
@@ -490,7 +557,9 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
   }
 
   function setPanels(ids: string[]): void {
-    order = ids;
+    // The reader's placement is applied HERE rather than at the drop, so a re-render
+    // (every mode switch rebuilds the column) comes back in the order they chose.
+    order = applyOrder(ids);
     clear(root);
     for (const entry of entries.values()) {
       if (entry.timer !== null) window.clearTimeout(entry.timer);

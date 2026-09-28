@@ -553,6 +553,11 @@ a:hover{color:var(--cyan)}
   border-bottom:1px solid var(--hairline)}
 .panel-head h2{margin:0;font-size:11px;letter-spacing:.2em;color:var(--dim);font-weight:600;
   text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Drag-to-reorder (panels.ts). The head is the handle, so a movable card says so, and
+   the card in flight stays visible — a drag with no feedback reads as a broken click. */
+.panel-head.p-grab{cursor:grab}
+.panel-head.p-grab:active{cursor:grabbing}
+.panel.dragging{opacity:.55;outline:1px dashed var(--hairline-hi)}
 /* The header and foot carry the horizontal padding now that the card does not. */
 .panel-body{padding:10px 12px}
 .chip{font-family:var(--font-mono);font-size:11px;font-variant-numeric:tabular-nums;
@@ -714,6 +719,13 @@ a:hover{color:var(--cyan)}
 .cam{position:relative;border-radius:5px;overflow:hidden;border:1px solid var(--hairline);
   background:#0a1220;aspect-ratio:4/3;cursor:pointer}
 .cam img{width:100%;height:100%;object-fit:cover;display:block}
+/* The inline player (render.ts, image_wall): the thumbnail stays in the DOM and is
+   hidden, so stopping playback is removing one node and the tile keeps its aspect
+   ratio whatever the iframe reports. `.playing` is also the only visual answer to
+   "is this tile started" once the thumbnail is gone. */
+.cam.playing{border-color:var(--alert)}
+.cam.playing img{display:none}
+.cam iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .cam .lab{position:absolute;left:0;right:0;bottom:0;padding:2px 5px;font-size:11px;line-height:1.3;
   background:linear-gradient(0deg,rgba(3,7,14,.94),transparent);color:#dbeafe;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

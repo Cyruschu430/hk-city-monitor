@@ -102,6 +102,47 @@ await page.screenshot({ path: join(tmpdir(), "hkcm-layout.png") });
 await page.evaluate(() => { const z = document.querySelector("#panels"); if (z) z.scrollTop = z.scrollHeight; });
 await page.waitForTimeout(8000);
 const deferredAfterScroll = await page.evaluate(() => Number(document.body.dataset["deferredPanels"] ?? -1));
+
+// ── the reader can REORDER the column, and the placement survives a reload ──────────
+// The drag is dispatched rather than pointer-driven: Playwright cannot drive HTML5
+// drag-and-drop reliably, and dispatching dragstart/dragover/drop exercises the real
+// listeners instead of asserting on the code that installs them.
+const orderNow = () =>
+  page.evaluate(() => [...document.querySelectorAll("#panels [data-panel]")].map((e) => e.dataset.panel));
+const orderBefore = await orderNow();
+let orderAfter = orderBefore;
+if (orderBefore.length < 2) {
+  problems.push("fewer than two panels on screen — the column cannot be reordered or tested");
+} else {
+  const dispatched = await page.evaluate(() => {
+    const panels = [...document.querySelectorAll("#panels [data-panel]")];
+    const from = panels[0];
+    const to = panels[1];
+    const head = from.querySelector(".panel-head");
+    if (!head) return false;
+    const dt = new DataTransfer();
+    const box = to.getBoundingClientRect();
+    const at = { bubbles: true, dataTransfer: dt, clientY: box.bottom - 1 };
+    head.dispatchEvent(new DragEvent("dragstart", { bubbles: true, dataTransfer: dt }));
+    to.dispatchEvent(new DragEvent("dragover", at));
+    to.dispatchEvent(new DragEvent("drop", at));
+    head.dispatchEvent(new DragEvent("dragend", { bubbles: true, dataTransfer: dt }));
+    return true;
+  });
+  orderAfter = await orderNow();
+  if (!dispatched) problems.push("the first panel has no .panel-head — there is nothing to drag by");
+  if (orderAfter[0] !== orderBefore[1] || orderAfter[1] !== orderBefore[0])
+    problems.push(`the drag did not reorder the column: ${orderBefore.slice(0, 2)} → ${orderAfter.slice(0, 2)}`);
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("hkcm.panelsOrder") ?? "[]"));
+  if (saved[0] !== orderAfter[0]) problems.push(`the dropped order was not persisted (${JSON.stringify(saved.slice(0, 2))})`);
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45_000 }).catch(() => {});
+  const orderBoot = await orderNow();
+  if (orderBoot[0] !== orderAfter[0])
+    problems.push(`the order did not survive a reload: ${orderBoot.slice(0, 2)} vs ${orderAfter.slice(0, 2)}`);
+  else console.log(`order      the reader's placement survives a reload (first panel ${orderBoot[0]})`);
+}
+
 await browser.close();
 
 const mapShareW = r.map ? Math.round((r.map.w / r.viewport.w) * 100) : 0;

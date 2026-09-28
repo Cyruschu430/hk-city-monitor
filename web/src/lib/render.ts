@@ -384,6 +384,41 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
           // that fails to load right now is NOT a live frame — degrade the
           // tile instead of leaving a broken-image box.
           const im = h("img", { src: img.src, alt: img.name, loading: "lazy" }) as HTMLImageElement;
+          // A confirmed-live stream plays HERE, in the panel — not in the drawer.
+          // The drawer was one click to open and a second click to start, so watching
+          // three streams meant three popups stacked over the map that each had to be
+          // closed again. Several tiles can play at once; they are muted because no
+          // browser starts several unmuted players, and a wall of them is noise.
+          // A camera tile, and an off-air channel, keep the drawer: a camera has a
+          // figure worth opening full size, and an off-air channel has an explanation
+          // rather than a black rectangle.
+          // The badge is also the STOP button while a tile plays: the player covers the
+          // tile, so a click in the middle belongs to YouTube's own controls. The badge
+          // sits above the frame (the frame is prepended, so later siblings paint over
+          // it) and says what it does rather than leaving the reader to guess.
+          const liveChip = img.video
+            ? img.video.live
+              ? h("span", { class: "fresh chip live", style: "background:rgba(255,93,108,.9);color:#fff" }, "LIVE 直播")
+              : h("span", { class: "fresh chip" }, lang() === "tc" ? "現時無直播" : "not live now")
+            : null;
+          const toggle = () => {
+            if (!img.video?.live) {
+              opts.onImageClick?.(img);
+              return;
+            }
+            if (!tile.classList.toggle("playing")) {
+              tile.querySelector("iframe")?.remove();
+              if (liveChip) liveChip.textContent = "LIVE 直播";
+              return;
+            }
+            const frame = document.createElement("iframe");
+            frame.src = `https://www.youtube.com/embed/${img.video.id}?autoplay=1&mute=1&playsinline=1`;
+            frame.allow = "autoplay; encrypted-media; picture-in-picture";
+            frame.title = img.name;
+            // prepend, not append: the label and the badge must stay clickable on top
+            tile.prepend(frame);
+            if (liveChip) liveChip.textContent = lang() === "tc" ? "■ 停止" : "■ stop";
+          };
           const tile = h(
             "div",
             {
@@ -392,16 +427,19 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
               "data-dead": lang() === "tc" ? "暫時未能提供" : "temporarily unavailable",
               role: "button",
               tabindex: "0",
-              onclick: () => opts.onImageClick?.(img),
+              onclick: toggle,
+              onkeydown: (e) => {
+                const k = (e as KeyboardEvent).key;
+                if (k === "Enter" || k === " ") {
+                  e.preventDefault();
+                  toggle();
+                }
+              },
             },
             im,
             h("span", { class: "lab" }, `${img.name}${img.video?.channel ? ` · ${img.video.channel}` : ""}`),
             img.fresh ? h("span", { class: "fresh chip" }, img.fresh) : "",
-            img.video
-              ? img.video.live
-                ? h("span", { class: "fresh chip live", style: "background:rgba(255,93,108,.9);color:#fff" }, "LIVE 直播")
-                : h("span", { class: "fresh chip" }, lang() === "tc" ? "現時無直播" : "not live now")
-              : "",
+            liveChip ?? "",
           );
           im.addEventListener("error", () => {
             if (!tile.getAttribute("class")?.includes("dead")) tile.setAttribute("class", "cam dead");

@@ -9,7 +9,7 @@
 
 import { fetchSource, resolveUrl, type PanelDefRaw, type Registry, type SourceDef } from "./sources.ts";
 import { fetchUrl } from "./sources.ts";
-import { fetchDataFile } from "./sources.ts";
+import { fetchDataFile, liveDataUrl } from "./sources.ts";
 import * as P from "./parsers.ts";
 import { lang } from "./i18n.ts";
 import { liveThumb, probeLive } from "./live.ts";
@@ -238,12 +238,13 @@ const ADAPTERS: Record<string, Adapter> = {
             {
               title: prose,
               sub: tc ? "AI 生成 · 只覆述上方數字,可能有錯" : "AI-generated from the figures listed; may be wrong",
-              ok: true,
-            },
-            {
-              title: (tc ? "由 " : "by ") + (j.model ?? "?"),
-              sub: inputs,
+              // The two things a reader does not need on screen and a checker does: which model
+              // wrote it and which files it was handed. Cyrus, 2026-10-01: "users doesn't need to
+              // see this". They move to the tooltip and the link, so the claim stays traceable
+              // without turning a two-sentence brief into a build log.
+              href: liveDataUrl("data/ai_summary.json") ?? undefined,
               time: String(j.generated ?? "").replace("T", " ").slice(0, 16),
+              title: `${j.model ?? "?"} · ${inputs}`,
               ok: true,
             },
           ],

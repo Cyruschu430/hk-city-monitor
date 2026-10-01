@@ -99,7 +99,19 @@ await page.screenshot({ path: join(tmpdir(), "hkcm-layout.png") });
 // Scroll the column to the end and confirm the deferred panels actually wake up.
 // Being held back is only correct if scrolling releases them; a guard that never
 // releases reads as "fast" and shows the reader an empty panel forever.
-await page.evaluate(() => { const z = document.querySelector("#panels"); if (z) z.scrollTop = z.scrollHeight; });
+// TWO STEPS, and not for style: IntersectionObserver reports CHANGES in intersection, so one jump
+  // from the top straight to the bottom moves the middle of the column from below the fold to above
+  // it without ever being observed as intersecting - those panels keep deferred=true and never
+  // fetch, and the check reports "1 panel still deferred" while a human scrolling sees nothing
+  // wrong. Measured 2026-10-01. The app's own commit said it first: one scroll releases two panels,
+  // the next releases five.
+  await page.evaluate(() => {
+    const z = document.querySelector("#panels");
+    if (!z) return;
+    z.scrollTop = Math.round(z.scrollHeight / 2);
+  });
+  await page.waitForTimeout(700);
+  await page.evaluate(() => { const z = document.querySelector("#panels"); if (z) z.scrollTop = z.scrollHeight; });
 await page.waitForTimeout(8000);
 const deferredAfterScroll = await page.evaluate(() => Number(document.body.dataset["deferredPanels"] ?? -1));
 

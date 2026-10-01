@@ -45,6 +45,44 @@ def git(*args, cwd):
     return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, timeout=300)
 
 
+
+# Files this script does NOT produce but whose absence from the branch is a data outage for a panel.
+# THE BUG THIS EXISTS FOR (measured 2026-10-02): the push below is an ORPHAN commit, so anything not
+# in the temp repo stops existing on the branch. ai_summary.json is published by ai-brief.yml twice a
+# day, and this script runs every 10 minutes - so the city brief was deleted within ten minutes of
+# every build, and the live-data copy was 404 while aircraft/berth/water were 200. The panel fell back
+# to its committed snapshot, which is why it looked like a UI bug for two days.
+KEEP = ["ai_summary.json"]
+
+
+def carry_forward(tmp: str, files: list[str]) -> None:
+    """Copy the KEEP files from the current branch into the orphan commit before it is pushed.
+
+    A 404 is normal (the AI job has not run yet) and is skipped. Any other failure is reported and
+    skipped too, rather than blocking the aircraft update: the AI job republishes on its own
+    schedule, while a 10-minute collector that refuses to run is a live panel that goes stale.
+    """
+    have = {os.path.basename(f) for f in files}
+    for name in KEEP:
+        if name in have:
+            continue
+        try:
+            req = urllib.request.Request(f"{RAW}/{BRANCH}/{name}",
+                                         headers={"User-Agent": "hkcm-collector"})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                data = r.read()
+            with open(os.path.join(tmp, name), "wb") as fh:
+                fh.write(data)
+            print(f"KEEP  {name} carried forward from {BRANCH} ({len(data)} bytes)")
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                print(f"KEEP  {name} not on {BRANCH} yet - skipped")
+            else:
+                print(f"WARN  {name}: HTTP {e.code} - publishing without it", file=sys.stderr)
+        except Exception as e:  # noqa: BLE001 - never let a network blip stop the collector
+            print(f"WARN  {name}: {e} - publishing without it", file=sys.stderr)
+
+
 def main():
     files = sys.argv[1:] or ["data/aircraft.json", "data/berth_vacancy.json"]
     missing = [f for f in files if not os.path.exists(os.path.join(ROOT, f))]
@@ -73,6 +111,7 @@ def main():
     tmp = tempfile.mkdtemp(prefix="hkcm-live-")
     try:
         git("init", "-q", cwd=tmp)
+        carry_forward(tmp, files)
         for f in files:
             shutil.copy2(os.path.join(ROOT, f), os.path.join(tmp, os.path.basename(f)))
         with open(os.path.join(tmp, "README.md"), "w", encoding="utf-8") as fh:

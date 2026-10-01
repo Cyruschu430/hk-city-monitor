@@ -1056,7 +1056,11 @@ a:hover{color:var(--cyan)}
    is for panel KPIs; the strip keeps its own metrics. */
 .sb-row1 .stat{ padding: 0; border-bottom: 0; }
 .sb-row1 .stat-label{ font-size: 10px; }
-.sb-row1 .stat-value{ font-size: 12px; font-family: var(--font-ui); }
+/* (1,2,0) not (0,2,0). MEASURED 2026-10-01 by cascade analysis: this selector ties with
+   [data-theme="command"] .stat-value, which sets font-size:19px;font-weight:600 and sits LATER
+   in the file - equal specificity, so source order decided and the strip's values rendered 19/600
+   inside a 40px bar. That is the '太大粒' and the '走位'. #statusbar breaks the tie. */
+#statusbar .sb-row1 .stat-value{ font-size: 12px; font-family: var(--font-ui); }
 [data-theme="command"] .stat:last-child{ border-bottom: 0; }
 [data-theme="command"] .stat-label{
   font-size: 10px;

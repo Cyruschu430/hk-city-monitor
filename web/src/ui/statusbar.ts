@@ -14,7 +14,7 @@ export interface StatusBar {
   /** Fill the mode picker. Called once the registry has loaded, and again on a language
       switch: the list is DATA (verticals.json), which is the property the rail had and
       the reason this control did not need any mode names written into it. */
-  setModes(modes: { id: string; label: string }[], onMode: (id: string) => void): void;
+  setModes(modes: { id: string; label: string; title?: string }[], onMode: (id: string) => void): void;
   setTiles(via: string): void;
   /** readout for the currently active vertical's data age, if any */
   setFreshness(text: string, state: "ok" | "warn" | "bad"): void;
@@ -204,7 +204,12 @@ export function createStatusBar(root: HTMLElement): StatusBar {
     setModes(modes, onMode) {
       const was = modeEl.value;
       clear(modeEl);
-      for (const m of modes) modeEl.append(new Option(m.label, m.id, false, m.id === was));
+      for (const m of modes) {
+        const o = new Option(m.label, m.id, false, m.id === was);
+        // The vertical's own question, on the option: "颱風模式 — 會唔會掛 8 號? …".
+        if (m.title) o.title = m.title;
+        modeEl.append(o);
+      }
       modeEl.onchange = () => onMode(modeEl.value);
     },
     setTiles(via) {

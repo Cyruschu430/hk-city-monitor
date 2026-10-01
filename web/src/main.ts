@@ -646,11 +646,23 @@ async function boot(): Promise<void> {
   // Vertical labels come from the registry so a language switch relabels the picker with
   // everything else; the control is rebuilt rather than patched, because ten options is
   // cheaper to rebuild than to reconcile.
-  const modeOptions = (): { id: string; label: string }[] =>
-    registry.verticals.map((v: { id: string; label?: Record<string, string> }) => ({
-      id: v.id,
-      label: v.label?.[lang()] ?? v.id,
-    }));
+  // 總覽 is not a vertical — the rail synthesised it, and deleting the rail took the entry
+  // with it. MEASURED on the live build 2026-10-01: the picker held ten options and NOT ONE
+  // matched `currentMode()`, so it displayed the first vertical (typhoon) while the app was in
+  // 總覽. The same shape error had a second face: the field in verticals.json is `name`, not
+  // `label`, and a wrong key falls through to the id — which is why the options read
+  // "water_supply" instead of 停水模式, looking like a deliberate choice rather than a miss.
+  // Rebuilt here exactly as rail.ts built it, including the vertical's question as the title.
+  const modeOptions = (): { id: string; label: string; title?: string }[] => [
+    { id: "overview", label: lang() === "tc" ? "總覽" : "Overview" },
+    ...registry.verticals.map(
+      (v: { id: string; name?: Record<string, string>; question?: Record<string, string> }) => ({
+        id: v.id,
+        label: v.name?.[lang()] ?? v.id,
+        title: (lang() === "tc" ? v.question?.tc : v.question?.en) ?? "",
+      }),
+    ),
+  ];
   const wireModes = () => statusbar.setModes(modeOptions(), (id) => activateMode(id, true));
   wireModes();
   // The picker has to agree with the state it reports. Boot leaves `currentMode` at its default

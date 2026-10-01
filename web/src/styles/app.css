@@ -192,6 +192,13 @@ a:hover{color:var(--cyan)}
 .foot-data{margin:0;color:var(--dim)}
 .foot-note{margin:2px 0 0;color:var(--faint)}
 
+/* Road-safety copy is not list decoration. MEASURED 2026-10-01: the TD special-traffic feed
+   returned 9 messages, `params.max` was 12 and the parser's slice was 20 - neither bit - and the
+   reader still could not read them, because .plist li clamps every row to 2 lines and a diversion
+   notice is six. This panel drops the clamp; the density argument that produced it does not apply
+   to a message someone has to act on. */
+[data-panel="special_traffic_list"] .plist li{display:block;-webkit-line-clamp:8;overflow:visible}
+
 .credits{margin-left:auto;font-size:10px;color:var(--faint);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;padding-left:10px}
 .coverage{display:flex;align-items:center;gap:6px}

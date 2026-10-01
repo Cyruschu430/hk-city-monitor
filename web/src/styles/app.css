@@ -198,6 +198,11 @@ a:hover{color:var(--cyan)}
    notice is six. This panel drops the clamp; the density argument that produced it does not apply
    to a message someone has to act on. */
 [data-panel="special_traffic_list"] .plist li{display:block;-webkit-line-clamp:8;overflow:visible}
+/* Same reason as the traffic list above, and the same one-line shape: the city brief is
+   a sentence a reader has to finish, and a two-line clamp with an ellipsis truncated it
+   mid-claim. Cyrus 2026-10-02: "唔好有 ... ，唔夠就開多行". A summary nobody can read to
+   the end is worse than a taller panel. */
+[data-panel="ai_brief"] .plist li{display:block;-webkit-line-clamp:unset;overflow:visible}
 
 /* A reference that cannot be clicked away. The URL lives in the tooltip; the pointer stays an
    arrow rather than a hand, because a hand promises navigation and this does not navigate. */

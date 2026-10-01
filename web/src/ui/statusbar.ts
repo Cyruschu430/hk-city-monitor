@@ -180,10 +180,15 @@ export function createStatusBar(root: HTMLElement): StatusBar {
       h(
         "div",
         { class: "meta" },
-        freshStat,
+        // ponytail: freshStat and tilesStat are still built above and still written to
+        // (setFreshness / setTiles) — they are simply not appended any more. Cyrus
+        // 2026-10-02: seven cells in one row left "1 stale" with no room for its own
+        // label, so it rendered as a bare meaningless number. Freshness is already said
+        // per panel and again in the coverage line below, and the basemap is named by
+        // the mandatory LandsD attribution on the map face. Removing the cells from the
+        // row is the whole fix; deleting the elements would churn three callers.
         modeStat,
         camsStat,
-        tilesStat,
         stat("HKT", clockEl),
         langBox,
         themeBox,

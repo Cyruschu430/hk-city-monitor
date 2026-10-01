@@ -126,13 +126,13 @@
 }
 
 /* ============================================================================
-   "palantir" — a dense, matte, flat theme.
+   "command" — a dense, matte, flat theme.
    ============================================================================
-   Every value below is taken from Palantir's OWN open-source design system, Blueprint
-   (github.com/palantir/blueprint, Apache-2.0) — `packages/colors/src/_colors.scss` for the palette,
+   Every value below is taken from an open-source design system: Blueprint (Apache-2.0)
+   — `packages/colors/src/_colors.scss` for the palette,
    `common/_variables.scss` for the 4px spacing grid and the type scale, `common/_color-aliases.scss`
-   for the intent mapping. Palantir's Foundry Slate is built on Blueprint, so this is the real thing
-   rather than a screenshot impression of it.
+   for the intent mapping. That system is what enterprise control-room consoles are built on, so these
+   are the real values rather than a screenshot impression of them.
 
    WHY IT IS A SEPARATE THEME AND NOT A REPLACEMENT. The dark theme is glass and glow — translucent
    panels, backdrop blur, big soft shadows, a bright cyan accent. This one is the OPPOSITE material:
@@ -141,12 +141,12 @@
    up the other, and `[data-theme]` already existed, so this costs one block rather than a migration.
 
    THE ACCENTS ARE DELIBERATELY DULLER. --cyan becomes Blueprint's $blue3 (#2d72d2) rather than
-   #22d3ee. That is not a compromise, it is the whole point: Palantir encodes severity in the DATA and
+   #22d3ee. That is not a compromise, it is the whole point: the system encodes severity in the DATA and
    keeps the chrome neutral, so a bright chrome accent competes with the thing the reader is looking
    for. Signal colours keep their meaning (red stays critical and red stays "up" under the HK market
    convention) — see `--mkt-up` / `--mkt-down`, which are not touched here.
    ========================================================================== */
-[data-theme="palantir"]{
+[data-theme="command"]{
   color-scheme: dark;
 
   /* surfaces — opaque, and that is the material change. $black and $dark-gray1/3. */

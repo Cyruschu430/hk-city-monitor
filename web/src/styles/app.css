@@ -152,6 +152,12 @@ a:hover{color:var(--cyan)}
 .lyr-shown{flex:0 0 auto;font-family:var(--font-mono);font-size:10px;color:var(--map-face-weak);
   min-width:26px;text-align:right}
 .lyr-empty{padding:6px 9px 8px;font-size:11px;color:var(--map-face-weak)}
+/* Credits: authorship, at the far end of the coverage line. Dimmer than the coverage
+   text it shares a row with, because coverage is a claim about the data and this is not. */
+.credits{margin-left:auto;font-size:10px;color:var(--faint);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;padding-left:10px}
+.coverage{display:flex;align-items:center;gap:6px}
+@media (max-width:900px){ .credits{display:none} }
 .lyr-item{display:flex;flex-direction:column}
 .lyr-line{display:flex;align-items:center;gap:2px}
 .lyr-row{display:flex;align-items:center;gap:7px;flex:1 1 auto;min-width:0;
@@ -893,13 +899,13 @@ a:hover{color:var(--cyan)}
 }
 
 /* ============================================================================
-   COMPONENT LAYER — "palantir".
+   COMPONENT LAYER — "command".
    ============================================================================
-   Everything here is scoped to the palantir theme, so no rule in this block can
+   Everything here is scoped to the command theme, so no rule in this block can
    reach the glass theme or the light theme. That is deliberate: this is a whole
    component pass, and an unscoped one would be a redesign of the app by accident.
 
-   WHAT ACTUALLY MAKES IT READ AS PALANTIR — and none of it is colour:
+   WHAT ACTUALLY MAKES IT READ AS A CONTROL-ROOM CONSOLE — and none of it is colour:
 
    1. DENSITY. Blueprint's spacing unit is 4px ($pt-spacing) and its base font is
       14px. Padding is a multiple of 4 and rows are closer together. Density is
@@ -936,45 +942,56 @@ a:hover{color:var(--cyan)}
    `content-visibility` buys the frame time; it does not buy the requests. */
 .panel{content-visibility:auto;contain-intrinsic-size:auto 220px}
 
-[data-theme="palantir"] .panel{
+[data-theme="command"] .panel{
   background: var(--panel);
   backdrop-filter: none;
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
   box-shadow: none;
 }
-[data-theme="palantir"] .panel-head{
+[data-theme="command"] .panel-head{
   padding: 5px 10px;
   background: rgba(255,255,255,.028);
   border-bottom: 1px solid var(--hairline);
 }
-[data-theme="palantir"] .panel-head h2{
+[data-theme="command"] .panel-head h2{
   font-size: 11px;
   letter-spacing: .09em;
   text-transform: uppercase;
   color: var(--dim);
   font-weight: 600;
 }
-[data-theme="palantir"] .panel-body{ padding: 8px 10px; }
-[data-theme="palantir"] .panel-foot{
+[data-theme="command"] .panel-body{ padding: 8px 10px; }
+[data-theme="command"] .panel-foot{
   padding: 5px 10px 6px;
   border-top: 1px solid var(--hairline);
   font-size: 11px;
 }
-[data-theme="palantir"] .panel-foot time,
-[data-theme="palantir"] .panel-foot .src{ font-family: var(--font-mono); }
-[data-theme="palantir"] .panel.flash{ animation: none; }   /* no glow */
+[data-theme="command"] .panel-foot time,
+[data-theme="command"] .panel-foot .src{ font-family: var(--font-mono); }
+[data-theme="command"] .panel.flash{ animation: none; }   /* no glow */
 
 /* ---- stats: the KPI unit --------------------------------------------------- */
-[data-theme="palantir"] .stat{ padding: 4px 0; border-bottom: 1px solid var(--hairline); }
-[data-theme="palantir"] .stat:last-child{ border-bottom: 0; }
-[data-theme="palantir"] .stat-label{
+[data-theme="command"] .stat{
+  padding: 4px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+/* THE STATUS BAR IS NOT A PANEL. MEASURED 2026-10-01 (Cyrus: "header 有堆字走位, 大左"):
+   the KPI rules below are shared by `.stat` / `.stat-value`, and the top strip uses the
+   same classes — so a 19px mono value with a 10px letter-spaced label landed inside a 40px
+   bar, pushed the row's cells over each other and read as broken chrome. The density pass
+   is for panel KPIs; the strip keeps its own metrics. */
+.sb-row1 .stat{ padding: 0; border-bottom: 0; }
+.sb-row1 .stat-label{ font-size: 10px; }
+.sb-row1 .stat-value{ font-size: 12px; font-family: var(--font-ui); }
+[data-theme="command"] .stat:last-child{ border-bottom: 0; }
+[data-theme="command"] .stat-label{
   font-size: 10px;
   letter-spacing: .1em;
   text-transform: uppercase;
   color: var(--faint);
 }
-[data-theme="palantir"] .stat-value{
+[data-theme="command"] .stat-value{
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-size: 19px;
@@ -984,12 +1001,12 @@ a:hover{color:var(--cyan)}
 }
 
 /* ---- lists and tables: aligned columns ------------------------------------- */
-[data-theme="palantir"] .plist > *{ border-bottom: 1px solid var(--hairline); }
-[data-theme="palantir"] .plist > *:last-child{ border-bottom: 0; }
-[data-theme="palantir"] .plist > *:hover,
-[data-theme="palantir"] .ptable tbody tr:hover{ background: rgba(255,255,255,.04); }
-[data-theme="palantir"] .ptable{ font-size: 12px; }
-[data-theme="palantir"] .ptable th{
+[data-theme="command"] .plist > *{ border-bottom: 1px solid var(--hairline); }
+[data-theme="command"] .plist > *:last-child{ border-bottom: 0; }
+[data-theme="command"] .plist > *:hover,
+[data-theme="command"] .ptable tbody tr:hover{ background: rgba(255,255,255,.04); }
+[data-theme="command"] .ptable{ font-size: 12px; }
+[data-theme="command"] .ptable th{
   font-size: 10px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -999,70 +1016,70 @@ a:hover{color:var(--cyan)}
   text-align: left;
   padding: 4px 6px;
 }
-[data-theme="palantir"] .ptable td{
+[data-theme="command"] .ptable td{
   padding: 4px 6px;
   border-bottom: 1px solid var(--hairline);
   font-variant-numeric: tabular-nums;
 }
 /* Right-align a column by putting a `num` class on the cell — numbers are compared
    down the column, and left-aligned figures cannot be compared at a glance. */
-[data-theme="palantir"] .ptable td.num,
-[data-theme="palantir"] .ptable th.num{ text-align: right; font-family: var(--font-mono); }
+[data-theme="command"] .ptable td.num,
+[data-theme="command"] .ptable th.num{ text-align: right; font-family: var(--font-mono); }
 
 /* ---- key/value: the attribute grid ----------------------------------------- */
-[data-theme="palantir"] .kv{
+[data-theme="command"] .kv{
   display: grid;
   grid-template-columns: minmax(72px,auto) 1fr;
   gap: 3px 10px;
   font-size: 12px;
 }
-[data-theme="palantir"] .kv > :nth-child(odd){
+[data-theme="command"] .kv > :nth-child(odd){
   font-size: 10px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--faint);
   align-self: center;
 }
-[data-theme="palantir"] .kv > :nth-child(even){ font-family: var(--font-mono); }
+[data-theme="command"] .kv > :nth-child(even){ font-family: var(--font-mono); }
 
 /* ---- the rail: active is a BAR, not a glow --------------------------------- */
-[data-theme="palantir"] .rail-btn{
+[data-theme="command"] .rail-btn{
   border-radius: var(--radius);
   box-shadow: none;
   border-left: 2px solid transparent;
 }
-[data-theme="palantir"] .rail-btn[aria-pressed="true"]{
+[data-theme="command"] .rail-btn[aria-pressed="true"]{
   border-left-color: var(--cyan);
   background: rgba(45,114,210,.14);
   box-shadow: none;
 }
-[data-theme="palantir"] .rail-btn:hover{ background: rgba(255,255,255,.05); }
+[data-theme="command"] .rail-btn:hover{ background: rgba(255,255,255,.05); }
 
 /* ---- layer rows: square boxes, mono counts --------------------------------- */
-[data-theme="palantir"] .lyr-box{ border-radius: 2px; }
-[data-theme="palantir"] .lyr-count,
-[data-theme="palantir"] .lyr-key-n{
+[data-theme="command"] .lyr-box{ border-radius: 2px; }
+[data-theme="command"] .lyr-count,
+[data-theme="command"] .lyr-key-n{
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
-[data-theme="palantir"] .lyr-row{ border-left: 2px solid transparent; }
-[data-theme="palantir"] .lyr-row[aria-checked="true"]{ border-left-color: var(--cyan); }
+[data-theme="command"] .lyr-row{ border-left: 2px solid transparent; }
+[data-theme="command"] .lyr-row[aria-checked="true"]{ border-left-color: var(--cyan); }
 
 /* ---- chips and tabs: square, no pill --------------------------------------- */
-[data-theme="palantir"] .chip,
-[data-theme="palantir"] .ptab{
+[data-theme="command"] .chip,
+[data-theme="command"] .ptab{
   border-radius: 2px;
   box-shadow: none;
 }
-[data-theme="palantir"] .ptab[aria-selected="true"],
-[data-theme="palantir"] .chip[aria-pressed="true"]{
+[data-theme="command"] .ptab[aria-selected="true"],
+[data-theme="command"] .chip[aria-pressed="true"]{
   background: rgba(45,114,210,.18);
   border-color: var(--cyan);
 }
 
 /* ---- ticker: denser, and the tag is a micro-label --------------------------- */
-[data-theme="palantir"] .ticker-tag,
-[data-theme="palantir"] .tk-cat{
+[data-theme="command"] .ticker-tag,
+[data-theme="command"] .tk-cat{
   font-size: 10px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -1070,30 +1087,30 @@ a:hover{color:var(--cyan)}
 }
 
 /* ---- popups: a dense attribute card, not a card ---------------------------- */
-[data-theme="palantir"] .maplibregl-popup-content,
-[data-theme="palantir"] .attr-popupup,
-[data-theme="palantir"] .attr-popup{
+[data-theme="command"] .maplibregl-popup-content,
+[data-theme="command"] .attr-popupup,
+[data-theme="command"] .attr-popup{
   border-radius: 2px;
   box-shadow: 0 6px 20px -10px rgba(0,0,0,.9);
   border: 1px solid var(--hairline-hi);
 }
-[data-theme="palantir"] .attr-k,
-[data-theme="palantir"] .attr-coords{
+[data-theme="command"] .attr-k,
+[data-theme="command"] .attr-coords{
   font-size: 10px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--faint);
 }
-[data-theme="palantir"] .attr-v{ font-family: var(--font-mono); }
+[data-theme="command"] .attr-v{ font-family: var(--font-mono); }
 
 /* ---- the command palette ---------------------------------------------------- */
-[data-theme="palantir"] .palette{ border-radius: var(--radius); box-shadow: 0 24px 60px -24px #000; }
-[data-theme="palantir"] .palette-item{ border-radius: 2px; }
-[data-theme="palantir"] .palette-item[aria-selected="true"]{
+[data-theme="command"] .palette{ border-radius: var(--radius); box-shadow: 0 24px 60px -24px #000; }
+[data-theme="command"] .palette-item{ border-radius: 2px; }
+[data-theme="command"] .palette-item[aria-selected="true"]{
   background: rgba(45,114,210,.2);
   box-shadow: none;
 }
-[data-theme="palantir"] .palette-kind{
+[data-theme="command"] .palette-kind{
   font-size: 10px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -1101,5 +1118,5 @@ a:hover{color:var(--cyan)}
 }
 
 /* ---- camera tiles ---------------------------------------------------------- */
-[data-theme="palantir"] .cam,
-[data-theme="palantir"] .live-frame{ border-radius: 2px; }
+[data-theme="command"] .cam,
+[data-theme="command"] .live-frame{ border-radius: 2px; }

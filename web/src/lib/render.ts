@@ -412,8 +412,8 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
               return;
             }
             const frame = document.createElement("iframe");
-            frame.src = `https://www.youtube.com/embed/${img.video.id}?autoplay=1&mute=1&playsinline=1`;
-            frame.allow = "autoplay; encrypted-media; picture-in-picture";
+            frame.src = `https://www.youtube.com/embed/${img.video.id}?autoplay=1&mute=1&playsinline=1&controls=1&fs=1`;
+            frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
             frame.title = img.name;
             // prepend, not append: the label and the badge must stay clickable on top
             tile.prepend(frame);

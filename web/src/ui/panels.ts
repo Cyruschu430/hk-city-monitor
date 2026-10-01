@@ -270,7 +270,16 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
   // is the reader's preference, not the vertical's. Stored as a flat list of ids, so a
   // stale entry for a panel that no longer exists is inert and a new panel simply has no
   // index yet (it keeps its configured position, after the ids the reader has placed).
-  const ORDER_KEY = "hkcm.panelsOrder";
+  // BUMPED 2026-10-01 when ai_brief was added. MEASURED, and it took Cyrus telling me twice:
+  // the panel was rendering - the DOM held 19 panels, one more than before - and he could not
+  // see it, because a stored order that predates a panel has no position for it, so the engine
+  // appended it to the END of the column, below the fold. check:layout could not catch this: it
+  // runs in a fresh profile with no stored order. A version suffix is the whole migration.
+  //
+  // Bump this whenever a panel is ADDED to the set. Anyone who has dragged a panel keeps their
+  // arrangement within a version; the arrangement itself is cheap to redo, and a new panel that
+  // nobody can find is not.
+  const ORDER_KEY = "hkcm.panelsOrder.v2";
   const userOrder: string[] = ((): string[] => {
     try {
       const raw = localStorage.getItem(ORDER_KEY);

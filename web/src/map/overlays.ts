@@ -861,9 +861,13 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
   // labels are ours and the values are theirs, verbatim. Translating a regulator's zone name
   // would invent an official name that does not exist; a reader has to be able to match what they
   // see here against the eSUA notice. The last line says so rather than leaving it to be guessed.
+  // Cyrus 2026-10-02: the note used to read 「以上為民航處原文（英文）」 — true, and useless:
+  // it tells the reader that something above is in English without saying which fields, or which
+  // publication to open if they want to check it. Naming the notice is the whole fix; the
+  // English half stays as it was, because it already said it.
   const T = lang() === "tc"
-    ? { eff: "生效", by: "指定機構", note: "以上為民航處原文（英文）" }
-    : { eff: "Effective", by: "Designated by", note: "Verbatim from the CAD dataset" };
+    ? { eff: "生效", by: "指定機構", note: "名稱及日期取自民航處 eSUA 公告，未經翻譯" }
+    : { eff: "Effective", by: "Designated by", note: "Names and dates verbatim from the CAD eSUA notice" };
   const esc = (s: unknown) =>
     String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
 

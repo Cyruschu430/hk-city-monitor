@@ -355,6 +355,7 @@ a:hover{color:var(--cyan)}
 .coverage[data-health="bad"] .cover-dot{background:var(--alert)}
 .coverage[data-health="bad"] .cover-text{color:var(--amber)}
 .cover-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-icon{width:26px;height:26px;border-radius:7px;flex:0 0 auto}
 /* discrete instrument readouts: label above value, hairline separated */
 .stat{display:flex;flex-direction:column;gap:1px;padding:0 11px;line-height:1.15;
   border-left:1px solid var(--hairline)}

@@ -176,7 +176,7 @@ export function createStatusBar(root: HTMLElement): StatusBar {
     h(
       "div",
       { class: "sb-row1" },
-      h("div", { class: "brand" }, pulse, h("h1", {}, "HK CITY MONITOR"), h("span", { class: "sub" }, "香港城市監察")),
+      h("div", { class: "brand" }, pulse, h("img", { class: "brand-icon", src: "/icon-192.png", alt: "" }), h("h1", {}, "HK CITY MONITOR"), h("span", { class: "sub" }, "香港城市監察")),
       h(
         "div",
         { class: "meta" },

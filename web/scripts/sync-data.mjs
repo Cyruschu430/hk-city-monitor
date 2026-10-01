@@ -277,10 +277,19 @@ const style = {
       // (#ff5d6c / #f59e0b / #22d3ee) are the only saturated things on screen
       // — the World Monitor property this pass is chasing.
       paint: {
-        "raster-opacity": 0.3,
-        "raster-brightness-max": 0.35,
-        "raster-contrast": 0.3,
-        "raster-saturation": -0.6,
+        // LIGHTENED 2026-10-02 on Cyrus's verdict on the live site: "地政個 Map 有啲暗太過黑".
+        // The earlier treatment (opacity 0.3, brightness-max 0.35, saturation -0.6, luma ~35) was
+        // measured against a dark console, but a basemap at luma 35 is a black rectangle with
+        // roads on it: the labels and the coastline the map exists to show are what got crushed.
+        // Opacity does most of the work here - at 0.3 the tiles were composited over a near-black
+        // face, so no paint value above them could have made the map readable.
+        // ponytail: these are the first pass from the complaint, not a measured curve. Run
+        // `node scripts/measure-basemap-luma.mjs` and move them one at a time if it still reads
+        // wrong - the old comment block records which knob moved luma the most.
+        "raster-opacity": 0.72,
+        "raster-brightness-max": 0.62,
+        "raster-contrast": 0.12,
+        "raster-saturation": -0.35,
       },
     },
     {

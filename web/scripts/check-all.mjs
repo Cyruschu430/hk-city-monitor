@@ -32,6 +32,7 @@ const STEPS = [
   { name: "carpark", cmd: "node", args: ["scripts/verify-carpark.mjs"] },
   { name: "layers", cmd: "node", args: ["scripts/check-layers.mjs"] },
   { name: "livewall  (inline player)", cmd: "node", args: ["scripts/check-livewall.mjs"] },
+  { name: "shell     (header, footer, placard, key)", cmd: "node", args: ["scripts/check-shell.mjs"] },
   { name: "quota", cmd: "node", args: ["scripts/check-quota.mjs"] },
 ];
 

@@ -45,9 +45,21 @@ URL = "https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv"
 UA = {"User-Agent": "hk-city-monitor/0.2 (+open data client; github.com/Cyruschu430/hk-city-monitor)"}
 HKT = timezone(timedelta(hours=8))
 
-# The measured fact above, encoded: this host is only reachable from a client
-# whose TLS stack still permits static-RSA suites.
-LEGACY_CIPHERS = "DEFAULT@SECLEVEL=1"
+# The measured fact above, encoded: this host only completes a handshake with a
+# client that still permits static-RSA suites.
+#
+# WHY SECLEVEL 0 AND NOT 1 (corrected 2026-10-01). OpenSSL 3 refuses static-RSA
+# key exchange at every security level of 1 or above, so "DEFAULT@SECLEVEL=1" —
+# which this file carried until today — was a no-op: Python's own default already
+# sits at level 2 on most images, and lowering it to 1 changes nothing about RSA
+# key exchange. The failure it produced was an SSLV3_ALERT_HANDSHAKE_FAILURE that
+# read like the host being unreachable, which is how "only a Windows client can
+# fetch WSD" got written down as a hard constraint. It is not one.
+#
+# MEASURED 2026-10-01, same URL, same minute: default context -> handshake failure;
+# "AES128-SHA:@SECLEVEL=0" -> HTTP 200 in 0.3s and a SUSPENSION_ID|... CSV, from
+# **Linux**. The protocol is the constraint; the operating system never was.
+LEGACY_CIPHERS = "AES128-SHA:@SECLEVEL=0"
 
 COLUMNS = [
     "SUSPENSION_ID", "WATER_TYPE_DESCRIPTION", "WATER_TYPE_DESCRIPTION_ZHT",

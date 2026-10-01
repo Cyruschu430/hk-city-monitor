@@ -1,27 +1,33 @@
 # live-publish.yml — keep the three live files current without a machine of our own.
 #
-# WHY WINDOWS AND NOT LINUX. esd.wsd.gov.hk negotiates static-RSA TLS, which Python's
-# OpenSSL on Linux and Cloudflare's BoringSSL both refuse to speak; the Windows TLS stack
-# accepts it. That one source is the only reason this job is not `ubuntu-latest`.
-# MEASURED 2026-10-01: the same URL fails with URLError from the VPS and with a TLS error
-# from the Worker, and succeeds from a Windows box.
+# WHY THIS IS UBUNTU AND NOT WINDOWS. It was written as `windows-latest` on 2026-10-01
+# because esd.wsd.gov.hk only completes a handshake with a client that still permits
+# static-RSA suites, and "a Windows client" was the only one known to do it. The first run
+# failed its TLS step with SSLV3_ALERT_HANDSHAKE_FAILURE — Python uses OpenSSL on Windows
+# too, so the operating system was never the variable. The variable is the *cipher policy*:
+# scripts/build_water_suspension.py asked for "DEFAULT@SECLEVEL=1", and OpenSSL 3 refuses
+# static-RSA key exchange at level 1 and above, so the setting did nothing. With
+# "AES128-SHA:@SECLEVEL=0" the same URL answers 200 in 0.3s **from Linux**.
 #
-# WHY THE FIRST STEP FETCHES THAT URL ANYWAY. If a future runner image drops the legacy
-# cipher, every collector below would fail while the schedule stayed green and the three
-# panels would sit amber forever. Fail loudly on the run that first notices it.
+# WHY THE FIRST STEP FETCHES THAT URL THROUGH THE COLLECTOR'S OWN CODE. A collector that
+# cannot reach its host still writes the previous reading, and publish_live.py then pushes it
+# successfully — a green run over a stale panel, which is the failure this whole file exists
+# to prevent. Importing fetch() means the assertion uses the same cipher string the collector
+# will, so a runner image that drops that suite fails the run instead of hiding in the logs.
 #
-# WHY THE WHOLE CYCLE AND NOT ONE COLLECTOR PER JOB. The three files share one publish
-# step, and a publish that runs before its collector has written anything just re-pushes
-# the previous reading — work that looks like freshness. One pass keeps the published set
-# and the collected set the same age (see scripts/live_cycle.sh).
+# WHY THE WHOLE CYCLE AND NOT ONE COLLECTOR PER JOB. The three files share one publish step,
+# and a publish that runs before its collector has written anything just re-pushes the
+# previous reading — work that looks like freshness. One pass keeps the published set and the
+# collected set the same age (see scripts/live_cycle.sh).
 #
-# NO SECRET IS NEEDED. GITHUB_TOKEN is the repo's own; publish_live.py takes its remote
-# from HKCM_REMOTE, so the same script runs on a VPS with an SSH key and here with a token.
+# NO SECRET IS NEEDED. GITHUB_TOKEN is the repo's own; publish_live.py takes its remote from
+# HKCM_REMOTE, so the same script runs on a VPS with an SSH key and here with a token.
 #
-# WHY */10 AND NOT */5. GitHub's cron floor is 5 minutes, but scheduled runs are delayed
-# under load — MEASURED 2026-07: +49 to +216 minutes on a weekly job. A 10-minute schedule
-# is honest about landing somewhere between 10 and 25 minutes; the panels carry the
-# publisher's own timestamp and degrade to amber on their own when a window is missed.
+# WHY */10 AND NOT */5. GitHub's cron floor is 5 minutes, but scheduled runs are delayed under
+# load — MEASURED 2026-07: +49 to +216 minutes on a weekly job. A 10-minute schedule is honest
+# about landing somewhere between 10 and 25 minutes; the panels carry the publisher's own
+# timestamp and go amber by themselves when a window is missed, so a delay reads as stale data
+# rather than as live data.
 name: live-publish
 
 on:
@@ -38,19 +44,16 @@ concurrency:
 
 jobs:
   publish:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
-      PYTHON: python       # live_cycle.sh defaults to python3, absent in this shell
       HKCM_REMOTE: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Cyruschu430/hk-city-monitor.git
     steps:
       - uses: actions/checkout@v4
 
-      - name: WSD's legacy TLS is still negotiable from this runner
-        shell: bash
+      - name: WSD still answers through the collector's own fetch()
         run: |
-          python -c "import urllib.request; r=urllib.request.urlopen('https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv', timeout=90); print('wsd bytes:', len(r.read(200)))"
+          python3 -c "import sys; sys.path.insert(0, 'scripts'); import build_water_suspension as w; s = w.fetch(); print('wsd csv chars:', len(s)); assert 'SUSPENSION_ID' in s[:200], 'not the WSD CSV'"
 
       - name: One pass — collect the three live files, then publish them
-        shell: bash
         run: sh scripts/live_cycle.sh

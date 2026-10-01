@@ -173,8 +173,12 @@ a:hover{color:var(--cyan)}
 /* Credits: authorship, at the far end of the coverage line. Dimmer than the coverage
    text it shares a row with, because coverage is a claim about the data and this is not. */
 /* The footer closes the panel column rather than floating over the map: it is read once, and a
-   fixed strip would cost map height on every screen. Two lines of prose and one row of links. */
-.app-foot{border-top:1px solid var(--hairline);padding:8px 11px 10px;background:var(--surface);
+   fixed strip would cost map height on every screen. Two lines of prose and one row of links.
+   `--surface` does not exist in tokens.css - the first version of this rule used it, and an
+   undefined custom property is SILENTLY invalid (the declaration falls back to `inherit`, no tool
+   complains, and check:static is the only thing that noticed). It is --surface-grad here, the same
+   token #panelCol uses. */
+.app-foot{border-top:1px solid var(--hairline);padding:8px 11px 10px;background:var(--surface-grad);
   font-size:11px;line-height:1.45;color:var(--dim)}
 .foot-row{display:flex;align-items:center;gap:10px;margin-bottom:3px;flex-wrap:wrap}
 .foot-author{color:var(--txt);font-family:var(--font-ui)}

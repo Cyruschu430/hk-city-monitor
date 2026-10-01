@@ -200,7 +200,7 @@ async function boot(): Promise<void> {
   });
   map.on("mouseleave", () => (coordsEl.textContent = ""));
 
-  const banner = h("div", { class: "panel", style: "position:absolute;left:12px;top:12px;max-width:420px;display:none" });
+  const banner = h("div", { class: "panel", style: "position:absolute;left:12px;top:64px;max-width:420px;display:none" });
   hudEl.append(banner);
 
   // LAYERS control — replaces the old passive legend. Same registry, so a row

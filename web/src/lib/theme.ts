@@ -10,10 +10,10 @@
 // the surfaces flip while the semantics stay put; the accents are darkened
 // because #22d3ee on white is unreadable as text.
 
-export type Theme = "system" | "light" | "dark" | "palantir";
+export type Theme = "system" | "light" | "dark" | "command";
 /** What actually lands on `<html data-theme>`. `system` resolves to one of the two natives; the
     named themes pass straight through, which is why this is not just "light" | "dark". */
-export type ResolvedTheme = "light" | "dark" | "palantir";
+export type ResolvedTheme = "light" | "dark" | "command";
 
 const KEY = "hkcm.theme";
 const listeners = new Set<(t: Theme) => void>();
@@ -21,7 +21,12 @@ const listeners = new Set<(t: Theme) => void>();
 function read(): Theme {
   try {
     const v = localStorage.getItem(KEY);
-    if (v === "system" || v === "light" || v === "dark" || v === "palantir") return v;
+    // The fourth theme was renamed from a vendor's name on 2026-10-01 — a style named
+    // after a company reads as an endorsement, and this is a public repo. Anyone who
+    // had picked it keeps it; the old value is migrated rather than silently dropped
+    // back to System, which would look like a bug to the one person it affects.
+    if (v === "palantir") return "command";
+    if (v === "system" || v === "light" || v === "dark" || v === "command") return v;
   } catch {
     /* private mode — fall through to the default */
   }

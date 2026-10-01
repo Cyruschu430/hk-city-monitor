@@ -44,8 +44,8 @@ export function createDrawer(root: HTMLElement): Drawer {
         // the screen is not blasting sound at boot; the user unmutes.
         const frame = h("div", { class: "live-frame" });
         const iframe = document.createElement("iframe");
-        iframe.src = `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=1&playsinline=1`;
-        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+        iframe.src = `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=1&playsinline=1&controls=1&fs=1`;
+        iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
         iframe.title = v.title;
         frame.append(iframe);
         body = frame;

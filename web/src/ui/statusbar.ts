@@ -64,28 +64,41 @@ export function createStatusBar(root: HTMLElement): StatusBar {
   };
   syncPressed();
 
-  // Theme switch — the same pill, one row up from the language switch it sits
-  // beside. Labels ARE translated (unlike 繁中/EN, which are language names and
-  // conventionally written in their own language).
+  // ONE theme button, not four (Cyrus 2026-10-01: "改成一個THEME BUTTON比USER自己change").
+  // Four pills spent 40px of a 40px strip on a control a reader touches twice in a
+  // session, and they read as four unrelated switches rather than one choice with four
+  // values. The button now shows the CURRENT theme and cycles on click, which keeps the
+  // answer ("what theme am I on?") on the control instead of in whichever pill happens
+  // to look pressed.
+  //
+  // The fourth theme is called 指揮 / Command. It was labelled with the name of the design
+  // system's vendor — a style named after a company reads as an endorsement on a public
+  // repo, so the visible string is generic now while the token values keep their citation
+  // in tokens.css.
+  const THEME_ORDER: Theme[] = ["system", "light", "dark", "command"];
   const THEME_LABELS: Record<Theme, { tc: string; en: string }> = {
     system: { tc: "自動", en: "Auto" },
     light: { tc: "淺色", en: "Light" },
     dark: { tc: "深色", en: "Dark" },
-    palantir: { tc: "指揮", en: "Palantir" },
+    command: { tc: "指揮", en: "Command" },
   };
   const themeBox = h("div", { id: "themeSwitch", role: "group", "aria-label": "theme" });
-  const themeButtons = new Map<Theme, HTMLElement>();
-  for (const code of ["system", "light", "dark", "palantir"] as Theme[]) {
-    const b = h("button", { type: "button", onclick: () => setTheme(code) }, "");
-    themeButtons.set(code, b);
-    themeBox.append(b);
-  }
+  const themeBtn = h("button", {
+    type: "button",
+    onclick: () => {
+      const at = THEME_ORDER.indexOf(theme());
+      const next = THEME_ORDER[(at + 1) % THEME_ORDER.length]!;
+      setTheme(next);
+    },
+  });
+  themeBox.append(themeBtn);
   const syncTheme = () => {
     const tc = lang() === "tc";
-    for (const [code, b] of themeButtons) {
-      b.textContent = tc ? THEME_LABELS[code].tc : THEME_LABELS[code].en;
-      b.setAttribute("aria-pressed", String(theme() === code));
-    }
+    const name = THEME_LABELS[theme()][tc ? "tc" : "en"];
+    themeBtn.textContent = lang() === "tc" ? `主題：${name}` : `Theme: ${name}`;
+    themeBtn.title = tc
+      ? `而家係「${name}」— 撳一下換下一個`
+      : `Currently ${name} — click for the next theme`;
   };
   syncTheme();
   onThemeChange(syncTheme);
@@ -126,8 +139,18 @@ export function createStatusBar(root: HTMLElement): StatusBar {
   // IS this project's honesty principle, but worn as chrome instead of hidden
   // in a panel corner. We have a large catalog and only a slice of it surfaced
   // at any moment — not saying so would be the misleading option.
+  //
+  // The credits sit at the far end of the same line (Cyrus 2026-10-01: "Header Footer
+  // 加返我自己既personal branding - credits"). It is authorship, not a data claim, so it
+  // belongs with the chrome rather than in a panel — and the line it joins is already the
+  // one that says where everything else came from.
   const coverEl = h("span", { class: "cover-text" });
-  const coverWrap = h("div", { class: "coverage", title: "" }, h("span", { class: "cover-dot" }), coverEl);
+  const creditsEl = h(
+    "span",
+    { class: "credits", title: lang() === "tc" ? "作者" : "Author" },
+    lang() === "tc" ? "由 Cyrus Chu 建立 · 資料 © 各發布者" : "Built by Cyrus Chu · data © the publishers",
+  );
+  const coverWrap = h("div", { class: "coverage", title: "" }, h("span", { class: "cover-dot" }), coverEl, creditsEl);
 
   root.append(
     h(

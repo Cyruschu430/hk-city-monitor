@@ -25,10 +25,16 @@ const T = {
   built: { tc: "決定性規則引擎 · 零追蹤 · 零 cookie", en: "Deterministic rule engine · no tracking · no cookies" },
 };
 
-export function createFooter(root: HTMLElement): void {
+export function createFooter(parent: HTMLElement): void {
+  // APPEND, never replaceChildren: `parent` is `#panelCol`, a LIVE container whose children
+  // (#panelTabs, #panels, #panelRestore) are built elsewhere. The first version of this function
+  // called `parent.replaceChildren(...)` and wiped all three - boot died with "Cannot read
+  // properties of null (reading 'replaceChildren')" inside setTabs, 4 checks went to a readiness
+  // timeout, and the cause was a footer. A component that takes a container must add to it.
+  const foot = h("footer", { class: "app-foot" });
   const build = () => {
     const tc = lang() === "tc";
-    root.replaceChildren(
+    foot.replaceChildren(
       h(
         "footer",
         { class: "app-foot" },
@@ -46,4 +52,5 @@ export function createFooter(root: HTMLElement): void {
   };
   build();
   onLangChange(build);
+  parent.append(foot);
 }

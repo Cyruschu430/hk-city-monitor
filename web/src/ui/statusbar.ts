@@ -156,9 +156,18 @@ export function createStatusBar(root: HTMLElement): StatusBar {
   // belongs with the chrome rather than in a panel — and the line it joins is already the
   // one that says where everything else came from.
   const coverEl = h("span", { class: "cover-text" });
+  // The coverage line ends with the author and a link to the source. Cyrus asked for his GitHub
+  // here specifically (2026-10-01) — this project is his portfolio, and a reader who wants to
+  // check a claim should not have to guess where the code is.
   const creditsEl = h(
-    "span",
-    { class: "credits", title: lang() === "tc" ? "作者" : "Author" },
+    "a",
+    {
+      class: "credits",
+      href: "https://github.com/Cyruschu430/hk-city-monitor",
+      target: "_blank",
+      rel: "noopener noreferrer",
+      title: lang() === "tc" ? "作者 · GitHub" : "Author · GitHub",
+    },
     lang() === "tc" ? "由 Cyrus Chu 建立 · 資料 © 各發布者" : "Built by Cyrus Chu · data © the publishers",
   );
   const coverWrap = h("div", { class: "coverage", title: "" }, h("span", { class: "cover-dot" }), coverEl, creditsEl);

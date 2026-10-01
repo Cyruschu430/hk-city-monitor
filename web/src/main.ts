@@ -28,6 +28,7 @@ import { analyse } from "./lib/analytics/index.ts";
 import { emptyStore, BASELINE_VERSION, type BaselineStore } from "./lib/analytics/baseline.ts";
 import type { RuleDef } from "./lib/analytics/rules.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
+import { createFooter } from "./ui/footer.ts";
 import { createMapHead, relabelMapHead } from "./ui/maphead.ts";
 import { createTicker } from "./ui/ticker.ts";
 import { createPalette } from "./ui/palette.ts";
@@ -159,6 +160,9 @@ async function boot(): Promise<void> {
   });
   const tickerEl = document.getElementById("ticker")!;
   const panelsEl = document.getElementById("panels")!;
+  // The footer closes the panel column: authorship, licence, and the publishers this is built
+  // on. Wording is Cyrus's call — see footer.ts for why it credits rather than disclaims.
+  createFooter(document.getElementById("panelCol")!);
   const mapEl = document.getElementById("map")!;
   const hudEl = document.getElementById("mapHud")!;
   const drawerEl = document.getElementById("drawer")!;

@@ -38,10 +38,12 @@ import { createGroupTabs, labelFor, type GroupTab } from "./ui/grouptabs.ts";
 /** The vertical-free default view. Ordered as a World-Monitor-style dense
     wall: imagery heads the column, then life-safety and civic reads. */
 const OVERVIEW = [
+  // FIRST because it is the only panel that speaks: a free model reading the published
+  // figures back in two sentences. Cyrus asked for it on top and the anomaly panel gone.
+  "ai_brief",
   // The conclusion panel goes FIRST: it is the only surface that answers "so what", and every
   // other panel is evidence for it. It is FED rather than fetched (see FED_PANEL_IDS in
   // ui/panels.ts) because it is drawn FROM the other panels, not from a source.
-  "analysis_brief",
   // RESTORED 2026-09-27 with the PC collector. A city with the world's busiest cargo airport on its
   // doorstep should say what is overhead without being asked.
   "aircraft_status",

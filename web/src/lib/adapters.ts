@@ -207,27 +207,54 @@ const ADAPTERS: Record<string, Adapter> = {
   // snapshot as the fallback - so the panel's timestamp is the model's own generation time and
   // its age is readable rather than implied. Two lines on purpose: the prose, then who wrote it.
   async ai_brief() {
-    const res = await fetchDataFile("data/ai_summary.json");
-    const j = (await res.json()) as {
-      generated?: string;
-      model?: string;
-      provenance?: { inputs?: { file: string }[]; frequency?: string; disclaimer?: string };
-      brief?: { tc?: string; en?: string };
-    };
+    // A PANEL RENDERS A STATE; IT DOES NOT TAKE THE APP DOWN. MEASURED 2026-10-01: the first
+    // version of this adapter threw when the payload was not exactly what it expected, boot's
+    // await chain broke, document.body.dataset.ready never became 1, and four checks reported
+    // "the app never booted" - one bad 1 KB file took the whole dashboard with it. Every path
+    // below returns a list, so the reader is told what is missing instead of shown a blank page.
     const tc = lang() === "tc";
-    const prose = (tc ? j.brief?.tc : j.brief?.en) ?? "";
-    if (!prose) throw new Error(tc ? "簡報檔案冇內容" : "the brief file has no text");
-    const inputs = (j.provenance?.inputs ?? []).map((i) => i.file.replace(/\.json$/, "")).join(" · ");
-    return {
-      data: {
-        kind: "list" as const,
-        items: [
-          { title: prose, sub: (tc ? "AI 生成 · 只覆述上方數字,可能有錯" : "AI-generated from the figures listed; may be wrong"), ok: true },
-          { title: (tc ? "由 " : "by ") + (j.model ?? "?"), sub: inputs, time: (j.generated ?? "").replace("T", " ").slice(0, 16), ok: true },
-        ],
-      },
-      observedAt: j.generated ? new Date(j.generated) : new Date(),
-    };
+    const honest = (why: string): PanelData => ({
+      kind: "list",
+      items: [{ title: why, sub: tc ? "下一次排程會重寫一份" : "the next scheduled run rewrites it", ok: true }],
+    });
+    try {
+      const res = await fetchDataFile("data/ai_summary.json");
+      const j = (await res.json()) as {
+        generated?: string;
+        model?: string;
+        provenance?: { inputs?: { file?: string }[] };
+        brief?: { tc?: string; en?: string };
+      };
+      const prose = (tc ? j.brief?.tc : j.brief?.en) ?? "";
+      if (!prose) return { data: honest(tc ? "簡報暫時冇內容" : "the brief has no text yet"), observedAt: new Date() };
+      const inputs = (j.provenance?.inputs ?? [])
+        .map((x) => String(x?.file ?? "").replace(/\.json$/, ""))
+        .filter(Boolean)
+        .join(" · ");
+      return {
+        data: {
+          kind: "list" as const,
+          items: [
+            {
+              title: prose,
+              sub: tc ? "AI 生成 · 只覆述上方數字,可能有錯" : "AI-generated from the figures listed; may be wrong",
+              ok: true,
+            },
+            {
+              title: (tc ? "由 " : "by ") + (j.model ?? "?"),
+              sub: inputs,
+              time: String(j.generated ?? "").replace("T", " ").slice(0, 16),
+              ok: true,
+            },
+          ],
+        },
+        observedAt: j.generated ? new Date(j.generated) : new Date(),
+      };
+    } catch (err) {
+      // The panel still says something a reader can act on, and the console keeps the detail.
+      console.warn("[hkcm] ai_brief:", err);
+      return { data: honest(tc ? "簡報暫時讀唔到" : "the brief could not be read"), observedAt: new Date() };
+    }
   },
 
 

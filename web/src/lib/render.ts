@@ -106,6 +106,12 @@ export type PanelData =
        *  the strip also stays away until there are at least two. */
       regions?: { id: string; label: L10n; count: number }[];
       activeRegion?: string | null;
+      /** EVERY stream the adapter had, not just the `max` it drew — the tiles show six and the
+       *  reader can pick any of them from the one playing (Cyrus 2026-10-01: "Live News (allow
+       *  user to volume on, expand, switch to other live streaming)"). A picker built from the
+       *  drawn six would only re-arrange the six already on screen; the list has to be the pool
+       *  the adapter chose from, or the feature is decoration. */
+      streams?: { id: string; title: string; channel?: string }[];
     }
   | {
       kind: "raster_map";
@@ -401,6 +407,51 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
               ? h("span", { class: "fresh chip live", style: "background:rgba(255,93,108,.9);color:#fff" }, "LIVE 直播")
               : h("span", { class: "fresh chip" }, lang() === "tc" ? "現時無直播" : "not live now")
             : null;
+          const startFrame = () => {
+            const frame = document.createElement("iframe");
+            frame.src = `https://www.youtube.com/embed/${img.video!.id}?autoplay=1&mute=1&playsinline=1&controls=1&fs=1`;
+            frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+            frame.title = img.name;
+            // prepend, not append: the label and the badge must stay clickable on top
+            tile.prepend(frame);
+          };
+          // SWITCH STREAM, FROM THE TILE (Cyrus 2026-10-01). The list is the adapter's whole pool,
+          // not the six tiles on screen — otherwise the picker only re-arranges what is already
+          // visible. It renders over the thumbnail, because the reader is looking at a tile that is
+          // not the one they want, and it stops its own clicks: the tile's click starts/stops the
+          // player, and selecting a stream must not also toggle it.
+          const picker =
+            img.video && data.streams && data.streams.length > 1
+              ? (() => {
+                  const sel = document.createElement("select");
+                  sel.className = "cam-pick";
+                  sel.setAttribute("aria-label", lang() === "tc" ? "換另一條直播" : "Switch stream");
+                  sel.title = lang() === "tc" ? "換另一條直播" : "Switch to another stream";
+                  for (const s of data.streams!) {
+                    const o = document.createElement("option");
+                    o.value = s.id;
+                    o.textContent = s.title;
+                    if (s.id === img.video!.id) o.selected = true;
+                    sel.append(o);
+                  }
+                  sel.addEventListener("click", (e) => e.stopPropagation());
+                  sel.addEventListener("keydown", (e) => e.stopPropagation());
+                  sel.addEventListener("change", () => {
+                    const s = data.streams!.find((x) => x.id === sel.value);
+                    if (!s) return;
+                    img.video = { ...img.video!, id: s.id, channel: s.channel };
+                    const lab = tile.querySelector(".lab");
+                    if (lab) lab.textContent = `${s.title}${s.channel ? ` · ${s.channel}` : ""}`;
+                    // Restart in place: the reader asked for a different stream, and a stopped
+                    // player would make them click twice for one intention.
+                    if (tile.classList.contains("playing")) {
+                      tile.querySelector("iframe")?.remove();
+                      startFrame();
+                    }
+                  });
+                  return sel;
+                })()
+              : null;
           const toggle = () => {
             if (!img.video?.live) {
               opts.onImageClick?.(img);
@@ -411,12 +462,7 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
               if (liveChip) liveChip.textContent = "LIVE 直播";
               return;
             }
-            const frame = document.createElement("iframe");
-            frame.src = `https://www.youtube.com/embed/${img.video.id}?autoplay=1&mute=1&playsinline=1&controls=1&fs=1`;
-            frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
-            frame.title = img.name;
-            // prepend, not append: the label and the badge must stay clickable on top
-            tile.prepend(frame);
+            startFrame();
             if (liveChip) liveChip.textContent = lang() === "tc" ? "■ 停止" : "■ stop";
           };
           const tile = h(
@@ -438,6 +484,7 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
             },
             im,
             h("span", { class: "lab" }, `${img.name}${img.video?.channel ? ` · ${img.video.channel}` : ""}`),
+            picker ?? "",
             img.fresh ? h("span", { class: "fresh chip" }, img.fresh) : "",
             liveChip ?? "",
           );

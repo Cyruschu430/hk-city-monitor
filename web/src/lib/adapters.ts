@@ -188,7 +188,18 @@ async function liveWall(src: SourceDef, panel: PanelDefRaw): Promise<AdapterResu
       video: { id: s.id, live: live, channel: s.channel },
     });
   }
-  return { data: { kind: "image_wall", images, regions, activeRegion: active }, observedAt: new Date() };
+  return {
+    data: {
+      kind: "image_wall",
+      images,
+      regions,
+      activeRegion: active,
+      // The pool, not the drawn slice: the tile's picker offers every stream in the active
+      // region, so a reader who wants the harbour instead of the runway has somewhere to say so.
+      streams: pool.map((s) => ({ id: s.id, title: s.title, channel: s.channel })),
+    },
+    observedAt: new Date(),
+  };
 }
 
 const ADAPTERS: Record<string, Adapter> = {

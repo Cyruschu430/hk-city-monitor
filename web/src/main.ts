@@ -170,6 +170,54 @@ async function boot(): Promise<void> {
   createFooter(document.body);
   const mapEl = document.getElementById("map")!;
   const hudEl = document.getElementById("mapHud")!;
+  // The 3D switch (Cyrus 2026-10-02: "Map View 度加粒 button switch 去 Open3Dhk 攞香港個 3D tile").
+  // The tileset is 12.2M triangles, so the deck.gl overlay AND the tileset URL both sit behind the
+  // dynamic import inside map/overlays3d.ts - turning this on is the only thing that fetches
+  // either, and measure:boot fails if a 3D chunk ever reaches the critical path.
+  const btn3d = h("button", { class: "btn-3d", type: "button", "aria-pressed": "false" }, "3D");
+  let on3d = false;
+  let busy3d = false;
+  // State is carried by the LABEL as well as the outline: colour alone would leave the button
+  // saying the same word in both states, on a face where colour is the one thing the reader may
+  // not be able to see.
+  const sync3d = () => {
+    const tc = lang() === "tc";
+    btn3d.textContent = on3d ? (tc ? "3D 開" : "3D ON") : "3D";
+    btn3d.setAttribute("aria-pressed", String(on3d));
+    btn3d.title = tc
+      ? "切換 3D 建築（地政總署 Open3Dhk 三維數碼地圖，lazy 載入）"
+      : "Toggle 3D buildings (LandsD Open3Dhk 3D digital map, lazy)";
+  };
+  btn3d.addEventListener("click", async () => {
+    if (busy3d) return;
+    busy3d = true;
+    btn3d.classList.add("busy");
+    try {
+      const { toggle3d } = await import("./map/overlays3d.ts");
+      await toggle3d(map, !on3d);
+      on3d = !on3d;
+    } catch (err) {
+      // Never a blank scene: the failure says what failed, on the map face, for long enough to
+      // read. A tileset that lands in an error state is a working monitor; one that silently
+      // draws nothing looks like the button is broken.
+      on3d = false;
+      const why = err instanceof Error ? err.message : String(err);
+      const tc = lang() === "tc";
+      const msg = h("div", { class: "btn-3d-msg" },
+        (tc ? "3D 圖層開唔到：" : "3D layer failed: ") + why);
+      hudEl.append(msg);
+      window.setTimeout(() => msg.remove(), 9000);
+      btn3d.classList.add("err");
+      window.setTimeout(() => btn3d.classList.remove("err"), 9000);
+    } finally {
+      busy3d = false;
+      btn3d.classList.remove("busy");
+      sync3d();
+    }
+  });
+  sync3d();
+  onLangChange(() => sync3d());
+  hudEl.append(btn3d);
   const drawerEl = document.getElementById("drawer")!;
   const panelTabsEl = document.getElementById("panelTabs")!;
   const panelRestoreEl = document.getElementById("panelRestore")!;

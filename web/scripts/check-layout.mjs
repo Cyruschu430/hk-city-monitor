@@ -124,6 +124,11 @@ const orderNow = () =>
 const orderBefore = await orderNow();
 let orderAfter = orderBefore;
 if (orderBefore.length < 2) {
+// DECLARED FIRST, and it is not cosmetic: this file referenced `problems` at line 127
+// while declaring it further down, so Node threw 'Cannot access problems before initialization'
+// and check:layout died with a stack trace instead of a verdict - a red gate that says
+// nothing about the app. Found 2026-10-01 by reading the crash, not by guessing.
+const problems = [];
   problems.push("fewer than two panels on screen — the column cannot be reordered or tested");
 } else {
   const dispatched = await page.evaluate(() => {
@@ -165,7 +170,6 @@ console.log(`map        ${r.map?.w} x ${r.map?.h}  = ${mapShareW}% of width, ${m
 console.log(`panels     ${r.visibleOnFirstScreen}/${r.panelCount} on the first screen, in ${r.gridColumns} grid columns`);
 console.log(`row tracks ${r.rowTrackCount} summing ${r.rowTrackSum}px vs scrollHeight ${r.panelColScroll.scrollH}px`);
 
-const problems = [];
 // No panels means every other assertion is vacuously true.
 if (r.panelCount === 0) problems.push("0 panels rendered - the geometry below describes an empty shell, not the app");
 if (r.overlapCount > 0) problems.push(`${r.overlapCount} panel overlaps (must be 0)`);

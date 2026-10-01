@@ -227,12 +227,6 @@ const ADAPTERS: Record<string, Adapter> = {
       };
       const prose = (tc ? j.brief?.tc : j.brief?.en) ?? "";
       if (!prose) return { data: honest(tc ? "簡報暫時冇內容" : "the brief has no text yet"), observedAt: new Date() };
-      // Kept out of the panel on purpose (Cyrus 2026-10-01): readers do not need the model
-      // id or the input list. They stay in the published file, which the row links to.
-      const inputs = (j.provenance?.inputs ?? [])
-        .map((x) => String(x?.file ?? "").replace(/\.json$/, ""))
-        .filter(Boolean)
-        .join(" · ");
       return {
         data: {
           kind: "list" as const,

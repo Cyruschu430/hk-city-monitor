@@ -80,7 +80,18 @@ const files = [
 // and the brief says 「累積中 0/14 日」, which is the honest state. Kept in a SEPARATE
 // list on purpose — a missing entry in `files` above is a typo, and it must still
 // throw rather than ship a registry the app silently loads nothing from.
-const optional = [["data/baselines.json", "baselines.json"]];
+const optional = [
+  ["data/baselines.json", "baselines.json"],
+  // The twice-daily AI brief (.github/workflows/ai-brief.yml). Optional because it is
+  // published to live-data, not to this repo: a checkout that has never run the job still
+  // has to build, and the panel then falls back to the committed copy or says so.
+  //
+  // MEASURED 2026-10-01: this list is why the City brief panel never appeared. It was in
+  // panels.json, in OVERVIEW, in sources.json and in adapters.ts, and the file was simply
+  // not in dist/ - so the fetch 404ed, the off-screen guard never released the panel, and
+  // check:layout failed with "1 panel still deferred". Four places had it; the fifth did not.
+  ["data/ai_summary.json", "ai_summary.json"],
+];
 
 for (const [src, dst] of files) {
   copyFileSync(join(root, src), join(out, dst));

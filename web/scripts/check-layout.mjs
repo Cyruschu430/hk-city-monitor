@@ -17,7 +17,7 @@ import { join } from "node:path";
 // looks like a broken test rather than a broken product. Zero errors that survive a crash.
 const problems = [];
 
-const BASE = process.env.HKCM_URL ?? "http://127.0.0.1:4173/";
+const BASE = process.env.HKCM_URL ?? (process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/");
 const exe = process.env.HKCM_CHROME ?? "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 
 const browser = await chromium.launch({ executablePath: exe, headless: true });

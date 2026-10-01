@@ -24,7 +24,7 @@ import { chromium } from "playwright-core";
 const firstArg = process.argv[2];
 const BASE = (firstArg && !firstArg.startsWith("--"))
   ? firstArg
-  : (process.env.BASE ?? "http://127.0.0.1:4173/");
+  : (process.env.BASE ?? (process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/"));
 const exe = process.env.CHROME_PATH
   ?? "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 

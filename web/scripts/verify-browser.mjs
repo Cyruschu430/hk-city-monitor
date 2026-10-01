@@ -13,7 +13,7 @@ import { mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const base = process.argv.find((a) => a.startsWith("http")) ?? "http://127.0.0.1:4173/";
+const base = process.argv.find((a) => a.startsWith("http")) ?? (process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/");
 const headed = process.argv.includes("--headed");
 const exe = "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 const outDir = join(dirname(fileURLToPath(import.meta.url)), "..", "test", "artifacts");

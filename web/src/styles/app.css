@@ -356,6 +356,17 @@ a:hover{color:var(--cyan)}
 .coverage[data-health="bad"] .cover-text{color:var(--amber)}
 .cover-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand-icon{width:26px;height:26px;border-radius:7px;flex:0 0 auto}
+/* The grip is a pseudo-element: it exists to show the cursor and to be grabbable, and it has
+   no state anyone reads, so a real element would be a node built only to be listened to.
+   The listener lives on document (see initColumnResize) and hit-tests this 7px strip. */
+#panelCol{position:relative}
+#panelCol::before{content:"";position:absolute;left:-3px;top:0;bottom:0;width:7px;cursor:col-resize;z-index:6}
+/* Cyrus 2026-10-02: "Remove <> 功能". The two arrows were the ONLY stream switcher (a <select>
+   of publisher titles rendered as 40-character mixed-script garbage, which is why they replaced
+   it), but the drawer is already the switcher for channels, so the tile keeps its one job:
+   click to start or stop. display:none rather than visibility, so the buttons leave the
+   accessibility tree with the pixels. */
+.cam-nav .cam-nav-b{display:none}
 /* discrete instrument readouts: label above value, hairline separated */
 .stat{display:flex;flex-direction:column;gap:1px;padding:0 11px;line-height:1.15;
   border-left:1px solid var(--hairline)}
@@ -444,7 +455,10 @@ a:hover{color:var(--cyan)}
 #layout{flex:1 1 auto;display:grid;/** Two columns now, not three (2026-10-01). The 56px rail is gone and its job —
  *  picking a mode — moved into the status bar, so this grid is the map and the panel
  *  column. The map keeps the width; nothing else about the layout changes. */
-  grid-template-columns:minmax(0,1fr) clamp(320px,30vw,560px);
+  /* Reader-resizable (Cyrus 2026-10-02: "每 panel 拉寬/收窄" -> 3 欄). The track follows --panel-w,
+     which main.ts writes and localStorage keeps; the inner grid is already auto-fill, so widening
+     this one value is what produces the second and third column. */
+  grid-template-columns:minmax(0,1fr) clamp(300px,var(--panel-w,30vw),96vw);
   grid-template-rows:minmax(0,1fr);min-height:0}
 /* Column 1, not 2: the grid lost its first track when the mode rail went (2026-10-01). The
    rail, the map and the panel column used to be 1/2/3; they are 1/2 now, and a stale track

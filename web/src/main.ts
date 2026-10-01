@@ -1051,6 +1051,45 @@ async function boot(): Promise<void> {
   document.body.dataset["ready"] = "1";
 }
 
+/**
+ * Drag the panel column's left edge to size it (Cyrus 2026-10-02). The width lives in a custom
+ * property the grid track already reads, so this only has to write one value — there is no
+ * second layout model to keep in sync. Bound to the document because the grip is a pseudo-element
+ * and the column is created during boot: a listener on the element would have to race boot.
+ */
+function initColumnResize(): void {
+  const KEY = "hkcm.panelWidth";
+  const root = document.documentElement;
+  // Stored as a percentage of the viewport, because a px width remembered on a desktop makes the
+  // map useless on a phone, and the reader's intent is "this much of the screen".
+  const saved = Number(localStorage.getItem(KEY));
+  if (saved >= 20 && saved <= 96) root.style.setProperty("--panel-w", `${saved}vw`);
+  let dragging = false;
+  document.addEventListener("pointerdown", (e) => {
+    const col = document.getElementById("panelCol");
+    if (!col || !(e.target instanceof Element)) return;
+    const r = col.getBoundingClientRect();
+    if (Math.abs(e.clientX - r.left) > 6) return;
+    dragging = true;
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    e.preventDefault();
+  });
+  document.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const vw = Math.min(96, Math.max(20, ((window.innerWidth - e.clientX) / window.innerWidth) * 100));
+    root.style.setProperty("--panel-w", `${vw.toFixed(1)}vw`);
+  });
+  const stop = () => {
+    if (!dragging) return;
+    dragging = false;
+    const v = parseFloat(getComputedStyle(root).getPropertyValue("--panel-w"));
+    if (v >= 20 && v <= 96) localStorage.setItem(KEY, String(Math.round(v)));
+  };
+  document.addEventListener("pointerup", stop);
+  document.addEventListener("pointercancel", stop);
+}
+initColumnResize();
+
 boot().catch((err: unknown) => {
   const msg = err instanceof Error ? err.message : String(err);
   document.body.append(

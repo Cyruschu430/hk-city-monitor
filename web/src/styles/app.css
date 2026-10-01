@@ -409,7 +409,10 @@ a:hover{color:var(--cyan)}
  *  column. The map keeps the width; nothing else about the layout changes. */
   grid-template-columns:minmax(0,1fr) clamp(320px,30vw,560px);
   grid-template-rows:minmax(0,1fr);min-height:0}
-#mapWrap{grid-column:2;grid-row:1;position:relative;min-height:0;min-width:0}
+/* Column 1, not 2: the grid lost its first track when the mode rail went (2026-10-01). The
+   rail, the map and the panel column used to be 1/2/3; they are 1/2 now, and a stale track
+   number is not a cosmetic slip — it silently creates an implicit column and moves the map. */
+#mapWrap{grid-column:1;grid-row:1;position:relative;min-height:0;min-width:0}
 #map{position:absolute;inset:0;background:var(--void)}
 #mapHud{position:absolute;inset:0;pointer-events:none;z-index:5}
 #mapHud>*{pointer-events:auto}
@@ -500,7 +503,12 @@ a:hover{color:var(--cyan)}
    whole page scrolls and the map goes with it. The comment lives OUTSIDE the block: an inline comment here
    is valid CSS, but this rule was being dropped whole while its neighbours applied, and moving the comment
    out is the cheapest way to falsify that. */
-#panelCol{grid-column:3;grid-row:1;display:flex;flex-direction:column;min-height:0;min-width:0;border-left:1px solid var(--hairline);background:var(--surface-grad);overflow:hidden}
+/* MEASURED 2026-10-01: this was `grid-column:3` because the 56px mode rail was column 1 and
+   the map was column 2. Removing the rail (its job moved into the status bar) left this grid
+   with two columns, so an explicit column 3 created an IMPLICIT third one: the map kept the old
+   track, a dead track held the rest, and `check:layout` read the panel column as a 3-track grid.
+   The track number is part of the rail's contract; that is the whole lesson. */
+#panelCol{grid-column:2;grid-row:1;display:flex;flex-direction:column;min-height:0;min-width:0;border-left:1px solid var(--hairline);background:var(--surface-grad);overflow:hidden}
 #panelTabs{display:flex;flex-wrap:wrap;gap:4px;padding:9px 10px 8px;
   border-bottom:1px solid var(--hairline)}
 #panelTabs[hidden],#panelRestore[hidden]{display:none}

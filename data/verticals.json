@@ -1,353 +1,363 @@
 {
-  "_comment": "Modes, not regions: HKCM covers one city, so the World-Monitor-style switcher varies by QUESTION rather than by geography. A vertical is a config object, never a code path - ui/rail.ts renders every entry here, so adding a mode is a JSON edit. 'question' is mandatory: a mode that cannot answer one does not ship. Every panel and layer id below must exist in panels.json / layers.json (scripts/validate_config.py enforces both directions). A trigger: null mode is reachable from the rail, which is the normal case for a mode a human chooses rather than one the data forces.",
-  "windows": [
-    "now",
-    "today",
-    "7d",
-    "season",
-    "year"
-  ],
-  "scopes": [
-    "hk",
-    "district",
-    "route"
-  ],
-  "verticals": [
-    {
-      "id": "typhoon",
-      "name": {
-        "tc": "颱風模式",
-        "en": "Typhoon Mode"
-      },
-      "question": {
-        "tc": "會唔會掛 8 號？聽日飛唔飛得成？",
-        "en": "Will signal 8 be hoisted, and will my flight leave tomorrow?"
-      },
-      "trigger": {
-        "any": [
-          {
-            "source": "hko_warnsum",
-            "field": "TC8",
-            "op": "exists"
-          },
-          {
-            "source": "hko_warnsum",
-            "field": "TC3",
-            "op": "exists"
-          }
-        ]
-      },
-      "panels": [
-        "warnings_list",
-        "tc_track_image",
-        "radar_image",
-        "rain_nowcast_map",
-        "flight_table",
-        "special_traffic_list"
-      ],
-      "layers": [
-        "cameras_all",
-        "rain_nowcast"
-      ],
-      "window": "now",
-      "location_scope": "hk",
-      "order": [
-        "warnings_list",
-        "tc_track_image",
-        "rain_nowcast_map",
-        "flight_table",
-        "radar_image",
-        "special_traffic_list"
-      ]
-    },
-    {
-      "id": "border",
-      "name": {
-        "tc": "口岸模式",
-        "en": "Border Crossing Mode"
-      },
-      "question": {
-        "tc": "而家過關要等幾耐？",
-        "en": "How long is the queue at the control point right now?"
-      },
-      "trigger": null,
-      "panels": [
-        "tp_queue_grid",
-        "crossboundary_ferry_table",
-        "special_traffic_list"
-      ],
-      "layers": [
-        "control_points",
-        "cameras_all"
-      ],
-      "window": "today",
-      "location_scope": "hk",
-      "order": [
-        "tp_queue_grid",
-        "crossboundary_ferry_table",
-        "special_traffic_list"
-      ]
-    },
-    {
-      "id": "water_supply",
-      "name": {
-        "tc": "停水模式",
-        "en": "Water Suspension Mode"
-      },
-      "question": {
-        "tc": "我嗰區有冇停水？幾時回復？",
-        "en": "Is my district under a water suspension, and when does it end?"
-      },
-      "trigger": {
-        "_comment": "Fires only on a DRINKING-water supply that is out RIGHT NOW (adapters.ts: drinking_now). MEASURED 2026-09-24: the previous trigger was {field:'records_fresh', op:'exists'}, which is true for ANY non-empty list — so 6 flushing-water (鹹水) notices auto-switched the app to 停水模式 on every page load and collapsed the 18-panel overview to a single panel. 'There is data' is not a reason to take over the dashboard; an actual tap-water outage is.",
-        "any": [
-          {
-            "source": "wsd_water_suspension",
-            "field": "drinking_now",
-            "op": ">=",
-            "value": 1
-          }
-        ]
-      },
-      "panels": [
-        "water_suspension_list"
-      ],
-      "layers": [
-        "water_suspension",
-        "water_suspension_districts"
-      ],
-      "window": "now",
-      "location_scope": "district",
-      "order": [
-        "water_suspension_list"
-      ]
-    },
-    {
-      "id": "weather",
-      "name": {
-        "tc": "天氣模式",
-        "en": "Weather Mode"
-      },
-      "question": {
-        "tc": "今日會唔會落雨？要唔要帶遮？",
-        "en": "Will it rain today, and do I need an umbrella?"
-      },
-      "trigger": null,
-      "panels": [
-        "warnings_list",
-        "radar_image",
-        "rain_nowcast_map",
-        "satellite_image",
-        "aqhi_gauge_grid",
-        "wind_status"
-      ],
-      "layers": [
-        "rain_nowcast",
-        "weather_stations",
-        "wind_field",
-        "hko_cameras"
-      ],
-      "window": "today",
-      "location_scope": "hk",
-      "order": [
-        "warnings_list",
-        "radar_image",
-        "rain_nowcast_map",
-        "satellite_image",
-        "aqhi_gauge_grid",
-        "wind_status"
-      ]
-    },
-    {
-      "id": "traffic",
-      "name": {
-        "tc": "交通模式",
-        "en": "Traffic Mode"
-      },
-      "question": {
-        "tc": "而家邊條路塞？下一班車幾時到？",
-        "en": "Which road is jammed, and when is the next train?"
-      },
-      "trigger": null,
-      "panels": [
-        "special_traffic_list",
-        "mtr_next_train_list",
-        "kmb_eta_table",
-        "carpark_vacancy_list",
-        "crossboundary_ferry_table"
-      ],
-      "layers": [
-        "cameras_all",
-        "control_points"
-      ],
-      "window": "now",
-      "location_scope": "hk",
-      "order": [
-        "special_traffic_list",
-        "mtr_next_train_list",
-        "kmb_eta_table",
-        "carpark_vacancy_list",
-        "crossboundary_ferry_table"
-      ]
-    },
-    {
-      "id": "drone",
-      "name": {
-        "tc": "無人機模式",
-        "en": "Drone Mode"
-      },
-      "question": {
-        "tc": "而家飛唔飛得？邊區有風、邊度禁飛？",
-        "en": "Can I fly now, where is it windy, and where is it banned?"
-      },
-      "trigger": null,
-      "panels": [
-        "wind_status",
-        "warnings_list",
-        "radar_image",
-        "rain_nowcast_map"
-      ],
-      "layers": [
-        "drone_rfz",
-        "wind_field",
-        "weather_stations",
-        "hko_cameras"
-      ],
-      "window": "now",
-      "location_scope": "hk",
-      "order": [
-        "wind_status",
-        "warnings_list",
-        "radar_image",
-        "rain_nowcast_map"
-      ]
-    },
-    {
-      "id": "freight",
-      "name": {
-        "tc": "貨運模式",
-        "en": "Freight Mode"
-      },
-      "question": {
-        "tc": "貨運物流而家有冇阻滯？",
-        "en": "Is freight and logistics moving right now?"
-      },
-      "trigger": null,
-      "panels": [
-        "flight_table",
-        "crossboundary_ferry_table",
-        "special_traffic_list",
-        "hk_market_table"
-      ],
-      "layers": [
-        "berth_vacancy",
-        "aircraft",
-        "hk_facility_areas",
-        "control_points",
-        "cameras_all",
-        "hk_facility_pins"
-      ],
-      "window": "today",
-      "location_scope": "hk",
-      "order": [
-        "flight_table",
-        "crossboundary_ferry_table",
-        "special_traffic_list",
-        "hk_market_table"
-      ]
-    },
-    {
-      "id": "health",
-      "name": {
-        "tc": "醫療模式",
-        "en": "Health Mode"
-      },
-      "question": {
-        "tc": "急症室等幾耐？邊度有 AED？",
-        "en": "How long is the A&E wait, and where is the nearest AED?"
-      },
-      "trigger": null,
-      "panels": [
-        "ae_waiting_grid",
-        "aqhi_gauge_grid",
-        "breaking_news_list"
-      ],
-      "layers": [
-        "ae_hospitals",
-        "aed_locations"
-      ],
-      "window": "now",
-      "location_scope": "district",
-      "order": [
-        "ae_waiting_grid",
-        "aqhi_gauge_grid",
-        "breaking_news_list"
-      ]
-    },
-    {
-      "id": "civic",
-      "name": {
-        "tc": "民生模式",
-        "en": "Civic Mode"
-      },
-      "question": {
-        "tc": "我嗰區有冇停水／停車位／空氣差？",
-        "en": "Any water suspension, parking or bad air in my district?"
-      },
-      "trigger": null,
-      "panels": [
-        "water_suspension_list",
-        "stations_status",
-        "aqhi_gauge_grid",
-        "carpark_vacancy_list",
-        "breaking_news_list"
-      ],
-      "layers": [
-        "water_suspension",
-        "water_suspension_districts",
-        "aed_locations"
-      ],
-      "window": "now",
-      "location_scope": "district",
-      "order": [
-        "water_suspension_list",
-        "stations_status",
-        "aqhi_gauge_grid",
-        "carpark_vacancy_list",
-        "breaking_news_list"
-      ]
-    },
-    {
-      "id": "live",
-      "name": {
-        "tc": "直擊模式",
-        "en": "Live Mode"
-      },
-      "question": {
-        "tc": "而家香港發生緊咩事？",
-        "en": "What is happening in Hong Kong right now?"
-      },
-      "trigger": null,
-      "panels": [
-        "live_wall",
-        "breaking_news_list",
-        "cameras_wall",
-        "hko_cameras_wall",
-        "special_traffic_list"
-      ],
-      "layers": [
-        "cameras_all",
-        "hko_cameras"
-      ],
-      "window": "now",
-      "location_scope": "hk",
-      "order": [
-        "live_wall",
-        "breaking_news_list",
-        "cameras_wall",
-        "hko_cameras_wall",
-        "special_traffic_list"
-      ]
-    }
-  ]
+ "_comment": "Modes, not regions: HKCM covers one city, so the World-Monitor-style switcher varies by QUESTION rather than by geography. A vertical is a config object, never a code path - ui/rail.ts renders every entry here, so adding a mode is a JSON edit. 'question' is mandatory: a mode that cannot answer one does not ship. Every panel and layer id below must exist in panels.json / layers.json (scripts/validate_config.py enforces both directions). A trigger: null mode is reachable from the rail, which is the normal case for a mode a human chooses rather than one the data forces.",
+ "windows": [
+  "now",
+  "today",
+  "7d",
+  "season",
+  "year"
+ ],
+ "scopes": [
+  "hk",
+  "district",
+  "route"
+ ],
+ "verticals": [
+  {
+   "id": "typhoon",
+   "name": {
+    "tc": "颱風模式",
+    "en": "Typhoon Mode"
+   },
+   "question": {
+    "tc": "會唔會掛 8 號？聽日飛唔飛得成？",
+    "en": "Will signal 8 be hoisted, and will my flight leave tomorrow?"
+   },
+   "trigger": {
+    "any": [
+     {
+      "source": "hko_warnsum",
+      "field": "TC8",
+      "op": "exists"
+     },
+     {
+      "source": "hko_warnsum",
+      "field": "TC3",
+      "op": "exists"
+     }
+    ]
+   },
+   "panels": [
+    "ai_brief",
+    "warnings_list",
+    "tc_track_image",
+    "radar_image",
+    "rain_nowcast_map",
+    "flight_table",
+    "special_traffic_list"
+   ],
+   "layers": [
+    "cameras_all",
+    "rain_nowcast"
+   ],
+   "window": "now",
+   "location_scope": "hk",
+   "order": [
+    "warnings_list",
+    "tc_track_image",
+    "rain_nowcast_map",
+    "flight_table",
+    "radar_image",
+    "special_traffic_list"
+   ]
+  },
+  {
+   "id": "border",
+   "name": {
+    "tc": "口岸模式",
+    "en": "Border Crossing Mode"
+   },
+   "question": {
+    "tc": "而家過關要等幾耐？",
+    "en": "How long is the queue at the control point right now?"
+   },
+   "trigger": null,
+   "panels": [
+    "ai_brief",
+    "tp_queue_grid",
+    "crossboundary_ferry_table",
+    "special_traffic_list"
+   ],
+   "layers": [
+    "control_points",
+    "cameras_all"
+   ],
+   "window": "today",
+   "location_scope": "hk",
+   "order": [
+    "tp_queue_grid",
+    "crossboundary_ferry_table",
+    "special_traffic_list"
+   ]
+  },
+  {
+   "id": "water_supply",
+   "name": {
+    "tc": "停水模式",
+    "en": "Water Suspension Mode"
+   },
+   "question": {
+    "tc": "我嗰區有冇停水？幾時回復？",
+    "en": "Is my district under a water suspension, and when does it end?"
+   },
+   "trigger": {
+    "_comment": "Fires only on a DRINKING-water supply that is out RIGHT NOW (adapters.ts: drinking_now). MEASURED 2026-09-24: the previous trigger was {field:'records_fresh', op:'exists'}, which is true for ANY non-empty list — so 6 flushing-water (鹹水) notices auto-switched the app to 停水模式 on every page load and collapsed the 18-panel overview to a single panel. 'There is data' is not a reason to take over the dashboard; an actual tap-water outage is.",
+    "any": [
+     {
+      "source": "wsd_water_suspension",
+      "field": "drinking_now",
+      "op": ">=",
+      "value": 1
+     }
+    ]
+   },
+   "panels": [
+    "ai_brief",
+    "water_suspension_list"
+   ],
+   "layers": [
+    "water_suspension",
+    "water_suspension_districts"
+   ],
+   "window": "now",
+   "location_scope": "district",
+   "order": [
+    "water_suspension_list"
+   ]
+  },
+  {
+   "id": "weather",
+   "name": {
+    "tc": "天氣模式",
+    "en": "Weather Mode"
+   },
+   "question": {
+    "tc": "今日會唔會落雨？要唔要帶遮？",
+    "en": "Will it rain today, and do I need an umbrella?"
+   },
+   "trigger": null,
+   "panels": [
+    "ai_brief",
+    "warnings_list",
+    "radar_image",
+    "rain_nowcast_map",
+    "satellite_image",
+    "aqhi_gauge_grid",
+    "wind_status"
+   ],
+   "layers": [
+    "rain_nowcast",
+    "weather_stations",
+    "wind_field",
+    "hko_cameras"
+   ],
+   "window": "today",
+   "location_scope": "hk",
+   "order": [
+    "warnings_list",
+    "radar_image",
+    "rain_nowcast_map",
+    "satellite_image",
+    "aqhi_gauge_grid",
+    "wind_status"
+   ]
+  },
+  {
+   "id": "traffic",
+   "name": {
+    "tc": "交通模式",
+    "en": "Traffic Mode"
+   },
+   "question": {
+    "tc": "而家邊條路塞？下一班車幾時到？",
+    "en": "Which road is jammed, and when is the next train?"
+   },
+   "trigger": null,
+   "panels": [
+    "ai_brief",
+    "special_traffic_list",
+    "mtr_next_train_list",
+    "kmb_eta_table",
+    "carpark_vacancy_list",
+    "crossboundary_ferry_table"
+   ],
+   "layers": [
+    "cameras_all",
+    "control_points"
+   ],
+   "window": "now",
+   "location_scope": "hk",
+   "order": [
+    "special_traffic_list",
+    "mtr_next_train_list",
+    "kmb_eta_table",
+    "carpark_vacancy_list",
+    "crossboundary_ferry_table"
+   ]
+  },
+  {
+   "id": "drone",
+   "name": {
+    "tc": "無人機模式",
+    "en": "Drone Mode"
+   },
+   "question": {
+    "tc": "而家飛唔飛得？邊區有風、邊度禁飛？",
+    "en": "Can I fly now, where is it windy, and where is it banned?"
+   },
+   "trigger": null,
+   "panels": [
+    "ai_brief",
+    "wind_status",
+    "warnings_list",
+    "radar_image",
+    "rain_nowcast_map"
+   ],
+   "layers": [
+    "drone_rfz",
+    "wind_field",
+    "weather_stations",
+    "hko_cameras"
+   ],
+   "window": "now",
+   "location_scope": "hk",
+   "order": [
+    "wind_status",
+    "warnings_list",
+    "radar_image",
+    "rain_nowcast_map"
+   ]
+  },
+  {
+   "id": "freight",
+   "name": {
+    "tc": "貨運模式",
+    "en": "Freight Mode"
+   },
+   "question": {
+    "tc": "貨運物流而家有冇阻滯？",
+    "en": "Is freight and logistics moving right now?"
+   },
+   "trigger": null,
+   "panels": [
+    "ai_brief",
+    "flight_table",
+    "crossboundary_ferry_table",
+    "special_traffic_list",
+    "hk_market_table"
+   ],
+   "layers": [
+    "berth_vacancy",
+    "aircraft",
+    "hk_facility_areas",
+    "control_points",
+    "cameras_all",
+    "hk_facility_pins"
+   ],
+   "window": "today",
+   "location_scope": "hk",
+   "order": [
+    "flight_table",
+    "crossboundary_ferry_table",
+    "special_traffic_list",
+    "hk_market_table"
+   ]
+  },
+  {
+   "id": "health",
+   "name": {
+    "tc": "醫療模式",
+    "en": "Health Mode"
+   },
+   "question": {
+    "tc": "急症室等幾耐？邊度有 AED？",
+    "en": "How long is the A&E wait, and where is the nearest AED?"
+   },
+   "trigger": null,
+   "panels": [
+    "ai_brief",
+    "ae_waiting_grid",
+    "aqhi_gauge_grid",
+    "breaking_news_list"
+   ],
+   "layers": [
+    "ae_hospitals",
+    "aed_locations"
+   ],
+   "window": "now",
+   "location_scope": "district",
+   "order": [
+    "ae_waiting_grid",
+    "aqhi_gauge_grid",
+    "breaking_news_list"
+   ]
+  },
+  {
+   "id": "civic",
+   "name": {
+    "tc": "民生模式",
+    "en": "Civic Mode"
+   },
+   "question": {
+    "tc": "我嗰區有冇停水／停車位／空氣差？",
+    "en": "Any water suspension, parking or bad air in my district?"
+   },
+   "trigger": null,
+   "panels": [
+    "ai_brief",
+    "water_suspension_list",
+    "stations_status",
+    "aqhi_gauge_grid",
+    "carpark_vacancy_list",
+    "breaking_news_list"
+   ],
+   "layers": [
+    "water_suspension",
+    "water_suspension_districts",
+    "aed_locations"
+   ],
+   "window": "now",
+   "location_scope": "district",
+   "order": [
+    "water_suspension_list",
+    "stations_status",
+    "aqhi_gauge_grid",
+    "carpark_vacancy_list",
+    "breaking_news_list"
+   ]
+  },
+  {
+   "id": "live",
+   "name": {
+    "tc": "直擊模式",
+    "en": "Live Mode"
+   },
+   "question": {
+    "tc": "而家香港發生緊咩事？",
+    "en": "What is happening in Hong Kong right now?"
+   },
+   "trigger": null,
+   "panels": [
+    "ai_brief",
+    "live_wall",
+    "breaking_news_list",
+    "cameras_wall",
+    "hko_cameras_wall",
+    "special_traffic_list"
+   ],
+   "layers": [
+    "cameras_all",
+    "hko_cameras"
+   ],
+   "window": "now",
+   "location_scope": "hk",
+   "order": [
+    "live_wall",
+    "breaking_news_list",
+    "cameras_wall",
+    "hko_cameras_wall",
+    "special_traffic_list"
+   ]
+  }
+ ]
 }

@@ -11,7 +11,7 @@
 // raw.githubusercontent aborted the aircraft panel still renders from the bundle.
 import { chromium } from "playwright-core";
 
-const BASE = process.argv[2] ?? "http://127.0.0.1:4173/";
+const BASE = process.argv[2] ?? (process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/");
 const BLOCK = process.env.BLOCK_LIVE === "1";
 const exe = process.env.CHROME_PATH ?? process.env.HKCM_CHROME
   ?? "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";

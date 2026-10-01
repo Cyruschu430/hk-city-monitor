@@ -19,7 +19,7 @@
 
 import { chromium } from "playwright-core";
 
-const BASE = process.argv[2] ?? process.env.BASE ?? "http://127.0.0.1:4173/";
+const BASE = process.argv[2] ?? process.env.BASE ?? (process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/");
 const BUDGET = 34;
 const SETTLE_MS = 35_000; // long enough for the below-the-fold panels to fire
 

@@ -27,7 +27,7 @@ import { createPanelEngine } from "./ui/panels.ts";
 import { analyse } from "./lib/analytics/index.ts";
 import { emptyStore, BASELINE_VERSION, type BaselineStore } from "./lib/analytics/baseline.ts";
 import type { RuleDef } from "./lib/analytics/rules.ts";
-import { createRail, type RailLayer } from "./ui/rail.ts";
+import { createRail } from "./ui/rail.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
 import { createMapHead, relabelMapHead } from "./ui/maphead.ts";
 import { createTicker } from "./ui/ticker.ts";
@@ -89,7 +89,7 @@ const TRIGGER_POLL_MS = 3 * 60_000;
     a rule can fire the moment a panel reports, without waiting for a fetch. */
 const ANALYSIS_INTERVAL_MS = 30_000;
 
-const RAIL_LAYERS: RailLayer[] = [
+const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean }[] = [
   { id: "cameras_td", label: { tc: "運輸署相機", en: "TD cameras" }, on: true },
   { id: "cameras_hko", label: { tc: "天文台相機", en: "HKO cameras" }, on: true },
   // 航機（ADS-B）withdrawn from the shipped UI 2026-09-23.
@@ -210,20 +210,18 @@ async function boot(): Promise<void> {
   const layerEl = h("div", { class: "layer-control" });
   hudEl.append(layerEl);
   const layerControl = createLayerControl(layerEl, (row, on) => {
-    // A rail row is driven by CLICKING the rail's own button, not by calling
-    // toggleLayer directly. Setting aria-pressed and calling the toggle bypasses
-    // the rail's onclick, so the button's own next-click calculation
-    // (`next = aria-pressed !== "true"`) then computes the OPPOSITE of what the
-    // user expects — clicking the row turned the layer on, and the next click on
-    // the rail button turned it on again instead of off (measured: wind reported
-    // 0 features inside the harness while working in isolation).
-    //
-    // One implementation of "on": the button owns the state, and both controls
-    // press it.
+    // A RAIL layer's row is now the ONLY control for it (2026-10-01: the rail's
+    // layer icons were removed — Cyrus: "堆icon panel is abundant"). So the row
+    // drives the same `toggleLayer` path the rail button used to, including the
+    // persisted `layerOn` set that `?layers=` is built from. It must NOT be
+    // handled by the visibility-only path below: a rail layer that was never
+    // drawn has no MapLibre layer to hide, so a row click would do nothing.
     if (row.kind === "rail" && row.railId) {
-      const btn = rail.layerButton(row.railId);
-      const isOn = btn?.getAttribute("aria-pressed") === "true";
-      if (btn && isOn !== on) btn.click();
+      if (on) layerOn.add(row.railId);
+      else layerOn.delete(row.railId);
+      writeLayerState();
+      void toggleLayer(row.railId, on);
+      layerControl.syncRail([...layerOn]);
       return;
     }
     // A vertical row: visibility only. The mode still owns WHICH layers exist,
@@ -355,7 +353,15 @@ async function boot(): Promise<void> {
   const ctx = { registry, raster: browserRasterizer };
   const triggerState: State = {};
   let currentMode = "overview";
-  let userPinned = false;
+  // TRUE from the first paint, which is Cyrus's decision of 2026-10-01: "我想user
+  // 一入就set default 模式 總覽". It used to be false, and with false the trigger
+  // engine switched the dashboard into 停水模式 the moment a 食水 notice was in
+  // force — measured today: a fresh load opened on water_supply with 2 panels
+  // instead of the overview's 18. The signal is still delivered, it just arrives
+  // as the same "偵測到：停水模式 / 切換" card a returning user gets, so the reader
+  // decides whether the city's water is their question. Auto-switching is right
+  // for an emergency broadcast; this is a dashboard the user opens on purpose.
+  let userPinned = true;
   let pendingVertical: VerticalDefRaw | null = null;
   // Districts that currently have a live suspension — the map layer tints
   // exactly these, so the polygon layer and the panel cannot disagree.
@@ -636,27 +642,15 @@ async function boot(): Promise<void> {
   }
 
   const layerOn = readLayerState();
-  const rail = createRail(
-    railEl,
-    registry.verticals,
-    RAIL_LAYERS.map((l) => ({ ...l, on: layerOn.has(l.id) })),
-    {
-      onMode: (id) => activateMode(id, true),
-      onToggleLayer: (id, on) => {
-        if (on) layerOn.add(id);
-        else layerOn.delete(id);
-        writeLayerState();
-        void toggleLayer(id, on);
-        // Mirror onto the LAYERS control so the two never disagree about what is
-        // switched on — a user reading either one sees the same answer.
-        layerControl.syncRail([...layerOn]);
-      },
-    },
-  );
+  const rail = createRail(railEl, registry.verticals, {
+    onMode: (id) => activateMode(id, true),
+  });
 
-  /** Layer ids the rail currently has on, read from its own buttons. */
+  /** Layer ids currently on. `layerOn` is the single source of truth now that the
+   *  rail's own layer buttons are gone — before, this read them back from the
+   *  rail's `aria-pressed`, which was a second copy of the same fact. */
   function railOn(): string[] {
-    return rail.layersOn();
+    return [...layerOn];
   }
 
   /** Banner: a bold one-line title (what happened) plus an optional dim detail
@@ -790,7 +784,6 @@ async function boot(): Promise<void> {
   // The rail toggles operate on the same layers.json definitions a vertical
   // uses — one definition, one renderer, whether the user or the config asked.
   async function toggleLayer(id: string, on: boolean): Promise<void> {
-    rail.setLayerError(id, null);
     try {
       switch (id) {
         case "cameras_td":
@@ -913,10 +906,10 @@ async function boot(): Promise<void> {
         }
       }
     } catch (err) {
-      // A layer that cannot load says so on its own control — with the network
-      // off this is the 3D error state, never a blank scene.
+      // A layer that cannot load says so in the banner below — the rail button it
+      // used to also colour red is gone, and the banner is the honest report: with
+      // the network off this is the 3D error state, never a blank scene.
       const msg = err instanceof Error ? err.message : String(err);
-      rail.setLayerError(id, msg);
       showBanner(lang() === "tc" ? `圖層開唔到：${id}` : `Layer failed: ${id}`, {
         label: lang() === "tc" ? "閂" : "Dismiss",
         run: hideBanner,

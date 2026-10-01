@@ -94,6 +94,12 @@ function glyphFor(def: LayerDefRaw): GlyphId | null {
 const COLLAPSE_KEY = "hkcm.lyrCollapsed";
 const BODY_ID = "lyr-list";
 
+/** The quick search's query and the "on only" filter, held across a rebuild. A mode
+ *  switch calls `setRows()` → `build()`, and rebuild is the normal case here, not an
+ *  edge one — so these live beside `collapsed` rather than inside the closure. */
+let query = "";
+let onOnly = false;
+
 let collapsed = ((): boolean => {
   try {
     return localStorage.getItem(COLLAPSE_KEY) === "1";
@@ -183,6 +189,46 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
         ),
       );
     }
+
+    // QUICK SEARCH AND FILTER (Cyrus 2026-10-01: "加個功能在layer lengend (quick
+    // search and filter 仲好)"). Both were needed the moment the rail's layer icons
+    // went away: the LAYERS control is now the only way to reach a layer, and a mode
+    // that asks for twelve of them makes finding one a read-the-whole-list job.
+    //
+    // The query is held in module state, not read back off the input, because a mode
+    // switch rebuilds the control — reading it back after `clear(el)` gives "" and the
+    // filter silently forgets what the user just typed. Same failure shape as
+    // Pitfall 15 (a preference with no boot state).
+    const search = h("input", {
+      class: "lyr-q",
+      type: "search",
+      value: query,
+      placeholder: lang() === "tc" ? "搵圖層…" : "Search layers…",
+      "aria-label": lang() === "tc" ? "搵圖層" : "Search layers",
+    }) as HTMLInputElement;
+    // One filter, not three tabs: with the ✕ per row already handling "I do not want
+    // this", the only remaining question is "what is on right now" — which is the one
+    // a reader asks after a mode switch has drawn a dozen glyphs over the territory.
+    const onOnlyBtn = h(
+      "button",
+      {
+        class: "lyr-f",
+        type: "button",
+        "aria-pressed": String(onOnly),
+        title: lang() === "tc" ? "只顯示已開嘅圖層" : "Only layers that are on",
+      },
+      lang() === "tc" ? "只顯示已開" : "On only",
+    ) as HTMLButtonElement;
+    const shownCount = h("span", { class: "lyr-shown" });
+    const controls = h("div", { class: "lyr-filter" }, search, onOnlyBtn, shownCount);
+    const empty = h("div", { class: "lyr-empty", hidden: "true" },
+      lang() === "tc" ? "冇符合嘅圖層" : "No layer matches");
+    body.append(controls, empty);
+
+    /** Row elements in paint order, with the text the search reads and the state the
+        filter reads. `isOn` reads the ROW's own aria-checked, so it cannot disagree
+        with what the checkbox shows. */
+    const items: { el: HTMLElement; text: string; isOn: () => boolean }[] = [];
 
     for (const row of rows) {
       // A layer the user removed stays removed for as long as the mode asks for the
@@ -285,7 +331,36 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
       );
       wrap.append(note);
       body.append(wrap);
+      // Both languages, the id and the source name: a user searching 「相機」, "cam"
+      // or "camera" finds the same row, and the id catches a name nobody translated.
+      items.push({
+        el: wrap,
+        text: `${label.tc} ${label.en} ${row.def.id} ${row.sourceName}`.toLowerCase(),
+        isOn: () => btn.getAttribute("aria-checked") === "true",
+      });
     }
+
+    function applyFilter(): void {
+      const q = query.trim().toLowerCase();
+      let shown = 0;
+      for (const it of items) {
+        const hit = (q === "" || it.text.includes(q)) && (!onOnly || it.isOn());
+        it.el.hidden = !hit;
+        if (hit) shown++;
+      }
+      empty.hidden = shown > 0;
+      shownCount.textContent = `${shown}/${items.length}`;
+    }
+    search.addEventListener("input", () => {
+      query = search.value;
+      applyFilter();
+    });
+    onOnlyBtn.addEventListener("click", () => {
+      onOnly = !onOnly;
+      onOnlyBtn.setAttribute("aria-pressed", String(onOnly));
+      applyFilter();
+    });
+    applyFilter();
 
     el.append(head, body);
     paintCollapsed();

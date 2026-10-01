@@ -134,6 +134,24 @@ a:hover{color:var(--cyan)}
   background:rgba(34,211,238,.16);color:#dff6ff;
   font-family:var(--font-mono);font-size:11px;font-variant-numeric:tabular-nums}
 .lyr-key-t{font-size:11px;line-height:1.35;color:var(--map-face-dim);min-width:0}
+/* Quick search + filter. Sits ABOVE the rows and inside the collapsible body, so a
+   reader who collapsed the list is not offered a search box for a list they hid. */
+.lyr-filter{display:flex;align-items:center;gap:6px;padding:4px 9px 6px}
+.lyr-q{flex:1 1 auto;min-width:0;height:24px;padding:0 7px;border-radius:4px;
+  border:1px solid rgba(120,160,220,.22);background:rgba(10,18,30,.55);
+  color:var(--map-face);font-family:var(--font-ui);font-size:11px}
+.lyr-q::placeholder{color:var(--map-face-weak)}
+.lyr-q:focus{outline:none;border-color:var(--cyan)}
+.lyr-f{flex:0 0 auto;height:24px;padding:0 7px;border-radius:4px;cursor:pointer;
+  border:1px solid rgba(120,160,220,.22);background:transparent;
+  color:var(--map-face-dim);font-family:var(--font-ui);font-size:10px}
+.lyr-f:hover{background:rgba(120,160,220,.10)}
+/* The pressed state has to be legible without colour alone (the filter also changes
+   what is IN the list), so it carries a border and a weight change as well. */
+.lyr-f[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan);font-weight:600}
+.lyr-shown{flex:0 0 auto;font-family:var(--font-mono);font-size:10px;color:var(--map-face-weak);
+  min-width:26px;text-align:right}
+.lyr-empty{padding:6px 9px 8px;font-size:11px;color:var(--map-face-weak)}
 .lyr-item{display:flex;flex-direction:column}
 .lyr-line{display:flex;align-items:center;gap:2px}
 .lyr-row{display:flex;align-items:center;gap:7px;flex:1 1 auto;min-width:0;

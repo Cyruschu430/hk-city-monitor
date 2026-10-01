@@ -861,6 +861,14 @@ export function aircraftToGeoJson(aircraft: Aircraft[]): GeoJSON.FeatureCollecti
       properties: {
         hex: a.hex,
         flight: a.flight || a.hex.toUpperCase(),
+        // THE POPUP TITLE NEEDS A FIELD CALLED EXACTLY `Name`. MEASURED 2026-10-01
+        // (Cyrus: "點解display 未命名"): the shared popup builder takes its heading
+        // from `Name` and falls back to 未命名, so every aircraft popup opened titled
+        // 未命名 while the callsign sat in the row below it, labelled 航班 — the
+        // callsign was on screen the whole time, just not in the heading. The builder
+        // also SKIPS `Name` when it lists the body rows, so this adds the heading
+        // without printing the callsign twice.
+        Name: a.flight || a.hex.toUpperCase(),
         altFt: a.altFt,
         onGround: a.onGround,
         gsKt: a.gsKt,

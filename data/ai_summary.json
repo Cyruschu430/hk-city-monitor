@@ -1,0 +1,40 @@
+{
+ "generated": "2026-10-01T22:10:04+08:00",
+ "model": "google/gemma-4-31b-it:free",
+ "provenance": {
+  "generator": "LLM summary of published open data",
+  "inputs": [
+   {
+    "file": "aircraft.json",
+    "from": "live-data",
+    "observed": 1790852103501
+   },
+   {
+    "file": "berth_vacancy.json",
+    "from": "live-data",
+    "observed": "2026-10-01 18:55"
+   },
+   {
+    "file": "water_suspension.json",
+    "from": "live-data",
+    "observed": "2026-10-01T18:57:23+08:00"
+   },
+   {
+    "file": "carpark_info.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "baselines.json",
+    "from": "bundle",
+    "observed": null
+   }
+  ],
+  "frequency": "2x daily (08:00, 20:00 HKT)",
+  "disclaimer": "AI-generated from the figures above. It is not analysis, not advice, and not an official notice."
+ },
+ "brief": {
+  "tc": "目前有62架飛機，其中49架在空中，13架在地面。碼頭共有120個泊位，其中27個空置。",
+  "en": "There are 62 aircraft, with 49 airborne and 13 on the ground. Out of 120 berths, 27 are vacant."
+ }
+}

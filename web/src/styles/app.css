@@ -182,8 +182,13 @@ a:hover{color:var(--cyan)}
   font-size:11px;line-height:1.45;color:var(--dim)}
 .foot-row{display:flex;align-items:center;gap:10px;margin-bottom:3px;flex-wrap:wrap}
 .foot-author{color:var(--txt);font-family:var(--font-ui)}
-.foot-link{color:var(--cyan);text-decoration:none;border-bottom:1px solid transparent}
-.foot-link:hover{border-bottom-color:var(--cyan)}
+/* MEASURED 2026-10-01: --cyan is #0e7f97 in the light theme, which is 4.15:1 on this surface
+   (needs 4.5) - check:contrast caught exactly these two links. Underlining carries the "link"
+   signal instead of colour, so it survives every theme, and the hover keeps the cyan for anyone
+   who does not need it to be readable on white. */
+.foot-link{color:var(--txt);text-decoration:underline;text-underline-offset:2px;
+  text-decoration-color:var(--hairline-hi)}
+.foot-link:hover{color:var(--cyan)}
 .foot-data{margin:0;color:var(--dim)}
 .foot-note{margin:2px 0 0;color:var(--faint)}
 

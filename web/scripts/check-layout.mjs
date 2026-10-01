@@ -68,7 +68,7 @@ const r = await page.evaluate(() => {
     map: map ? R(map) : null,
     mapWrap: R(document.querySelector("#mapWrap")),
     panelCol: R(document.querySelector("#panelCol")),
-    rail: R(document.querySelector("#rail")),
+    modeSel: R(document.querySelector(".mode-sel")),
     panelCount: panels.length,
     visibleOnFirstScreen: boxes.filter((b) => b.y < innerHeight).length,
     panelColScroll: { scrollH: panelsEl.scrollHeight, clientH: panelsEl.clientHeight },

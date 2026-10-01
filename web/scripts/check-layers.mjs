@@ -80,14 +80,25 @@ const clickRow = (id) => page.evaluate((r) => {
   return true;
 }, id);
 
-// ── 1. Every LAYERS row that claims a rail link has a rail button to link to.
+// ── 1. EVERY RAIL LAYER IS REACHABLE FROM THE LAYERS CONTROL, AND ONLY FROM THERE.
+//
+// Until 2026-10-01 each of these layers had TWO entry points: a 1.5px glyph on the left rail
+// and a row here. Cyrus removed the rail's layer icons ("堆icon panel is abundant"), so the
+// assertion flips direction rather than disappearing — it now guards that every rail layer HAS
+// a row, and that no layer icon has crept back onto the rail. A second control that nobody
+// maintains is exactly how the two drifted apart; the `aria-pressed` bug this block was written
+// for (a row that turned a layer on, then a rail click that turned it on again) needed two
+// controls to exist at all.
 const entries = await page.evaluate(() => {
   const rows = [...document.querySelectorAll(".lyr-row[data-rail]")].map((r) => r.dataset.rail);
   const btns = [...document.querySelectorAll(".rail-btn[data-rail]")].map((b) => b.dataset.rail);
-  return { rows, btns, orphanRows: rows.filter((r) => !btns.includes(r)) };
+  return { rows, btns };
 });
-ok(entries.btns.length > 0, "no .rail-btn[data-rail] at all — the rail's layer buttons are not addressable, so nothing can verify them");
-ok(entries.orphanRows.length === 0, `LAYERS rows drive rail buttons that do not exist: ${entries.orphanRows.join(", ")}`);
+ok(entries.btns.length === 0,
+  `the rail carries ${entries.btns.length} layer buttons again (${entries.btns.join(", ")}) — the LAYERS control is the only control for a rail layer`);
+ok(entries.rows.length > 0, "no .lyr-row[data-rail] at all — a rail layer has no control anywhere, which is worse than two");
+ok(entries.btns.every((b) => entries.rows.includes(b)) || entries.btns.length === 0,
+  "a rail layer button exists whose LAYERS row does not");
 
 // ── 2. The TD camera layer: on by default, real, and its map layers exist.
 const td0 = await rowInfo("cameras_td");
@@ -123,17 +134,18 @@ ok(Object.values(hkoOff).every((v) => v === "none"), `toggling HKO off left laye
 await clickRow("cameras_hko");
 await page.waitForTimeout(800);
 
-// ── 5. The rail button IS the single implementation of "on": the row drives it, so clicking the
-//      row must flip the BUTTON, not just the row. This is the bug that made the row turn a layer
-//      ON and then the next rail click turn it on again.
-const railSync = await page.evaluate(() => {
-  const btn = document.querySelector('.rail-btn[data-rail="cameras_td"]');
+// ── 5. ONE CONTROL, ONE STATE. The row IS the control now (see block 1), so what has to hold is
+//      that the row's own `aria-checked` and the map agree: the state lives in the row and in
+//      `layerOn`, and nothing else keeps a copy of it.
+const rowState = await page.evaluate(() => {
   const row = document.querySelector('.lyr-item[data-row="cameras_td"] .lyr-row');
-  return { btnPressed: btn?.getAttribute("aria-pressed"), rowChecked: row?.getAttribute("aria-checked") };
+  return { checked: row?.getAttribute("aria-checked") };
 });
-ok(railSync.btnPressed !== null, "no .rail-btn[data-rail=cameras_td] — the rail button is unreachable");
-ok(railSync.btnPressed === railSync.rowChecked,
-  `the row and the rail disagree about TD being on: row=${railSync.rowChecked} rail=${railSync.btnPressed}`);
+ok(rowState.checked === "true",
+  `the TD row should read checked after being toggled back on, got ${rowState.checked}`);
+const tdAfter = await vis(TD);
+ok(Object.values(tdAfter).every((v) => v === "visible"),
+  `the row says on but the map disagrees: ${JSON.stringify(tdAfter)}`);
 
 // ── 6. 3D IS GONE, and this asserts it stays gone.
 //
@@ -170,9 +182,9 @@ const loadedBefore = await page.evaluate(() =>
 ok(!loadedBefore, "the 3MB GeoJSON was fetched BEFORE the toggle was pressed — it is not lazy");
 
 const toggleRfz = (id) => page.evaluate((r) => {
-  const btn = document.querySelector(`.rail-btn[data-rail="${r}"]`);
-  if (!btn) return false;
-  btn.click();
+  const row = document.querySelector(`.lyr-item[data-row="${r}"] .lyr-row`);
+  if (!row) return false;
+  row.click();
   return true;
 }, id);
 const rfzFeat = () => page.evaluate(() => {
@@ -202,7 +214,7 @@ ok(!r1, "toggling the RFZ layer off left its source on the map — the toggle on
 
 await browser.close();
 console.log(`drone RFZ: lazy=${!loadedBefore} default=${rfz.checked} features=${r0.features} rendered=${r0.rendered} removed=${!r1}`);
-console.log(`entry points: ${entries.btns.length} rail buttons, ${entries.rows.length} rows, 0 orphaned`);
+console.log(`entry points: ${entries.rows.length} LAYERS rows, ${entries.btns.length} rail layer buttons (0 = the rail is modes only)`);
 console.log(`TD camera layer: default=${td0.checked} "${td0.label}"  off=${JSON.stringify(Object.values(vOff))}  on=${JSON.stringify(Object.values(vOn))}`);
 console.log(`HKO camera layer: "${hko0.label}"  off=${JSON.stringify(Object.values(hkoOff))}`);
 console.log("3D: removed from the UI (no tileset was ever configured) — absence asserted");

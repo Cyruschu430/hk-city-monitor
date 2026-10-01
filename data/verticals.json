@@ -52,7 +52,7 @@
    ],
    "window": "now",
    "location_scope": "hk",
-   "order": [
+   "order": ["ai_brief", 
     "warnings_list",
     "tc_track_image",
     "rain_nowcast_map",
@@ -84,7 +84,7 @@
    ],
    "window": "today",
    "location_scope": "hk",
-   "order": [
+   "order": ["ai_brief", 
     "tp_queue_grid",
     "crossboundary_ferry_table",
     "special_traffic_list"
@@ -121,7 +121,7 @@
    ],
    "window": "now",
    "location_scope": "district",
-   "order": [
+   "order": ["ai_brief", 
     "water_suspension_list"
    ]
   },
@@ -153,7 +153,7 @@
    ],
    "window": "today",
    "location_scope": "hk",
-   "order": [
+   "order": ["ai_brief", 
     "warnings_list",
     "radar_image",
     "rain_nowcast_map",
@@ -187,7 +187,7 @@
    ],
    "window": "now",
    "location_scope": "hk",
-   "order": [
+   "order": ["ai_brief", 
     "special_traffic_list",
     "mtr_next_train_list",
     "kmb_eta_table",
@@ -221,7 +221,7 @@
    ],
    "window": "now",
    "location_scope": "hk",
-   "order": [
+   "order": ["ai_brief", 
     "wind_status",
     "warnings_list",
     "radar_image",
@@ -256,7 +256,7 @@
    ],
    "window": "today",
    "location_scope": "hk",
-   "order": [
+   "order": ["ai_brief", 
     "flight_table",
     "crossboundary_ferry_table",
     "special_traffic_list",
@@ -286,7 +286,7 @@
    ],
    "window": "now",
    "location_scope": "district",
-   "order": [
+   "order": ["ai_brief", 
     "ae_waiting_grid",
     "aqhi_gauge_grid",
     "breaking_news_list"
@@ -318,7 +318,7 @@
    ],
    "window": "now",
    "location_scope": "district",
-   "order": [
+   "order": ["ai_brief", 
     "water_suspension_list",
     "stations_status",
     "aqhi_gauge_grid",
@@ -351,7 +351,7 @@
    ],
    "window": "now",
    "location_scope": "hk",
-   "order": [
+   "order": ["ai_brief", 
     "live_wall",
     "breaking_news_list",
     "cameras_wall",

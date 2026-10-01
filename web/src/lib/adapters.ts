@@ -203,6 +203,34 @@ async function liveWall(src: SourceDef, panel: PanelDefRaw): Promise<AdapterResu
 }
 
 const ADAPTERS: Record<string, Adapter> = {
+  // THE AI BRIEF. It reads the SAME payload the generator wrote - live copy first, committed
+  // snapshot as the fallback - so the panel's timestamp is the model's own generation time and
+  // its age is readable rather than implied. Two lines on purpose: the prose, then who wrote it.
+  async ai_brief() {
+    const res = await fetchDataFile("data/ai_summary.json");
+    const j = (await res.json()) as {
+      generated?: string;
+      model?: string;
+      provenance?: { inputs?: { file: string }[]; frequency?: string; disclaimer?: string };
+      brief?: { tc?: string; en?: string };
+    };
+    const tc = lang() === "tc";
+    const prose = (tc ? j.brief?.tc : j.brief?.en) ?? "";
+    if (!prose) throw new Error(tc ? "簡報檔案冇內容" : "the brief file has no text");
+    const inputs = (j.provenance?.inputs ?? []).map((i) => i.file.replace(/\.json$/, "")).join(" · ");
+    return {
+      data: {
+        kind: "list" as const,
+        items: [
+          { title: prose, sub: (tc ? "AI 生成 · 只覆述上方數字,可能有錯" : "AI-generated from the figures listed; may be wrong"), ok: true },
+          { title: (tc ? "由 " : "by ") + (j.model ?? "?"), sub: inputs, time: (j.generated ?? "").replace("T", " ").slice(0, 16), ok: true },
+        ],
+      },
+      observedAt: j.generated ? new Date(j.generated) : new Date(),
+    };
+  },
+
+
   async mtr_next_train(src, panel) {
     const line = String(panel.params?.["line"] ?? "ISL");
     const sta = String(panel.params?.["sta"] ?? "ADM");

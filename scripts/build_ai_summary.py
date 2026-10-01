@@ -263,12 +263,62 @@ def ask_chain(context: str) -> tuple[dict, str, list[str]]:
     raise SystemExit("every model in the chain was unavailable:\n  " + "\n  ".join(tried))
 
 
+def brief_age_hours(payload: dict) -> float | None:
+    """Hours since the published brief was generated, or None when it cannot be read."""
+    try:
+        when = datetime.fromisoformat(str(payload["generated"]))
+    except (KeyError, ValueError):
+        return None
+    return (datetime.now(HKT) - when).total_seconds() / 3600
+
+
+def published_brief() -> dict | None:
+    try:
+        req = urllib.request.Request(f"{LIVE_BASE}/ai_summary.json", headers={"User-Agent": "hkcm-ai-brief"})
+        with urllib.request.urlopen(req, timeout=20) as res:
+            return json.loads(res.read().decode())
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
+        return None
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/ai_summary.json")
     ap.add_argument("--dry-run", action="store_true", help="print the context and stop")
     ap.add_argument("--offline", action="store_true", help="ignore the live-data branch")
+    ap.add_argument(
+        "--skip-if-fresh",
+        type=float,
+        default=0.0,
+        metavar="HOURS",
+        help="exit 0 without calling the model when the published brief is younger than this",
+    )
+    ap.add_argument("--self-test", action="store_true", help="assert the freshness rule and exit")
     args = ap.parse_args()
+
+    if args.self_test:
+        # The freshness rule, asserted rather than trusted: a brief from now is fresh, one from
+        # eight hours ago is not, and an unreadable timestamp is not fresh either (unknown must
+        # never read as "no need to work").
+        now = datetime.now(HKT)
+        assert brief_age_hours({"generated": now.isoformat()}) is not None
+        assert brief_age_hours({"generated": (now - timedelta(hours=8)).isoformat()}) > 6.0
+        assert brief_age_hours({"generated": "not a date"}) is None
+        assert brief_age_hours({}) is None
+        print("SELF-TEST OK  freshness rule holds (fresh / 8h-old / unreadable / missing)")
+        return 0
+
+    if args.skip_if_fresh > 0:
+        prev = published_brief()
+        age = brief_age_hours(prev) if prev else None
+        if age is not None and age < args.skip_if_fresh:
+            # The pool is shared and sometimes busy (a whole chain answered 429 at 14:11 UTC on
+            # 2026-10-01). The cron therefore fires more often than the brief should be rebuilt:
+            # an attempt that finds a recent brief leaves it alone, so the PUBLISHED frequency
+            # stays the two a day that were reported, while a failed attempt gets another chance
+            # half an hour later instead of losing the slot entirely.
+            print(f"skip     published brief is {age:.1f}h old (< {args.skip_if_fresh}h) - nothing to do")
+            return 0
 
     facts, inputs, warnings = build_context(args.offline)
     for w in warnings:

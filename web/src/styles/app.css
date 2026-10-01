@@ -362,6 +362,14 @@ a:hover{color:var(--cyan)}
 .gh-btn{border:1px solid var(--hairline);border-radius:4px;padding:1px 7px;font-size:11px;
   color:var(--txt);text-decoration:none;white-space:nowrap}
 .gh-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+/* A warning glyph, inline before the text. inline-block with a nudge, NOT a flex row: the row
+   is a plain block and making it flex would move every line of every list in the app. */
+.pi-icon{width:13px;height:13px;display:inline-block;vertical-align:-2px;margin-right:4px;
+  color:var(--amber)}
+.plist li.ok-line .pi-icon{color:var(--ok)}
+/* Text that used to be a link: the URL moved to the tooltip, so it must stop looking
+   clickable - a pointer cursor on something that does nothing is a broken promise. */
+.src-hold{text-decoration:none;cursor:inherit}
 /* The clock is part of the placard's sentence - WHAT, and AS OF WHEN - so it shares the
    baseline instead of drifting onto its own row. */
 #mapHead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}

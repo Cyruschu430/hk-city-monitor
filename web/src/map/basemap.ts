@@ -40,10 +40,19 @@ export function createMap(container: HTMLElement): maplibregl.Map {
     "bottom-left",
   );
   map.addControl(
-    // customAttribution removed (Cyrus 2026-10-02: the LandsD text overlapped something on the
-    // map face). It duplicated the always-visible badge below, which is the one the licence
-    // requires - two copies of one sentence in the same corner is a defect, not extra credit.
-    new maplibregl.AttributionControl({ compact: true }),
+    // The LAND are done by the badge below; the IMAGERY is Esri's, and Esri requires its own
+    // credit: "Esri attribution is the requirement to display 'Powered by Esri' text in all
+    // applications that use Esri technology including ... content, or services", positioned at
+    // the bottom-right of the main application and linked to esri.com (developers.arcgis.com,
+    // read 2026-10-02). The World Imagery credit string is the service's own. The LandsD text
+    // that used to be here stays removed: it repeated the badge, and a duplicate in the same
+    // corner is a defect, not extra credit.
+    new maplibregl.AttributionControl({
+      compact: true,
+      customAttribution:
+        'Powered by <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>' +
+        " · Imagery: Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+    }),
     "bottom-right",
   );
   return map;

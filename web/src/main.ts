@@ -40,7 +40,7 @@ import { createGroupTabs, labelFor, type GroupTab } from "./ui/grouptabs.ts";
 const OVERVIEW = [
   // FIRST because it is the only panel that speaks: a free model reading the published
   // figures back in two sentences. Cyrus asked for it on top and the anomaly panel gone.
-  "ai_brief",
+  // "ai_brief", // A/B TEST
   // The conclusion panel goes FIRST: it is the only surface that answers "so what", and every
   // other panel is evidence for it. It is FED rather than fetched (see FED_PANEL_IDS in
   // ui/panels.ts) because it is drawn FROM the other panels, not from a source.

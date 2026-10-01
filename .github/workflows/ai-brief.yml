@@ -21,8 +21,13 @@ name: ai-brief
 # names a model is refused outright by an auto-only key - so the restriction meant to save money
 # breaks the job. A named `:free` model costs nothing, which is the property actually wanted.
 on:
+  # Two SLOTS a day, each with a second attempt half an hour later. The script skips its own
+  # model call when the published brief is under 6 hours old, so the second attempt only does
+  # work when the first one failed on a busy shared pool - the published frequency stays the
+  # two-a-day that was reported.
   schedule:
     - cron: "0 0,12 * * *"
+    - cron: "30 0,12 * * *"
   workflow_dispatch:
 
 permissions:
@@ -40,7 +45,7 @@ jobs:
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           HKCM_AI_MODEL: ${{ vars.HKCM_AI_MODEL }}
-        run: python3 scripts/build_ai_summary.py --out data/ai_summary.json
+        run: python3 scripts/build_ai_summary.py --skip-if-fresh 6 --out data/ai_summary.json
 
       - name: Publish it to the live-data branch
         run: python3 scripts/publish_live.py data/ai_summary.json

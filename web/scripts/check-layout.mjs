@@ -155,7 +155,7 @@ if (orderBefore.length < 2) {
   if (!dispatched) problems.push("the first panel has no .panel-head — there is nothing to drag by");
   if (orderAfter[0] !== orderBefore[1] || orderAfter[1] !== orderBefore[0])
     problems.push(`the drag did not reorder the column: ${orderBefore.slice(0, 2)} → ${orderAfter.slice(0, 2)}`);
-  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("hkcm.panelsOrder") ?? "[]"));
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("hkcm.panelsOrder.v2") ?? "[]"));
   if (saved[0] !== orderAfter[0]) problems.push(`the dropped order was not persisted (${JSON.stringify(saved.slice(0, 2))})`);
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => document.body.dataset.ready === "1", null, { timeout: 45_000 }).catch(() => {});

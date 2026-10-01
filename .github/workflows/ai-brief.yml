@@ -47,8 +47,21 @@ jobs:
           HKCM_AI_MODEL: ${{ vars.HKCM_AI_MODEL }}
         run: python3 scripts/build_ai_summary.py --skip-if-fresh 6 --out data/ai_summary.json
 
-      - name: Publish it to the live-data branch
-        run: python3 scripts/publish_live.py data/ai_summary.json
+      # THE BRANCH IS FORCE-PUSHED AS ONE ORPHAN COMMIT, so a file that is not named here is
+      # DELETED from it. Calling publish_live.py with ai_summary.json alone would have taken the
+      # aircraft, berth and water panels down - and the checkout this job runs in holds the
+      # COMMITTED snapshots of those three, which are up to a week old, so simply naming them
+      # would have replaced live values with stale ones. Fetch the current copies first, and
+      # refuse to publish at all if any of them cannot be fetched: publishing nothing costs a
+      # stale brief, publishing without them costs three panels.
+      - name: Publish it to the live-data branch, with the files it is not responsible for
+        run: |
+          set -eu
+          for f in aircraft.json berth_vacancy.json water_suspension.json; do
+            curl -sfL "https://raw.githubusercontent.com/Cyruschu430/hk-city-monitor/live-data/$f" -o "data/$f" \
+              || { echo "REFUSING to publish: $f could not be fetched, and the force-push would delete it"; exit 1; }
+          done
+          python3 scripts/publish_live.py data/aircraft.json data/berth_vacancy.json data/water_suspension.json data/ai_summary.json
 
       - name: Print what was published
         run: python3 -c "import json;d=json.load(open('data/ai_summary.json',encoding='utf-8'));print('model',d['model']);print('tc',d['brief']['tc']);print('en',d['brief']['en'])"

@@ -40,7 +40,10 @@ export function createMap(container: HTMLElement): maplibregl.Map {
     "bottom-left",
   );
   map.addControl(
-    new maplibregl.AttributionControl({ compact: true, customAttribution: "Map from Lands Department 地政總署" }),
+    // customAttribution removed (Cyrus 2026-10-02: the LandsD text overlapped something on the
+    // map face). It duplicated the always-visible badge below, which is the one the licence
+    // requires - two copies of one sentence in the same corner is a defect, not extra credit.
+    new maplibregl.AttributionControl({ compact: true }),
     "bottom-right",
   );
   return map;

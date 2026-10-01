@@ -47,7 +47,8 @@ const LABELS = {
 
 export function createStatusBar(root: HTMLElement): StatusBar {
   clear(root);
-  const pulse = h("span", { class: "live-pulse", title: "live" });
+  // The live dot is gone (Cyrus 2026-10-02): it read as decoration. Offline is shown on the
+  // coverage line instead, which is always in the DOM.
   // THE MODE CONTROL LIVES HERE NOW (Cyrus 2026-10-01: "Remove 最左個icon bar menu").
   // The rail was a 56px column of 1.5px glyphs whose whole job was picking one of ten
   // values, next to a header that already had to print which value was active ("模式 總覽").
@@ -170,13 +171,35 @@ export function createStatusBar(root: HTMLElement): StatusBar {
     },
     lang() === "tc" ? "由 Cyrus Chu 建立 · 資料 © 各發布者" : "Built by Cyrus Chu · data © the publishers",
   );
-  const coverWrap = h("div", { class: "coverage", title: "" }, h("span", { class: "cover-dot" }), coverEl, creditsEl);
+  // Cyrus asked for a GitHub button here ("here could insert a Github button to the repo
+  // maybe?? what do you think?") - yes: a labelled target beats an unlabelled link, and a reader
+  // checking a claim should see where the code lives. Quiet styling, so it does not compete with
+  // the data on the same line.
+  const repoBtn = h(
+    "a",
+    {
+      class: "gh-btn",
+      href: "https://github.com/Cyruschu430/hk-city-monitor",
+      target: "_blank",
+      rel: "noopener noreferrer",
+      title: lang() === "tc" ? "開源原始碼（AGPL-3.0）" : "Source code (AGPL-3.0)",
+    },
+    lang() === "tc" ? "GitHub 原始碼" : "Source on GitHub",
+  );
+  const coverWrap = h(
+    "div",
+    { class: "coverage", title: "" },
+    h("span", { class: "cover-dot" }),
+    coverEl,
+    repoBtn,
+    creditsEl,
+  );
 
   root.append(
     h(
       "div",
       { class: "sb-row1" },
-      h("div", { class: "brand" }, pulse, h("img", { class: "brand-icon", src: "/icon-192.png", alt: "" }), h("h1", {}, "HK CITY MONITOR"), h("span", { class: "sub" }, "香港城市監察")),
+      h("div", { class: "brand" }, h("img", { class: "brand-icon", src: "/icon-192.png", alt: "" }), h("h1", {}, "HK CITY MONITOR"), h("span", { class: "sub" }, "香港城市監察")),
       h(
         "div",
         { class: "meta" },
@@ -242,10 +265,12 @@ export function createStatusBar(root: HTMLElement): StatusBar {
       // the whole catalog — the catalog figure is stated separately so the two
       // can never be read as the same claim.
       const parts: string[] = [];
-      parts.push(tc ? `${s.live}/${s.total} 個面板來源正常` : `${s.live}/${s.total} panel sources healthy`);
+      // A health sentence, not a fragment: the old line read "4/18 個面板來源正常", which looks
+      // like a failure rather than a page that has only loaded four panels so far.
+      parts.push(tc ? `已載入面板來源 ${s.live}/${s.total} 個正常` : `Panel sources ${s.live}/${s.total} ok`);
       if (s.error > 0) parts.push(tc ? `${s.error} 個出錯` : `${s.error} failed`);
       if (s.stale > 0) parts.push(tc ? `${s.stale} 個過期` : `${s.stale} stale`);
-      parts.push(tc ? `目錄共 ${s.catalog} 個源` : `${s.catalog} in catalog`);
+      parts.push(tc ? `目錄 ${s.catalog} 個公開資料源` : `${s.catalog} public sources in catalog`);
       coverEl.textContent = (tc ? "覆蓋：" : "Coverage: ") + parts.join(" · ");
       coverWrap.setAttribute("data-health", s.error > 0 ? "bad" : s.stale > 0 ? "warn" : "ok");
     },

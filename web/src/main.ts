@@ -164,7 +164,10 @@ async function boot(): Promise<void> {
   const panelsEl = document.getElementById("panels")!;
   // The footer closes the panel column: authorship, licence, and the publishers this is built
   // on. Wording is Cyrus's call — see footer.ts for why it credits rather than disclaims.
-  createFooter(document.getElementById("panelCol")!);
+  // Under the map AND the panels (Cyrus 2026-10-02). Appended to the body rather than to
+  // #layout: #layout is the two-column grid, so a footer inside it would be a grid item sitting
+  // beside the map rather than below it.
+  createFooter(document.body);
   const mapEl = document.getElementById("map")!;
   const hudEl = document.getElementById("mapHud")!;
   const drawerEl = document.getElementById("drawer")!;
@@ -950,7 +953,9 @@ async function boot(): Promise<void> {
   }
 
   // --- online / offline -------------------------------------------------------
-  const pulse = document.querySelector<HTMLElement>(".live-pulse")!;
+  // The brand dot is gone (Cyrus 2026-10-02). Offline is now shown on the coverage line,
+  // which is always in the DOM, so this is a plain lookup instead of an asserted one.
+  const pulse = document.querySelector<HTMLElement>(".coverage");
   window.addEventListener("offline", () => {
     pulse.classList.add("off");
     engine.refreshAll(); // every panel that cannot answer goes to its error state

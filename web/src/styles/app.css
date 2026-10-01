@@ -356,6 +356,15 @@ a:hover{color:var(--cyan)}
 .coverage[data-health="bad"] .cover-text{color:var(--amber)}
 .cover-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand-icon{width:26px;height:26px;border-radius:7px;flex:0 0 auto}
+/* Offline now shows here, since the brand dot went (see statusbar.ts). */
+.coverage.off .cover-dot{background:var(--faint);animation:none}
+/* A labelled target in the coverage row. */
+.gh-btn{border:1px solid var(--hairline);border-radius:4px;padding:1px 7px;font-size:11px;
+  color:var(--txt);text-decoration:none;white-space:nowrap}
+.gh-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+/* The clock is part of the placard's sentence - WHAT, and AS OF WHEN - so it shares the
+   baseline instead of drifting onto its own row. */
+#mapHead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 /* The grip is a pseudo-element: it exists to show the cursor and to be grabbable, and it has
    no state anyone reads, so a real element would be a node built only to be listened to.
    The listener lives on document (see initColumnResize) and hit-tests this 7px strip. */
@@ -368,7 +377,7 @@ a:hover{color:var(--cyan)}
    accessibility tree with the pixels. */
 .cam-nav .cam-nav-b{display:none}
 /* discrete instrument readouts: label above value, hairline separated */
-.stat{display:flex;flex-direction:column;gap:1px;padding:0 11px;line-height:1.15;
+.stat{display:flex;flex-direction:column;gap:1px;padding:0 17px;line-height:1.15;
   border-left:1px solid var(--hairline)}
 .stat:first-child{border-left:0}
 .stat-label{font-family:var(--font-ui);font-size:11px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}

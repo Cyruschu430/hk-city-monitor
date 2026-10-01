@@ -487,6 +487,17 @@ const ADAPTERS: Record<string, Adapter> = {
     // parseFerry returns observedAt = latest 抵達時間 in the payload, so an old
     // payload immediately degrades to amber even though the request was fresh.
     const { columns, rows, observedAt } = P.parseFerry(await text(await get(src)), max);
+    // A frozen feed is not a slow one — it is STOPPED. The cross-boundary ferry
+    // service is suspended upstream, so the publisher's newest row sits months back;
+    // presenting that old timetable as a live arrival list passes a suspended
+    // service off as a schedule. Threshold and message are config
+    // (frozen_after_days / frozen_notice); observedAt is kept so the footer still
+    // shows the source and the feed's own date.
+    const frozenDays = Number(panel.params?.["frozen_after_days"]);
+    const frozenNotice = panel.params?.["frozen_notice"] as { tc: string; en: string } | undefined;
+    if (frozenDays > 0 && frozenNotice && observedAt && Date.now() - observedAt.getTime() > frozenDays * 86_400_000) {
+      return { data: { kind: "table", columns: [], rows: [], frozen: frozenNotice }, observedAt };
+    }
     return { data: { kind: "table", columns, rows }, observedAt };
   },
 

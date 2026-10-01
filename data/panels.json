@@ -245,7 +245,12 @@
     "en": "Cross-boundary Ferry Services"
    },
    "params": {
-    "max_rows": 20
+    "max_rows": 20,
+    "frozen_after_days": 30,
+    "frozen_notice": {
+     "tc": "跨境渡輪嘅班次資料已停止更新，未能顯示即時班次。",
+     "en": "Live cross-boundary ferry timetable updates have stopped; no live schedule is shown."
+    }
    },
    "cadence_note": {
     "tc": "每 5 分鐘",

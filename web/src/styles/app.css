@@ -154,13 +154,20 @@ a:hover{color:var(--cyan)}
 .lyr-empty{padding:6px 9px 8px;font-size:11px;color:var(--map-face-weak)}
 /* The stream picker, drawn on the tile it belongs to. Small and low-contrast until hovered:
    a wall of six dropdowns should read as six thumbnails, not six form fields. */
-.cam-pick{position:absolute;left:4px;top:4px;z-index:3;max-width:calc(100% - 8px);
+.cam-pick{position:absolute;left:4px;top:4px;z-index:2;max-width:52%;
   height:19px;padding:0 3px;border-radius:3px;font-size:10px;font-family:var(--font-ui);
   color:var(--map-face);background:rgba(8,14,24,.72);border:1px solid rgba(120,160,220,.28);
   opacity:.55;transition:opacity .12s}
 .cam:hover .cam-pick,.cam-pick:focus{opacity:1}
 .cam-pick option{background:#0b1220;color:#e6edf6}
-.cam.playing .cam-pick{opacity:0}   /* the player covers the tile; a control under it is a lie */
+/* MEASURED 2026-10-01: this select first shipped at `max-width:calc(100% - 8px)` with z-index 3,
+   so it reached across the tile and sat over the LIVE badge at top-right. `check:livewall` caught
+   it the only way it can be caught — the badge is the STOP control once a stream is playing, and
+   the clicks meant for it landed on the select, so no started tile could be stopped. Two fixes,
+   because either alone leaves a way back in: 52% keeps the two controls apart, and the player
+   case releases pointer events entirely rather than only fading out. */
+.cam.playing .cam-pick{opacity:0;pointer-events:none}
+.cam .fresh{z-index:4}
 /* Credits: authorship, at the far end of the coverage line. Dimmer than the coverage
    text it shares a row with, because coverage is a claim about the data and this is not. */
 .credits{margin-left:auto;font-size:10px;color:var(--faint);white-space:nowrap;

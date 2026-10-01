@@ -1335,7 +1335,7 @@
       "name": "差餉物業估價署 物業市場統計（官方樓價／租金指數）",
       "name_en": "RVD Property Market Statistics (official price / rental indices)",
       "type": "csv",
-      "url": "http://www.rvd.gov.hk/datagovhk/1.1A(86-98).csv",
+      "url": "https://www.rvd.gov.hk/datagovhk/1.1A(86-98).csv",
       "auth": "none",
       "cadence": "monthly",
       "todo": false,
@@ -1984,7 +1984,7 @@
       "name": "Special Traffic News",
       "name_en": "Special Traffic News",
       "type": "dataset",
-      "url": "http://resource.data.one.gov.hk/td/en/specialtrafficnews.xml",
+      "url": "https://resource.data.one.gov.hk/td/en/specialtrafficnews.xml",
       "candidates": [
         "http://resource.data.one.gov.hk/td/sc/specialtrafficnews.xml"
       ],
@@ -2719,7 +2719,7 @@
       "name": "Past Record of Air Pollution Index (English Version)",
       "name_en": "Past Record of Air Pollution Index (English Version)",
       "type": "dataset",
-      "url": "http://www.aqhi.gov.hk/api_history/download/hourly/eng/hr071999.csv",
+      "url": "https://www.aqhi.gov.hk/api_history/download/hourly/eng/hr071999.csv",
       "candidates": [
         "http://www.aqhi.gov.hk/api_history/download/hourly/eng/hr081999.csv",
         "http://www.aqhi.gov.hk/api_history/download/hourly/eng/hr091999.csv",
@@ -2741,7 +2741,7 @@
       "name": "Past Record of Air Pollution Index (Traditional Chinese Version)",
       "name_en": "Past Record of Air Pollution Index (Traditional Chinese Version)",
       "type": "dataset",
-      "url": "http://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr071999c.csv",
+      "url": "https://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr071999c.csv",
       "candidates": [
         "http://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr081999c.csv",
         "http://www.aqhi.gov.hk/api_history/download/hourly/tc_chi/hr091999c.csv",

@@ -105,13 +105,13 @@ await page.screenshot({ path: join(tmpdir(), "hkcm-layout.png") });
   // fetch, and the check reports "1 panel still deferred" while a human scrolling sees nothing
   // wrong. Measured 2026-10-01. The app's own commit said it first: one scroll releases two panels,
   // the next releases five.
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
     const z = document.querySelector("#panels");
     if (!z) return;
     z.scrollTop = Math.round(z.scrollHeight / 2);
+    await new Promise((r) => setTimeout(r, 700));
+    z.scrollTop = z.scrollHeight;
   });
-  await page.waitForTimeout(700);
-  await page.evaluate(() => { const z = document.querySelector("#panels"); if (z) z.scrollTop = z.scrollHeight; });
 await page.waitForTimeout(8000);
 const deferredAfterScroll = await page.evaluate(() => Number(document.body.dataset["deferredPanels"] ?? -1));
 

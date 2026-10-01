@@ -36,6 +36,7 @@ import os
 import sys
 import urllib.error
 import urllib.request
+import time
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -57,13 +58,33 @@ MAX_CONTEXT_BYTES = 4000
 # MEASURED 2026-10-01 against the public model list (openrouter.ai/api/v1/models needs no key):
 # 462 models, 16 end in `:free`, and only 6 of those support `response_format` - which this script
 # needs, because the panel renders fields rather than prose. The id this file originally carried
-# (`deepseek/deepseek-chat-v3.1:free`) DOES NOT EXIST, so the first scheduled run would have died
-# on a 400 with nothing to show for it.
+# (`deepseek/deepseek-chat-v3.1:free`) DOES NOT EXIST, so the first run would have died on a 400.
 #
-# qwen3.8-27b is the pick: free, JSON-capable, 262k context, and Chinese-native, which matters for
-# a brief that ships a Traditional Chinese sentence. The id is printed on the panel with the
-# output, so a reader can see which model wrote it.
-DEFAULT_MODEL = "qwen/qwen3.8-27b:free"
+# A CHAIN, not a model. The first live run answered HTTP 429 - "temporarily rate-limited upstream,
+# upstream_provider_shared_pool" - which is what the free tier is: a shared pool that is sometimes
+# busy at the moment a cron fires. Retrying one model at 08:00 does not help; falling through the
+# list does, and the output records which model actually answered rather than the one we asked for
+# (a brief attributed to a model that did not write it is the kind of claim this project bans).
+MODEL_CHAIN = (
+    "qwen/qwen3.8-27b:free",  # Chinese-native, JSON, 262k ctx
+    "google/gemma-4-31b-it:free",
+    "google/gemma-4-26b-a4b-it:free",
+)
+# Three more free models supported `response_format` on paper and returned an EMPTY body in
+# practice (nemotron-3-super, dots-3-note-preview, lfm-2.5): measured 2026-10-01, all three came
+# back with "did not return JSON: " and no content at all. They are out of the chain - a model
+# that answers nothing costs a round-trip and hides the one that would have answered.
+#
+# ROUNDS because the pool is shared. The same measurement: all three remaining models answered
+# HTTP 429 "temporarily rate-limited upstream, upstream_provider_shared_pool" at once, at 14:10
+# UTC. A cron that fires at 08:00 or 20:00 HKT will sometimes land on a busy pool, so the job
+# waits and tries the whole chain again rather than failing on the first pass. The ceiling is
+# named: ROUNDS x len(MODEL_CHAIN) requests, ~2 minutes worst case, and NO brief is published
+# when every attempt fails - the previous file stays and shows its own age, which is the honest
+# degradation this project uses everywhere else.
+ROUNDS = 2
+ROUND_SLEEP_S = 20
+DEFAULT_MODEL = MODEL_CHAIN[0]
 
 PROMPT = """You are writing a two-sentence situational brief for a Hong Kong public-data dashboard.
 
@@ -168,14 +189,7 @@ def build_context(offline: bool) -> tuple[dict, list[dict], list[str]]:
     return facts, inputs, warnings
 
 
-def ask_model(model: str, context: str) -> dict:
-    key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-    if not key:
-        raise SystemExit(
-            "OPENROUTER_API_KEY is not set. Add it as a repository secret:\n"
-            "  gh secret set OPENROUTER_API_KEY --repo Cyruschu430/hk-city-monitor\n"
-            "The script refuses to write a brief without one rather than publishing an empty panel."
-        )
+def call_model(model: str, context: str, key: str) -> dict:
     body = json.dumps(
         {
             "model": model,
@@ -200,17 +214,53 @@ def ask_model(model: str, context: str) -> dict:
         with urllib.request.urlopen(req, timeout=90) as res:
             payload = json.loads(res.read().decode())
     except urllib.error.HTTPError as exc:
-        raise SystemExit(f"OpenRouter HTTP {exc.code}: {exc.read().decode(errors='replace')[:400]}") from exc
+        detail = exc.read().decode(errors="replace")[:200]
+        # 429 (the shared free pool is busy) and 5xx (the provider hiccuped) are the model's
+        # problem, not ours - try the next one. A 4xx that is NOT 429 is ours: a key that is not
+        # allowed to call this model, or a malformed request. Retrying those six times would turn
+        # a one-line configuration error into a mystery, so they stop the run.
+        if exc.code == 429 or exc.code >= 500:
+            raise _Busy(f"HTTP {exc.code}: {detail}") from exc
+        raise SystemExit(f"OpenRouter HTTP {exc.code} for {model}: {detail}")
     text = (payload["choices"][0]["message"]["content"] or "").strip()
     if text.startswith("```"):
         text = text.strip("`").split("\n", 1)[-1].rsplit("```", 1)[0]
     try:
         out = json.loads(text)
     except json.JSONDecodeError as exc:
-        raise SystemExit(f"model did not return JSON: {text[:300]}") from exc
+        raise _Busy(f"did not return JSON: {text[:200]}") from exc
     if not out.get("tc") or not out.get("en"):
-        raise SystemExit(f"model returned an incomplete brief: {out}")
+        raise _Busy(f"incomplete brief: {out}")
     return out
+
+
+class _Busy(Exception):
+    """The model was unavailable or unusable - try the next one."""
+
+
+def ask_chain(context: str) -> tuple[dict, str, list[str]]:
+    key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if not key:
+        raise SystemExit(
+            "OPENROUTER_API_KEY is not set. Add it as a repository secret:\n"
+            "  gh secret set OPENROUTER_API_KEY --repo Cyruschu430/hk-city-monitor\n"
+            "The script refuses to write a brief without one rather than publishing an empty panel."
+        )
+    # HKCM_AI_MODEL, when set, is tried FIRST and the chain follows: a repo variable can point at a
+    # new model the day the old one dies, without a commit.
+    chain = list(dict.fromkeys([m for m in [os.environ.get("HKCM_AI_MODEL") or ""] if m] + list(MODEL_CHAIN)))
+    tried: list[str] = []
+    for rnd in range(1, ROUNDS + 1):
+        if rnd > 1:
+            print(f"  round {rnd}: waiting {ROUND_SLEEP_S}s for the shared pool", file=sys.stderr)
+            time.sleep(ROUND_SLEEP_S)
+        for model in chain:
+            try:
+                return call_model(model, context, key), model, tried
+            except _Busy as exc:
+                tried.append(f"round {rnd} {model}: {exc}")
+                print(f"  busy {model}: {exc}", file=sys.stderr)
+    raise SystemExit("every model in the chain was unavailable:\n  " + "\n  ".join(tried))
 
 
 def main() -> int:
@@ -245,8 +295,9 @@ def main() -> int:
 
     # `or`, not a default argument: a repo variable that exists but is empty (`vars.X` when
     # unset) returns "" and would be sent as a model id.
-    model = os.environ.get("HKCM_AI_MODEL") or DEFAULT_MODEL
-    brief = ask_model(model, context)
+    brief, model, tried = ask_chain(context)
+    if tried:
+        print(f"note    {len(tried)} model(s) were busy first")
     out = {
         "generated": datetime.now(HKT).isoformat(timespec="seconds"),
         "model": model,

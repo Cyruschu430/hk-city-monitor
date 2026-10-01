@@ -957,11 +957,11 @@ async function boot(): Promise<void> {
   // which is always in the DOM, so this is a plain lookup instead of an asserted one.
   const pulse = document.querySelector<HTMLElement>(".coverage");
   window.addEventListener("offline", () => {
-    pulse.classList.add("off");
+    pulse?.classList.add("off");
     engine.refreshAll(); // every panel that cannot answer goes to its error state
   });
   window.addEventListener("online", () => {
-    pulse.classList.remove("off");
+    pulse?.classList.remove("off");
     engine.refreshAll();
     void pollTriggers();
   });

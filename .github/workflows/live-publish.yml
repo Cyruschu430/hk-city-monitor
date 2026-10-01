@@ -1,0 +1,56 @@
+# live-publish.yml — keep the three live files current without a machine of our own.
+#
+# WHY WINDOWS AND NOT LINUX. esd.wsd.gov.hk negotiates static-RSA TLS, which Python's
+# OpenSSL on Linux and Cloudflare's BoringSSL both refuse to speak; the Windows TLS stack
+# accepts it. That one source is the only reason this job is not `ubuntu-latest`.
+# MEASURED 2026-10-01: the same URL fails with URLError from the VPS and with a TLS error
+# from the Worker, and succeeds from a Windows box.
+#
+# WHY THE FIRST STEP FETCHES THAT URL ANYWAY. If a future runner image drops the legacy
+# cipher, every collector below would fail while the schedule stayed green and the three
+# panels would sit amber forever. Fail loudly on the run that first notices it.
+#
+# WHY THE WHOLE CYCLE AND NOT ONE COLLECTOR PER JOB. The three files share one publish
+# step, and a publish that runs before its collector has written anything just re-pushes
+# the previous reading — work that looks like freshness. One pass keeps the published set
+# and the collected set the same age (see scripts/live_cycle.sh).
+#
+# NO SECRET IS NEEDED. GITHUB_TOKEN is the repo's own; publish_live.py takes its remote
+# from HKCM_REMOTE, so the same script runs on a VPS with an SSH key and here with a token.
+#
+# WHY */10 AND NOT */5. GitHub's cron floor is 5 minutes, but scheduled runs are delayed
+# under load — MEASURED 2026-07: +49 to +216 minutes on a weekly job. A 10-minute schedule
+# is honest about landing somewhere between 10 and 25 minutes; the panels carry the
+# publisher's own timestamp and degrade to amber on their own when a window is missed.
+name: live-publish
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write          # publish_live.py force-pushes ONE orphan commit to live-data
+
+concurrency:
+  group: live-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    timeout-minutes: 8
+    env:
+      PYTHON: python       # live_cycle.sh defaults to python3, absent in this shell
+      HKCM_REMOTE: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Cyruschu430/hk-city-monitor.git
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: WSD's legacy TLS is still negotiable from this runner
+        shell: bash
+        run: |
+          python -c "import urllib.request; r=urllib.request.urlopen('https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv', timeout=90); print('wsd bytes:', len(r.read(200)))"
+
+      - name: One pass — collect the three live files, then publish them
+        shell: bash
+        run: sh scripts/live_cycle.sh

@@ -1,18 +1,19 @@
 {
- "_comment": "Immigration Department land/sea/air control points, with WGS84 positions for the map. These are FIXED official facilities, so the coordinates are reference data, not a live feed — the same category as the CSDI weather-station layer.",
+ "_comment": "Immigration Department land/sea/air control points, with WGS84 positions for the map. These are FIXED official facilities, so the coordinates are reference data, not a live feed — the same category as the CSDI weather-station layer. Each `code` is the ImmD land-queue feed's OWN key (CPQueueTimeR.json: HYW/HZM/LMC/LSC/LWS/MKT/SBC/STK) so the map popup can join a live queue reading by exact match; control points that feed does not cover (airport, sea, rail) carry a non-colliding label.",
  "_method": "Each coordinate was resolved through ALS (als.gov.hk, the registered `als_address_lookup` source) and then VALIDATED against an approximate official anchor: a hit more than 1.5km from the anchor is rejected, because ALS silently falls back to a district-level suggestion that looks plausible and can be 30km wrong. See web/scripts/probe-controlpoints.mjs, which prints the distance for every candidate. MEASURED 2026-09-24: the naive pass produced FOUR wrong answers that this check caught — 羅湖管制站 31.6km off, 沙頭角管制站 39.8km off, 深圳灣管制站 30.6km off, and 香港國際機場一號客運大樓 1.9km off. Each was corrected by using the name ALS actually knows (羅湖站, 沙頭角, 深圳灣口岸港方口岸區).",
- "_unresolved": "SZW (深圳灣) has NO coordinate here. ALS resolves every name variant ~30.6km away (a Yau Tsim Mong fallback), and the one candidate that looked right — 深圳灣口岸港方口岸區 at 22.49537,114.14078, matched to 'HONG KONG CUSTOMS AND EXCISE DEPARTMENT CONTROL POINT COMMAND HEADQUARTERS' — is 4.3km from 羅湖, i.e. it is an EASTERN border facility, whereas 深圳灣 is the WESTERNMOST land crossing. probe-szw3.mjs rejected it on that geometry. 深圳灣 therefore renders at DISTRICT level (Yuen Long) until a trustworthy coordinate is found. A pin 30km out is worse than no pin.",
+ "_unresolved": "SBC (深圳灣) has NO coordinate here. ALS resolves every name variant ~30.6km away (a Yau Tsim Mong fallback), and the one candidate that looked right — 深圳灣口岸港方口岸區 at 22.49537,114.14078, matched to 'HONG KONG CUSTOMS AND EXCISE DEPARTMENT CONTROL POINT COMMAND HEADQUARTERS' — is 4.3km from 羅湖, i.e. it is an EASTERN border facility, whereas 深圳灣 is the WESTERNMOST land crossing. probe-szw3.mjs rejected it on that geometry. 深圳灣 therefore renders at DISTRICT level (Yuen Long) until a trustworthy coordinate is found. A pin 30km out is worse than no pin.",
  "_verified": "12 of 13 control points resolved and distance-validated.",
  "points": [
   {
-   "code": "HYW",
+   "code": "HKG",
    "name": { "tc": "香港國際機場", "en": "Hong Kong International Airport" },
    "kind": "air",
    "lat": 22.30324,
-   "lng": 113.93082
+   "lng": 113.93082,
+   "_note": "Code is HKG (the airport's IATA code), not an ImmD queue key: the land-queue feed does not cover the airport, so its code must not collide with a crossing that IS in the feed (香園圍's key is HYW)."
   },
   {
-   "code": "SKW",
+   "code": "LWS",
    "name": { "tc": "羅湖", "en": "Lo Wu" },
    "kind": "land",
    "lat": 22.52525,
@@ -26,7 +27,7 @@
    "lng": 114.07982
   },
   {
-   "code": "LMB",
+   "code": "LSC",
    "name": { "tc": "落馬洲支線", "en": "Lok Ma Chau Spur Line" },
    "kind": "land",
    "lat": 22.51321,
@@ -84,7 +85,7 @@
    "lng": 113.95132
   },
   {
-   "code": "HY2",
+   "code": "HYW",
    "name": { "tc": "香園圍", "en": "Heung Yuen Wai" },
    "kind": "land",
    "lat": 22.55391,

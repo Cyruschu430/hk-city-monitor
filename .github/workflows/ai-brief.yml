@@ -15,6 +15,11 @@ name: ai-brief
 # The key is a repository secret, never a committed value (the repo is public). If it is missing
 # the script exits non-zero rather than publishing an empty panel - a panel that renders "no
 # summary" for a reason nobody can see is the failure this project treats as worse than a red run.
+#
+# The OpenRouter key must be allowed to call a NAMED free model. Do NOT restrict it to the auto
+# router: `openrouter/auto` chooses a model itself, which can be a paid one, and a request that
+# names a model is refused outright by an auto-only key - so the restriction meant to save money
+# breaks the job. A named `:free` model costs nothing, which is the property actually wanted.
 on:
   schedule:
     - cron: "0 0,12 * * *"

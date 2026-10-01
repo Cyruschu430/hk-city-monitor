@@ -54,7 +54,16 @@ LIVE_FILES = ("aircraft.json", "berth_vacancy.json", "water_suspension.json")
 SOURCES = ("aircraft.json", "berth_vacancy.json", "water_suspension.json", "carpark_info.json", "baselines.json")
 MAX_CONTEXT_BYTES = 4000
 
-DEFAULT_MODEL = "deepseek/deepseek-chat-v3.1:free"
+# MEASURED 2026-10-01 against the public model list (openrouter.ai/api/v1/models needs no key):
+# 462 models, 16 end in `:free`, and only 6 of those support `response_format` - which this script
+# needs, because the panel renders fields rather than prose. The id this file originally carried
+# (`deepseek/deepseek-chat-v3.1:free`) DOES NOT EXIST, so the first scheduled run would have died
+# on a 400 with nothing to show for it.
+#
+# qwen3.8-27b is the pick: free, JSON-capable, 262k context, and Chinese-native, which matters for
+# a brief that ships a Traditional Chinese sentence. The id is printed on the panel with the
+# output, so a reader can see which model wrote it.
+DEFAULT_MODEL = "qwen/qwen3.8-27b:free"
 
 PROMPT = """You are writing a two-sentence situational brief for a Hong Kong public-data dashboard.
 

@@ -125,7 +125,7 @@ export type PanelData =
        *  `raster_map` with more to show. */
       frames?: { src: string; ending: string }[];
     }
-  | { kind: "gauge_grid"; cells: Gauge[] }
+  | { kind: "gauge_grid"; cells: Gauge[]; legend?: { label: string; cls: string }[] }
   | { kind: "status_grid"; cells: StatusCell[] };
 
 export interface PanelDef {
@@ -543,6 +543,15 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
             h("div", { class: "gl" }, g.label),
           ),
         ),
+        // Same grid, one full-width row: the panel body's child must stay .gauges or the
+        // existing layout rules stop applying, so this is a row inside it, not a wrapper.
+        data.legend?.length
+          ? h(
+              "div",
+              { class: "legend" },
+              ...data.legend.map((l) => h("span", { class: `legend-i ${l.cls}` }, h("i", {}), l.label)),
+            )
+          : "",
       );
     }
 

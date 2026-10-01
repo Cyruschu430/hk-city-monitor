@@ -766,8 +766,20 @@ const ADAPTERS: Record<string, Adapter> = {
     // for a city-wide alert; the mean would hide a single bad district.
     const list = (j as { aqhi?: number }[] | undefined) ?? [];
     const values = list.map((s) => s.aqhi).filter((v): v is number => typeof v === "number");
+    // The scale is AQHI's own, so it belongs with the readings rather than with the renderer.
+    // Three colours, five bands: 高 and above all carry the alert colour, and the numbers are
+    // what separates them. Cyrus 2026-10-02 asked what 1/2/3 mean - a bare index with no key is
+    // a number a reader has to go and look up.
+    const tc = lang() === "tc";
+    const legend = [
+      { label: tc ? "1–3 低" : "1–3 Low", cls: "ok" },
+      { label: tc ? "4–6 中" : "4–6 Moderate", cls: "warn" },
+      { label: tc ? "7 高" : "7 High", cls: "alert" },
+      { label: tc ? "8–10 甚高" : "8–10 Very high", cls: "alert" },
+      { label: tc ? "10+ 嚴重" : "10+ Serious", cls: "alert" },
+    ];
     return {
-      data: { kind: "gauge_grid", cells },
+      data: { kind: "gauge_grid", cells, legend },
       observedAt,
       state: { maxAqhi: values.length ? Math.max(...values) : null, stations: values.length },
     };

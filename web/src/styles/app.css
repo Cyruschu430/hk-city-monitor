@@ -884,6 +884,13 @@ a:hover{color:var(--cyan)}
 .gauge .gv{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:20px;font-weight:600;line-height:1.1}
 .gauge .gl{font-size:11px;color:var(--dim);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gauge.ok .gv{color:var(--ok)}.gauge.warn .gv{color:var(--amber)}.gauge.alert .gv{color:var(--alert)}
+/* Legend row for a gauge grid (AQHI bands). Reuses the gauge colour classes so a band and
+   its reading cannot drift apart, and takes the whole row so it reads as a key, not a cell. */
+.gauges .legend{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:3px;
+  font-size:11px;color:var(--dim);border-top:1px solid var(--hairline);padding-top:5px}
+.legend-i{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.legend-i i{width:8px;height:8px;border-radius:2px;background:var(--dim);flex:0 0 auto}
+.legend-i.ok i{background:var(--ok)}.legend-i.warn i{background:var(--amber)}.legend-i.alert i{background:var(--alert)}
 
 /* status_grid */
 /* 132px rather than 150px. The original measurement was: the two-column panel

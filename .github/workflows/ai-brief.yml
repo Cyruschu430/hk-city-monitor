@@ -1,0 +1,44 @@
+name: ai-brief
+
+# One short bilingual brief, twice a day, from data this project already publishes.
+#
+# WHY TWICE A DAY. AGENTS.md allows an LLM only if it is low-frequency and small-context, and
+# requires the frequency and the context size to be reported before it is added. Reported to
+# Cyrus 2026-10-01; he cut the proposed hourly cadence to this. Current shape:
+#
+#   frequency  2/day, 08:00 and 20:00 HKT (00:00 and 12:00 UTC)
+#   context    928 bytes measured - five files, the fields named in SOURCES
+#   output     data/ai_summary.json, force-pushed to `live-data` like every other live file
+#   runtime    NO model call. The browser fetches a static JSON file; there is no key in the
+#              bundle and no per-visitor request to any LLM.
+#
+# The key is a repository secret, never a committed value (the repo is public). If it is missing
+# the script exits non-zero rather than publishing an empty panel - a panel that renders "no
+# summary" for a reason nobody can see is the failure this project treats as worse than a red run.
+on:
+  schedule:
+    - cron: "0 0,12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    env:
+      HKCM_REMOTE: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Cyruschu430/hk-city-monitor.git
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the brief (fetches live-data, calls the model, refuses to publish empty)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          HKCM_AI_MODEL: ${{ vars.HKCM_AI_MODEL }}
+        run: python3 scripts/build_ai_summary.py --out data/ai_summary.json
+
+      - name: Publish it to the live-data branch
+        run: python3 scripts/publish_live.py data/ai_summary.json
+
+      - name: Print what was published
+        run: python3 -c "import json;d=json.load(open('data/ai_summary.json',encoding='utf-8'));print('model',d['model']);print('tc',d['brief']['tc']);print('en',d['brief']['en'])"

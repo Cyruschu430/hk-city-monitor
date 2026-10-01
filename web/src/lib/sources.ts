@@ -143,7 +143,14 @@ export function resolveUrl(src: SourceDef): string {
  * republishes is a 404 that turns a working panel red. The base is configurable
  * (VITE_LIVE_BASE) because the shipped default names THIS project's branch.
  */
-const LIVE_FILES = new Set(["aircraft.json", "berth_vacancy.json", "water_suspension.json"]);
+const LIVE_FILES = new Set([
+  "aircraft.json",
+  "berth_vacancy.json",
+  "water_suspension.json",
+  // Twice-daily LLM brief, published by .github/workflows/ai-brief.yml. A live file like any
+  // other: the bundle copy is a fallback that shows its age, never the thing a reader sees first.
+  "ai_summary.json",
+]);
 
 /** The live copy of a bundled `data/<file>` path, or null when there is none. */
 export function liveDataUrl(path: string): string | null {

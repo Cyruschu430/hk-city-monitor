@@ -326,7 +326,10 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
         "div",
         { class: "lyr-note", hidden: "true", "data-note-for": row.def.id },
         row.sourceUrl
-          ? h("a", { href: row.sourceUrl, target: "_blank", rel: "noopener" }, `${row.sourceName} ↗`)
+          // Not a link any more (Cyrus 2026-10-02): a layer's source URL took the reader off the
+          // dashboard for one click. The URL stays in the tooltip via .src-hold's title-less span
+          // below, because checking a claim is the point and leaving the page is not.
+          ? h("span", { class: "src-hold", title: row.sourceUrl ?? "" }, row.sourceName)
           : row.sourceName,
       );
       wrap.append(note);

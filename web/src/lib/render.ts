@@ -25,6 +25,48 @@ export interface ListItem {
   time?: string; // mono timestamp line
   href?: string; // link back to the source (traceability rule)
   ok?: boolean; // informational line, no warning accent
+  icon?: string; // glyph name from GLYPHS below - a warning type, drawn as inline SVG
+}
+
+// The glyph set for list rows. Stroke-based, currentColor, 16x16 viewBox, so a row's accent
+// colour carries into the icon and nothing needs its own palette. Keys are the names an adapter
+// sends; an unknown name falls back to the generic warning triangle rather than drawing nothing,
+// because a blank slot where every sibling row has an icon reads as a rendering bug.
+// ponytail: 8 shapes cover the HKO warning vocabulary; a ninth type gets one more path here.
+const GLYPHS: Record<string, string> = {
+  warn: "M8 2.2 14.2 13H1.8zM8 6v3.2M8 11.2v.1",
+  rain: "M3 3.2 1.2 8M7 3.2 5.2 8M11 3.2 9.2 8",
+  storm: "M9 1.5 4 9h3.2L6 14.5 11.4 7H8.2z",
+  typhoon: "M8 4.2a3.8 3.8 0 1 0 3.8 3.8M11.8 8l2.4-1.6M11.8 8l2.4 1.6",
+  heat: "M8 5.6a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8M8 1.6v1.8M8 12.6v1.8M1.6 8h1.8M12.6 8h1.8M3.5 3.5l1.3 1.3M11.2 11.2l1.3 1.3M12.5 3.5l-1.3 1.3M4.8 11.2l-1.3 1.3",
+  cold: "M8 1.6v12.8M3 4.5l10 7M13 4.5l-10 7",
+  fire: "M8 14.4c2.3 0 4-1.6 4-3.6 0-2.6-4-4-3-9-1.9 1.9-4 3.4-4 6.2 0 .9.4 1.6 1 2 0-1.6.7-2.6.7-2.6 0 2.6-1.7 2.8-1.7 4.6 0 1.6 1.3 2.4 3 2.4z",
+  slide: "M1.5 12.5 7 4.5l2.6 3.6 1.6-1.6 3.3 6z",
+  wave: "M1.5 9.5c1.8 0 1.8-2 3.6-2s1.8 2 3.6 2 1.8-2 3.6-2M1.5 13c1.8 0 1.8-2 3.6-2s1.8 2 3.6 2 1.8-2 3.6-2",
+  wind: "M2 5.6h7.4a2.3 2.3 0 1 0-2.3-2.3M2 10.4h9.6a2.3 2.3 0 1 1-2.3 2.3",
+};
+
+/** A 16x16 inline glyph. Returns null for a name nobody defined - callers render the name they
+    were given, so the fallback is the caller's business, not a silent blank box. */
+function glyphSvg(name: string): SVGSVGElement | null {
+  const d = GLYPHS[name];
+  if (!d) return null;
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("class", "pi-icon");
+  svg.setAttribute("viewBox", "0 0 16 16");
+  svg.setAttribute("aria-hidden", "true");
+  const path = document.createElementNS(NS, "path");
+  path.setAttribute("d", d);
+  // Stroke for line glyphs, fill for the two solid ones (storm, fire, slide, warn are outlines).
+  const solid = name === "storm" || name === "fire" || name === "slide" || name === "warn";
+  path.setAttribute("fill", solid ? "currentColor" : "none");
+  path.setAttribute("stroke", "currentColor");
+  path.setAttribute("stroke-width", solid ? "0.9" : "1.2");
+  path.setAttribute("stroke-linecap", "round");
+  path.setAttribute("stroke-linejoin", "round");
+  svg.append(path);
+  return svg;
 }
 
 export interface WallImage {
@@ -316,7 +358,12 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
           // text goes in a tooltip: clamping without a way to read the whole
           // thing would be hiding content, not tightening layout.
           { ...(it.ok ? { class: "ok-line" } : {}), title: it.title },
-          it.href ? h("a", { href: it.href, target: "_blank", rel: "noopener" }, it.title) : it.title,
+          // The icon leads, because a warning type is recognised before it is read.
+          (it.icon ? glyphSvg(it.icon) : null) ?? "",
+          // NOT a link (Cyrus 2026-10-02: "冇咩特別原因唔好比 user redirect 去其他地方"). A row's
+          // href is the SOURCE url, so a click used to leave the dashboard for a raw file. The
+          // URL stays on screen in the tooltip, which is what traceability actually needs.
+          it.href ? h("span", { class: "src-hold", title: it.href }, it.title) : it.title,
           it.sub ? h("span", { class: "meta" }, it.sub) : "",
           it.time
             ? h("span", { class: "meta", title: it.time }, isStamp ? relTime(it.time!) : it.time)
@@ -620,7 +667,7 @@ export function renderPanel(
     "div",
     { class: "panel-foot" },
     opts.sourceUrl
-      ? h("a", { class: "src", href: opts.sourceUrl, target: "_blank", rel: "noopener" },
+      ? h("span", { class: "src src-hold", title: opts.sourceUrl },
           `${opts.sourceName ?? panel.source} · ${t(panel.cadence_note)}`)
       : h("span", { class: "src" }, `${opts.sourceName ?? panel.source} · ${t(panel.cadence_note)}`),
     h("time", {}, honesty.updatedAt ? stamp(honesty.updatedAt) : "—"),

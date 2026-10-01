@@ -279,6 +279,26 @@ const ADAPTERS: Record<string, Adapter> = {
   async hko_warnsum(src) {
     const payload = (await json(await get(src))) as Record<string, P.WarnEntry>;
     const { items, observedAt } = P.parseWarnsum(payload);
+    // Which warning wears which glyph is this panel's own vocabulary, so it lives here rather
+    // than as a case in the renderer (AGENTS.md: no per-vertical code path). Ordered: the first
+    // match wins, so the more specific pattern must come first ("暴雨" before "雨").
+    const ICONS: [RegExp, string][] = [
+      [/暴雨|大雨|Rainstorm|Downpour/i, "rain"],
+      [/雷暴|Thunderstorm|Lightning/i, "storm"],
+      [/颱風|熱帶|氣旋|Typhoon|Tropical/i, "typhoon"],
+      [/酷熱|炎熱|Very Hot|Hot Weather/i, "heat"],
+      [/寒冷|嚴寒|霜凍|Cold|Frost/i, "cold"],
+      [/火災|Fire/i, "fire"],
+      [/山泥|Landslip|Landslide/i, "slide"],
+      [/海嘯|風暴潮|水浸|Tsunami|Storm Surge|Flooding/i, "wave"],
+      [/季候風|強風|季風|Monsoon|Strong Wind/i, "wind"],
+    ];
+    for (const it of items) {
+      it.icon = "warn";
+      for (const [re, name] of ICONS) {
+        if (re.test(it.title)) { it.icon = name; break; }
+      }
+    }
     return { data: { kind: "list", items }, observedAt, state: payload };
   },
 

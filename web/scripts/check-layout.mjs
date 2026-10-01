@@ -11,6 +11,12 @@ import { chromium } from "playwright-core";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+// TOP-LEVEL, and it has to be: this file referred to `problems` at line 154 while declaring it
+// inside a block further down, so Node threw 'ReferenceError: problems is not defined' and
+// check:layout died with a stack trace - a red gate that says nothing about the app, and
+// looks like a broken test rather than a broken product. Zero errors that survive a crash.
+const problems = [];
+
 const BASE = process.env.HKCM_URL ?? "http://127.0.0.1:4173/";
 const exe = process.env.HKCM_CHROME ?? "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 
@@ -128,7 +134,6 @@ if (orderBefore.length < 2) {
 // while declaring it further down, so Node threw 'Cannot access problems before initialization'
 // and check:layout died with a stack trace instead of a verdict - a red gate that says
 // nothing about the app. Found 2026-10-01 by reading the crash, not by guessing.
-const problems = [];
   problems.push("fewer than two panels on screen — the column cannot be reordered or tested");
 } else {
   const dispatched = await page.evaluate(() => {

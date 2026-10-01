@@ -154,19 +154,21 @@ a:hover{color:var(--cyan)}
 .lyr-empty{padding:6px 9px 8px;font-size:11px;color:var(--map-face-weak)}
 /* The stream picker, drawn on the tile it belongs to. Small and low-contrast until hovered:
    a wall of six dropdowns should read as six thumbnails, not six form fields. */
-.cam-pick{position:absolute;left:4px;top:4px;z-index:2;max-width:52%;
-  height:19px;padding:0 3px;border-radius:3px;font-size:10px;font-family:var(--font-ui);
-  color:var(--map-face);background:rgba(8,14,24,.72);border:1px solid rgba(120,160,220,.28);
-  opacity:.55;transition:opacity .12s}
-.cam:hover .cam-pick,.cam-pick:focus{opacity:1}
-.cam-pick option{background:#0b1220;color:#e6edf6}
-/* MEASURED 2026-10-01: this select first shipped at `max-width:calc(100% - 8px)` with z-index 3,
-   so it reached across the tile and sat over the LIVE badge at top-right. `check:livewall` caught
-   it the only way it can be caught — the badge is the STOP control once a stream is playing, and
-   the clicks meant for it landed on the select, so no started tile could be stopped. Two fixes,
-   because either alone leaves a way back in: 52% keeps the two controls apart, and the player
-   case releases pointer events entirely rather than only fading out. */
-.cam.playing .cam-pick{opacity:0;pointer-events:none}
+.cam-nav{position:absolute;left:3px;top:3px;z-index:2;display:flex;gap:2px;
+  opacity:.5;transition:opacity .12s}
+.cam:hover .cam-nav{opacity:1}
+.cam-nav-b{width:17px;height:17px;line-height:1;padding:0;border-radius:3px;cursor:pointer;
+  font-size:12px;font-family:var(--font-ui);color:var(--map-face);
+  background:rgba(8,14,24,.72);border:1px solid rgba(120,160,220,.28)}
+.cam-nav-b:hover{border-color:var(--map-face-line);color:#fff}
+/* MEASURED 2026-10-01: the first version of this control was a <select> spanning the tile,
+   which sat over the LIVE badge at top-right. `check:livewall` caught it the only way it can be
+   caught — the badge is the STOP control once a stream is playing, and the clicks meant for it
+   landed on the select, so no started tile could be stopped. It is two 17px arrows now (Cyrus:
+   "唔要 drop down menu 好多亂碼" — the publisher's stream names are 40 characters of mixed script
+   in a list the width of a thumbnail), which keeps the controls apart at any tile size and
+   releases pointer events entirely while a player covers the tile. */
+.cam.playing .cam-nav{opacity:0;pointer-events:none}
 .cam .fresh{z-index:4}
 /* Credits: authorship, at the far end of the coverage line. Dimmer than the coverage
    text it shares a row with, because coverage is a claim about the data and this is not. */
@@ -322,7 +324,24 @@ a:hover{color:var(--cyan)}
   border-left:1px solid var(--hairline)}
 .stat:first-child{border-left:0}
 .stat-label{font-family:var(--font-ui);font-size:11px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
-.stat-value{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt)}
+/* MEASURED 2026-10-01 (Cyrus: "HEADER 呢堆字走位"): the clock repaints every second and
+   "1,047"/"180" change length as they update, so with proportional digits every value in
+   this row was free to resize and shove its neighbours. Tabular figures give a digit one
+   width, which is the whole difference between a readout and a readout that twitches. */
+.stat-value{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt);
+  font-variant-numeric:tabular-nums}
+/* The mode picker: a select in a 40px strip. It inherits the strip's font and carries no
+   chrome of its own until it is hovered, because a form control in a header reads as a
+   form. The caret is the affordance; the value is the answer, which the label already
+   frames. */
+.mode-sel{appearance:none;background:transparent;border:0;border-bottom:1px dashed var(--faint);
+  color:var(--txt);font-family:var(--font-ui);font-size:11px;padding:0 10px 0 0;margin:0;
+  cursor:pointer;font-variant-numeric:tabular-nums;
+  background-image:linear-gradient(45deg,transparent 50%,var(--faint) 50%),
+    linear-gradient(135deg,var(--faint) 50%,transparent 50%);
+  background-position:100% 55%,100% 55%;background-size:4px 4px,4px 4px;background-repeat:no-repeat}
+.mode-sel:hover{border-bottom-color:var(--txt)}
+.mode-sel option{background:#0b1220;color:#e6edf6}
 .stat-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:0 0 auto}
 .stat-fresh[data-fresh="warn"] .stat-dot{background:var(--amber)}
 .stat-fresh[data-fresh="bad"] .stat-dot{background:var(--alert)}
@@ -385,7 +404,10 @@ a:hover{color:var(--cyan)}
 
    The 880px media query below still collapses this back to stacked rows, so nothing about the narrow
    behaviour changes. */
-#layout{flex:1 1 auto;display:grid;grid-template-columns:56px minmax(0,1fr) clamp(320px,30vw,560px);
+#layout{flex:1 1 auto;display:grid;/** Two columns now, not three (2026-10-01). The 56px rail is gone and its job —
+ *  picking a mode — moved into the status bar, so this grid is the map and the panel
+ *  column. The map keeps the width; nothing else about the layout changes. */
+  grid-template-columns:minmax(0,1fr) clamp(320px,30vw,560px);
   grid-template-rows:minmax(0,1fr);min-height:0}
 #mapWrap{grid-column:2;grid-row:1;position:relative;min-height:0;min-width:0}
 #map{position:absolute;inset:0;background:var(--void)}

@@ -27,7 +27,6 @@ import { createPanelEngine } from "./ui/panels.ts";
 import { analyse } from "./lib/analytics/index.ts";
 import { emptyStore, BASELINE_VERSION, type BaselineStore } from "./lib/analytics/baseline.ts";
 import type { RuleDef } from "./lib/analytics/rules.ts";
-import { createRail } from "./ui/rail.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
 import { createMapHead, relabelMapHead } from "./ui/maphead.ts";
 import { createTicker } from "./ui/ticker.ts";
@@ -154,9 +153,11 @@ async function boot(): Promise<void> {
   onLangChange(() => {
     relabelMapHead(mapHeadEl);
     relabelLayerControl(layerEl, currentLayerRows);
+    // `registry` is loaded further down; this handler only ever fires on a user action,
+    // which cannot happen before boot finished.
+    wireModes();
   });
   const tickerEl = document.getElementById("ticker")!;
-  const railEl = document.getElementById("rail")!;
   const panelsEl = document.getElementById("panels")!;
   const mapEl = document.getElementById("map")!;
   const hudEl = document.getElementById("mapHud")!;
@@ -642,9 +643,16 @@ async function boot(): Promise<void> {
   }
 
   const layerOn = readLayerState();
-  const rail = createRail(railEl, registry.verticals, {
-    onMode: (id) => activateMode(id, true),
-  });
+  // Vertical labels come from the registry so a language switch relabels the picker with
+  // everything else; the control is rebuilt rather than patched, because ten options is
+  // cheaper to rebuild than to reconcile.
+  const modeOptions = (): { id: string; label: string }[] =>
+    registry.verticals.map((v: { id: string; label?: Record<string, string> }) => ({
+      id: v.id,
+      label: v.label?.[lang()] ?? v.id,
+    }));
+  const wireModes = () => statusbar.setModes(modeOptions(), (id) => activateMode(id, true));
+  wireModes();
 
   /** Layer ids currently on. `layerOn` is the single source of truth now that the
    *  rail's own layer buttons are gone — before, this read them back from the
@@ -710,7 +718,7 @@ async function boot(): Promise<void> {
       // "自動切換" card telling the user to do what they just did.
       hideBanner();
     }
-    rail.setActive(id);
+    statusbar.setMode(id);
     const v = registry.verticals.find((x) => x.id === id);
     statusbar.setMode(
       v ? (lang() === "tc" ? v.name.tc : v.name.en) : lang() === "tc" ? "總覽" : "Overview",

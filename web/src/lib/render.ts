@@ -415,30 +415,20 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
             // prepend, not append: the label and the badge must stay clickable on top
             tile.prepend(frame);
           };
-          // SWITCH STREAM, FROM THE TILE (Cyrus 2026-10-01). The list is the adapter's whole pool,
-          // not the six tiles on screen — otherwise the picker only re-arranges what is already
-          // visible. It renders over the thumbnail, because the reader is looking at a tile that is
-          // not the one they want, and it stops its own clicks: the tile's click starts/stops the
-          // player, and selecting a stream must not also toggle it.
-          const picker =
+          // SWITCH STREAM, WITHOUT A LIST (Cyrus 2026-10-01: "唔要 drop down menu 好多亂碼").
+          // The pool is still the adapter's whole region, but the control is two arrows: a
+          // <select> of publisher stream names renders as a list of 40-character mixed-script
+          // titles inside a tile 84px wide, which is unreadable at the one size it is used at.
+          // The arrows cycle the pool and the label the tile already shows carries the name at
+          // full width, so nothing is hidden by not listing it.
+          const stepper =
             img.video && data.streams && data.streams.length > 1
               ? (() => {
-                  const sel = document.createElement("select");
-                  sel.className = "cam-pick";
-                  sel.setAttribute("aria-label", lang() === "tc" ? "換另一條直播" : "Switch stream");
-                  sel.title = lang() === "tc" ? "換另一條直播" : "Switch to another stream";
-                  for (const s of data.streams!) {
-                    const o = document.createElement("option");
-                    o.value = s.id;
-                    o.textContent = s.title;
-                    if (s.id === img.video!.id) o.selected = true;
-                    sel.append(o);
-                  }
-                  sel.addEventListener("click", (e) => e.stopPropagation());
-                  sel.addEventListener("keydown", (e) => e.stopPropagation());
-                  sel.addEventListener("change", () => {
-                    const s = data.streams!.find((x) => x.id === sel.value);
-                    if (!s) return;
+                  const pool = data.streams!;
+                  const box = h("div", { class: "cam-nav" });
+                  const go = (d: number) => {
+                    const at = pool.findIndex((s) => s.id === img.video!.id);
+                    const s = pool[(at + d + pool.length) % pool.length]!;
                     img.video = { ...img.video!, id: s.id, channel: s.channel };
                     const lab = tile.querySelector(".lab");
                     if (lab) lab.textContent = `${s.title}${s.channel ? ` · ${s.channel}` : ""}`;
@@ -448,8 +438,25 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
                       tile.querySelector("iframe")?.remove();
                       startFrame();
                     }
-                  });
-                  return sel;
+                  };
+                  for (const [d, glyph, word] of [
+                    [-1, "‹", "上一條"],
+                    [1, "›", "下一條"],
+                  ] as [number, string, string][]) {
+                    const b = h("button", {
+                      type: "button",
+                      class: "cam-nav-b",
+                      title: lang() === "tc" ? `${word}直播` : `${word === "上一條" ? "previous" : "next"} stream`,
+                      onclick: (e: Event) => {
+                        // The tile's own click starts/stops the player; switching must not also toggle.
+                        e.stopPropagation();
+                        go(d);
+                      },
+                    });
+                    b.textContent = glyph;
+                    box.append(b);
+                  }
+                  return box;
                 })()
               : null;
           const toggle = () => {
@@ -484,7 +491,7 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
             },
             im,
             h("span", { class: "lab" }, `${img.name}${img.video?.channel ? ` · ${img.video.channel}` : ""}`),
-            picker ?? "",
+            stepper ?? "",
             img.fresh ? h("span", { class: "fresh chip" }, img.fresh) : "",
             liveChip ?? "",
           );

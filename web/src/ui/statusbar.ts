@@ -11,6 +11,10 @@ import { onThemeChange, setTheme, theme, type Theme } from "../lib/theme.ts";
 export interface StatusBar {
   setCameras(td: number, hko: number): void;
   setMode(name: string): void;
+  /** Fill the mode picker. Called once the registry has loaded, and again on a language
+      switch: the list is DATA (verticals.json), which is the property the rail had and
+      the reason this control did not need any mode names written into it. */
+  setModes(modes: { id: string; label: string }[], onMode: (id: string) => void): void;
   setTiles(via: string): void;
   /** readout for the currently active vertical's data age, if any */
   setFreshness(text: string, state: "ok" | "warn" | "bad"): void;
@@ -44,7 +48,14 @@ const LABELS = {
 export function createStatusBar(root: HTMLElement): StatusBar {
   clear(root);
   const pulse = h("span", { class: "live-pulse", title: "live" });
-  const modeEl = h("span", {});
+  // THE MODE CONTROL LIVES HERE NOW (Cyrus 2026-10-01: "Remove 最左個icon bar menu").
+  // The rail was a 56px column of 1.5px glyphs whose whole job was picking one of ten
+  // values, next to a header that already had to print which value was active ("模式 總覽").
+  // A readout and a control for the same fact, 56px apart, is one control too many — the
+  // header prints it and changes it, and the map gets the 56px back.
+  const modeEl = document.createElement("select");
+  modeEl.className = "mode-sel";
+  modeEl.setAttribute("aria-label", "模式 / mode");
   const camsEl = h("span", {});
   const tilesEl = h("span", {});
   const clockEl = h("span", {});
@@ -181,7 +192,20 @@ export function createStatusBar(root: HTMLElement): StatusBar {
       camsEl.textContent = (td + hko).toLocaleString("en-US");
     },
     setMode(name) {
-      modeEl.textContent = name;
+      // Accepts an id or a label: main.ts switches by id, older call sites passed the
+      // label, and the picker is the only thing that has to agree with itself.
+      for (const o of Array.from(modeEl.options)) {
+        if (o.value === name || o.textContent === name) {
+          modeEl.value = o.value;
+          return;
+        }
+      }
+    },
+    setModes(modes, onMode) {
+      const was = modeEl.value;
+      clear(modeEl);
+      for (const m of modes) modeEl.append(new Option(m.label, m.id, false, m.id === was));
+      modeEl.onchange = () => onMode(modeEl.value);
     },
     setTiles(via) {
       // Remember which value is showing, so syncLang can re-render it in the

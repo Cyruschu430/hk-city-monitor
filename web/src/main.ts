@@ -653,6 +653,11 @@ async function boot(): Promise<void> {
     }));
   const wireModes = () => statusbar.setModes(modeOptions(), (id) => activateMode(id, true));
   wireModes();
+  // The picker has to agree with the state it reports. Boot leaves `currentMode` at its default
+  // without going through activateMode, so nothing had told the control which value is live —
+  // measured 2026-10-01: the select showed 颱風 while the app was in 總覽. A control that shows a
+  // mode the app is not in is worse than no control (Hard rule 1: every claim is traceable).
+  statusbar.setMode(currentMode);
 
   /** Layer ids currently on. `layerOn` is the single source of truth now that the
    *  rail's own layer buttons are gone — before, this read them back from the

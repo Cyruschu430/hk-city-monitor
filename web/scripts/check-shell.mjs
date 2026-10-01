@@ -43,6 +43,12 @@ const r = await page.evaluate(() => {
     scope: box(".mh-scope"), clock: box(".mh-clock"),
     gauges,
     legendItems: document.querySelectorAll(".gauges .legend-i").length,
+    // Cyrus 2026-10-02: no SOURCE link may take the reader off the dashboard. A row's href is the
+    // publisher's URL and a click used to leave for a raw file; the URL now lives in the tooltip.
+    // The deliberate destinations (GitHub, the licence, the LandsD badge) are excluded by name.
+    navSourceLinks: document.querySelectorAll(
+      '.plist a[target="_blank"], .panel .src[target="_blank"], .lyr-note a[target="_blank"]').length,
+    srcHold: document.querySelectorAll(".src-hold").length,
   };
 });
 await browser.close();
@@ -66,6 +72,9 @@ if (r.scope && r.clock) {
 // The gauge panel is source-backed, so only assert the key if the panel actually drew one.
 if (r.gauges > 0) ok(r.legendItems >= 5, `the AQHI key drew its bands (${r.legendItems} entries)`);
 else console.log("note  no gauge panel rendered in this run - legend not asserted");
+
+ok(r.navSourceLinks === 0, `no source link leaves the page (${r.navSourceLinks} found)`);
+ok(r.srcHold > 0, `the source URLs survive as tooltips (${r.srcHold} .src-hold)`);
 
 console.log(fails.length ? `SHELL: ${fails.length} FAILED` : "SHELL OK");
 process.exit(fails.length ? 1 : 0);

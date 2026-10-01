@@ -316,7 +316,12 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
           // text goes in a tooltip: clamping without a way to read the whole
           // thing would be hiding content, not tightening layout.
           { ...(it.ok ? { class: "ok-line" } : {}), title: it.title },
-          it.href ? h("a", { href: it.href, target: "_blank", rel: "noopener" }, it.title) : it.title,
+          // A HOLD, NOT A LINK (Cyrus, 2026-10-01: "唔好比user click入去睇到.json ... 冇咩特別原因
+          // 唔好比user redirect 去其他地方"). Traceability is the requirement, not navigation: the
+          // URL stays in the DOM as the tooltip, so the claim is still checkable by anyone who
+          // wants to, and a reader who is reading does not get thrown out of the dashboard by a
+          // stray click. This is the ONE place a list row's href becomes markup.
+          it.href ? h("span", { class: "src-hold", title: it.href }, it.title) : it.title,
           it.sub ? h("span", { class: "meta" }, it.sub) : "",
           it.time
             ? h("span", { class: "meta", title: it.time }, isStamp ? relTime(it.time!) : it.time)
@@ -606,8 +611,10 @@ export function renderPanel(
   const foot = h(
     "div",
     { class: "panel-foot" },
+    // Same decision as the list row: name the source, keep its URL on hover, do not navigate.
+    // Every panel's footer goes through here, which is why it is fixed once and not per panel.
     opts.sourceUrl
-      ? h("a", { class: "src", href: opts.sourceUrl, target: "_blank", rel: "noopener" },
+      ? h("span", { class: "src src-hold", title: opts.sourceUrl },
           `${opts.sourceName ?? panel.source} · ${t(panel.cadence_note)}`)
       : h("span", { class: "src" }, `${opts.sourceName ?? panel.source} · ${t(panel.cadence_note)}`),
     h("time", {}, honesty.updatedAt ? stamp(honesty.updatedAt) : "—"),

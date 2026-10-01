@@ -199,6 +199,10 @@ a:hover{color:var(--cyan)}
    to a message someone has to act on. */
 [data-panel="special_traffic_list"] .plist li{display:block;-webkit-line-clamp:8;overflow:visible}
 
+/* A reference that cannot be clicked away. The URL lives in the tooltip; the pointer stays an
+   arrow rather than a hand, because a hand promises navigation and this does not navigate. */
+.src-hold{cursor:default;text-decoration:none;border-bottom:0}
+
 .credits{margin-left:auto;font-size:10px;color:var(--faint);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;padding-left:10px}
 .coverage{display:flex;align-items:center;gap:6px}

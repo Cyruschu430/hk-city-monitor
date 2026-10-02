@@ -372,7 +372,10 @@ a:hover{color:var(--cyan)}
 .src-hold{text-decoration:none;cursor:inherit}
 /* The clock is part of the placard's sentence - WHAT, and AS OF WHEN - so it shares the
    baseline instead of drifting onto its own row. */
-#mapHead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+/* Cyrus 2026-10-02: the clock goes UNDER 香港實時情況, not beside it - the placard reads as a
+   two-line label rather than a row. Flex column with the scope first; the check asserts the
+   geometry, not this declaration. */
+#mapHead{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
 /* The grip is a pseudo-element: it exists to show the cursor and to be grabbable, and it has
    no state anyone reads, so a real element would be a node built only to be listened to.
    The listener lives on document (see initColumnResize) and hit-tests this 7px strip. */
@@ -537,9 +540,11 @@ a:hover{color:var(--cyan)}
 /* LandsD attribution badge — licence requires logo + "Map from Lands Department"
    on the map face, not a footnote. MapLibre's own AttributionControl carries the
    text; this badge is the always-visible face of it. */
-.landsd-badge{position:absolute;right:10px;bottom:10px;display:flex;align-items:center;gap:7px;
-  padding:4px 9px;background:var(--map-face-bg);border:1px solid var(--map-face-line);
-  border-radius:6px;font-size:11px;color:var(--map-face-dim);letter-spacing:.03em}
+.landsd-badge{position:absolute;right:10px;bottom:8px;display:flex;align-items:center;gap:6px;
+  /* A bare line, not a panel (Cyrus 2026-10-02: 'REMOVE the little panel'). The text itself is
+     a LICENCE TERM - AGENTS.md Run 6: the LandsD logo and copyright notice are mandatory on the
+     map face - so it stays visible; only the box it sat in was ever decoration. */
+  background:none;border:0;border-radius:0;padding:0;opacity:.72;font-size:10px}
 .landsd-badge a{color:var(--map-face-dim)}
 .landsd-badge a:hover{color:var(--map-face)}
 /* The `.view3d` rules stood here. Removed with the 3D button 2026-09-27, but only the SELECTOR line

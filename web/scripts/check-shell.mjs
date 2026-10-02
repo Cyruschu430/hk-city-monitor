@@ -64,8 +64,11 @@ if (r.foot && r.mapWrap && r.panelCol) {
   ok(false, "the footer, the map and the panel column are all present");
 }
 if (r.scope && r.clock) {
-  ok(Math.abs(r.scope.cy - r.clock.cy) < 12, `the clock shares the placard's baseline (Δ${Math.round(Math.abs(r.scope.cy - r.clock.cy))}px)`);
-  ok(r.clock.left > r.scope.left, "the clock sits after 香港實時情況, not before it");
+  // Cyrus 2026-10-02: the clock moved UNDER the placard, so the assertion is the new geometry -
+  // below it, and starting at the same left edge - not the baseline they shared before.
+  ok(r.clock.top >= r.scope.bottom - 2,
+    `the clock sits under 香港實時情況 (clock top ${Math.round(r.clock.top)} vs scope bottom ${Math.round(r.scope.bottom)})`);
+  ok(Math.abs(r.clock.left - r.scope.left) < 14, `both start at the same left edge (Δ${Math.round(Math.abs(r.clock.left - r.scope.left))}px)`);
 } else {
   ok(false, "the map placard has both scope and clock");
 }

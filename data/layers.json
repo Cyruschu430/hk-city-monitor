@@ -225,7 +225,7 @@
     },
     {
       "id": "mtr_trains",
-      "source": "mtr_next_train",
+      "source": "mtr_trains",
       "render": "status_grid",
       "geom": "point",
       "symbol": "plane",

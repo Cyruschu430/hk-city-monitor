@@ -13,7 +13,7 @@
 //             plainly (「現時無生效警告」), because an empty box reads as broken.
 
 import { h } from "./dom.ts";
-import { searchQuery, setSearchQuery } from "./adapters";
+import { searchQuery, setSearchQuery } from "./search";
 import { t, lang, type L10n } from "./i18n.ts";
 import { ageText, relTime, staleText, stamp } from "./format.ts";
 import type { Honesty } from "./honesty.ts";

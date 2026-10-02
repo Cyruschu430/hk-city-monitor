@@ -9,6 +9,7 @@
 
 import { fetchSource, resolveUrl, type PanelDefRaw, type Registry, type SourceDef } from "./sources.ts";
 import MTR_INDEX from "../data/mtr-stations.json";
+import { searchQuery } from "./search";
 import { fetchUrl } from "./sources.ts";
 import { fetchDataFile, liveDataUrl } from "./sources.ts";
 import * as P from "./parsers.ts";
@@ -953,25 +954,6 @@ export async function adaptPanel(panel: PanelDefRaw, ctx: AdapterCtx): Promise<A
 }
 
 // --- reader search (Cyrus 2026-10-02) -----------------------------------------
-
-/** The reader's query for a panel, held in storage rather than in the registry: a search is state,
-    not configuration. Same reasoning as layercontrol's module-state query. */
-export function searchQuery(panelId: string): string {
-  try {
-    return (localStorage.getItem(`hkcm.search.${panelId}`) ?? "").trim();
-  } catch {
-    return "";
-  }
-}
-
-export function setSearchQuery(panelId: string, q: string): void {
-  try {
-    if (q.trim()) localStorage.setItem(`hkcm.search.${panelId}`, q.trim());
-    else localStorage.removeItem(`hkcm.search.${panelId}`);
-  } catch {
-    /* private mode: the search still works for this render, it just does not persist */
-  }
-}
 
 /** MTR line codes as the API takes them, for the row label. Codes, not a station list - the station
     index is generated from the publisher's own CSV. */

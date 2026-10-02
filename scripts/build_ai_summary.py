@@ -73,6 +73,8 @@ MODEL_CHAIN = (
     "qwen/qwen3.8-27b:free",  # Chinese-native, JSON, 262k ctx
     "google/gemma-4-31b-it:free",
     "google/gemma-4-26b-a4b-it:free",
+    # Only reachable once GROQ_API_KEY exists; until then provider_of() + the empty-key guard skip it.
+    "groq/llama-3.3-70b-versatile",
 )
 # Three more free models supported `response_format` on paper and returned an EMPTY body in
 # practice (nemotron-3-super, dots-3-note-preview, lfm-2.5): measured 2026-10-01, all three came
@@ -211,6 +213,11 @@ def build_context(offline: bool) -> tuple[dict, list[dict], list[str]]:
 PROVIDERS = {
     "openrouter": ("https://openrouter.ai/api/v1/chat/completions", "OPENROUTER_API_KEY"),
     "ca": ("https://api.chatanywhere.org/v1/chat/completions", "CHATANYWHERE_API_KEY"),
+    # Groq added 2026-10-02 as a second escape hatch: OpenAI-compatible, free tier, no per-account
+    # cap on how many keys you may create (ChatAnywhere refused Cyrus a new key with "已超过当前 Key
+    # 配额"). Wire it the same way - a prefix and one env var - so whichever key he can actually
+    # obtain is a one-line change, not a second code path.
+    "groq": ("https://api.groq.com/openai/v1/chat/completions", "GROQ_API_KEY"),
 }
 
 

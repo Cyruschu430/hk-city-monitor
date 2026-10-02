@@ -8,6 +8,7 @@
 // cached guess to avoid saying "I could not load this".
 
 import { fetchSource, resolveUrl, type PanelDefRaw, type Registry, type SourceDef } from "./sources.ts";
+import MTR_INDEX from "../data/mtr-stations.json";
 import { fetchUrl } from "./sources.ts";
 import { fetchDataFile, liveDataUrl } from "./sources.ts";
 import * as P from "./parsers.ts";
@@ -314,10 +315,15 @@ const ADAPTERS: Record<string, Adapter> = {
       const parsed = P.parseKmbStopEta(eta);
       const items = [
         { title: `${route} 首站 · ${stops.length} 個站`, sub: `${stops.length} stops on this route` },
-        ...parsed.rows.slice(0, 12).map((r: Record<string, string>) => ({
-          title: Object.values(r).slice(0, 2).join(" · "),
-          sub: `ETA ${r["eta"] ?? ""}`.trim(),
-        })),
+        ...parsed.rows.slice(0, 12).map((r: unknown) => {
+          // The parser hands over whatever shape the source uses; Object.values works for both a row
+          // object and a row array, so this does not need to know which.
+          const row = r as Record<string, string>;
+          return {
+            title: Object.values(row).slice(0, 2).join(" · "),
+            sub: `ETA ${row["eta"] ?? ""}`.trim(),
+          };
+        }),
       ];
       return { data: { kind: "list", items }, observedAt: parsed.observedAt };
     }

@@ -694,6 +694,18 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async vessel_api(src) {
+    const { vessels, observedAt } = P.parseVessels(await json(await get(src)));
+    // Same contract as the aircraft adapter: the trigger state carries the
+    // vessels themselves, so the map layer and the panel can never disagree.
+    return {
+      data: { kind: "status_grid", cells: P.vesselsStatus(vessels) },
+      observedAt,
+      state: { records: vessels, records_fresh: vessels },
+      geo: P.vesselsToGeoJson(vessels),
+    };
+  },
+
   async hko_rain_nowcast(src, panel, ctx) {
     const bbox = (panel.params?.["bbox"] as [number, number, number, number]) ?? [22.15, 113.83, 22.56, 114.44];
     // ALL horizons, not just the next slot. MEASURED 2026-09-25: the CSV carries

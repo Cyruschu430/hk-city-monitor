@@ -390,7 +390,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // seconds, so clusters would re-form constantly and hide exactly the
   // individual tracks this layer exists to show. Camera points are static and
   // stay clustered.
-  const moving = glyph === "plane" || glyph === "ferry";
+  const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel";
   map.addSource(id, {
     type: "geojson",
     data: fc,
@@ -574,6 +574,7 @@ const POPUP_LABELS: Record<string, { tc: string; en: string }> = {
   mmsi: { tc: "MMSI", en: "MMSI" },
   shipName: { tc: "船名", en: "Vessel" },
   sog: { tc: "船速（節）", en: "Speed (kt)" },
+  navStatus: { tc: "航行狀態", en: "Navigation status" },
   cog: { tc: "航向", en: "Course" },
   destination: { tc: "目的地", en: "Destination" },
   // Facility fields (build_facilities.py). `Name` is the head slot and needs no label here.

@@ -249,6 +249,7 @@
    "layers": [
     "berth_vacancy",
     "aircraft",
+    "vessels",
     "hk_facility_areas",
     "control_points",
     "cameras_all",

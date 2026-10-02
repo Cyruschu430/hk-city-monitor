@@ -1,0 +1,44 @@
+# vessel-publish.yml — keep the AIS vessel snapshot current without a machine of our own.
+#
+# WHY 6 HOURS. Ships move far slower than aircraft, so a 6-hourly snapshot is honest
+# rather than a deficiency; 6h = 120 calls/month against VesselAPI's 150-call free tier,
+# leaving headroom for a 31-day month.
+#
+# WHY THIS IS A SEPARATE WORKFLOW FROM live-publish.yml. The aircraft/berth/water files
+# change on a ~10-minute cadence; vessels do not. Two workflows push the SAME orphan
+# `live-data` branch, which is safe only because scripts/publish_live.py lists the branch
+# and carries forward every file this run is NOT publishing — so neither job deletes the
+# other's output (the bug that deleted the AI brief was exactly this, fixed in publish_live.py).
+#
+# NO KEY IN THE REPO. VESSELAPI_KEY is a repository secret; collect_vessels.py reads it
+# from the environment. A failed run leaves the previous file untouched and exits non-zero.
+name: vessel-publish
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write          # publish_live.py force-pushes ONE orphan commit to live-data
+
+concurrency:
+  group: vessel-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Collect vessels from VesselAPI (bbox = HK waters)
+        env:
+          VESSELAPI_KEY: ${{ secrets.VESSELAPI_KEY }}
+        run: python3 scripts/collect_vessels.py
+
+      - name: Publish to live-data
+        env:
+          HKCM_REMOTE: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Cyruschu430/hk-city-monitor.git
+        run: python3 scripts/publish_live.py data/vessels.json

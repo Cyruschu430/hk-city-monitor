@@ -8,8 +8,8 @@
 
 ## 統計
 
-- 源總數：**177**
-- 已確認授權：**167**
+- 源總數：**180**
+- 已確認授權：**170**
 - 未確認（故意留空）：**10**
 
 ## 授權一覽
@@ -170,6 +170,16 @@ arrival time and related data of Citybus. | [link](https://rt.data.gov.hk/v1/tra
 | `wsd_water_suspension` | 水務署 臨時停水通知（5 分鐘） | [link](https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv) |
 | `wsd_water_suspension_districts` | 水務署 停水通知 受影響地區界線（CSDI） | [link](https://portal.csdi.gov.hk/server/rest/services/common/wsd_rcd_1696485865245_52313/FeatureServer/0/query?where=1%3D1&outFields=DISTRICT,DISTRICT_CHINESE,URL&f=geojson) |
 
+### Esri World Imagery — 見 Esri 使用條款（僅作後備底圖）
+
+3 個源。
+
+| 源 | 名稱 | 網址 |
+|---|---|---|
+| `esri_light_gray` | Esri Light Gray Canvas | [link](https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/14/7151/13387) |
+| `esri_world_imagery` | Esri World Imagery XYZ tile（免 key，免費） | [link](https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/14/7151/13387) |
+| `esri_world_topo` | Esri World Topographic Map | [link](https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/14/7151/13387) |
+
 ### HKSTP 開放數據 — 見其開放數據條款
 
 3 個源。
@@ -224,14 +234,6 @@ arrival time and related data of Citybus. | [link](https://rt.data.gov.hk/v1/tra
 |---|---|---|
 | `coingecko` | CoinGecko 加密貨幣 | [link](https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=hkd) |
 
-### Esri World Imagery — 見 Esri 使用條款（僅作後備底圖）
-
-1 個源。
-
-| 源 | 名稱 | 網址 |
-|---|---|---|
-| `esri_world_imagery` | Esri World Imagery XYZ tile（免 key，免費） | [link](https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/14/7151/13387) |
-
 ### NASA EONET — 公共領域（美國政府作品）
 
 1 個源。
@@ -247,6 +249,14 @@ arrival time and related data of Citybus. | [link](https://rt.data.gov.hk/v1/tra
 | 源 | 名稱 | 網址 |
 |---|---|---|
 | `usgs_earthquakes` | USGS 地震（香港 bbox） | [link](https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minlatitude=22.0&maxlatitude=22.7&minlongitude=113.7&maxlongitude=114.5&limit=50) |
+
+### VesselAPI 免費層 — 見服務條款
+
+1 個源。
+
+| 源 | 名稱 | 網址 |
+|---|---|---|
+| `vessel_api` | VesselAPI 香港船隻位置（6 小時） | data/vessels.json |
 
 ### adsb.lol — ODbL 1.0（准商業用）；OpenSky 明文禁 live product，所以唔用
 

@@ -18,6 +18,7 @@ export type GlyphId =
   | "aqhi"
   | "plane"
   | "ferry"
+  | "vessel"
   | "water"
   // Border control points, one per crossing KIND. The glyph is identical and the
   // DISC carries the kind (land violet / sea cyan / air blue), which is the same
@@ -254,6 +255,40 @@ function drawPlane(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
+/** Vessel: top-down hull silhouette, nose up — pointed bow, straight transom,
+ *  and a superstructure block aft. Rotates by COG the same way `plane` rotates
+ *  by track, so a ship points where it is sailing. Filled marine cyan so it
+ *  reads as "on water" against the dark basemap; the dark outline keeps it
+ *  legible once the halo disc sits behind it (the aircraft lesson). */
+function drawVessel(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.beginPath();
+  ctx.moveTo(0, -13); // bow tip
+  ctx.lineTo(5, -4);
+  ctx.lineTo(5, 8); // starboard side to transom
+  ctx.lineTo(-5, 8); // flat stern
+  ctx.lineTo(-5, -4);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(56,189,248,.95)"; // #38bdf8 marine cyan
+  ctx.fill();
+  ctx.strokeStyle = "rgba(5,7,13,.85)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // superstructure block aft
+  ctx.beginPath();
+  ctx.moveTo(-1.5, -3);
+  ctx.lineTo(1.5, -3);
+  ctx.lineTo(1.5, 5);
+  ctx.lineTo(-1.5, 5);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(233,242,255,.9)";
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
 /** Ferry: a hull seen from above. */
 function drawFerry(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
@@ -484,6 +519,7 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   aqhi: { draw: drawAqhi, disc: "#34d399" },
   plane: { draw: drawPlane },
   ferry: { draw: drawFerry, disc: "#38bdf8" },
+  vessel: { draw: drawVessel, disc: "#38bdf8" },
   water: { draw: drawWater, disc: "#22d3ee" },
   "cp-land": { draw: drawControlPoint, disc: "#a855f7" },
   "cp-sea": { draw: drawControlPoint, disc: "#22d3ee" },

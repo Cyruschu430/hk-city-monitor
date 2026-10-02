@@ -47,6 +47,9 @@ const OVERVIEW = [
   // RESTORED 2026-09-27 with the PC collector. A city with the world's busiest cargo airport on its
   // doorstep should say what is overhead without being asked.
   "aircraft_status",
+  // Vessel AIS — the marine counterpart to the aircraft read. A 6-hourly snapshot (not live):
+  // aisstream.io, the only free live AIS feed, went silent 2026-08.
+  "vessel_status",
   // ONE live wall with region tabs, not two panels side by side. The camera wall is a
   // city's own eyes (1,013 TD + 34 HKO cameras, an asset no global project has) and the
   // news wall is what the world is saying about it; two panels meant two ~300px blocks

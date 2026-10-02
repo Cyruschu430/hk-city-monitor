@@ -13,27 +13,11 @@ import { MIN_REFRESH_MS } from "../config.ts";
 import { adaptPanel, type AdapterCtx } from "../lib/adapters.ts";
 import { clear, h } from "../lib/dom.ts";
 import { cadenceSeconds, degrade, errored, live, LOADING, quietSeconds, type Honesty } from "../lib/honesty.ts";
-import { domainLabel, lang, onLangChange, t } from "../lib/i18n.ts";
+import { lang, onLangChange, t } from "../lib/i18n.ts";
 import { renderPanel, type PanelData, type PanelDef, type WallImage } from "../lib/render.ts";
 import { sourceLabel, type PanelDefRaw, type Registry } from "../lib/sources.ts";
 import type { Camera } from "../map/cameras.ts";
 import { pickWallCameras, wallImages } from "../map/cameras.ts";
-
-/**
- * Is the "異常與匯聚" (Anomalies & convergence) panel shown?
- *
- * WITHDRAWN 2026-09-24 (Cyrus). The Tier 0-4 ANALYTICS ENGINE IS UNTOUCHED and
- * still runs — rules still fire, baselines still accumulate, the status bar still
- * reports coverage, and analytics.test.ts still covers all of it. What is gone is
- * the panel that narrated the output.
- *
- * Kept as a flag rather than deleted, because the two are genuinely separable and
- * the panel may come back: it was the only surface that explained WHY the app
- * thought something was notable, and the engine is the expensive part. Restore by
- * setting this to true — nothing else needs to change; `setAnalysis` is still
- * wired and still called from main.ts.
- */
-const ANALYSIS_PANEL_ENABLED = true;
 
 /** Panels the engine is FED, never fetches.
  *
@@ -41,7 +25,10 @@ const ANALYSIS_PANEL_ENABLED = true;
  * registry entry and no adapter. Without this it is fetched like any other panel, lands in the
  * error state the moment `adaptPanel` finds no source for it, and is overwritten by the next
  * `setAnalysis` — a panel that flashes red every 30 seconds for a reason that is not true. */
-const FED_PANEL_IDS = new Set(["analysis_brief"]);
+// The analysis_brief panel was withdrawn (Cyrus 2026-10-02, along with the whole
+// Tier 0-4 engine). The set is empty; the FED-panel mechanism is kept because it
+// is how a fed panel stays out of the fetch/poll/coverage paths, and it may return.
+const FED_PANEL_IDS = new Set<string>([]);
 
 interface Entry {
   panel: PanelDefRaw;
@@ -89,140 +76,6 @@ export interface PanelEngine {
       line in the status bar — the number has to come from what actually
       happened at runtime, never from a hardcoded total. */
   stats(): { total: number; live: number; stale: number; error: number; loading: number };
-  /** Push a Tier 0-4 brief. The analysis panel is not a source-backed panel —
-      it is a conclusion drawn from the other panels — so it is fed rather than
-      fetched, and it renders only when analysis has actually produced one. */
-  setAnalysis(brief: AnalysisBrief | null): void;
-}
-
-/** The shape this file needs from a Brief. Declared structurally so ui/ does
-    not import the analytics module (the renderer must stay independent of the
-    pipeline that feeds it). */
-export interface AnalysisBrief {
-  generatedAt: string;
-  mode: "template" | "llm";
-  facts: { text: { tc: string; en: string }; ruleId?: string; severity?: 1 | 2 | 3 }[];
-  convergences: { text: { tc: string; en: string }; sources: string[] }[];
-  /** Structured Tier 2 groups for the timeline. Optional in the TYPE because this is a
-   *  structural interface over a module ui/ deliberately does not import, so a brief from an
-   *  older build must degrade to the phrased lines rather than render an empty timeline. */
-  convergenceDetail?: {
-    district: string;
-    domains: string[];
-    score: number;
-    maxSeverity: 1 | 2 | 3;
-    from: string;
-    to: string;
-    events: {
-      at: string;
-      domain: string;
-      severity: 1 | 2 | 3;
-      ruleId: string;
-      headline: { tc: string; en: string };
-      observed: number;
-      threshold: number;
-    }[];
-  }[];
-  accumulating: { signal: string; days: number; required: number }[];
-}
-
-/** HKT clock for a timeline row, carrying the date whenever the local day is not today.
- *
- * `HH:MM` alone is only unambiguous while the reader may assume today, and here that assumption
- * breaks in the code's own default configuration: convergence.ts groups a FIXED 60-minute window
- * anchored on the group's first event, so a group starting at 23:50 ends tomorrow, and an event
- * from yesterday renders as this morning. Both are reachable from live data — midnight takes one
- * group, not a contrived input.
- *
- * HKT and not the browser's zone: this is Hong Kong city data, the header clock is HKT, and the
- * carpark panel formats HKT. Reading a HK water suspension in the reader's own timezone while the
- * panel's own "reported" time is HKT would be the inconsistency, not the feature.
- *
- * An unparseable timestamp renders as `--:--`: a broken value should look broken, not like a
- * plausible time. */
-function stamp(iso: string, forceDate = false): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "--:--";
-  const h = new Date(d.getTime() + 8 * 3600_000);
-  const p = (n: number) => String(n).padStart(2, "0");
-  const hhmm = `${p(h.getUTCHours())}:${p(h.getUTCMinutes())}`;
-  const now = new Date(Date.now() + 8 * 3600_000);
-  const sameDay =
-    h.getUTCFullYear() === now.getUTCFullYear() &&
-    h.getUTCMonth() === now.getUTCMonth() &&
-    h.getUTCDate() === now.getUTCDate();
-  return forceDate || !sameDay ? `${h.getUTCMonth() + 1}/${h.getUTCDate()} ${hhmm}` : hhmm;
-}
-
-/** One edge of the co-occurrence view: two domains that fired inside the same district window. */
-interface DomainPair { a: string; b: string; n: number; districts: string[] }
-
-/** Which domains move together, and where.
- *
- *  A second view of the SAME `convergenceDetail` the timeline draws, not a second pipeline — the
- *  two cannot disagree about what happened, only about how to lay it out. The timeline answers
- *  "what happened in this district, in what order"; this answers "which signals keep arriving
- *  together", which is the question a reader asks next and which no single district can show.
- *
- *  Pairs are unordered and deduplicated per district (two domains in one group is one edge, not
- *  one per event), because the claim is co-occurrence of DOMAINS, not of events. */
-function domainPairs(groups: NonNullable<AnalysisBrief["convergenceDetail"]>): DomainPair[] {
-  const byKey = new Map<string, DomainPair>();
-  for (const g of groups) {
-    const ds = [...new Set(g.events.map((e) => e.domain))].sort();
-    for (let i = 0; i < ds.length; i++) {
-      for (let j = i + 1; j < ds.length; j++) {
-        const key = `${ds[i]}|${ds[j]}`;
-        const hit = byKey.get(key) ?? { a: ds[i]!, b: ds[j]!, n: 0, districts: [] };
-        hit.n++;
-        if (!hit.districts.includes(g.district)) hit.districts.push(g.district);
-        byKey.set(key, hit);
-      }
-    }
-  }
-  // Strongest first, then alphabetical so the order is stable across identical inputs — an
-  // unstable sort on equal counts makes a screenshot diff for no reason.
-  return [...byKey.values()].sort((x, y) => y.n - x.n || x.a.localeCompare(y.a) || x.b.localeCompare(y.b));
-}
-
-/** One Tier 2 group as a timeline block.
- *
- * Pure: takes the structured group the brief carries, returns a node. The rows are in the order
- * `narrative.ts` sorted them, which is the point of the view — a district with three domains
- * firing inside the hour is the claim this project makes and a sentence buries it, because
- * `同時發生：水／交通／醫療（沙田區，3 宗）` reads as one line of prose while the same data as rows
- * shows the reader the sequence and the gap between the events.
- *
- * observed/threshold stays visible on every row: ANALYTICS.md's rule is that a claim a reader
- * cannot check is not traceable, and the numbers are the check. */
-function timelineGroup(g: NonNullable<AnalysisBrief["convergenceDetail"]>[number]): HTMLElement {
-  // The start decides whether the end needs a date too: a span crossing midnight reads as
-  // `23:50–00:30` — backwards — unless both ends carry their day.
-  const from = stamp(g.from);
-  const to = stamp(g.to, from.includes("/"));
-  const span = from === to ? from : `${from}–${to}`;
-  return h(
-    "div",
-    { class: "tl-g" },
-    h(
-      "div",
-      { class: "tl-gh" },
-      h("span", { class: "tl-d" }, g.district),
-      h("span", { class: "tl-score" }, String(g.score)),
-      h("span", { class: "tl-dom" }, g.domains.map(domainLabel).join(" · ")),
-      h("span", { class: "tl-span" }, span),
-    ),
-    ...g.events.map((e) =>
-      h(
-        "div",
-        { class: `tl-ev s${e.severity}` },
-        h("time", {}, stamp(e.at)),
-        h("span", { class: "tl-domain" }, domainLabel(e.domain)),
-        h("span", { class: "tl-txt" }, lang() === "tc" ? e.headline.tc : e.headline.en),
-        h("span", { class: "tl-num" }, `${e.observed} / ${e.threshold}`),
-      ),
-    ),
-  );
 }
 
 const EMPTY_TEXT: Record<string, { tc: string; en: string }> = {
@@ -697,106 +550,6 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       const tally = { total: bySource.size, live: 0, stale: 0, error: 0, loading: 0 };
       for (const st of bySource.values()) tally[st] += 1;
       return tally;
-    },
-    setAnalysis(brief) {
-      const id = "analysis_brief";
-      // WITHDRAWN 2026-09-24 (Cyrus) — the panel is off, controlled by
-      // ANALYSIS_PANEL_ENABLED at the top of this file. The Tier 0-4 ENGINE is
-      // untouched: it still runs, still feeds the rule engine and the status bar,
-      // and main.ts still publishes the brief on `window.__hkcm.analysisBrief()`
-      // so the engine stays verifiable without the panel. `analytics.test.ts`
-      // covers the engine's own modules (baseline/rules/convergence/narrative),
-      // not this panel.
-      if (!brief) return;
-      if (!ANALYSIS_PANEL_ENABLED) return;
-
-      const body = h("div", { class: "an-body" });
-
-      // Tier 2 as a TIMELINE. The phrased lines are NOT also printed: they say the same thing
-      // in one sentence, and the same content in two places reads as a duplicate rather than as
-      // emphasis (measured elsewhere in this project). The prose is still on the brief for
-      // anyone reading `window.__hkcm.analysisBrief()`.
-      if (brief.convergenceDetail && brief.convergenceDetail.length > 0) {
-        body.append(
-          h("div", { class: "an-sec" },
-            h("div", { class: "an-h" }, lang() === "tc" ? "同一時段同一區" : "Same district, same window"),
-            ...brief.convergenceDetail.map(timelineGroup),
-          ),
-        );
-      }
-
-      if (brief.convergenceDetail && brief.convergenceDetail.length > 0) {
-        const pairs = domainPairs(brief.convergenceDetail);
-        if (pairs.length > 0) {
-          body.append(
-            h("div", { class: "an-sec" },
-              h("div", { class: "an-h" }, lang() === "tc" ? "邊兩個領域一齊動" : "Domains that move together"),
-              ...pairs.map((pr) =>
-                h("div", { class: "pair" },
-                  h("span", { class: "pair-a" }, domainLabel(pr.a)),
-                  h("span", { class: "pair-x" }, "+"),
-                  h("span", { class: "pair-b" }, domainLabel(pr.b)),
-                  h("span", { class: "pair-n" }, String(pr.n)),
-                  h("span", { class: "pair-d" }, pr.districts.join(" · ")),
-                ),
-              ),
-            ),
-          );
-        }
-      }
-
-      if (brief.facts.length > 0) {
-        body.append(
-          h("div", { class: "an-sec" },
-            h("div", { class: "an-h" }, lang() === "tc" ? "事件" : "Events"),
-            ...brief.facts.map((f) =>
-              h("div", { class: `an-fact s${f.severity ?? 1}` },
-                h("span", { class: "an-dot" }),
-                h("span", {}, lang() === "tc" ? f.text.tc : f.text.en),
-                f.ruleId ? h("span", { class: "an-rule" }, f.ruleId) : "",
-              ),
-            ),
-          ),
-        );
-      }
-
-      if (brief.facts.length === 0 && !(brief.convergenceDetail && brief.convergenceDetail.length > 0)) {
-        body.append(h("p", { class: "p-empty" }, lang() === "tc" ? "現時無異常事件" : "No anomalies right now"));
-      }
-
-      // What could NOT be said yet. This is the honest counterpart to the events
-      // list: an empty list usually means "accumulating", not "all clear".
-      if (brief.accumulating.length > 0) {
-        body.append(
-          h("div", { class: "an-sec" },
-            h("div", { class: "an-h" }, lang() === "tc" ? "基線累積中" : "Baselines accumulating"),
-            ...brief.accumulating.map((a) =>
-              h("div", { class: "an-acc" },
-                h("span", {}, a.signal),
-                h("span", { class: "an-days" }, `${a.days}/${a.required}${lang() === "tc" ? " 日" : "d"}`),
-              ),
-            ),
-          ),
-        );
-      }
-
-      const node = h(
-        "section",
-        { class: "panel wide", "data-panel": id, "data-state": "live" },
-        h("div", { class: "panel-head" },
-          h("h2", {}, lang() === "tc" ? "異常與匯聚" : "Anomalies & convergence"),
-          // Honest provenance: the reader is told whether a machine wrote the
-          // wording, so "AI-written" is never mistaken for "computed".
-          h("span", { class: `chip${brief.mode === "llm" ? "" : " stale"}` },
-            brief.mode === "llm" ? (lang() === "tc" ? "AI 敘述" : "AI wording") : (lang() === "tc" ? "範本" : "template")),
-        ),
-        h("div", { class: "panel-body" }, body),
-        h("div", { class: "panel-foot" },
-          h("span", { class: "src" }, lang() === "tc" ? "規則引擎（確定性）" : "Rule engine (deterministic)"),
-          h("time", {}, brief.generatedAt.slice(11, 19)),
-        ),
-      );
-      mount(id, node);
     },
   };
   return api;

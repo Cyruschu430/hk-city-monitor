@@ -281,15 +281,7 @@ for (const s of SCENARIOS) {
 }
 
 await browser.close();
-// A 404 on the OPTIONAL live brief is not a defect. ai_summary.json is published to live-data twice a
-// day; the collector that deletes it was fixed on 2026-10-02 (publish_live.py carried it forward), but
-// until a brief publishes again the file is absent and the app falls back to its committed snapshot by
-// design. Chrome's console message carries no URL, so the network log is what distinguishes this from
-// any other 404 - and anything NOT in this list still fails the check, which is the point.
-const ALLOWED_ABSENT = /raw\.githubusercontent\.com\/Cyruschu430\/hk-city-monitor\/live-data\/ai_summary\.json/;
-const allowed404 = (bad ?? []).filter((b) => ALLOWED_ABSENT.test(String(b))).length;
-if (allowed404) console.log(`  note: ${allowed404} allow-listed 404 (optional live brief absent; app uses its committed snapshot)`);
-const real = consoleErrors.filter((t) => !/InvalidStateError/.test(t)).slice(allowed404);
+const real = consoleErrors.filter((t) => !/InvalidStateError/.test(t));
 if (real.length) {
   console.log(`\n${real.length} console error(s) beyond the documented image-decode noise:`);
   for (const t of [...new Set(real)].slice(0, 5)) console.log(`  ${t}`);

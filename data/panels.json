@@ -18,6 +18,11 @@
    "withdrawn": "2026-10-01",
    "why": "Cyrus: 'ANOMALIES & CONVERGENCE 好奇怪, REMOVE'. It stated a conclusion without stating what it looked at.",
    "restore": "Move back into panels[], add to OVERVIEW in main.ts and to FED_PANEL_IDS in ui/panels.ts. check:analysis tests the ENGINE, not this panel."
+  },
+  "kmb_eta_table": {
+   "withdrawn": "2026-10-02",
+   "why": "Cyrus: '九巴 info panel 冇乜用，巴士 app much better'.",
+   "restore": "Move back into panels[], and re-add 'kmb_eta_table' to the two verticals' order lists."
   }
  },
  "panels": [
@@ -407,28 +412,6 @@
    "cadence_note": {
     "tc": "實時（每 30 秒）",
     "en": "Real-time (30s)"
-   }
-  },
-  {
-   "id": "kmb_eta_table",
-   "source": "kmb_eta",
-   "render": "table",
-   "title": {
-    "tc": "九巴 到站時間",
-    "en": "KMB Arrivals"
-   },
-   "params": {
-    "stop_id": "18492910339410B1",
-    "max": 10,
-    "search": {
-     "tc": "輸入站名／路線",
-     "en": "Search station / route"
-    }
-   },
-   "wide": true,
-   "cadence_note": {
-    "tc": "每 1 分鐘",
-    "en": "Every minute"
    }
   },
   {

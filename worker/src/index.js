@@ -288,6 +288,11 @@ async function handleProxy(request, ctx) {
   if (!ALLOWED_HOSTS.has(target.host.toLowerCase())) {
     return jsonError(403, "host_not_allowed", `host not in sources.json registry: ${target.host}`);
   }
+  // The allow-list bounds the host, not the port. A hostile visitor must not be able
+  // to reach a non-443 port on a whitelisted host (port scan / weak SSRF).
+  if (target.port && target.port !== "443") {
+    return jsonError(403, "port_not_allowed", "only the default https port is proxied");
+  }
 
   const tile = TILE_PATH_RE.test(target.pathname);
 

@@ -491,9 +491,9 @@ async function loadNow() {
     const wet = rain.filter((x) => Number(x.max) > 0).sort((a, b) => b.max - a.max).slice(0, 4);
     $("nowTag").textContent = "更新 " + fmtHKT(d.updateTime).slice(11);
     $("nowBody").innerHTML = `
-      <div class="wx-big"><b>${t.value ?? "–"}°C</b><span>天文台總部 · 濕度 ${h.value ?? "–"}%</span></div>
+      <div class="wx-big"><b>${esc(t.value ?? "–")}°C</b><span>天文台總部 · 濕度 ${esc(h.value ?? "–")}%</span></div>
       <div class="rows">
-        <div class="row"><i>紫外線指數</i><b>${u.value ?? "–"}${u.desc ? " " + esc(u.desc) : ""}</b></div>
+        <div class="row"><i>紫外線指數</i><b>${esc(u.value ?? "–")}${u.desc ? " " + esc(u.desc) : ""}</b></div>
         <div class="row"><i>過去一小時有雨地區</i><b>${wet.length ? wet.map((x) => esc(x.place) + " " + x.max + "mm").join("、") : "無"}</b></div>
       </div>`;
   } catch (e) {

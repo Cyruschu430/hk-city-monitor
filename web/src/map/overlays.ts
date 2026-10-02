@@ -590,13 +590,10 @@ const POPUP_SKIP = /^(OBJECTID|Easting|Northing|Latitude|Longitude|Latitude_N|Lo
 
 /** HTML-escape a value before it goes into a popup.
  *
- * These popups render text that came from a REMOTE FEED. Nothing escapes it today
- * — `controlPointLayer` and `drawWaterPoints` interpolate raw values into
- * `setHTML`, so a feed value containing markup executes in the page. That is a
- * real (if low-probability) injection path on government data, and this helper
- * exists so the new code does not add a third instance. The older two are left
- * alone deliberately: changing them is a separate review, and doing it silently
- * inside a popup feature would hide it. */
+ * These popups render text that came from a REMOTE FEED. `controlPointLayer` and
+ * `drawWaterPoints` interpolate feed values into `setHTML`, so every value they
+ * interpolate is passed through `esc()`. Every popup added later must do the
+ * same — a feed value containing markup must never reach the page unescaped. */
 function esc(v: unknown): string {
   return String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }

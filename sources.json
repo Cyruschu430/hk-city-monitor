@@ -1246,6 +1246,23 @@
    "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
   },
   {
+   "id": "mtr_trains",
+   "group": "transport",
+   "name": "港鐵列車位置（推算）",
+   "name_en": "MTR train positions (estimated)",
+   "type": "json",
+   "url": "https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=ADM",
+   "auth": "none",
+   "cadence": "real-time",
+   "todo": false,
+   "notes": "Estimated positions from next-train ETAs (no GTFS-RT in HK). Client fetches each line's two termini and linearly interpolates every upcoming train along its line. NOT GPS.",
+   "kind": "api",
+   "fetch": "browser",
+   "cors_note": "ACAO=*",
+   "cost": "free",
+   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+  },
+  {
    "id": "hkia_flights",
    "group": "aviation",
    "name": "香港國際機場 航班",

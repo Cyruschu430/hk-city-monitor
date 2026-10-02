@@ -50,6 +50,11 @@ const r = await page.evaluate(() => {
     navSourceLinks: document.querySelectorAll(
       '.plist a[target="_blank"], .panel .src[target="_blank"], .lyr-note a[target="_blank"]').length,
     srcHold: document.querySelectorAll(".src-hold").length,
+    // Reader search (Cyrus 2026-10-02): the MTR and KMB panels declare params.search, so exactly
+    // those two must carry a box. A box with nothing behind it would be a lie in the other direction.
+    searchBoxes: document.querySelectorAll(".panel-head input[type=search]").length,
+    searchPanels: [...document.querySelectorAll(".panel-head input[type=search]")].map(
+      (el) => el.closest(".panel")?.getAttribute("data-panel") ?? "?").sort().join(","),
   };
 });
 await browser.close();

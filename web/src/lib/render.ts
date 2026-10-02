@@ -13,6 +13,7 @@
 //             plainly (「現時無生效警告」), because an empty box reads as broken.
 
 import { h } from "./dom.ts";
+import { searchQuery, setSearchQuery } from "./adapters";
 import { t, lang, type L10n } from "./i18n.ts";
 import { ageText, relTime, staleText, stamp } from "./format.ts";
 import type { Honesty } from "./honesty.ts";
@@ -628,6 +629,35 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
  * `data` is null only while loading or after an error — the body is then the
  * skeleton / the error line, never a guess.
  */
+/** The reader's search box, for a panel whose registry entry declares params.search. */
+function searchBox(panel: PanelDef): HTMLElement {
+  const label = panel.params?.["search"];
+  const text = label && typeof label === "object" ? label : { tc: "搜尋", en: "Search" };
+  const input = h("input", {
+    class: "lyr-q",
+    type: "search",
+    value: searchQuery(panel.id),
+    placeholder: t(text),
+    "aria-label": `${t(panel.title)} — ${t(text)}`,
+  }) as HTMLInputElement;
+  const run = () => {
+    setSearchQuery(panel.id, input.value);
+    // The panel is rebuilt from the registry on the next poll, so ask for that poll now.
+    (window as unknown as { __hkcm?: { refreshAll?: () => void } }).__hkcm?.refreshAll?.();
+  };
+  input.addEventListener("keydown", (e) => {
+    if ((e as KeyboardEvent).key === "Enter") {
+      e.preventDefault();
+      run();
+    }
+  });
+  // Emptying the box and leaving it clears the search, which restores the pinned station.
+  input.addEventListener("blur", () => {
+    if (input.value.trim() === "") run();
+  });
+  return input;
+}
+
 export function renderPanel(
   panel: PanelDef,
   data: PanelData | null,
@@ -641,7 +671,17 @@ export function renderPanel(
       "data-panel": panel.id,
       "data-state": honesty.state,
     },
-    h("div", { class: "panel-head" }, h("h2", {}, t(panel.title)), chip(honesty)),
+    h(
+      "div",
+      { class: "panel-head" },
+      h("h2", {}, t(panel.title)),
+      // Reader search (Cyrus 2026-10-02), only for panels whose registry entry declares it. The box
+      // reuses the layer control's own filter class (lyr-q) rather than introducing a second look, and
+      // Enter calls window.__hkcm.refreshAll() - the hook the app already exposes for QA - instead of
+      // threading a new callback down from ui/panels.ts.
+      panel.params?.["search"] ? searchBox(panel) : null,
+      chip(honesty),
+    ),
   );
 
   let bodyEl: HTMLElement;

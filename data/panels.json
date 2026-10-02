@@ -398,7 +398,11 @@
    },
    "params": {
     "line": "ISL",
-    "sta": "ADM"
+    "sta": "ADM",
+    "search": {
+     "tc": "輸入站名／路線",
+     "en": "Search station / route"
+    }
    },
    "cadence_note": {
     "tc": "實時（每 30 秒）",
@@ -415,7 +419,11 @@
    },
    "params": {
     "stop_id": "18492910339410B1",
-    "max": 10
+    "max": 10,
+    "search": {
+     "tc": "輸入站名／路線",
+     "en": "Search station / route"
+    }
    },
    "wide": true,
    "cadence_note": {

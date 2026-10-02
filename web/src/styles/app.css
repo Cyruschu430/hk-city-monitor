@@ -415,10 +415,6 @@ a:hover{color:var(--cyan)}
 .stat-fresh[data-fresh="bad"] .stat-dot{background:var(--alert)}
 .stat-fresh[data-fresh="warn"] .stat-value{color:var(--amber)}
 .stat-fresh[data-fresh="bad"] .stat-value{color:var(--alert)}
-.live-pulse{width:7px;height:7px;border-radius:50%;background:var(--cyan);flex:0 0 auto;
-  box-shadow:0 0 0 0 rgba(34,211,238,.7);animation:pulse 2.4s ease-in-out infinite}
-.live-pulse.off{background:var(--faint);animation:none}
-@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(34,211,238,0)}100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}}
 /* Language and theme switches share one pill treatment — they are the same kind
    of control (a small exclusive choice) and must not drift apart visually. */
 #langSwitch,#themeSwitch{display:flex;border:1px solid var(--hairline);border-radius:var(--radius-pill);overflow:hidden}
@@ -1045,7 +1041,6 @@ a:hover{color:var(--cyan)}
 /* ---------- reduced motion: required, not optional (DESIGN_BRIEF §5) ---------- */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .live-pulse{box-shadow:none}
 }
 
 /* ============================================================================

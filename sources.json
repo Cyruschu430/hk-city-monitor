@@ -238,7 +238,7 @@
    ],
    "auth": "none",
    "cadence": "6 minutes",
-   "todo": true,
+   "todo": false,
    "notes": "FOUND. The URL is a TEMPLATE, not a fixed file: {YYYYMMDDHHMM} is the frame time in Hong Kong time on a 6-minute grid. radarCandidates() in web/src/lib/parsers.ts owns the substitution and steps back (now, -6, -12, -18) until one returns 200. A literal timestamp must NEVER be committed here — the original probe recorded a fixed sample URL, which 404s within minutes and reads as a dead source when the source is fine. That mistake was made once and cost a debugging cycle.",
    "kind": "api",
    "fetch": "proxy",
@@ -255,7 +255,7 @@
    "url": "https://www.hko.gov.hk/wxinfo/intersat/satellite/image/asia/202609181900+181100GLB__global_150_internet.jpg",
    "auth": "none",
    "cadence": "hourly",
-   "todo": true,
+   "todo": false,
    "notes": "FOUND. Also a TIMESTAMPED path under /wxinfo/intersat/satellite/image/asia/ — the filename carries a date plus an offset token, so the exact naming rule still needs pinning. ~216KB.",
    "kind": "api",
    "fetch": "proxy",
@@ -471,23 +471,7 @@
    "license": "VesselAPI 免費層 — 見服務條款",
    "todo": false
   },
-  {
-   "id": "aisstream",
-   "group": "marine",
-   "name": "AISStream 船隻 AIS（WebSocket）",
-   "name_en": "AISStream Vessel AIS (WebSocket)",
-   "type": "json",
-   "url": "wss://stream.aisstream.io/v0/stream",
-   "auth": "free-key",
-   "cadence": "real-time",
-   "hk_filter": true,
-   "notes": "THE ONLY genuinely free live AIS feed — global terrestrial receivers, free API key, WebSocket with a bounding-box subscription. Three things to be honest about: (1) it is terrestrial, so vessels roughly 40nm offshore vanish; (2) the vendor's own coverage notes are strongest in European/Atlantic waters and weakest in Asia, which is exactly where HK is — so HK coverage is UNPROVEN, not assumed; (3) it cannot run from a static page, it needs a persistent VPS collector. Measure before building: python3 scripts/test_ais_coverage.py --minutes 10. Dark ships (AIS switched off) need paid satellite AIS and are out of scope. Fallback if that measurement says NO-GO: a free-tier keyed REST AIS provider (VesselAPI and similar) is the next step, but do not add one to this catalogue until a real endpoint has been requested and returns data — vendor marketing pages are not sources.",
-   "kind": "api",
-   "fetch": "n/a",
-   "cors_note": "URL 唔可直接開（模板或非 HTTP）",
-   "cost": "free",
-   "license": "aisstream.io 免費層 — 見服務條款"
-  },
+
   {
    "id": "lcsd_leisure_prog",
    "group": "civic",
@@ -615,22 +599,7 @@
    "cost": "free",
    "license": "Yahoo Finance — 非官方端點，僅供個人參考"
   },
-  {
-   "id": "coingecko",
-   "group": "market",
-   "name": "CoinGecko 加密貨幣",
-   "name_en": "CoinGecko Cryptocurrencies",
-   "type": "json",
-   "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=hkd",
-   "auth": "none",
-   "cadence": "1 minute",
-   "notes": "Free tier is rate-limited but keyless.",
-   "kind": "api",
-   "fetch": "proxy",
-   "cors_note": "ACAO=*",
-   "cost": "free",
-   "license": "CoinGecko 免費 API — 需標明出處"
-  },
+
   {
    "id": "carto_dark_style",
    "group": "geospatial",

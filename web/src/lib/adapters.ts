@@ -581,6 +581,20 @@ const ADAPTERS: Record<string, Adapter> = {
     return { data: { kind: "table", columns, rows }, observedAt };
   },
 
+  async mardep_vessel_arrivals(src, panel) {
+    const max = Number(panel.params?.["max_rows"] ?? 30);
+    const { columns, rows, observedAt } = P.parseMarineVessels(await text(await get(src)), max);
+    // Same frozen-feed rule as the ferry panel: the RN feed's newest row is
+    // months old (measured 2026-10-02), so without this the panel would present
+    // a 5-month-old list as a live arrival board.
+    const frozenDays = Number(panel.params?.["frozen_after_days"]);
+    const frozenNotice = panel.params?.["frozen_notice"] as { tc: string; en: string } | undefined;
+    if (frozenDays > 0 && frozenNotice && observedAt && Date.now() - observedAt.getTime() > frozenDays * 86_400_000) {
+      return { data: { kind: "table", columns: [], rows: [], frozen: frozenNotice }, observedAt };
+    }
+    return { data: { kind: "table", columns, rows }, observedAt };
+  },
+
   async hkia_flights(src, panel) {
     const max = Number(panel.params?.["max_rows"] ?? 40);
     const payload = (await json(await get(src))) as unknown as Parameters<typeof P.parseFlights>[0];

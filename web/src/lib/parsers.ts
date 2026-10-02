@@ -253,6 +253,39 @@ export function parseFerry(text: string, maxRows: number): { columns: string[]; 
   };
 }
 
+// --- MarDep vessel arrivals (RN0010.XML, flat XML) -----------------------------
+// Honesty: the RN feed is FROZEN upstream — its newest row sits months back
+// (measured 2026-10-02: latest 30/04/2026, and RN0030/in-port returns empty).
+// The ADAPTER turns that into an explicit "suspended" state (same frozen rule as
+// the ferry panel) rather than presenting a 5-month-old list as a live board.
+// observedAt is still the payload's own latest ARRIVAL_DATETIME, so a resume in
+// the feed comes through with no code change.
+/** "30/04/2026 23:51" (DD/MM/YYYY, Hong Kong time) — the MarDep RN feed. */
+function parseMardepDate(s: string): Date | null {
+  const m = /(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/.exec(s);
+  if (!m) return null;
+  return iso(`${m[3]}-${m[2]}-${m[1]}T${m[4]}:${m[5]}:00+08:00`);
+}
+
+export function parseMarineVessels(xml: string, maxRows: number): { columns: string[]; rows: string[][]; observedAt: Date | null } {
+  const rows: string[][] = [];
+  let observedAt: Date | null = null;
+  for (const b of blocks(xml, "G_SQL1")) {
+    const type = ent(tag(b, "SHIP_TYPE_DESC"));
+    const ref = ent(tag(b, "LIC_MD_REF"));
+    const when = parseMardepDate(tag(b, "ARRIVAL_DATETIME"));
+    const port = ent(tag(b, "LAST_PORT"));
+    if (when && (!observedAt || when > observedAt)) observedAt = when;
+    rows.push([type, ref, when ? hkWallTime(when).slice(5) : "", port]);
+    if (rows.length >= maxRows) break;
+  }
+  return {
+    columns: ["船型", "牌照", "到港時間", "上一港"],
+    rows,
+    observedAt,
+  };
+}
+
 // --- HKIA flights ------------------------------------------------------------------
 interface HkiaFlight { time: string; flight: { no: string }[]; status: string; origin: string[] }
 interface HkiaDay { date: string; list: HkiaFlight[]; lastUpdatedTime?: string }

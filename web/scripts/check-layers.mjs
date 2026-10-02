@@ -159,11 +159,38 @@ ok(Object.values(tdAfter).every((v) => v === "visible"),
 // ABSENCE rather than deleted. If someone restores the layer they will have to come here and say so,
 // which is the point — the restored version must also configure a tileset, and that is the bug this
 // removal was standing in for.
+// RESTORED 2026-10-02, on this file's own instruction ("If someone restores the layer they will
+// have to come here and say so"). Both halves of the 2026-09-27 removal reason are now false:
+// /config/3d answers 200 with a wgs84.tilemodel URL, and the new button prints the reason on the
+// map face instead of reporting success. So this asserts the invariant that actually protects the
+// reader - clicking 3D must either turn it on OR say why, never neither - which is also the one
+// version of this test a headless browser can honestly run (deck.gl needs a real GPU, so "it drew
+// buildings" is not checkable here, and asserting it would be the same class of lie the project
+// keeps paying for).
 const hud3d = await page.evaluate(() =>
   [...document.querySelectorAll("button")].some((x) => /^3D$/.test(x.textContent.trim())));
-ok(!hud3d, "the HUD 3D button is back — the tileset was never configured, see the removal note");
+ok(hud3d, "the HUD 3D switch is present in the map view");
+if (hud3d) {
+  const outcome = await page.evaluate(async () => {
+    const b = [...document.querySelectorAll("button")].find((x) => /^3D$/.test(x.textContent.trim()));
+    b.click();
+    // The dynamic import + /config/3d + the deck.gl chunk. 12s is generous; a timeout here is a
+    // finding, not flake: it means the button did neither of the two things it must do.
+    for (let i = 0; i < 120; i++) {
+      await new Promise((r) => setTimeout(r, 100));
+      const on = b.getAttribute("aria-pressed") === "true";
+      const said = !!document.querySelector(".btn-3d-msg");
+      if (on || said) return { on, said, why: said ? document.querySelector(".btn-3d-msg").textContent : "" };
+    }
+    return { on: false, said: false, why: "neither 3D nor a message after 12s" };
+  });
+  ok(outcome.on || outcome.said,
+    `3D switch either turns on or explains itself (on=${outcome.on} msg=${JSON.stringify(outcome.why ?? "").slice(0, 120)})`);
+}
+// These two stay ABSENCE assertions: 3D is a layer toggled from the map view, not a LAYERS row and
+// not a rail button, so a row here would be a second control for one layer.
 ok(!(await page.evaluate(() => !!document.querySelector('.lyr-item[data-row="buildings3d"]'))),
-  "a buildings3d LAYERS row is back — it draws nothing without a tileset URL");
+  "a buildings3d LAYERS row is back — 3D is switched from the map view, not from LAYERS");
 ok(!(await page.evaluate(() => !!document.querySelector('.rail-btn[data-rail="buildings3d"]'))),
   "a buildings3d rail button is back — it draws nothing without a tileset URL");
 

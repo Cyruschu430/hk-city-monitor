@@ -1,0 +1,2 @@
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self' https:; frame-src https://www.youtube.com; frame-ancestors 'none'; base-uri 'none'; object-src 'none'

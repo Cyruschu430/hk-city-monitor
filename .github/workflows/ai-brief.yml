@@ -44,6 +44,7 @@ jobs:
       - name: Build the brief (fetches live-data, calls the model, refuses to publish empty)
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          CHATANYWHERE_API_KEY: ${{ secrets.CHATANYWHERE_API_KEY }}
           HKCM_AI_MODEL: ${{ vars.HKCM_AI_MODEL }}
         run: python3 scripts/build_ai_summary.py --skip-if-fresh 6 --out data/ai_summary.json
 

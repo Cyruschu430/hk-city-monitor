@@ -66,6 +66,10 @@ MAX_CONTEXT_BYTES = 4000
 # list does, and the output records which model actually answered rather than the one we asked for
 # (a brief attributed to a model that did not write it is the kind of claim this project bans).
 MODEL_CHAIN = (
+    # ChatAnywhere first (added 2026-10-02): a dedicated key with its own quota, because the pool
+    # below answered 429 on every scheduled run for days. Provider by prefix - see PROVIDERS.
+    "ca/gpt-4o-mini",
+    "ca/deepseek-chat",
     "qwen/qwen3.8-27b:free",  # Chinese-native, JSON, 262k ctx
     "google/gemma-4-31b-it:free",
     "google/gemma-4-26b-a4b-it:free",
@@ -189,6 +193,35 @@ def build_context(offline: bool) -> tuple[dict, list[dict], list[str]]:
     return facts, inputs, warnings
 
 
+# TWO PROVIDERS, ONE SHAPE. Cyrus added a ChatAnywhere key on 2026-10-02 because the OpenRouter
+# free pool answered 429 on every run for days. Both speak the OpenAI chat-completions protocol, so
+# the only difference is the base URL and which environment variable holds the key - which means the
+# fallback order can stay one visible list instead of two code paths.
+#
+# The provider is named by a PREFIX on the chain entry ("ca/gpt-4o-mini") rather than a second data
+# structure: a tuple per model would touch the loop that walks the chain, and the loop is not what
+# changed. An entry with no prefix is OpenRouter, so every existing id keeps working untouched.
+#
+# Host note, from ChatAnywhere's own docs (read 2026-10-02): api.chatanywhere.tech for a China route,
+# api.chatanywhere.org abroad - and GitHub Actions runs in the US, so .org is the one that matters
+# here. Their free tier is capped at 100 requests/day and 50,000 points/week; this job makes two
+# requests a day. NOT VERIFIED YET: the exact free model ids - their README says the free tier covers
+# "deepseek, gpt-3.5-turbo, embedding, gpt-4o series, gpt-5 series" but not the literal ids, so the
+# first run with the key should hit GET /v1/models and the chain should be corrected from that.
+PROVIDERS = {
+    "openrouter": ("https://openrouter.ai/api/v1/chat/completions", "OPENROUTER_API_KEY"),
+    "ca": ("https://api.chatanywhere.org/v1/chat/completions", "CHATANYWHERE_API_KEY"),
+}
+
+
+def provider_of(model: str) -> tuple[str, str]:
+    """Return (base_url, key env var) for a chain entry, and the bare model id to send."""
+    name, _, bare = model.partition("/")
+    if name in PROVIDERS:
+        return (*PROVIDERS[name], bare)
+    return (*PROVIDERS["openrouter"], model)
+
+
 def call_model(model: str, context: str, key: str) -> dict:
     body = json.dumps(
         {
@@ -199,8 +232,14 @@ def call_model(model: str, context: str, key: str) -> dict:
             "response_format": {"type": "json_object"},
         }
     ).encode()
+    url, key_env, bare = provider_of(model)
+    if key_env != "OPENROUTER_API_KEY":
+        # A second provider supplies its own key; the caller still passes the OpenRouter one because
+        # its signature is not what needed to change.
+        key = os.environ.get(key_env, "").strip() or key
+    body = body.replace(json.dumps(model).encode(), json.dumps(bare).encode(), 1)
     req = urllib.request.Request(
-        "https://openrouter.ai/api/v1/chat/completions",
+        url,
         data=body,
         headers={
             "Authorization": f"Bearer {key}",

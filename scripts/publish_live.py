@@ -26,6 +26,7 @@ collects but cannot authenticate, and exit 0 from the VPS with a repo-scoped dep
 
 Usage:  py publish_live.py data/aircraft.json data/berth_vacancy.json
 """
+import json
 import os, subprocess, sys, tempfile, shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -46,41 +47,47 @@ def git(*args, cwd):
 
 
 
-# Files this script does NOT produce but whose absence from the branch is a data outage for a panel.
-# THE BUG THIS EXISTS FOR (measured 2026-10-02): the push below is an ORPHAN commit, so anything not
-# in the temp repo stops existing on the branch. ai_summary.json is published by ai-brief.yml twice a
-# day, and this script runs every 10 minutes - so the city brief was deleted within ten minutes of
-# every build, and the live-data copy was 404 while aircraft/berth/water were 200. The panel fell back
-# to its committed snapshot, which is why it looked like a UI bug for two days.
-KEEP = ["ai_summary.json"]
+# EVERY FILE THIS RUN DOES NOT PUBLISH MUST BE CARRIED FORWARD.
+#
+# The push below is an ORPHAN commit: whatever is not in the temp repo stops existing on the branch.
+# A hardcoded keep-list was the first attempt and it was wrong in the obvious way - it protected
+# ai_summary.json from the collector but not the collector's three files from a brief publish, so
+# running this script for the brief deleted aircraft/berth/water (measured 2026-10-02, branch left
+# holding README.md and ai_summary.json only). The rule is not "remember the other files": it is
+# "this script owns the files it was handed and nothing else".
+#
+# The list comes from the GitHub contents API on a public repo, so it needs no token and cannot go
+# stale the way a constant does.
+API = "https://api.github.com/repos/Cyruschu430/hk-city-monitor/contents"
 
 
 def carry_forward(tmp: str, files: list[str]) -> None:
-    """Copy the KEEP files from the current branch into the orphan commit before it is pushed.
-
-    A 404 is normal (the AI job has not run yet) and is skipped. Any other failure is reported and
-    skipped too, rather than blocking the aircraft update: the AI job republishes on its own
-    schedule, while a 10-minute collector that refuses to run is a live panel that goes stale.
-    """
+    """Copy every file already on the branch that this run is not replacing."""
     have = {os.path.basename(f) for f in files}
-    for name in KEEP:
-        if name in have:
+    try:
+        req = urllib.request.Request(f"{API}?ref={BRANCH}",
+                                     headers={"User-Agent": "hkcm-collector",
+                                              "Accept": "application/vnd.github+json"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            listing = json.loads(r.read().decode())
+    except Exception as e:  # noqa: BLE001
+        print(f"FAIL  cannot list {BRANCH}: {e} - refusing to publish, this push would delete files",
+              file=sys.stderr)
+        raise SystemExit(4)
+    for entry in listing:
+        name = entry.get("name", "")
+        if not name or name in have or entry.get("type") != "file":
             continue
         try:
-            req = urllib.request.Request(f"{RAW}/{BRANCH}/{name}",
-                                         headers={"User-Agent": "hkcm-collector"})
-            with urllib.request.urlopen(req, timeout=20) as r:
+            with urllib.request.urlopen(urllib.request.Request(entry["download_url"],
+                                             headers={"User-Agent": "hkcm-collector"}), timeout=20) as r:
                 data = r.read()
             with open(os.path.join(tmp, name), "wb") as fh:
                 fh.write(data)
-            print(f"KEEP  {name} carried forward from {BRANCH} ({len(data)} bytes)")
-        except urllib.error.HTTPError as e:
-            if e.code == 404:
-                print(f"KEEP  {name} not on {BRANCH} yet - skipped")
-            else:
-                print(f"WARN  {name}: HTTP {e.code} - publishing without it", file=sys.stderr)
-        except Exception as e:  # noqa: BLE001 - never let a network blip stop the collector
-            print(f"WARN  {name}: {e} - publishing without it", file=sys.stderr)
+            print(f"KEEP  {name} carried forward ({len(data)} bytes)")
+        except Exception as e:  # noqa: BLE001
+            print(f"FAIL  cannot carry {name}: {e} - refusing to publish", file=sys.stderr)
+            raise SystemExit(4)
 
 
 def main():

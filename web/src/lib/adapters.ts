@@ -968,7 +968,8 @@ export function setSearchQuery(panelId: string, q: string): void {
 
 /** MTR line codes as the API takes them, for the row label. Codes, not a station list - the station
     index is generated from the publisher's own CSV. */
-const MTR_STATIONS = MTR_INDEX.stations;
+type MtrStation = { code: string; tc: string; en: string; lines: string[] };
+const MTR_STATIONS = MTR_INDEX.stations as MtrStation[];
 
 const MTR_LINE_TC: Record<string, string> = {
   AEL: "機場快綫", TCL: "東涌綫", TML: "屯馬綫", EAL: "東鐵綫", SIL: "南港島綫",

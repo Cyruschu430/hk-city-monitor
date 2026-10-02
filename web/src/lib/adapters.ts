@@ -281,8 +281,8 @@ const ADAPTERS: Record<string, Adapter> = {
       const items = parts
         .flatMap((x) => x.items)
         .sort((a, b) => String(a.time ?? "").localeCompare(String(b.time ?? "")));
-      if (items.length === 0) return { data: { kind: "list", items: [], emptyText: `${hit.tc} ${hit.en}：目前冇班次資料 · no train data right now` }, observedAt: parts[0]?.observedAt };
-      return { data: { kind: "list", items }, observedAt: parts[0]?.observedAt };
+      if (items.length === 0) return { data: { kind: "list", items: [], emptyText: `${hit.tc} ${hit.en}：目前冇班次資料 · no train data right now` }, observedAt: parts[0]?.observedAt ?? null };
+      return { data: { kind: "list", items }, observedAt: parts[0]?.observedAt ?? null };
     }
 
     const payload = await json(await fetchSource(withUrl(src, schedule(line, sta))));
@@ -307,10 +307,11 @@ const ADAPTERS: Record<string, Adapter> = {
       const seqUrl = `https://data.etabus.gov.hk/v1/transport/kmb/route-stop/${encodeURIComponent(route)}/outbound/1`;
       const seq = await json(await fetchSource(withUrl(src, seqUrl)));
       const stops: string[] = (seq as { data?: { stop?: string }[] }).data?.map((x) => x.stop ?? "") ?? [];
-      if (stops.length === 0) {
+      const firstStop = stops[0];
+      if (!firstStop) {
         throw new Error(`${route} 呢條路線搵唔到 · no KMB route "${route}"`);
       }
-      const etaUrl = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${encodeURIComponent(stops[0])}`;
+      const etaUrl = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${encodeURIComponent(firstStop)}`;
       const eta = await json(await fetchSource(withUrl(src, etaUrl)));
       const parsed = P.parseKmbStopEta(eta);
       const items = [

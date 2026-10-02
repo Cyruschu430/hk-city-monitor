@@ -659,4 +659,24 @@ console.log("\nparsers.test.ts: ALL PASS");
   const { observedAt } = P.parseAeWaiting(live);
   assert.ok(observedAt instanceof Date, "parseAeWaiting must carry the stamp through");
   console.log(`✓ 急症室時間: ${s} → ${at!.toISOString()}（12 小時制邊界同 null 都測齊）`);
+
+  // MTR train position estimate — linear interpolation along a line
+  {
+    const mtr = {
+      stations: {
+        A: { code: "A", name_tc: "甲", name_en: "A", lat: 22.0, lon: 114.0 },
+        B: { code: "B", name_tc: "乙", name_en: "B", lat: 22.1, lon: 114.1 },
+        C: { code: "C", name_tc: "丙", name_en: "C", lat: 22.2, lon: 114.2 },
+      },
+      lines: { L: { name_tc: "L", name_en: "L", DT: ["A", "B", "C"], UT: ["C", "B", "A"], branches: [] } },
+      travel_min: 2.5,
+    };
+    const at = P.estimateMtrTrains([{ line: "L", dir: "DOWN" as const, dest: "C", ttnt: 0 }], mtr);
+    assert.equal(at.length, 1, "one train");
+    assert.ok(Math.abs(at[0]!.lat - 22.2) < 0.001 && Math.abs(at[0]!.lon - 114.2) < 0.001, `ttnt 0 → terminus C, got ${at[0]!.lat},${at[0]!.lon}`);
+    const mid = P.estimateMtrTrains([{ line: "L", dir: "DOWN" as const, dest: "C", ttnt: 2.5 }], mtr);
+    assert.ok(Math.abs(mid[0]!.lat - 22.1) < 0.001 && Math.abs(mid[0]!.lon - 114.1) < 0.001, `ttnt 2.5 → station B, got ${mid[0]!.lat},${mid[0]!.lon}`);
+    assert.equal(P.estimateMtrTrains([{ line: "L", dir: "DOWN" as const, dest: "C", ttnt: 99 }], mtr).length, 0, "ttnt beyond line → dropped");
+    console.log(`✓ 港鐵推算: ttnt 0 → 終點，ttnt 2.5 → 一站前，超線 → 丟棄`);
+  }
 }

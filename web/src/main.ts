@@ -102,6 +102,10 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // publishing static JSON — and scripts/collect_aircraft.py is that collector. The layer reads
   // data/aircraft.json, so api.adsb.lol's block on cloud egress is no longer in the path.
   { id: "aircraft", label: { tc: "航機（社群 ADS-B）", en: "Aircraft (community ADS-B)" }, on: true },
+  // Estimated, not GPS: MTR publishes no vehicle positions, so these dots are
+  // interpolated from next-train ETAs. OFF by default so a reader turns it on
+  // deliberately rather than mistaking an estimate for a fix.
+  { id: "mtr_trains", label: { tc: "港鐵列車（推算）", en: "MTR trains (estimated)" } },
   // 「（模式格網）」 is not decoration. This layer is Open-Meteo MODEL output, and
   // `weather_stations` one row below is the OBSERVED counterpart — two layers with
   // the same subject and different epistemics, one click apart. The rail label is
@@ -865,6 +869,15 @@ async function boot(): Promise<void> {
           if (!on) break;
           const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
           if (!drawn.includes("aircraft")) throw new Error("航機圖層畫唔出");
+          break;
+        }
+        case "mtr_trains": {
+          const def = registry.layers.find((l) => l.id === "mtr_trains");
+          if (!def) throw new Error("layers.json 冇 mtr_trains");
+          clearVerticalLayers(map, [def]);
+          if (!on) break;
+          const drawn = await applyVerticalLayers(map, [def], { registry, ctx, activeDistricts, waterPoints });
+          if (!drawn.includes("mtr_trains")) throw new Error("港鐵列車圖層畫唔出");
           break;
         }
         case "wind_field": {

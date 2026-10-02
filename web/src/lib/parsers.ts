@@ -553,6 +553,108 @@ export function parseMtrSchedule(j: {
   return { items, observedAt: parseStamp(j.sys_time) };
 }
 
+// --- MTR train position ESTIMATE -------------------------------------------------
+// MTR publishes no GTFS-RT vehicle positions, only next-train ETAs. A train
+// reported "N minutes from terminus T" is placed by linear interpolation along
+// T's line, N/travel_min stations back from T, assuming constant speed. This is
+// an ESTIMATE, not a fix — the layer label and popup say so.
+export interface MtrStationsData {
+  stations: Record<string, { code: string; name_tc: string; name_en: string; lat: number | null; lon: number | null }>;
+  lines: Record<string, { name_tc: string; name_en: string; DT: string[]; UT: string[]; branches?: { diverge: string; stops: string[] }[] }>;
+  travel_min: number;
+}
+
+export interface MtrTrain {
+  id: string;
+  line: string;
+  dest: string;
+  dest_tc: string;
+  dest_en: string;
+  lat: number;
+  lon: number;
+  heading: number; // degrees, towards the destination
+  ttnt: number;
+}
+
+function bearingDeg(aLat: number, aLon: number, bLat: number, bLon: number): number {
+  const dLon = ((bLon - aLon) * Math.PI) / 180;
+  const lat1 = (aLat * Math.PI) / 180;
+  const lat2 = (bLat * Math.PI) / 180;
+  const y = Math.sin(dLon) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+  return (Math.atan2(y, x) * 180) / Math.PI;
+}
+
+export function estimateMtrTrains(
+  schedules: { line: string; dir: "UP" | "DOWN"; dest: string; ttnt: number }[],
+  mtr: MtrStationsData,
+): MtrTrain[] {
+  const out: MtrTrain[] = [];
+  const travel = mtr.travel_min || 2.5;
+  for (const s of schedules) {
+    const line = mtr.lines[s.line];
+    if (!line) continue;
+    const destSta = mtr.stations[s.dest];
+    if (!destSta?.lat || !destSta?.lon) continue;
+    if (!Number.isFinite(s.ttnt) || s.ttnt < 0) continue;
+    // UP = towards the line's first stop, DOWN = towards the last. fwd is the
+    // ordered stop list the train is travelling ALONG (dest at its tail).
+    const fwd = s.dir === "DOWN" ? line.DT : line.UT;
+    const di = fwd.indexOf(s.dest);
+    if (di < 0) continue; // branch terminus or unknown — skip (ponytail: spurs unmodelled)
+    const k = s.ttnt / travel;
+    if (k > fwd.length - 1) continue; // beyond the line — ETA longer than the whole run
+    const back = di - k;
+    const i0 = Math.max(0, Math.floor(back));
+    const i1 = Math.min(fwd.length - 1, i0 + 1);
+    const c0 = fwd[i0];
+    const c1 = fwd[i1];
+    if (!c0 || !c1) continue;
+    const a = mtr.stations[c0];
+    const b = mtr.stations[c1];
+    if (!a?.lat || !a?.lon || !b?.lat || !b?.lon) continue;
+    const t = Math.max(0, Math.min(1, back - i0));
+    const lat = a.lat + (b.lat - a.lat) * t;
+    const lon = a.lon + (b.lon - a.lon) * t;
+    const heading = (bearingDeg(lat, lon, destSta.lat, destSta.lon) + 360) % 360;
+    out.push({
+      id: `${s.line}-${s.dest}-${Math.round(s.ttnt * 10)}`,
+      line: s.line,
+      dest: s.dest,
+      dest_tc: destSta.name_tc,
+      dest_en: destSta.name_en,
+      lat, lon, heading, ttnt: s.ttnt,
+    });
+  }
+  return out;
+}
+
+export function mtrToGeoJson(trains: MtrTrain[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: trains.map((t) => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [t.lon, t.lat] },
+      properties: {
+        Name: `${lang() === "tc" ? "往" : "to "}${lang() === "tc" ? t.dest_tc : t.dest_en} · ${t.ttnt}${lang() === "tc" ? " 分鐘" : " min"}`,
+        bearing: t.heading,
+        dest: t.dest,
+        line: t.line,
+        ttnt: t.ttnt,
+        estimated: true,
+      },
+    })),
+  };
+}
+
+export function mtrStatus(trains: MtrTrain[]): StatusCell[] {
+  return [{
+    label: lang() === "tc" ? "推算列車" : "Estimated trains",
+    value: String(trains.length),
+    status: trains.length > 0 ? 0 : 2,
+  }];
+}
+
 /** KMB arrivals at ONE stop, every route at once (`/stop-eta/{stop_id}`).
     🔴 `rmk` is displayed, never dropped. The live capture contains "原定班次" /
     "Scheduled Bus", which means the time is PREDICTED FROM THE TIMETABLE, not a

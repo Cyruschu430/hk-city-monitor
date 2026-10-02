@@ -287,18 +287,9 @@ await browser.close();
 // design. Chrome's console message carries no URL, so the network log is what distinguishes this from
 // any other 404 - and anything NOT in this list still fails the check, which is the point.
 const ALLOWED_ABSENT = /raw\.githubusercontent\.com\/Cyruschu430\/hk-city-monitor\/live-data\/ai_summary\.json/;
-// Ask the SOURCE OF TRUTH whether the optional file exists right now, instead of allow-listing a
-// message. If the brief is published, every 404 fails as before; if it is absent, a 404 is the
-// documented fallback path and the app has already used its committed snapshot. Self-healing: the
-// moment a brief publishes, this stops excusing anything.
-const briefOk = await fetch(
-  "https://raw.githubusercontent.com/Cyruschu430/hk-city-monitor/live-data/ai_summary.json",
-  { method: "HEAD" },
-).then((r) => r.ok).catch(() => false);
-if (!briefOk) console.log("  note: the optional live brief is absent upstream - a 404 for it is the documented fallback");
-const real = consoleErrors.filter(
-  (t) => !/InvalidStateError/.test(t) && !(!briefOk && /status of 404/.test(t)),
-);
+const allowed404 = (bad ?? []).filter((b) => ALLOWED_ABSENT.test(String(b))).length;
+if (allowed404) console.log(`  note: ${allowed404} allow-listed 404 (optional live brief absent; app uses its committed snapshot)`);
+const real = consoleErrors.filter((t) => !/InvalidStateError/.test(t)).slice(allowed404);
 if (real.length) {
   console.log(`\n${real.length} console error(s) beyond the documented image-decode noise:`);
   for (const t of [...new Set(real)].slice(0, 5)) console.log(`  ${t}`);

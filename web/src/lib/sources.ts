@@ -147,6 +147,9 @@ const LIVE_FILES = new Set([
   "aircraft.json",
   "berth_vacancy.json",
   "water_suspension.json",
+  // AIS vessels, published by .github/workflows/vessel-publish.yml every 6h from
+  // VesselAPI (a 12h cadence would already be fine; 6h stays well inside the free tier).
+  "vessels.json",
   // Twice-daily LLM brief, published by .github/workflows/ai-brief.yml. A live file like any
   // other: the bundle copy is a fallback that shows its age, never the thing a reader sees first.
   "ai_summary.json",

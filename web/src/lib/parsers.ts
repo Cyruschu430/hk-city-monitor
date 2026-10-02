@@ -879,6 +879,114 @@ export function aircraftToGeoJson(aircraft: Aircraft[]): GeoJSON.FeatureCollecti
   };
 }
 
+// --- Vessel (AIS via VesselAPI REST, 6h cadence) -------------------------------
+export interface Vessel {
+  mmsi: string;
+  name: string;
+  lat: number;
+  lon: number;
+  sog: number | null;      // speed over ground, knots
+  cog: number | null;      // course over ground, degrees
+  heading: number | null;  // true heading, degrees
+  navStatus: number | null;
+}
+
+/** Decode the AIS navigational status for the popup, falling back to the raw
+ *  code when unknown. A ship "moored" is a very different dot from one "under
+ *  way", so the popup says which. */
+function navStatusText(code: number): string {
+  const t: Record<number, [string, string]> = {
+    0: ["航行中", "Under way using engine"],
+    1: ["錨泊", "At anchor"],
+    2: ["失控", "Not under command"],
+    3: ["操縱受限", "Restricted manoeuvrability"],
+    4: ["吃水受限", "Constrained by draught"],
+    5: ["繫泊", "Moored"],
+    6: ["擱淺", "Aground"],
+    7: ["捕魚中", "Engaged in fishing"],
+    8: ["帆船航行", "Under way sailing"],
+    15: ["未定義", "Undefined"],
+  };
+  const p = t[code];
+  return p ? (lang() === "tc" ? p[0] : p[1]) : String(code);
+}
+
+/** VesselAPI returns `{vessels:[{mmsi,vessel_name,latitude,longitude,cog,sog,
+ *  heading,nav_status,timestamp,…}], nextToken}`. The collector flattens any
+ *  pagination and writes that shape verbatim to data/vessels.json, so this
+ *  parser reads the same shape it will on the next page of the source. */
+export function parseVessels(payload: unknown): { vessels: Vessel[]; observedAt: Date | null } {
+  const doc = (payload ?? {}) as Record<string, unknown>;
+  const list = Array.isArray(doc) ? doc : (doc["vessels"] ?? []);
+  const rows = (Array.isArray(list) ? list : []) as Record<string, unknown>[];
+  const vessels: Vessel[] = [];
+  let observedAt: Date | null = null;
+  for (const r of rows) {
+    const lat = Number(r["latitude"]);
+    const lon = Number(r["longitude"]);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+    const mmsi = String(r["mmsi"] ?? "").trim();
+    if (!mmsi) continue;
+    const num = (v: unknown): number | null => { const n = Number(v); return Number.isFinite(n) ? n : null; };
+    vessels.push({
+      mmsi,
+      name: String(r["vessel_name"] ?? "").trim(),
+      lat,
+      lon,
+      sog: num(r["sog"]),
+      cog: num(r["cog"]),
+      heading: num(r["heading"]),
+      navStatus: num(r["nav_status"]),
+    });
+    // observedAt = newest vessel fix in the payload, NOT the fetch time — a
+    // collector that runs but receives stale fixes still degrades honestly.
+    const ts = r["timestamp"];
+    if (typeof ts === "string") {
+      const d = iso(ts);
+      if (d && (!observedAt || d > observedAt)) observedAt = d;
+    }
+  }
+  return { vessels, observedAt };
+}
+
+/** Count summary for the panel — total, and how many carry a resolved name. */
+export function vesselsStatus(vessels: Vessel[]): StatusCell[] {
+  const out: StatusCell[] = [{
+    label: lang() === "tc" ? "區內船隻" : "Vessels in range",
+    value: String(vessels.length),
+    status: vessels.length > 0 ? 0 : 2,
+  }];
+  const named = vessels.filter((v) => v.name).length;
+  out.push({
+    label: lang() === "tc" ? "有船名" : "Named",
+    value: `${named}/${vessels.length}`,
+    status: 0,
+  });
+  return out;
+}
+
+/** Vessel → point features. `bearing` is the field the layer reads to rotate
+ *  the hull glyph; COG is the AIS course-over-ground and is the right source
+ *  for "where it is going", falling back to true heading then 0 (a moored ship
+ *  has no course but is still a ship). `Name` is the popup heading (same
+ *  convention aircraftToGeoJson documents). */
+export function vesselsToGeoJson(vessels: Vessel[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: vessels.map((v) => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [v.lon, v.lat] },
+      properties: {
+        mmsi: v.mmsi,
+        Name: v.name || v.mmsi,
+        sog: v.sog,
+        navStatus: v.navStatus != null ? navStatusText(v.navStatus) : null,
+        bearing: v.cog ?? v.heading ?? 0,
+      },
+    })),
+  };
+}
+
 // --- HKO 10-minute wind (regional AWS) -----------------------------------------
 // 30 automatic weather stations, refreshed every 10 minutes. The payload is a
 // small CSV whose fields are NOT all numbers — measured 2026-09-23:

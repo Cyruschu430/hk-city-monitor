@@ -448,6 +448,24 @@
     "tc": "社群接收數據，覆蓋唔完整；位置係接收器推算，唔可以當導航用。",
     "en": "Community-received data with incomplete coverage; positions are receiver-derived and must not be used for navigation."
    }
+  },
+  {
+   "id": "vessel_status",
+   "source": "vessel_api",
+   "render": "status_grid",
+   "title": {
+    "tc": "香港水域船隻（AIS）",
+    "en": "Vessels in Hong Kong waters (AIS)"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每 6 小時（快照，非實時）",
+    "en": "Every 6 hours (snapshot, not live)"
+   },
+   "disclaimer": {
+    "tc": "陸基 AIS 接收數據，離岸約 40 海里外嘅船隻可能收唔到；6 小時快照，唔可以當導航用。",
+    "en": "Terrestrial AIS; coverage drops off ~40nm offshore. A 6-hourly snapshot, not for navigation."
+   }
   }
  ]
 }

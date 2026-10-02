@@ -224,6 +224,22 @@
       "_comment": "Live ADS-B traffic. Restored with the same change that restored the panel: the layer was withdrawn because adsb.lol blocks cloud egress, and the map now reads data/aircraft.json published by the PC collector instead of the upstream host. `symbol: plane` plus a per-feature icon-rotate is the existing path in overlays.ts pointLayer — the glyph and the rotation were left intact through the withdrawal, so this is a config entry and not new drawing code. OFF by default: 28 aircraft is small, but a moving layer nobody asked for is still a layer on every reader's map."
     },
     {
+      "id": "vessels",
+      "source": "vessel_api",
+      "render": "list",
+      "geom": "point",
+      "symbol": "vessel",
+      "title": {
+        "tc": "船隻（AIS）",
+        "en": "Vessels (AIS)"
+      },
+      "popup": "vessel_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "AIS vessel positions from VesselAPI, a 6-hourly snapshot (not live — aisstream.io went silent 2026-08 and blocks datacenter egress). Same pointLayer path as aircraft: `symbol: vessel` plus a per-feature icon-rotate on `bearing` (COG, falling back to heading). OFF by default for the same reason aircraft is: a moving layer nobody asked for is a layer on every reader's map."
+    },
+    {
       "id": "berth_vacancy",
       "source": "hk_berth_vacancy",
       "render": "list",

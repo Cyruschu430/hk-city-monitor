@@ -1,0 +1,1 @@
+{"vessels":[{"mmsi":477000001,"vessel_name":"TEST CARGO","latitude":22.3,"longitude":114.16,"cog":180.2,"sog":12.5,"heading":178,"nav_status":0,"timestamp":"2026-10-02T06:00:00Z"},{"mmsi":477000002,"vessel_name":"","latitude":22.28,"longitude":114.1,"cog":null,"sog":0,"heading":null,"nav_status":5,"timestamp":"2026-10-02T05:30:00Z"}]}

@@ -393,6 +393,35 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log(`    樣本 ${a.flight || a.hex} · ${a.altFt} ft · ${a.trackDeg}° · ${a.gsKt} kt · GeoJSON ${gj.features.length} 點`);
 }
 
+// 23b. Vessel AIS (VesselAPI) — a 6-hourly snapshot, not live positions.
+{
+  const { vessels, observedAt } = P.parseVessels(jx("vessels.json"));
+  assert.equal(vessels.length, 2, `${vessels.length} vessels`);
+  assert.equal(vessels[0]!.mmsi, "477000001");
+  assert.equal(vessels[0]!.name, "TEST CARGO", "vessel_name parsed");
+  assert.equal(vessels[0]!.sog, 12.5, "sog parsed");
+  assert.ok(observedAt && observedAt.getFullYear() === 2026, `timestamp parsed ${observedAt?.toISOString()}`);
+
+  const gj = P.vesselsToGeoJson(vessels);
+  assert.equal(gj.features.length, 2, "one feature per vessel");
+  const f0 = gj.features[0]!;
+  assert.equal(f0.properties!["bearing"], 180.2, "COG carried as bearing (icon-rotate)");
+  assert.equal(f0.properties!["Name"], "TEST CARGO", "Name = vessel name for popup title");
+  const f1 = gj.features[1]!;
+  assert.equal(f1.properties!["bearing"], 0, "no COG/heading -> bearing 0, not dropped");
+  assert.equal(f1.properties!["Name"], "477000002", "nameless vessel -> mmsi as Name");
+
+  // No position -> dropped, not plotted at 0,0.
+  const bad = P.parseVessels({ vessels: [{ mmsi: 1 }, { mmsi: 2, latitude: 22.3, longitude: 114.1 }] });
+  assert.equal(bad.vessels.length, 1, "no-lat/lon dropped");
+
+  const cells = P.vesselsStatus(vessels);
+  assert.equal(cells[0]!.value, "2", "count cell");
+  assert.equal(cells[1]!.value, "1/2", "named cell");
+
+  console.log(`✓ 船隻: ${vessels.length} 艘，最新 ${observedAt?.toISOString()}；COG→bearing ${f0.properties!["bearing"]}°`);
+}
+
 // 24. HKO 10-minute wind — the payload's fields are NOT all numbers, and the
 // difference between "calm" and "no reading" is the difference between a real
 // observation and an invented one. The fixture holds all three cases.

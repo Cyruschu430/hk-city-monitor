@@ -28,6 +28,8 @@ Usage:  py publish_live.py data/aircraft.json data/berth_vacancy.json
 """
 import json
 import os, subprocess, sys, tempfile, shutil
+import urllib.error
+import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, ".."))

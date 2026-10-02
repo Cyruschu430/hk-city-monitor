@@ -72,15 +72,30 @@ export function landsdBadge(): HTMLElement {
   );
 }
 
-export function setBasemap(map: maplibregl.Map, kind: "topo" | "imagery"): void {
-  if (!map.getLayer("landsd-topo") || !map.getLayer("landsd-imagery")) return;
-  map.setLayoutProperty("landsd-topo", "visibility", kind === "topo" ? "visible" : "none");
-  // Official LandsD aerial (same source their 3D-map example uses); Esri
-  // remains in the style as a fallback, off by default.
-  map.setLayoutProperty("landsd-imagery", "visibility", kind === "imagery" ? "visible" : "none");
-  map.setLayoutProperty("esri-imagery", "visibility", "none");
-  // Labels are designed for the topographic map; on imagery they are noise.
-  map.setLayoutProperty("landsd-label-tc", "visibility", kind === "topo" ? "visible" : "none");
+export type BasemapKind = "topo" | "imagery" | "esri-topo" | "esri-gray";
+
+// One table, four kinds: each basemap is a raster layer visible only when it is the chosen one, so a
+// fifth is a row here plus a source and layer in style.json - not another branch. LandsD topographic
+// is the default; the Esri pair are the additions Cyrus asked for (2026-10-02), both keyless.
+const BASEMAP_LAYERS: Record<BasemapKind, string> = {
+  topo: "landsd-topo",
+  imagery: "landsd-imagery",
+  "esri-topo": "esri-topo",
+  "esri-gray": "esri-gray",
+};
+
+export function setBasemap(map: maplibregl.Map, kind: BasemapKind): void {
+  if (!map.getLayer("landsd-topo")) return;
+  for (const [k, layer] of Object.entries(BASEMAP_LAYERS)) {
+    if (map.getLayer(layer)) map.setLayoutProperty(layer, "visibility", k === kind ? "visible" : "none");
+  }
+  // Esri World Imagery stays the fallback it has always been: never a UI option, so it is switched
+  // off alongside everything else.
+  if (map.getLayer("esri-imagery")) map.setLayoutProperty("esri-imagery", "visibility", "none");
+  // The Chinese labels are drawn for the LandsD topographic map; on any other base they are noise.
+  if (map.getLayer("landsd-label-tc")) {
+    map.setLayoutProperty("landsd-label-tc", "visibility", kind === "topo" ? "visible" : "none");
+  }
 }
 
 /** Attach layers only once their source exists. `isStyleLoaded()` stays false

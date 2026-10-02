@@ -1,0 +1,1 @@
+{"vessels": [], "_comment": "Collector has not run yet — scripts/collect_vessels.py publishes the first snapshot once VESSELAPI_KEY is set as a repo secret. An empty list reads as '0 vessels' with an alert, which is honest for 'not yet collected'."}

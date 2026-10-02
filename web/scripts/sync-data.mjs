@@ -210,7 +210,10 @@ const style = {
       tiles: [tile(LANDSD_TOPO)],
       tileSize: 256,
       maxzoom: 19,
-      attribution: "Map from Lands Department 地政總署",
+      // No attribution string here on purpose (Cyrus 2026-10-02). MapLibre concatenates every
+      // source's attribution, and this one duplicated the LandsD notice that the badge already
+      // carries - logo and notice, on the map face, as the terms require. The requirement is met
+      // once; stating it twice just made the corner unreadable.
     },
     "landsd-label-tc": {
       type: "raster",

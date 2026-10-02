@@ -547,10 +547,13 @@ a:hover{color:var(--cyan)}
      geometry against that control's measured rect rather than trusting this number. */
   bottom:46px;display:flex;align-items:center;gap:7px;padding:5px 10px;
   background:var(--map-face-bg);border:1px solid var(--map-face-line);border-radius:7px;
-  font-size:11px;color:var(--map-face-dim);letter-spacing:.03em;
+  /* White, like the attribution line below it (Cyrus 2026-10-02) - was --map-face-dim. Still a
+     map-face token, so check:tokens keeps passing on any theme. */
+  font-size:11px;color:var(--map-face);letter-spacing:.03em;
   backdrop-filter:blur(6px);box-shadow:0 1px 8px rgba(0,0,0,.28)}
-.landsd-logo{height:13px;width:auto;opacity:.75;filter:grayscale(1)}
-.landsd-badge a{color:var(--map-face-dim)}
+/* The official logo is a black-on-transparent SVG; inverting it renders it white to match the text. */
+.landsd-logo{height:13px;width:auto;filter:brightness(0) invert(1);opacity:.92}
+.landsd-badge a{color:var(--map-face)}
 .landsd-badge a:hover{color:var(--map-face)}
 /* The `.view3d` rules stood here. Removed with the 3D button 2026-09-27, but only the SELECTOR line
    was deleted, leaving eight declarations with no selector. A CSS parser cannot recover from that: it

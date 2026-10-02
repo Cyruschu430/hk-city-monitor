@@ -456,8 +456,8 @@
   {
    "id": "vessel_api",
    "group": "marine",
-   "name": "VesselAPI 香港船隻位置（6 小時）",
-   "name_en": "VesselAPI Hong Kong Vessel Positions (6h)",
+   "name": "香港船隻位置（AIS，6 小時）",
+   "name_en": "Hong Kong Vessel Positions (AIS, 6h)",
    "type": "json",
    "url": "data/vessels.json",
    "auth": "none",
@@ -1210,8 +1210,8 @@
   {
    "id": "kmb_eta",
    "group": "transport",
-   "name": "九巴／龍運 路線及到站時間（免 key！）",
-   "name_en": "KMB / LWB Routes and Arrival Times (keyless!)",
+   "name": "九巴／龍運 路線及到站時間",
+   "name_en": "KMB / LWB Routes and Arrival Times",
    "type": "json",
    "url": "https://data.etabus.gov.hk/v1/transport/kmb/eta/18492910339410B1/1/1",
    "candidates": [
@@ -1231,8 +1231,8 @@
   {
    "id": "mtr_next_train",
    "group": "transport",
-   "name": "港鐵 下一班列車（免 key）",
-   "name_en": "MTR Next Train (keyless)",
+   "name": "港鐵 下一班列車",
+   "name_en": "MTR Next Train",
    "type": "json",
    "url": "https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=ADM",
    "auth": "none",
@@ -1248,8 +1248,8 @@
   {
    "id": "hkia_flights",
    "group": "aviation",
-   "name": "香港國際機場 航班（免 key）",
-   "name_en": "HKIA Flights (keyless)",
+   "name": "香港國際機場 航班",
+   "name_en": "HKIA Flights",
    "type": "json",
    "url": "https://www.hongkongairport.com/flightinfo-rest/rest/flights?date=2026-09-18&lang=en",
    "auth": "none",
@@ -1599,8 +1599,8 @@
   {
    "id": "yahoo_hk_quotes",
    "group": "market",
-   "name": "雅虎財經 港股指數／股份報價（延遲，免 key）",
-   "name_en": "Yahoo Finance HK Index / Stock Quotes (delayed, keyless)",
+   "name": "雅虎財經 港股指數／股份報價（延遲）",
+   "name_en": "Yahoo Finance HK Index / Stock Quotes (delayed)",
    "type": "json",
    "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EHSI?interval=1d&range=1d",
    "auth": "none",
@@ -1761,8 +1761,8 @@
   {
    "id": "aqhi_city_dashboard",
    "group": "weather",
-   "name": "環保署 AQHI（City Dashboard 版，JSON/CSV/XML）",
-   "name_en": "EPD AQHI (City Dashboard, JSON/CSV/XML)",
+   "name": "環保署 空氣質素健康指數（AQHI）",
+   "name_en": "EPD Air Quality Health Index (AQHI)",
    "type": "json",
    "url": "https://dashboard.data.gov.hk/api/aqhi-individual?format=json",
    "candidates": [
@@ -2221,8 +2221,8 @@
   {
    "id": "ck_hk_hko_rss_latest_ten_minute_wind_info",
    "group": "weather",
-   "name": "Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust",
-   "name_en": "Regional weather in Hong Kong – the latest 10-minute mean wind direction and wind speed and maximum gust",
+   "name": "天文台 十分鐘平均風向風速",
+   "name_en": "HKO 10-minute Mean Wind",
    "type": "dataset",
    "url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv",
    "candidates": [
@@ -3208,8 +3208,8 @@
   {
    "id": "ai_brief",
    "group": "civic",
-   "name": "城市簡報（AI 覆述確定性規則）",
-   "name_en": "City brief (AI summary of the rule engine)",
+   "name": "城市簡報（AI 整理開放數據）",
+   "name_en": "City brief (AI summary of open data)",
    "type": "json",
    "url": "data/ai_summary.json",
    "auth": "none",

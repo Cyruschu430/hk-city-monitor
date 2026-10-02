@@ -13,7 +13,10 @@
 //             plainly (「現時無生效警告」), because an empty box reads as broken.
 
 import { h } from "./dom.ts";
-import { searchQuery, setSearchQuery } from "./search";
+// Every runtime import in this file carries the .ts extension because the honesty suite loads render.ts
+// under plain node ESM, where an extensionless specifier does not resolve. My first version of this
+// line omitted it - and my first explanation blamed adapters.ts, which was also wrong.
+import { searchQuery, setSearchQuery } from "./search.ts";
 import { t, lang, type L10n } from "./i18n.ts";
 import { ageText, relTime, staleText, stamp } from "./format.ts";
 import type { Honesty } from "./honesty.ts";

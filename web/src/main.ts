@@ -24,9 +24,6 @@ import { toggleWind } from "./map/wind2d.ts";
 import type { LayerDefRaw } from "./lib/sources.ts";
 import { createDrawer } from "./ui/drawer.ts";
 import { createPanelEngine } from "./ui/panels.ts";
-import { analyse } from "./lib/analytics/index.ts";
-import { emptyStore, BASELINE_VERSION, type BaselineStore } from "./lib/analytics/baseline.ts";
-import type { RuleDef } from "./lib/analytics/rules.ts";
 import { createStatusBar } from "./ui/statusbar.ts";
 import { createFooter } from "./ui/footer.ts";
 import { createMapHead, relabelMapHead } from "./ui/maphead.ts";
@@ -88,11 +85,6 @@ const OVERVIEW = [
  *  rebuilt on its own schedule. 3 minutes is the faster of the two, so neither is
  *  polled faster than it can change. */
 const TRIGGER_POLL_MS = 3 * 60_000;
-
-/** How often the Tier 0-4 pipeline re-runs over current state. Faster than the
-    trigger poll because this is pure computation over data already in memory —
-    a rule can fire the moment a panel reports, without waiting for a fetch. */
-const ANALYSIS_INTERVAL_MS = 30_000;
 
 const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean }[] = [
   { id: "cameras_td", label: { tc: "運輸署相機", en: "TD cameras" }, on: true },
@@ -613,55 +605,6 @@ async function boot(): Promise<void> {
     panelTabsEl.hidden = tabs.length < 2;
   }
 
-  // --- Tier 0-4 analytics ------------------------------------------------------
-  // A VIEW over the trigger state the panels have already produced, not a data
-  // source of its own. Deterministic rules only — there is no LLM in the browser
-  // path, so the brief is always the template wording (Tier 3/4 narrative runs
-  // in the offline collector and is read back from data/analysis.json).
-  //
-  // The baseline store starts EMPTY and is folded from real readings, so on a
-  // fresh load it honestly reports "累積中 0/14 日" until a collector persists
-  // baselines across days. That is the real state, not a placeholder.
-  let baselineStore = emptyStore();
-  /** The most recent Tier 0-4 brief. Held on the app rather than only inside the
-      panel engine, because the panel that used to display it was withdrawn and
-      the engine's output still needs to be verifiable (see the QA hook below). */
-  let lastBrief: unknown = null;
-
-  function runAnalysis(): void {
-    const rules = (registry.rules ?? []) as unknown as RuleDef[];
-    if (rules.length === 0) return;
-    const out = analyse({
-      state: triggerState,
-      rules,
-      store: baselineStore,
-      now: new Date(),
-      lang: lang(),
-      convergence: { windowMinutes: 60, minDomains: 2, maxGroups: 5 },
-    });
-    baselineStore = out.store;
-    lastBrief = out.brief;
-    engine.setAnalysis(out.brief);
-  }
-  window.setInterval(runAnalysis, ANALYSIS_INTERVAL_MS);
-
-  // Persisted baselines, when a collector has produced them
-  // (scripts/collect_baselines.mjs → data/baselines.json). baseline.ts stores plane
-  // JSON keyed "signalId|dow|hour", so this is a read, not a migration.
-  // Every failure path keeps the empty store, which the brief then reports honestly
-  // as 「累積中 0/14 日」: the one thing a missing file must never do is read as
-  // "no anomalies today".
-  void fetch("data/baselines.json")
-    .then((r) => (r.ok ? (r.json() as Promise<Partial<BaselineStore>>) : null))
-    .then((j) => {
-      if (!j || j.version !== BASELINE_VERSION || !j.signals || !j.days) return;
-      baselineStore = j as BaselineStore;
-      runAnalysis();
-    })
-    .catch(() => {
-      /* no collector has run yet — the empty store is the honest state */
-    });
-
   // verticals.json is validated to the closed trigger syntax by
   // scripts/validate_config.py; the cast is the JSON→type boundary.
   const verticals = registry.verticals as unknown as VerticalDef[];
@@ -1072,24 +1015,6 @@ async function boot(): Promise<void> {
     /** districts the map layer is highlighting right now — QA reads this
         instead of guessing from a screenshot */
     activeDistricts: () => [...activeDistricts],
-    /** The Tier 0-4 brief, or null before the first analysis run.
-        MEASURED 2026-09-24: the "異常與匯聚" panel was withdrawn (Cyrus) but the
-        ENGINE stayed. QA needs to keep verifying the engine, and the only honest
-        way to do that once the panel is gone is to expose the brief itself —
-        otherwise the analysis checks would be asserting on DOM that no longer
-        renders, i.e. passing by finding nothing. */
-    analysisBrief: () => lastBrief,
-    /** Feed the analysis panel a brief directly.
-     *
-     * A QA seam, and an honest one: the timeline view cannot be reached from live data until
-     * the Tier 0 baselines mature, and a baseline needs 14 days of real readings before a
-     * baseline-aware rule may fire. Without this the only way to check that the panel renders
-     * a timeline would be to wait two weeks and hope two domains trip in one district inside
-     * the hour — i.e. the check would pass by never running.
-     *
-     * It writes only to this page's own engine. Same reasoning as clearDataCache and
-     * refreshAll above, which exist for the same reason. */
-    feedAnalysis: (brief: unknown) => engine.setAnalysis(brief as Parameters<typeof engine.setAnalysis>[0]),
     drawnLayers: () => [...currentLayerIds],
     /** layers the user currently has ON — QA reads this instead of guessing
         from the rail's aria-pressed state */

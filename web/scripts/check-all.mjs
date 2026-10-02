@@ -28,7 +28,6 @@ const STEPS = [
   { name: "tests     (6 assert suites)", cmd: "npm", args: ["test"] },
   { name: "layout", cmd: "node", args: ["scripts/check-layout.mjs"] },
   { name: "contrast", cmd: "node", args: ["scripts/check-contrast.mjs"] },
-  { name: "analysis  (10 Tier 2 scenarios)", cmd: "node", args: ["scripts/verify-analysis.mjs"] },
   { name: "carpark", cmd: "node", args: ["scripts/verify-carpark.mjs"] },
   { name: "layers", cmd: "node", args: ["scripts/check-layers.mjs"] },
   { name: "livewall  (inline player)", cmd: "node", args: ["scripts/check-livewall.mjs"] },

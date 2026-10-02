@@ -29,10 +29,6 @@ const files = [
   ["data/panels.json", "panels.json"],
   ["data/verticals.json", "verticals.json"],
   ["data/layers.json", "layers.json"],
-  // Tier 1 rules. This list is a manual copy step, so a NEW registry file must
-  // be added here or the app silently loads nothing — which is exactly what
-  // happened: rules.json shipped, the rule engine ran, and it found 0 rules.
-  ["data/rules.json", "rules.json"],
   ["data/cameras_td.json", "cameras_td.json"],
   ["data/cameras_hko.json", "cameras_hko.json"],
   ["data/leave_plan.json", "leave_plan.json"],
@@ -81,7 +77,6 @@ const files = [
 // list on purpose — a missing entry in `files` above is a typo, and it must still
 // throw rather than ship a registry the app silently loads nothing from.
 const optional = [
-  ["data/baselines.json", "baselines.json"],
   // The twice-daily AI brief (.github/workflows/ai-brief.yml). Optional because it is
   // published to live-data, not to this repo: a checkout that has never run the job still
   // has to build, and the panel then falls back to the committed copy or says so.

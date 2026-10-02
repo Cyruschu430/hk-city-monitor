@@ -19,15 +19,10 @@ import { sourceLabel, type PanelDefRaw, type Registry } from "../lib/sources.ts"
 import type { Camera } from "../map/cameras.ts";
 import { pickWallCameras, wallImages } from "../map/cameras.ts";
 
-/** Panels the engine is FED, never fetches.
- *
- * The analysis panel is a conclusion drawn from the other panels, not a source, so it has no
- * registry entry and no adapter. Without this it is fetched like any other panel, lands in the
- * error state the moment `adaptPanel` finds no source for it, and is overwritten by the next
- * `setAnalysis` — a panel that flashes red every 30 seconds for a reason that is not true. */
-// The analysis_brief panel was withdrawn (Cyrus 2026-10-02, along with the whole
-// Tier 0-4 engine). The set is empty; the FED-panel mechanism is kept because it
-// is how a fed panel stays out of the fetch/poll/coverage paths, and it may return.
+/** Panels the engine is FED, never fetches. The set is empty since the
+ *  analysis_brief panel (and the whole Tier 0-4 engine) was withdrawn (Cyrus
+ *  2026-10-02). The mechanism is kept because it is how a fed panel stays out
+ *  of the fetch/poll/coverage paths, and it may return. */
 const FED_PANEL_IDS = new Set<string>([]);
 
 interface Entry {
@@ -435,7 +430,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       }
       const entry: Entry = { panel, data: null, honesty: LOADING, timer: null };
       entries.set(id, entry);
-      // Registered but not fetched: setAnalysis paints it, and `order` still contains it so
+      // Registered but not fetched: a fed panel paints it, and `order` still contains it so
       // mount() places it correctly.
       if (FED_PANEL_IDS.has(id)) continue;
       // Deferred, not fetched. paint() mounts the skeleton and hands the node to the

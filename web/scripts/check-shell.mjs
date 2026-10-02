@@ -41,6 +41,7 @@ const r = await page.evaluate(() => {
     iconSrc: icon?.getAttribute("src") ?? null,
     foot: box(".app-foot"), mapWrap: box("#mapWrap"), panelCol: box("#panelCol"),
     scope: box(".mh-scope"), clock: box(".mh-clock"),
+    badge: box(".landsd-badge"), attr: box(".maplibregl-ctrl-bottom-right"),
     gauges,
     legendItems: document.querySelectorAll(".gauges .legend-i").length,
     // Cyrus 2026-10-02: no SOURCE link may take the reader off the dashboard. A row's href is the
@@ -66,7 +67,9 @@ if (r.foot && r.mapWrap && r.panelCol) {
 if (r.scope && r.clock) {
   // Cyrus 2026-10-02: the clock moved UNDER the placard, so the assertion is the new geometry -
   // below it, and starting at the same left edge - not the baseline they shared before.
-  ok(r.clock.top >= r.scope.bottom - 2,
+    ok(r.badge && r.attr && r.badge.bottom <= r.attr.top + 2,
+    `the LandsD attribution sits above MapLibre's own line (badge bottom ${r.badge && Math.round(r.badge.bottom)} vs attribution top ${r.attr && Math.round(r.attr.top)})`);
+ok(r.clock.top >= r.scope.bottom - 2,
     `the clock sits under 香港實時情況 (clock top ${Math.round(r.clock.top)} vs scope bottom ${Math.round(r.scope.bottom)})`);
   ok(Math.abs(r.clock.left - r.scope.left) < 14, `both start at the same left edge (Δ${Math.round(Math.abs(r.clock.left - r.scope.left))}px)`);
 } else {

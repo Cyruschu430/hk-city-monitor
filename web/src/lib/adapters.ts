@@ -257,8 +257,34 @@ const ADAPTERS: Record<string, Adapter> = {
   async mtr_next_train(src, panel) {
     const line = String(panel.params?.["line"] ?? "ISL");
     const sta = String(panel.params?.["sta"] ?? "ADM");
-    const url = `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=${encodeURIComponent(line)}&sta=${encodeURIComponent(sta)}`;
-    const payload = await json(await fetchSource(withUrl(src, url)));
+    const schedule = (l: string, code: string) =>
+      `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=${encodeURIComponent(l)}&sta=${encodeURIComponent(code)}`;
+
+    // A reader's search overrides the pinned station (Cyrus 2026-10-02). The API accepts a line plus
+    // a 3-letter code and never a name, so the name is resolved against the index baked at build time
+    // by scripts/build-mtr-index.mjs - stable data that costs nothing to ship and would cost a Worker
+    // whitelist entry plus quota to fetch at runtime.
+    const q = searchQuery(panel.id);
+    if (q) {
+      const hit = findMtrStation(q);
+      if (!hit) throw new Error(`搵唔到港鐵站「${q}」 · No MTR station matches "${q}"`);
+      // A station on four lines needs four calls: asking the API for a line that does not serve it
+      // returns no rows, and "no rows" would read as "no trains are coming" - a different, wrong claim.
+      const parts = await Promise.all(
+        hit.lines.map(async (l) => {
+          const { items, observedAt } = P.parseMtrSchedule(await json(await fetchSource(withUrl(src, schedule(l, hit.code)))));
+          const lineName = MTR_LINE_TC[l] ?? l;
+          return { items: items.map((it) => ({ ...it, sub: it.sub ? `${lineName} · ${it.sub}` : lineName })), observedAt };
+        }),
+      );
+      const items = parts
+        .flatMap((x) => x.items)
+        .sort((a, b) => String(a.time ?? "").localeCompare(String(b.time ?? "")));
+      if (items.length === 0) return { data: { kind: "list", items: [], emptyText: `${hit.tc} ${hit.en}：目前冇班次資料 · no train data right now` }, observedAt: parts[0]?.observedAt };
+      return { data: { kind: "list", items }, observedAt: parts[0]?.observedAt };
+    }
+
+    const payload = await json(await fetchSource(withUrl(src, schedule(line, sta))));
     const { items, observedAt } = P.parseMtrSchedule(payload);
     return { data: { kind: "list", items }, observedAt };
   },
@@ -270,6 +296,32 @@ const ADAPTERS: Record<string, Adapter> = {
     if (typeof stopId !== "string" || stopId.length === 0) {
       throw new Error("kmb_eta panel 要有 params.stop_id");
     }
+    // A reader's route search lists where that route stops, with the live ETA at the first stop
+    // (Cyrus 2026-10-02). /route-stop is keyless and CORS-open, so this is two browser-direct calls.
+    // ponytail: the first stop only. Per-stop ETAs would be one request per stop on a route - add it
+    // when a reader asks, and route it through the Worker if the count ever gets near the quota.
+    const q = searchQuery(panel.id);
+    if (q) {
+      const route = q.trim().toUpperCase();
+      const seqUrl = `https://data.etabus.gov.hk/v1/transport/kmb/route-stop/${encodeURIComponent(route)}/outbound/1`;
+      const seq = await json(await fetchSource(withUrl(src, seqUrl)));
+      const stops: string[] = (seq as { data?: { stop?: string }[] }).data?.map((x) => x.stop ?? "") ?? [];
+      if (stops.length === 0) {
+        throw new Error(`${route} 呢條路線搵唔到 · no KMB route "${route}"`);
+      }
+      const etaUrl = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${encodeURIComponent(stops[0])}`;
+      const eta = await json(await fetchSource(withUrl(src, etaUrl)));
+      const parsed = P.parseKmbStopEta(eta);
+      const items = [
+        { title: `${route} 首站 · ${stops.length} 個站`, sub: `${stops.length} stops on this route` },
+        ...parsed.rows.slice(0, 12).map((r: Record<string, string>) => ({
+          title: Object.values(r).slice(0, 2).join(" · "),
+          sub: `ETA ${r["eta"] ?? ""}`.trim(),
+        })),
+      ];
+      return { data: { kind: "list", items }, observedAt: parsed.observedAt };
+    }
+
     const url = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${encodeURIComponent(stopId)}`;
     const payload = await json(await fetchSource(withUrl(src, url)));
     const { columns, rows, observedAt } = P.parseKmbStopEta(payload);
@@ -891,6 +943,48 @@ export async function adaptPanel(panel: PanelDefRaw, ctx: AdapterCtx): Promise<A
   if (!adapter) throw new Error(`panel ${panel.id}: 未有 ${panel.source} 嘅 adapter`);
   const result = await adapter(src, panel, ctx);
   return result;
+}
+
+// --- reader search (Cyrus 2026-10-02) -----------------------------------------
+
+/** The reader's query for a panel, held in storage rather than in the registry: a search is state,
+    not configuration. Same reasoning as layercontrol's module-state query. */
+export function searchQuery(panelId: string): string {
+  try {
+    return (localStorage.getItem(`hkcm.search.${panelId}`) ?? "").trim();
+  } catch {
+    return "";
+  }
+}
+
+export function setSearchQuery(panelId: string, q: string): void {
+  try {
+    if (q.trim()) localStorage.setItem(`hkcm.search.${panelId}`, q.trim());
+    else localStorage.removeItem(`hkcm.search.${panelId}`);
+  } catch {
+    /* private mode: the search still works for this render, it just does not persist */
+  }
+}
+
+/** MTR line codes as the API takes them, for the row label. Codes, not a station list - the station
+    index is generated from the publisher's own CSV. */
+const MTR_STATIONS = MTR_INDEX.stations;
+
+const MTR_LINE_TC: Record<string, string> = {
+  AEL: "機場快綫", TCL: "東涌綫", TML: "屯馬綫", EAL: "東鐵綫", SIL: "南港島綫",
+  TKL: "將軍澳綫", ISL: "港島綫", TWL: "荃灣綫", KTL: "觀塘綫", DRL: "迪士尼綫",
+};
+
+/** Resolve "金鐘" / "admiralty" / "adm" to a station. Exact wins over prefix, prefix over substring,
+    so typing a full name never lands on a longer one that merely contains it. */
+export function findMtrStation(q: string): { code: string; tc: string; en: string; lines: string[] } | null {
+  const needle = q.trim().toLowerCase();
+  if (!needle) return null;
+  const exact = MTR_STATIONS.find((s) => s.code.toLowerCase() === needle || s.tc === q.trim() || s.en.toLowerCase() === needle);
+  if (exact) return exact;
+  const prefix = MTR_STATIONS.find((s) => s.tc.startsWith(q.trim()) || s.en.toLowerCase().startsWith(needle));
+  if (prefix) return prefix;
+  return MTR_STATIONS.find((s) => s.tc.includes(q.trim()) || s.en.toLowerCase().includes(needle)) ?? null;
 }
 
 export function hasAdapter(sourceId: string): boolean {

@@ -95,6 +95,19 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log(`✓ 渡輪: ${rows.length} 班，首班 ${rows[0]!.join(" | ")}`);
 }
 
+// 6. MarDep vessel arrivals XML (RN0010).
+{
+  const { columns, rows, observedAt } = P.parseMarineVessels(fx("mardep_arrivals.xml").toString("utf8"), 30);
+  assert.equal(columns[0], "船型");
+  assert.equal(rows.length, 2, `${rows.length} vessel rows`);
+  assert.ok(rows.every((r) => r.length === 4), "4 cols per row");
+  assert.equal(rows[0]![0], "CONTAINER", "ship type parsed");
+  assert.equal(rows[0]![3], "SHEKOU(SHENZHEN)", "last port parsed");
+  assert.ok(observedAt && observedAt.getFullYear() === 2026, "ARRIVAL_DATETIME parsed");
+  console.log(`✓ 船隻到港: ${rows.length} 艘，最新 ${observedAt?.toISOString()}`);
+  console.log(`    首艘：${rows[0]!.join(" | ")}`);
+}
+
 // 6. HKIA flights.
 {
   const { columns, rows, observedAt } = P.parseFlights(JSON.parse(fx("hkia_flights.json").toString("utf8")), 40);

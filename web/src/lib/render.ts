@@ -632,7 +632,8 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
 /** The reader's search box, for a panel whose registry entry declares params.search. */
 function searchBox(panel: PanelDef): HTMLElement {
   const label = panel.params?.["search"];
-  const text = label && typeof label === "object" ? label : { tc: "搜尋", en: "Search" };
+  const text: { tc: string; en: string } =
+    label && typeof label === "object" ? (label as { tc: string; en: string }) : { tc: "搜尋", en: "Search" };
   const input = h("input", {
     class: "lyr-q",
     type: "search",

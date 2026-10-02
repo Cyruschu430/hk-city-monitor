@@ -101,7 +101,7 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // RESTORED 2026-09-27. The withdrawal note named its own restore condition — a PC-side collector
   // publishing static JSON — and scripts/collect_aircraft.py is that collector. The layer reads
   // data/aircraft.json, so api.adsb.lol's block on cloud egress is no longer in the path.
-  { id: "aircraft", label: { tc: "航機（社群 ADS-B）", en: "Aircraft (community ADS-B)" } },
+  { id: "aircraft", label: { tc: "航機（社群 ADS-B）", en: "Aircraft (community ADS-B)" }, on: true },
   // 「（模式格網）」 is not decoration. This layer is Open-Meteo MODEL output, and
   // `weather_stations` one row below is the OBSERVED counterpart — two layers with
   // the same subject and different epistemics, one click apart. The rail label is

@@ -243,7 +243,6 @@
     "ai_brief",
     "flight_table",
     "crossboundary_ferry_table",
-    "vessel_arrivals_table",
     "special_traffic_list",
     "hk_market_table"
    ],
@@ -260,7 +259,6 @@
    "order": ["ai_brief", 
     "flight_table",
     "crossboundary_ferry_table",
-    "vessel_arrivals_table",
     "special_traffic_list",
     "hk_market_table"
    ]

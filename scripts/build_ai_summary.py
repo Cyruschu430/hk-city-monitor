@@ -210,6 +210,9 @@ def build_context(offline: bool) -> tuple[dict, list[dict], list[str]]:
 # requests a day. NOT VERIFIED YET: the exact free model ids - their README says the free tier covers
 # "deepseek, gpt-3.5-turbo, embedding, gpt-4o series, gpt-5 series" but not the literal ids, so the
 # first run with the key should hit GET /v1/models and the chain should be corrected from that.
+BROWSER_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+             "(KHTML, like Gecko) Chrome/140.0 Safari/537.36")
+
 PROVIDERS = {
     "openrouter": ("https://openrouter.ai/api/v1/chat/completions", "OPENROUTER_API_KEY"),
     "ca": ("https://api.chatanywhere.org/v1/chat/completions", "CHATANYWHERE_API_KEY"),
@@ -230,30 +233,44 @@ def provider_of(model: str) -> tuple[str, str]:
 
 
 def call_model(model: str, context: str, key: str) -> dict:
-    body = json.dumps(
-        {
-            "model": model,
-            "messages": [{"role": "user", "content": PROMPT + context}],
-            "max_tokens": 400,
-            "temperature": 0.2,
-            "response_format": {"type": "json_object"},
-        }
-    ).encode()
     url, key_env, bare = provider_of(model)
+    payload = {
+        "model": bare,
+        "messages": [{"role": "user", "content": PROMPT + context}],
+        "max_tokens": 400,
+        "temperature": 0.2,
+    }
+    # `response_format: json_object` is an OpenAI/OpenRouter feature that ChatAnywhere does not
+    # accept on this model: measured 2026-10-02, the same request returns 503 "模型无返回結果 ...
+    # 輸入格式有誤" with it and 200 without it. The prompt asks for bare JSON and the parser below
+    # is tolerant, so the flag is the only thing being dropped.
+    if key_env == "OPENROUTER_API_KEY":
+        payload["response_format"] = {"type": "json_object"}
+    body = json.dumps(payload).encode()
     if key_env != "OPENROUTER_API_KEY":
         # A second provider supplies its own key; the caller still passes the OpenRouter one because
         # its signature is not what needed to change.
         key = os.environ.get(key_env, "").strip() or key
-    body = body.replace(json.dumps(model).encode(), json.dumps(bare).encode(), 1)
+    # The Referer/X-Title pair is an OpenRouter attribution requirement and MUST NOT go to another
+    # provider. Measured 2026-10-02: with them attached, ChatAnywhere answered 403 "error code: 1010"
+    # - Cloudflare's banned-signature rule - while the identical request without them from the same
+    # host returned 200. A provider-specific header sent to everybody is a provider-specific outage.
+    headers = {
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        # Python's default UA (Python-urllib/3.x) is refused by ChatAnywhere's edge with 403
+        # "error code: 1010" - Cloudflare's banned-signature rule. Measured 2026-10-02 across five
+        # variants of one request: default UA = 403, browser UA = 200, curl UA = 200. The UA is the
+        # difference between a provider that answers and one that looks broken.
+        "User-Agent": BROWSER_UA,
+    }
+    if key_env == "OPENROUTER_API_KEY":
+        headers["HTTP-Referer"] = "https://hk-city-monitor.pages.dev"
+        headers["X-Title"] = "HK City Monitor"
     req = urllib.request.Request(
         url,
         data=body,
-        headers={
-            "Authorization": f"Bearer {key}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://hk-city-monitor.pages.dev",
-            "X-Title": "HK City Monitor",
-        },
+        headers=headers,
         method="POST",
     )
     try:
@@ -285,16 +302,27 @@ class _Busy(Exception):
 
 
 def ask_chain(context: str) -> tuple[dict, str, list[str]]:
-    key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-    if not key:
+    # The pre-flight check is "is ANY provider's key set", not "is OpenRouter's". Measured
+    # 2026-10-02: with only CHATANYWHERE_API_KEY present the script refused to run - and that is the
+    # one key that works, because ChatAnywhere's Cloudflare answers the GitHub runner with 403
+    # (code 1010) while an ordinary host gets 200. A guard that names one provider is a guard that
+    # stops working the day the chain gains a second one.
+    keys = {env: os.environ.get(env, "").strip() for _, env in PROVIDERS.values()}
+    if not any(keys.values()):
         raise SystemExit(
-            "OPENROUTER_API_KEY is not set. Add it as a repository secret:\n"
-            "  gh secret set OPENROUTER_API_KEY --repo Cyruschu430/hk-city-monitor\n"
-            "The script refuses to write a brief without one rather than publishing an empty panel."
+            "No provider key is set. Add at least one as a repository secret:\n"
+            + "\n".join(f"  gh secret set {env} --repo Cyruschu430/hk-city-monitor"
+                        for _, env in PROVIDERS.values())
+            + "\nThe script refuses to write a brief without one rather than publishing an empty panel."
         )
+    key = keys.get("OPENROUTER_API_KEY", "")
+    # Entries whose provider has no key are dropped rather than attempted: a 401 from a provider
+    # nobody configured is a wasted round trip and a log line that points at the wrong thing.
+    allowed = {env for env, val in keys.items() if val}
     # HKCM_AI_MODEL, when set, is tried FIRST and the chain follows: a repo variable can point at a
     # new model the day the old one dies, without a commit.
     chain = list(dict.fromkeys([m for m in [os.environ.get("HKCM_AI_MODEL") or ""] if m] + list(MODEL_CHAIN)))
+    chain = [m for m in chain if provider_of(m)[1] in allowed]
     tried: list[str] = []
     for rnd in range(1, ROUNDS + 1):
         if rnd > 1:

@@ -58,17 +58,36 @@ export function createMap(container: HTMLElement): maplibregl.Map {
   return map;
 }
 
-/** The always-visible LandsD badge (licence term). */
+/**
+ * The always-visible LandsD attribution (licence term).
+ *
+ * Cyrus asked on 2026-10-02 whether this could go, since the map already credits Esri. It cannot -
+ * the terms are explicit and the Esri credit does not stand in for them. The LandsD Map API
+ * disclaimer and the CSDI API docs both say: "You are required to include Lands Department logo on
+ * the map face and Copyright Notice to attribute Lands Department's data in your map applications."
+ * The notice wording is prescribed too - "Map from Lands Department" / "地圖由地政總署提供".
+ *
+ * What the reading turned up as well: we had the notice but NOT the logo, so this badge was
+ * under-compliant the whole time. The logo is now the official file, committed under
+ * web/public/brand/ (its whole purpose is to be displayed for attribution). Styling is deliberately
+ * bare - no background, no border - so it reads as a quiet corner line rather than a panel, which is
+ * what Cyrus was actually objecting to.
+ */
 export function landsdBadge(): HTMLElement {
   return h(
     "div",
     { class: "landsd-badge" },
+    h("img", {
+      class: "landsd-logo",
+      src: "/brand/landsd-logo.svg",
+      alt: "地政總署 Lands Department",
+    }),
     h(
       "a",
       { href: LANDSD_URL, target: "_blank", rel: "noopener", title: "地政總署 Lands Department" },
       "Map from Lands Department",
     ),
-    h("span", {}, "地政總署"),
+    h("span", {}, "地圖由地政總署提供"),
   );
 }
 

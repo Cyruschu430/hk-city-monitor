@@ -147,6 +147,10 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // config-not-code architecture the verticals exist to prove.
   { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" }, on: true },
   { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
+  // Keyless Esri bases (Cyrus 2026-10-02). A basemap is a choice, not a layer: these switch the
+  // base under everything, and setBasemap() keeps them mutually exclusive.
+  { id: "esri_topo", label: { tc: "Esri 地形圖", en: "Esri topographic" } },
+  { id: "esri_gray", label: { tc: "Esri 淺灰底圖", en: "Esri light gray" } },
 ];
 
 async function boot(): Promise<void> {
@@ -884,6 +888,12 @@ async function boot(): Promise<void> {
           break;
         case "imagery":
           setBasemap(map, on ? "imagery" : "topo");
+          break;
+        case "esri_topo":
+          setBasemap(map, on ? "esri-topo" : "topo");
+          break;
+        case "esri_gray":
+          setBasemap(map, on ? "esri-gray" : "topo");
           break;
         case "rain_nowcast": {
           // Same layers.json definition the 颱風模式 vertical uses — one

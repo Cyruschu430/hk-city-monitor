@@ -196,6 +196,9 @@ const LANDSD_TOPO = tileTemplate(srcUrl("landsd_basemap_tiles"), "zxy");
 const LANDSD_LABEL = tileTemplate(srcUrl("landsd_label_tiles"), "zxy");
 const LANDSD_IMAGERY = tileTemplate(srcUrl("landsd_imagery_tiles"), "zxy");
 const ESRI_IMAGERY = tileTemplate(srcUrl("esri_world_imagery"), "zyx");
+// Esri is z/y/x, NOT z/x/y like LandsD - the same gotcha the imagery above is here to remember.
+const ESRI_TOPO = tileTemplate(srcUrl("esri_world_topo"), "zyx");
+const ESRI_GRAY = tileTemplate(srcUrl("esri_light_gray"), "zyx");
 
 const style = {
   version: 8,
@@ -230,6 +233,24 @@ const style = {
       tileSize: 256,
       maxzoom: 19,
       attribution: "Imagery © Esri, Maxar, Earthstar Geographics",
+    },
+    // Two more keyless Esri options (Cyrus 2026-10-02): reader-selectable bases, not a
+    // replacement - LandsD stays the default and stays the identity of the product. Neither is
+    // darkened the way the LandsD topo is: both ship their own cartography, and Light Gray's
+    // whole purpose is to recede so the data layers lead.
+    "esri-topo": {
+      type: "raster",
+      tiles: [ESRI_TOPO],
+      tileSize: 256,
+      maxzoom: 19,
+      attribution: "© Esri, HERE, Garmin, FAO, NOAA, USGS",
+    },
+    "esri-gray": {
+      type: "raster",
+      tiles: [ESRI_GRAY],
+      tileSize: 256,
+      maxzoom: 19,
+      attribution: "© Esri, HERE, Garmin, © OpenStreetMap contributors",
     },
   },
   layers: [
@@ -314,6 +335,8 @@ const style = {
       layout: { visibility: "none" },
       paint: { "raster-brightness-max": 0.6, "raster-contrast": 0.1 },
     },
+    { id: "esri-topo", type: "raster", source: "esri-topo", layout: { visibility: "none" } },
+    { id: "esri-gray", type: "raster", source: "esri-gray", layout: { visibility: "none" } },
     // The label overlay is the recognition source (Traditional Chinese place
     // names) and stays full-strength in colour: desaturating it would take the
     // single most "this is Hong Kong" element down with the basemap.

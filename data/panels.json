@@ -258,27 +258,6 @@
    }
   },
   {
-   "id": "vessel_arrivals_table",
-   "source": "mardep_vessel_arrivals",
-   "render": "table",
-   "title": {
-    "tc": "船隻到港（海事處）",
-    "en": "Vessel Arrivals (Marine Dept)"
-   },
-   "params": {
-    "max_rows": 30,
-    "frozen_after_days": 7,
-    "frozen_notice": {
-     "tc": "海事處船隻到港名單已停止更新，未能顯示即時到港資訊。",
-     "en": "Marine Department vessel arrival updates have stopped; no live arrivals are shown."
-    }
-   },
-   "cadence_note": {
-    "tc": "每 20 分鐘（到港名單，非實時位置）",
-    "en": "Every 20 min (arrival list, not live positions)"
-   }
-  },
-  {
    "id": "water_suspension_list",
    "source": "wsd_water_suspension",
    "render": "list",

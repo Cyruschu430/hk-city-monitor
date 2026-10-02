@@ -232,7 +232,6 @@ const EMPTY_TEXT: Record<string, { tc: string; en: string }> = {
   hko_tc_track: { tc: "現時無熱帶氣旋", en: "No active tropical cyclone" },
   hkia_flights: { tc: "現時無航班資料", en: "No flight data" },
   mardep_crossboundary_ferry: { tc: "現時無跨境渡輪班次", en: "No cross-boundary ferry services" },
-  mardep_vessel_arrivals: { tc: "現時無船隻到港紀錄", en: "No vessel arrival records" },
 };
 
 export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {

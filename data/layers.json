@@ -224,6 +224,22 @@
       "_comment": "Live ADS-B traffic. Restored with the same change that restored the panel: the layer was withdrawn because adsb.lol blocks cloud egress, and the map now reads data/aircraft.json published by the PC collector instead of the upstream host. `symbol: plane` plus a per-feature icon-rotate is the existing path in overlays.ts pointLayer — the glyph and the rotation were left intact through the withdrawal, so this is a config entry and not new drawing code. ON by default (Cyrus 2026-10-02: wanted the layer back on every vertical)."
     },
     {
+      "id": "mtr_trains",
+      "source": "mtr_next_train",
+      "render": "status_grid",
+      "geom": "point",
+      "symbol": "plane",
+      "title": {
+        "tc": "港鐵列車（推算位置）",
+        "en": "MTR trains (estimated)"
+      },
+      "popup": "aircraft_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "Estimated positions from next-train ETAs, NOT GPS. `symbol: plane` plus a per-feature `bearing` reuse the aircraft pointLayer icon-rotate path; the popup is the aircraft one so the shared builder already reads its fields."
+    },
+    {
       "id": "vessels",
       "source": "vessel_api",
       "render": "list",

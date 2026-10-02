@@ -706,6 +706,42 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async mtr_trains(src) {
+    // Estimated positions from next-train ETAs (no GTFS-RT in HK). Fetch each
+    // line's two termini, then place every upcoming train by linear interpolation
+    // along its line. ~20 keyless calls; a failed terminus is skipped, not fatal.
+    const mtr = (await json(await fetch("data/mtr_stations.json"))) as P.MtrStationsData;
+    const schedules: { line: string; dir: "UP" | "DOWN"; dest: string; ttnt: number }[] = [];
+    const jobs: Promise<void>[] = [];
+    for (const [line, def] of Object.entries(mtr.lines)) {
+      const termini = new Set([def.DT[0], def.DT[def.DT.length - 1]].filter(Boolean));
+      for (const sta of termini) {
+        const url = `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=${encodeURIComponent(line)}&sta=${encodeURIComponent(sta as string)}`;
+        jobs.push(
+          json(await fetchSource(withUrl(src, url)))
+            .then((payload) => {
+              const block = Object.values(payload?.data ?? {})[0] as { UP?: unknown[]; DOWN?: unknown[] } | undefined;
+              for (const dir of ["UP", "DOWN"] as const) {
+                for (const r of (block?.[dir] ?? []) as Record<string, unknown>[]) {
+                  if (String(r["valid"] ?? "Y") === "N") continue;
+                  schedules.push({ line, dir, dest: String(r["dest"] ?? ""), ttnt: Number(r["ttnt"]) });
+                }
+              }
+            })
+            .catch(() => {}),
+        );
+      }
+    }
+    await Promise.all(jobs);
+    const trains = P.estimateMtrTrains(schedules, mtr);
+    return {
+      data: { kind: "status_grid", cells: P.mtrStatus(trains) },
+      observedAt: new Date(),
+      state: { records: trains, records_fresh: trains },
+      geo: P.mtrToGeoJson(trains),
+    };
+  },
+
   async hko_rain_nowcast(src, panel, ctx) {
     const bbox = (panel.params?.["bbox"] as [number, number, number, number]) ?? [22.15, 113.83, 22.56, 114.44];
     // ALL horizons, not just the next slot. MEASURED 2026-09-25: the CSV carries

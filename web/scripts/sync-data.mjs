@@ -29,6 +29,7 @@ const files = [
   ["data/panels.json", "panels.json"],
   ["data/verticals.json", "verticals.json"],
   ["data/layers.json", "layers.json"],
+  ["data/mtr_stations.json", "mtr_stations.json"],
   ["data/cameras_td.json", "cameras_td.json"],
   ["data/cameras_hko.json", "cameras_hko.json"],
   ["data/leave_plan.json", "leave_plan.json"],

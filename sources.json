@@ -3116,7 +3116,7 @@
    "id": "esri_world_imagery",
    "group": "geospatial",
    "name": "Esri World Imagery XYZ tile（免 key，免費）",
-   "name_en": "Esri World Imagery XYZ Tiles (keyless, free)",
+   "name_en": "Esri World Imagery Tiles (keyless)",
    "type": "tiles",
    "url": "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/14/7151/13387",
    "candidates": [
@@ -3128,7 +3128,7 @@
    "fetch": "browser",
    "notes": "VERIFIED 200, image/jpeg, ACAO=* — Esri's World Imagery tile service is publicly readable with no key and no billing, which is why projects like gods-eye-view boot keyless on it. NOTE the tile order is {z}/{y}/{x}, not {z}/{x}/{y} — the opposite of the LandsD tiles, and the classic source of a blank or wrong-place map. Immediate source of a global satellite basemap around Hong Kong's edges, where LandsD coverage stops.",
    "cost": "free",
-   "license": "Esri World Imagery — 見 Esri 使用條款（僅作後備底圖）"
+   "license": "Esri — ArcGIS Online public map services (subject to the Esri Terms of Use)"
   },
   {
    "id": "live_community",
@@ -3221,7 +3221,7 @@
    "id": "esri_world_topo",
    "group": "geospatial",
    "name": "Esri World Topographic Map",
-   "name_en": "Esri World Imagery XYZ Tiles (keyless, free)",
+   "name_en": "Esri World Topographic Map Tiles (keyless)",
    "type": "tiles",
    "url": "https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/14/7151/13387",
    "candidates": [
@@ -3233,13 +3233,13 @@
    "fetch": "browser",
    "notes": "VERIFIED 200, image/jpeg, ACAO=* — Esri's World Imagery tile service is publicly readable with no key and no billing, which is why projects like gods-eye-view boot keyless on it. NOTE the tile order is {z}/{y}/{x}, not {z}/{x}/{y} — the opposite of the LandsD tiles, and the classic source of a blank or wrong-place map. Immediate source of a global satellite basemap around Hong Kong's edges, where LandsD coverage stops.",
    "cost": "free",
-   "license": "Esri World Imagery — 見 Esri 使用條款（僅作後備底圖）"
+   "license": "Esri — ArcGIS Online public map services (subject to the Esri Terms of Use)"
   },
   {
    "id": "esri_light_gray",
    "group": "geospatial",
    "name": "Esri Light Gray Canvas",
-   "name_en": "Esri World Imagery XYZ Tiles (keyless, free)",
+   "name_en": "Esri Light Gray Canvas Tiles (keyless)",
    "type": "tiles",
    "url": "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/14/7151/13387",
    "candidates": [
@@ -3251,7 +3251,7 @@
    "fetch": "browser",
    "notes": "VERIFIED 200, image/jpeg, ACAO=* — Esri's World Imagery tile service is publicly readable with no key and no billing, which is why projects like gods-eye-view boot keyless on it. NOTE the tile order is {z}/{y}/{x}, not {z}/{x}/{y} — the opposite of the LandsD tiles, and the classic source of a blank or wrong-place map. Immediate source of a global satellite basemap around Hong Kong's edges, where LandsD coverage stops.",
    "cost": "free",
-   "license": "Esri World Imagery — 見 Esri 使用條款（僅作後備底圖）"
+   "license": "Esri — ArcGIS Online public map services (subject to the Esri Terms of Use)"
   }
  ]
 }

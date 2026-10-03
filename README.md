@@ -51,7 +51,7 @@ Press **Ctrl-K** or **⌘K** to search every mode, every panel and every map cam
 
 A scheduled GitHub Action assembles **eleven live feeds** — aircraft positions, berth vacancy, water-suspension notices, carpark occupancy, baselines, A&E waiting times, control-point queues, the AQHI, 10-minute wind and the warning summary — trims them to a context under 7 KB, and asks a free LLM for one short bilingual brief at 08:00 and 20:00 HKT.
 
-The browser makes **no model calls**: the brief is a static JSON file, fetched like any other panel. The model is not permitted to compute anything — the figures arrive under their publishers' own field names with their own timestamps, the prompt forbids arithmetic and inference, and the panel prints the model id, its inputs and the generation time. Deciding that something is *wrong* stays with the deterministic rule engine, never the model.
+The browser makes **no model calls**: the brief is a static JSON file, fetched like any other panel. The model is not permitted to compute anything — the figures arrive under their publishers' own field names with their own timestamps, the prompt forbids arithmetic and inference, and the panel links to the published file, which records the model id, every input and the generation time. Deciding that something is *wrong* stays with the deterministic rule engine, never the model.
 
 ## Engineering rules
 

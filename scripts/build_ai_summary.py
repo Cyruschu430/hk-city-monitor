@@ -122,7 +122,7 @@ ROUNDS = 2
 ROUND_SLEEP_S = 20
 DEFAULT_MODEL = MODEL_CHAIN[0]
 
-PROMPT = """You are writing a two-sentence situational brief for a Hong Kong public-data dashboard.
+PROMPT = """You are writing a short situational brief for a Hong Kong public-data dashboard.
 
 RULES, in order of importance:
 1. Use ONLY the numbers in DATA. Do not compute, extrapolate, or round differently, and never add
@@ -132,11 +132,21 @@ RULES, in order of importance:
 3. You may add AT MOST ONE grounded cross-reference ("X is high while Y is light", across two data
    sources) — only when BOTH sides are numbers already in DATA, and you must name them. Never
    infer a cause the data does not show.
-4. Plain language a resident understands. No jargon, no "insights", no "leverage", no emoji.
-5. Two sentences maximum per language, under 45 words each.
-6. The data is public open data from Hong Kong government departments and public bodies.
+4. Work down this list and skip a level only when DATA holds nothing for it:
+   (a) an active warning, suspension or closure; (b) a waiting time or a queue; (c) air quality,
+   wind or rain; (d) flights, vessels or traffic; (e) berth or carpark counts.
+   The aircraft and berth counts on their own are NOT a brief — they are where a lazy summary
+   stops, and every run of this job used to stop there.
+5. Plain language a resident understands. No jargon, no "insights", no "leverage", no emoji.
+6. Three or four sentences per language, under 80 words each. Never pad: a level with no data is
+   left out rather than filled with filler.
+7. The "en" field must contain NO Chinese characters. Use the official English name for a Hong
+   Kong district or place (中西區 → Central and Western District, 九龍城區 → Kowloon City
+   District). If you do not know a value's English name, describe it in English rather than
+   copying the Chinese text across.
+8. The data is public open data from Hong Kong government departments and public bodies.
 
-Return ONLY JSON, no prose around it: {"tc": "<two sentences, Traditional Chinese, Cantonese register>", "en": "<two sentences in English>"}
+Return ONLY JSON, no prose around it: {"tc": "<three or four sentences, Traditional Chinese, Cantonese register>", "en": "<the same brief in English, no Chinese characters>"}
 
 DATA (verbatim from the publishers, with their own timestamps):
 """
@@ -463,12 +473,28 @@ def brief_age_hours(payload: dict) -> float | None:
 
 
 def published_brief() -> dict | None:
-    try:
-        req = urllib.request.Request(f"{LIVE_BASE}/ai_summary.json", headers={"User-Agent": "hkcm-ai-brief"})
-        with urllib.request.urlopen(req, timeout=20) as res:
-            return json.loads(res.read().decode())
-    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
-        return None
+    """The brief currently on the live-data branch, or None when it cannot be read.
+
+    Read through the GitHub API rather than raw.githubusercontent.com: raw sits behind a CDN with a
+    few minutes of cache, so the age check could read a brief that had already been replaced and
+    regenerate one that was there - measured 2026-10-03, two runs four minutes apart, the second
+    logged "wrote" when it should have logged "skip". Raw stays as the fallback.
+    """
+    urls = (
+        "https://api.github.com/repos/Cyruschu430/hk-city-monitor/contents/ai_summary.json?ref=live-data",
+        f"{LIVE_BASE}/ai_summary.json",
+    )
+    for url in urls:
+        try:
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "hkcm-ai-brief", "Accept": "application/vnd.github.raw"},
+            )
+            with urllib.request.urlopen(req, timeout=20) as res:
+                return json.loads(res.read().decode())
+        except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
+            continue
+    return None
 
 
 def main() -> int:

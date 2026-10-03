@@ -177,6 +177,7 @@
     "ai_brief",
     "special_traffic_list",
     "mtr_next_train_list",
+    "mtr_trains",
     "carpark_vacancy_list",
     "crossboundary_ferry_table"
    ],
@@ -189,6 +190,7 @@
    "order": ["ai_brief", 
     "special_traffic_list",
     "mtr_next_train_list",
+    "mtr_trains",
     "carpark_vacancy_list",
     "crossboundary_ferry_table"
    ]

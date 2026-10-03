@@ -14,16 +14,20 @@
 
 ## 現況
 
-v0.1 原型已經上線：**1013 個運輸署交通快拍 + 34 個天文台天氣攝影機**（全部免 API key）、
-天氣警告、本港現況、延遲市場報價、可釘相機牆、YouTube 直播。
+v0.2 已經上線：**https://hk-city-monitor.pages.dev**
+
+一版睇齊：交通快拍相機牆（運輸署 1,013 + 天文台 34）、天氣警告、颱風路徑、口岸輪候時間、
+航班（社群 ADS-B）、船隻（AIS）、港鐵／巴士到站、停車場空位、急症室輪候、空氣質素、
+延遲市場報價、YouTube 直播牆 —— 全部免 API key，逐項可溯源。
 
 ## 文件
 
 | 檔案 | 內容 |
 |---|---|
-| `TECH_SPEC.md` | **全部已實測數據源清單**（endpoint、更新頻率、要唔要 key、狀態 🟢🟡🔴）＋ 法律界線 |
-| `DESIGN_BRIEF.md` | 視覺契約（design token、排版、動態預算、誠實狀態、驗收清單） |
-| `AGENTS.md` | 開發代理指示（stack、目錄、逐個 run 嘅範圍同驗收條件、已知陷阱） |
+| `TECH_SPEC.md` | **已實測數據源清單**（endpoint、更新頻率、要唔要 key、狀態 🟢🟡🔴）＋ 法律界線 |
+| `SOURCES.md` | 全部數據源目錄（由 `scripts/probe_sources.py` 自動生成） |
+| `SECURITY.md` | 公開專案安全規範 |
+| `SELF_HOSTING.md` | 自架指南（fork 自己出一份） |
 
 ## 快速開始
 

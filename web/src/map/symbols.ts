@@ -164,7 +164,8 @@ function drawCamera(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** Weather station: a mast with a wind vane / cup on top. */
+/** Weather station: a mast with a proper anemometer — a cross-arm carrying three
+ *  cups — so it reads as a WIND instrument, not a lollipop. */
 function drawStation(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();
@@ -173,17 +174,18 @@ function drawStation(ctx: CanvasRenderingContext2D, size: number): void {
   // mast
   ctx.beginPath();
   ctx.moveTo(0, 12);
-  ctx.lineTo(0, -4);
+  ctx.lineTo(0, -3);
   ctx.stroke();
-  // cups
+  // anemometer cross-arm
   ctx.beginPath();
-  ctx.moveTo(-8, -4);
-  ctx.lineTo(0, -8);
-  ctx.lineTo(8, -4);
+  ctx.moveTo(-9, -6);
+  ctx.lineTo(9, -6);
   ctx.stroke();
+  // three cups (two on the arm ends, one on top) — the classic anemometer read
   ctx.beginPath();
-  ctx.arc(-9, -3.5, 2.2, 0, Math.PI * 2);
-  ctx.arc(9, -3.5, 2.2, 0, Math.PI * 2);
+  ctx.arc(-9, -6, 2.6, 0, Math.PI * 2);
+  ctx.arc(9, -6, 2.6, 0, Math.PI * 2);
+  ctx.arc(0, -9.5, 2.6, 0, Math.PI * 2);
   ctx.fillStyle = "rgba(255,255,255,.92)";
   ctx.fill();
   ctx.stroke();
@@ -195,22 +197,25 @@ function drawStation(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** AQHI air-quality station: a stack with a puff. */
+/** AQHI air-quality station: a stack emitting a plume that shrinks as it
+ *  disperses (large puff then small) — reads as "air quality" at 44px and
+ *  survives the 14px legend. */
 function drawAqhi(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();
   ctx.translate(c, c);
   stroke(ctx);
-  // stack
+  // stack, slightly tapered toward the top
   ctx.beginPath();
-  ctx.moveTo(-3, 12);
-  ctx.lineTo(-3, -2);
-  ctx.lineTo(3, -2);
-  ctx.lineTo(3, 12);
+  ctx.moveTo(-2.5, 12);
+  ctx.lineTo(-2.5, -3);
+  ctx.lineTo(2.5, -3);
+  ctx.lineTo(2.5, 12);
   ctx.stroke();
-  // puff
+  // plume: large puff, then a smaller one drifting up-right
   ctx.beginPath();
   ctx.arc(6, -7, 4, 0, Math.PI * 2);
+  ctx.arc(11, -11, 2.6, 0, Math.PI * 2);
   ctx.fillStyle = "rgba(255,255,255,.85)";
   ctx.fill();
   ctx.stroke();

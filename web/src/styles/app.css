@@ -552,8 +552,9 @@ a:hover{color:var(--cyan)}
      map-face token, so check:tokens keeps passing on any theme. */
   font-size:11px;color:var(--map-face);letter-spacing:.03em;
   backdrop-filter:blur(6px);box-shadow:0 1px 8px rgba(0,0,0,.28)}
-/* The official logo is a black-on-transparent SVG; inverting it renders it white to match the text. */
-.landsd-logo{height:13px;width:auto;filter:brightness(0) invert(1);opacity:.92}
+/* The official emblem is a grey seal on a white square — shown as-is (no invert) so the seal
+   keeps its detail; the badge's own notice carries the text, so the wordmark is not repeated. */
+.landsd-logo{height:15px;width:15px;border-radius:2px;opacity:.95}
 .landsd-badge a{color:var(--map-face)}
 .landsd-badge a:hover{color:var(--map-face)}
 /* The `.view3d` rules stood here. Removed with the 3D button 2026-09-27, but only the SELECTOR line

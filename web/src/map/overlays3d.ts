@@ -1,5 +1,5 @@
 // overlays3d.ts — the Open3Dhk buildings tileset as a LAZY LAYER on top of the
-// map, never the map engine (PRIMITIVES §0.00). 12.2M triangles / 218,927
+// map, never the map engine. 12.2M triangles / 218,927
 // features must never be on first paint: deck.gl and the tileset URL are both
 // behind this dynamic import, which only runs when the user turns 3D on.
 //

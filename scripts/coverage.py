@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """coverage.py — how much of the registry actually reaches the screen.
 
-WHY THIS EXISTS. AGENTS.md says "do not quote a coverage number from memory, re-run the count" —
-and until now there was nothing to re-run. The numbers in docs/SOURCE_COVERAGE_REVIEW.md were
+WHY THIS EXISTS. A coverage number must be re-measured, never quoted from memory —
+and until now there was nothing to re-run. Earlier coverage figures were
 produced by a throwaway script that was not kept, so the only way to refresh them was to rewrite
 the measurement. A rule that says "re-run it" against a tool that no longer exists is a rule that
 gets ignored, and the number then drifts in the one direction nobody notices: down.
@@ -17,7 +17,7 @@ WHAT IT ANSWERS, in the order a reader asks:
 
 The fourth number is the one that looks alarming and is not, on its own. "Referenced by nothing" is
 a fact about the CONFIGURATION, not about the source: a source can be perfectly good and simply not
-be wired to anything yet. §2 and §3 of SOURCE_COVERAGE_REVIEW.md separate the two, and this script
+be wired to anything yet. Wired and unwired are separate questions, and this script
 deliberately does not guess which is which — it counts what the tree says.
 
     python3 scripts/coverage.py            # summary

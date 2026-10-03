@@ -3,7 +3,7 @@
 // Every assertion here is a decision someone made about the chrome, and each one is the kind a
 // screenshot review would get wrong: whether an element is BELOW another, whether a dot is gone,
 // whether a cell was never appended. Cyrus 2026-10-02 asked for all of these in one message, and
-// AGENTS.md is explicit that a UI claim is verified in the DOM rather than from a picture.
+// A UI claim is verified in the DOM, not from a picture.
 //
 //   node scripts/check-shell.mjs        # against the preview server on :4173
 import { chromium } from "playwright-core";

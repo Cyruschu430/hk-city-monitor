@@ -239,7 +239,7 @@ async function boot(): Promise<void> {
 
   const map = createMap(mapEl);
   // QA hook — the element id `map` shadows a global `map`, so the instance is
-  // exposed explicitly (measured pitfall, AGENTS.md).
+  // exposed explicitly (measured pitfall).
   (window as unknown as Record<string, unknown>)["__map"] = map;
 
   const drawer = createDrawer(drawerEl);

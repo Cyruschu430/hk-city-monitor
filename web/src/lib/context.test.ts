@@ -1,4 +1,4 @@
-// context.test.ts — PRIMITIVES §9 acceptance: assert-style, no framework.
+// context.test.ts — acceptance tests: assert-style, no framework.
 // Run: node src/lib/context.test.ts
 
 import assert from "node:assert/strict";

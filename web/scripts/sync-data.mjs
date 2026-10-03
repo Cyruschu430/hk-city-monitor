@@ -11,7 +11,7 @@
 // MapLibre 4.7.x silently ignores an inline style object (measured pitfall,
 // cost an hour). When VITE_WORKER_BASE is set, LandsD tile requests are
 // routed through the Worker's edge cache — the LandsD terms forbid request
-// bursts and the cache is the protection (COST.md §2). Without it, tiles go
+// bursts and the cache is the protection. Without it, tiles go
 // direct (keyless, CORS-open); local dev does not depend on wrangler running.
 
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -138,7 +138,7 @@ const after = readFileSync(join(out, "sources.json")).length;
 console.log(`sync-data: sources.json ${before} -> ${after} bytes (${Math.round((1 - after / before) * 100)}% smaller on the critical path)`);
 
 // --- basemap style -----------------------------------------------------------
-// R1 (docs/SOURCE_COVERAGE_REVIEW.md). These URLs used to be HARDCODED here, so
+// These URLs used to be HARDCODED here, so
 // `landsd_basemap_tiles`, `landsd_label_tiles`, `landsd_imagery_tiles`,
 // `esri_world_imagery` and `carto_dark_style` all read as "referenced by nothing"
 // in the registry while the map depended on them — and if LandsD moved a path,
@@ -179,7 +179,7 @@ const tile = (tpl) =>
   workerBase ? `${workerBase}/proxy?url=${encodeURIComponent(tpl).replace(/%7B/g, "{").replace(/%7D/g, "}")}` : tpl;
 
 // Only LandsD goes through the Worker: its terms forbid request bursts and the
-// edge cache is the protection (COST.md §2).
+// edge cache is the protection.
 //
 // The Esri fallback stays DIRECT, and the earlier reason recorded here — "Esri is
 // not in sources.json, so the Worker's whitelist would refuse it" — was WRONG:
@@ -260,7 +260,7 @@ const style = {
       id: "landsd-topo",
       type: "raster",
       source: "landsd-topo",
-      // Measured treatment (DESIGN_BRIEF §0.5): CSS brightness(0.52)+contrast(1.12)
+// Measured treatment: CSS brightness(0.52)+contrast(1.12)
       // keeps roads and coastline legible on a dark UI; desaturating loses roads
       // and invert is banned. MapLibre raster paint approximates it:
       // brightness-max clamps highlights, contrast is an offset from neutral.
@@ -320,7 +320,7 @@ const style = {
       source: "landsd-imagery",
       layout: { visibility: "none" },
       // Aerial at night is too dark to read; the same darkened treatment as the
-      // topo keeps it usable without becoming a heatmap blob (DESIGN_BRIEF §0.5).
+// topo keeps it usable without becoming a heatmap blob.
       // Aerial keeps MORE brightness and saturation than the topo because the
       // photograph is the point of an aerial view; the topo is scaffolding.
       paint: {

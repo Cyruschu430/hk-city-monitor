@@ -1,12 +1,12 @@
 // HK City Monitor Worker — the project's only server-side piece.
 //
-// Jobs (AGENTS.md Run 1, SECURITY.md §4, COST.md §4):
+// Jobs:
 //   1. CORS proxy for sources.json entries whose "fetch" is "proxy"
 //   2. target-host whitelist — refuse anything not in the registry (no open proxy)
 //   3. per-IP rate limit + edge cache — the LandsD terms forbid request bursts,
-//      and getting blocked is the one real outage risk (COST.md §2)
+//      and getting blocked is the one real outage risk
 //   4. inject the Open3Dhk tileset URLs server-side, so the front end never
-//      hardcodes them (PRIMITIVES.md §0.00, the HomeCheck ~/.tiles3d_url pattern)
+//      hardcodes them (the same pattern used elsewhere in the project)
 //
 // GET only. Never forwards client cookies or credentials upstream.
 
@@ -48,7 +48,7 @@ const MAX_UPSTREAM_BYTES = 16 * 1024 * 1024; // 16 MiB, checked via Content-Leng
 // Edge-cache lifetimes. Data payloads: 60s collapses simultaneous users onto one
 // origin fetch while staying far inside every source cadence (fastest is 15 min).
 // Tiles/imagery: 24h — the cache exists so a popular day cannot turn into a
-// request burst at LandsD (COST.md: "tile cache 係安全措施，唔係效能優化").
+// request burst at LandsD (the tile cache is a safety measure, not an optimisation).
 const DATA_CACHE_SECONDS = 60;
 const TILE_CACHE_SECONDS = 86_400;
 
@@ -93,7 +93,7 @@ const TILE_TOTAL_LIMIT_PER_MIN = 600;
 //
 // The fix belongs at the edge, not in this file. Add ONE Cloudflare rate-limiting rule
 // (free plan): path /proxy, block an IP above ~120 requests/minute. Edge-blocked requests
-// never invoke the Worker, so they never spend the quota. See SECURITY.md section 4.
+// never invoke the Worker, so they never spend the quota. See SECURITY.md.
 // ponytail: per-isolate tripwire only. A shared counter (Durable Object) is the real fix
 // and needs the paid plan, which the project's US$0 budget rules out.
 

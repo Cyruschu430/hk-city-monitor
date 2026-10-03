@@ -1,4 +1,4 @@
-// trigger.test.ts — PRIMITIVES §9 acceptance: assert-style, no framework.
+// trigger.test.ts — acceptance tests: assert-style, no framework.
 // Run: node src/lib/trigger.test.ts  (Node ≥23.6 strips types natively)
 
 import assert from "node:assert/strict";

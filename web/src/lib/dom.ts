@@ -28,8 +28,8 @@ export function h(tag: string, attrs: Attrs = {}, ...children: Child[]): HTMLEle
   return el;
 }
 
-/** Inline SVG icon, 1.5px stroke, round caps, currentColor (DESIGN_BRIEF §7:
-    icons are inline SVG only — never an emoji, never an icon font). */
+/** Inline SVG icon, 1.5px stroke, round caps, currentColor:
+    inline SVG only — never an emoji, never an icon font. */
 export function icon(paths: string, size = 20): SVGSVGElement {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24");

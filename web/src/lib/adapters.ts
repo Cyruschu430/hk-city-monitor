@@ -371,7 +371,7 @@ const ADAPTERS: Record<string, Adapter> = {
     const payload = (await json(await get(src))) as Record<string, P.WarnEntry>;
     const { items, observedAt } = P.parseWarnsum(payload);
     // Which warning wears which glyph is this panel's own vocabulary, so it lives here rather
-    // than as a case in the renderer (AGENTS.md: no per-vertical code path). Ordered: the first
+    // than as a case in the renderer (no per-vertical code path). Ordered: the first
     // match wins, so the more specific pattern must come first ("暴雨" before "雨").
     const ICONS: [RegExp, string][] = [
       [/暴雨|大雨|Rainstorm|Downpour/i, "rain"],

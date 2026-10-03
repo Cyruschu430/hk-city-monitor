@@ -1,9 +1,9 @@
-// trigger.ts — PRIMITIVES §4. A PURE function: (state, verticals) → the
+// trigger.ts — A PURE function: (state, verticals) → the
 // vertical id that should auto-activate, or null. No fetch, no LLM, no side
 // effects: hoisting signals and rainstorm warnings are life-safety
 // information and must be auditable, testable and explainable.
 //
-// Condition syntax is the closed set from PRIMITIVES §3 — exists / >= / <= /
+// Condition syntax is the closed set — exists / >= / <= /
 // == / in. The validator refuses anything else, so an unknown op here is a
 // loud non-match (false), never an inventive guess.
 
@@ -73,7 +73,7 @@ function fires(trigger: VerticalDef["trigger"], state: State): boolean {
 /**
  * @returns the id of the vertical that should auto-activate, or null.
  * Multiple matches → highest `priority`; a tie → verticals.json order (the
- * array order is the written-down tiebreak, PRIMITIVES §4).
+ * array order is the written-down tiebreak).
  */
 export function activeVertical(state: State, verticals: readonly VerticalDef[]): string | null {
   let best: { id: string; priority: number } | null = null;

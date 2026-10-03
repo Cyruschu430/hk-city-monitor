@@ -1,7 +1,7 @@
 // cameras.ts — the video backbone: 1,013 TD traffic cameras + 34 HKO weather
 // cameras as clustered points over the basemap. Both lists are PREBUILT JSON
 // (scripts/build_cameras.py) so the browser never parses the UTF-16LE double-BOM
-// CSV that costs an hour to get wrong (AGENTS.md pitfalls).
+// CSV that costs an hour to get wrong.
 //
 // TD snapshots are hotlinkable and CORS-open → direct. HKO images are
 // CORS-closed → through the Worker proxy. A camera that fails to load shows
@@ -67,7 +67,7 @@ function geojson(cams: Camera[]): GeoJSON.FeatureCollection {
 export function addCameraLayers(map: maplibregl.Map, cameras: { td: Camera[]; hko: Camera[] }, opts: CameraLayerOptions): void {
   // addSource throws "Style is not done loading" if the style has not landed,
   // and isStyleLoaded() is unreliable while sources are fetching — the `load`
-  // event is the only honest signal (measured pitfalls, AGENTS.md).
+  // event is the only honest signal (measured pitfalls).
   if (!map.getStyle()) {
     map.once("load", () => addCameraLayers(map, cameras, opts));
     return;

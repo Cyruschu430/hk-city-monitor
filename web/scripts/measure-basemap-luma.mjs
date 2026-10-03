@@ -50,4 +50,4 @@ print("%.1f %.1f %.1f %d" % (sum(lum)/len(lum), lum[len(lum)//2], lum[int(len(lu
 
 console.log(`basemap ${kind}: mean luma ${out[0]}  median ${out[1]}  p90 ${out[2]}  (${out[3]} px sampled)`);
 console.log("reference: the paint comment in sync-data.mjs recorded luma ~35 for the old topo values,"
-  + " and DESIGN_BRIEF's dark-console target is a face the labels stay readable on, not a black one.");
+  + " and the dark-console target is a face the labels stay readable on, not a black one.");

@@ -1,4 +1,4 @@
-// context.ts — PRIMITIVES §5. Location + time scoping as PURE functions.
+// context.ts — Location + time scoping as PURE functions.
 // `route` scope is what makes 返工模式 and 跑步模式 the same engine with two
 // configs; the route buffer distance is a CONSTANT HERE, never computed in
 // the UI layer (spec, verbatim).
@@ -24,7 +24,7 @@ export interface Locatable {
 /** Route corridor half-width, km. 0.5 km ≈ a 6–8 minute walk — close enough
     that a water suspension or road closure on it affects your journey, wide
     enough to catch both carriageways of a route. Written as a constant per
-    PRIMITIVES §5; if a vertical needs another width, that is a spec change. */
+     If a vertical needs another width, that is a spec change. */
 export const ROUTE_BUFFER_KM = 0.5;
 
 const EARTH_R_KM = 6371;

@@ -1,5 +1,5 @@
 // honesty.ts — the four states every data surface must visibly implement
-// (PRIMITIVES §6, DESIGN_BRIEF §6): loading / live / stale / error.
+// loading / live / stale / error.
 // A panel past its freshness threshold must LOOK degraded; stale data may
 // never be presented as live. This module is the single place that decides.
 
@@ -112,7 +112,7 @@ export function cadenceSeconds(cadence: string | undefined): number {
  * before that itself is news". For a push-style publication feed there is no
  * cadence to double — a quiet hour means no news, not a broken panel — so it
  * gets an explicit quiet tolerance. Everything else keeps the 2× rule that
- * DESIGN_BRIEF §6 sets for cameras, which is the conservative default.
+ * applies to cameras, which is the conservative default.
  *
  * The asymmetry is intentional: a false "stale" badge on a healthy quiet feed
  * trains the user to ignore the badge, which costs more than the badge is

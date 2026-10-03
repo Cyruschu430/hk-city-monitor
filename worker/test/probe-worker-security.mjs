@@ -1,6 +1,6 @@
 // probe-worker-security.mjs — test the Worker's actual defences against a running
 // instance, rather than reading the code and asserting it looks right.
-// AGENTS.md Pitfall 16: a successful build says nothing about behaviour.
+// A successful build says nothing about behaviour.
 const BASE = process.argv[2] || "http://127.0.0.1:8787";
 
 const cases = [

@@ -12,7 +12,7 @@ WHY THIS IS A PIPELINE STEP AND NOT A PROXY CALL (measured 2026-09-19):
   means the Worker CANNOT be the path for this source, in dev or in production.
 
   The project already has the answer for a source the browser cannot read and
-  the Worker cannot reach (AGENTS.md pitfall 11, "news RSS needs the server"):
+  the Worker cannot reach (news RSS needs the server):
   a collector writes a static JSON the front end reads. build_cameras.py and
   build_leave_plan.py are the same shape.
 
@@ -110,7 +110,7 @@ def parse_hk_date(s: str) -> str | None:
 #   1. ALS is a lookup service; hammering it once per page load is abusive.
 #   2. Notices change every few minutes, so coordinates cache far longer than the
 #      notice data itself.
-#   3. AGENTS.md forbids an LLM on this path. ALS is a gazetteer, not a guess.
+   # 3. No LLM on this path: ALS is a gazetteer, not a guess.
 #
 # HONESTY RULE: a notice that does not resolve keeps lat=null and is drawn as its
 # DISTRICT, exactly as before. We never fall back to a district centroid and call

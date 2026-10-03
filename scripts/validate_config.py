@@ -102,7 +102,7 @@ def main() -> int:
             errors.append(f"source {s['id']}: cost={s.get('cost')!r} — metered sources are banned, "
                           f"a free project must not carry a key whose price scales with popularity")
         if METERED_HOSTS.search(s.get("url", "") or ""):
-            errors.append(f"source {s['id']}: URL looks like a metered provider — banned (see COST.md)")
+            errors.append(f"source {s['id']}: URL looks like a metered provider — banned")
 
     # ---- licence traceability ----
     # A source with no confirmed licence is a warning, not an error: the field is

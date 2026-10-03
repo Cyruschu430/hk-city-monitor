@@ -1,6 +1,6 @@
 // rail.ts — the 56px left rail: the MODE switcher (總覽 + every vertical from
-// verticals.json). Icons are inline SVG with 1.5px stroke (DESIGN_BRIEF §7 —
-// never an emoji, never an icon font).
+// verticals.json). Icons are inline SVG with 1.5px stroke —
+// never an emoji, never an icon font.
 //
 // Verticals are DATA: this file renders whatever verticals.json contains and
 // knows nothing about typhoons or water. That is what makes Run 5 a config run.

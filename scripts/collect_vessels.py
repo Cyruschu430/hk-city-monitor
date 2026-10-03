@@ -26,7 +26,7 @@ KEY = os.environ.get("VESSELAPI_KEY", "").strip()
 # Hong Kong waters with margin: harbour, approaches, Pearl River estuary mouth.
 # VesselAPI bbox params: latBottom/latTop/lonLeft/lonRight.
 BASE = "https://api.vesselapi.com/v1/location/vessels/bounding-box"
-BBOX = "filter.latBottom=22.05&filter.latTop=22.65&filter.lonLeft=113.70&filter.lonRight=114.55"
+BBOX = "filter.latBottom=22.05&filter.latTop=22.65&filter.lonLeft=113.70&filter.lonRight=114.55&pagination.limit=100"
 
 
 def get(url, key):

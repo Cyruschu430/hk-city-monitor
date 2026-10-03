@@ -336,19 +336,20 @@ function drawVessel(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** MTR train: top-down carriage, nose up (rotated per-bearing, like `plane` and `vessel`).
- *  Silver body + MTR red centre band + black windshield — the real MTR silver/red/black livery.
- *  A side-view train would turn to mush below ~20px. */
+/** MTR train: top-down carriage, nose up (rotated per-bearing, like `plane` and `vessel`),
+ *  elongated to a ~4:1 proportion for realism. Silver body + MTR red centre band + black
+ *  windshield — the real MTR silver/red/black livery. A side-view train would turn to mush
+ *  below ~20px. */
 function drawTrain(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();
   ctx.translate(c, c);
-  // carriage body — silver
+  // carriage body — silver, elongated (~4:1) for realism
   ctx.beginPath();
-  ctx.moveTo(-5, -14);
-  ctx.quadraticCurveTo(0, -17, 5, -14);
-  ctx.lineTo(5, 13);
-  ctx.quadraticCurveTo(0, 15, -5, 13);
+  ctx.moveTo(-4.5, -18);
+  ctx.quadraticCurveTo(0, -21, 4.5, -18);
+  ctx.lineTo(4.5, 17);
+  ctx.quadraticCurveTo(0, 20, -4.5, 17);
   ctx.closePath();
   ctx.fillStyle = "#cdd5dc";
   ctx.fill();
@@ -358,19 +359,19 @@ function drawTrain(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.stroke();
   // black windshield
   ctx.beginPath();
-  ctx.moveTo(-4.2, -11);
-  ctx.quadraticCurveTo(0, -13.5, 4.2, -11);
-  ctx.lineTo(4.2, -8);
-  ctx.quadraticCurveTo(0, -9.5, -4.2, -8);
+  ctx.moveTo(-3.7, -14);
+  ctx.quadraticCurveTo(0, -17, 3.7, -14);
+  ctx.lineTo(3.7, -10);
+  ctx.quadraticCurveTo(0, -11.5, -3.7, -10);
   ctx.closePath();
   ctx.fillStyle = "rgba(10,14,22,.85)";
   ctx.fill();
   // MTR red centre band
   ctx.beginPath();
-  ctx.moveTo(-1.8, -8);
-  ctx.lineTo(-1.8, 11);
-  ctx.lineTo(1.8, 11);
-  ctx.lineTo(1.8, -8);
+  ctx.moveTo(-1.8, -10);
+  ctx.lineTo(-1.8, 16);
+  ctx.lineTo(1.8, 16);
+  ctx.lineTo(1.8, -10);
   ctx.closePath();
   ctx.fillStyle = "#d71e28";
   ctx.fill();
@@ -607,7 +608,7 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   aqhi: { draw: drawAqhi, disc: "#34d399" },
   plane: { draw: drawPlane },
   ferry: { draw: drawFerry, disc: "#38bdf8" },
-  vessel: { draw: drawVessel, disc: "#38bdf8" },
+  vessel: { draw: drawVessel },
   "mtr-train": { draw: drawTrain },
   water: { draw: drawWater, disc: "#22d3ee" },
   "cp-land": { draw: drawControlPoint, disc: "#a855f7" },

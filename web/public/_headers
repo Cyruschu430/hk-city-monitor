@@ -1,2 +1,2 @@
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self' https:; frame-src https://www.youtube.com; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-LE5BWFVyj2s7D2DaDioqlyeK2B+K9S1zhzZbJtFpz6M='; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self' https:; frame-src https://www.youtube.com; frame-ancestors 'none'; base-uri 'none'; object-src 'none'

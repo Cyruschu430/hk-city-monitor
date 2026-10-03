@@ -10,8 +10,9 @@
 
 import maplibregl from "maplibre-gl";
 import { fetchUrl, type LayerDefRaw, type PanelDefRaw, type Registry } from "../lib/sources.ts";
-import { adaptPanel, hasAdapter, type AdapterCtx } from "../lib/adapters.ts";
+import { adaptPanel, hasAdapter, fetchMtrData, type AdapterCtx } from "../lib/adapters.ts";
 import { lang } from "../lib/i18n.ts";
+import { estimateMtrTrains, mtrToGeoJson, type MtrSchedule, type MtrStationsData } from "../lib/parsers.ts";
 import { registerBarbs, registerGlyphs } from "./symbols.ts";
 
 const PREFIX = "vl-";
@@ -72,6 +73,62 @@ function stale(args: LayerArgs, gen: number): boolean {
   return args.isCurrent !== undefined && !args.isCurrent(gen);
 }
 
+// --- MTR train layer animation --------------------------------------------------
+// The mtr_trains layer is an ESTIMATE recomputed every 30s from next-train ETAs.
+// Between refetches a requestAnimationFrame loop re-runs estimateMtrTrains with
+// each schedule's ttnt decremented by wall-clock, so a train slides smoothly along
+// its line instead of jumping once per poll. As ttnt crosses 0 the train sits at
+// its terminus and then drops out — which is "it arrived".
+
+let mtrAnim: { raf: number; timer: number; map: maplibregl.Map; sourceId: string } | null = null;
+
+function stopMtrAnimation(): void {
+  if (!mtrAnim) return;
+  cancelAnimationFrame(mtrAnim.raf);
+  window.clearInterval(mtrAnim.timer);
+  mtrAnim = null;
+}
+
+/** Start (or restart) the train-slide loop for `sourceId`. `refetch` re-pulls the
+    schedules on a 30s cadence; the rAF loop redraws ~4×/s, which is far more than
+    a 2.5 min/station train needs to look continuous. */
+async function startMtrAnimation(
+  map: maplibregl.Map,
+  sourceId: string,
+  refetch: () => Promise<{ mtr: MtrStationsData; schedules: MtrSchedule[] }>,
+): Promise<void> {
+  stopMtrAnimation();
+  let data = await refetch();
+  let lastFetch = performance.now();
+  let lastSet = 0;
+  const tick = () => {
+    if (!mtrAnim || mtrAnim.sourceId !== sourceId) return;
+    if (!map.getSource(sourceId)) {
+      stopMtrAnimation();
+      return;
+    }
+    const now = performance.now();
+    if (now - lastSet >= 250) {
+      lastSet = now;
+      const elapsedMin = (now - lastFetch) / 60_000;
+      const trains = estimateMtrTrains(data.schedules.map((s) => ({ ...s, ttnt: s.ttnt - elapsedMin })), data.mtr);
+      (map.getSource(sourceId) as unknown as { setData: (d: GeoJSON.FeatureCollection) => void }).setData(mtrToGeoJson(trains));
+    }
+    mtrAnim.raf = requestAnimationFrame(tick);
+  };
+  mtrAnim = { raf: requestAnimationFrame(tick), timer: 0, map, sourceId };
+  mtrAnim.timer = window.setInterval(async () => {
+    try {
+      const fresh = await refetch();
+      if (!mtrAnim || mtrAnim.sourceId !== sourceId) return; // layer cleared mid-fetch
+      data = fresh;
+      lastFetch = performance.now();
+    } catch {
+      // keep the last known schedules; the estimate keeps sliding on the old ttnt
+    }
+  }, 30_000);
+}
+
 /** Every layer id a vertical layer may create. Removal must cover all of them:
  *  a layer this list misses survives its own toggle and paints over the next
  *  mode (the same class of bug as the orphaned district mesh). `-halo` and
@@ -113,6 +170,9 @@ export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): v
     // that keeps calling updateImage() on a removed source throws every tick for
     // the life of the tab.
     stopRasterFrameTimers([`${PREFIX}${def.id}`]);
+    // The MTR train slide loop owns its source too; stop it before removal or its
+    // rAF ticks keep calling setData on a source that no longer exists.
+    if (mtrAnim?.sourceId === `${PREFIX}${def.id}`) stopMtrAnimation();
     for (const id of layersOf(def)) if (map.getLayer(id)) map.removeLayer(id);
     if (map.getSource(`${PREFIX}${def.id}`)) map.removeSource(`${PREFIX}${def.id}`);
     // The suspension pins are a SECOND source under the same layer definition,
@@ -390,7 +450,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // seconds, so clusters would re-form constantly and hide exactly the
   // individual tracks this layer exists to show. Camera points are static and
   // stay clustered.
-  const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel";
+  const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel" || glyph === "mtr-train";
   map.addSource(id, {
     type: "geojson",
     data: fc,
@@ -433,6 +493,8 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     // vessel one is coming and it draws exactly here — leaving this branch without
     // a popup would recreate the weather-station bug on a brand new layer.
     attributePopup(map, `${id}-point`);
+    // Trains keep sliding between the 30s schedule refetches (see startMtrAnimation).
+    if (glyph === "mtr-train") void startMtrAnimation(map, id, () => fetchMtrData(src));
     return;
   }
 
@@ -886,6 +948,35 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
   map.on("mouseleave", `${id}-fill`, () => (map.getCanvas().style.cursor = ""));
 }
 
+/** A `line` geom layer: static GeoJSON LineStrings (the MTR network). Colour comes
+    from each feature's own `color` property, so the line colour draws the map and
+    a restyle upstream needs no code change. */
+async function lineLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs): Promise<void> {
+  const src = args.registry.byId.get(def.source);
+  if (!src) throw new Error(`layer ${def.id}: source ${def.source} 唔存在`);
+  const gen = args.gen ?? 0;
+  const res = await fetch(fetchUrl(src), { signal: AbortSignal.timeout(25_000) });
+  if (stale(args, gen)) throw new Error("obsolete layer request");
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = (await res.json()) as GeoJSON.FeatureCollection;
+  if (!data?.features?.length) throw new Error("geojson 冇 feature");
+
+  const id = `${PREFIX}${def.id}`;
+  if (stale(args, gen)) throw new Error("obsolete layer request");
+  map.addSource(id, { type: "geojson", data });
+  map.addLayer({
+    id: `${id}-line`,
+    type: "line",
+    source: id,
+    layout: { "line-join": "round", "line-cap": "round" },
+    paint: {
+      "line-color": ["coalesce", ["get", "color"], "#22d3ee"] as never,
+      "line-width": ["interpolate", ["linear"], ["zoom"], 8, 1.2, 12, 2.2, 16, 3.5] as never,
+      "line-opacity": 0.9,
+    },
+  });
+}
+
 export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[], args: LayerArgs): Promise<string[]> {
   const drawn: string[] = [];
   for (const def of defs) {
@@ -940,8 +1031,13 @@ export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw
           await controlPointLayer(map, def, args);
           drawn.push(def.id);
           break;
-        case "none":
         case "line":
+          // Reference linework (the MTR network), drawn from its source's GeoJSON
+          // LineStrings with per-feature colours.
+          await lineLayer(map, def, args);
+          drawn.push(def.id);
+          break;
+        case "none":
         default:
           break;
       }

@@ -204,6 +204,37 @@ async function liveWall(src: SourceDef, panel: PanelDefRaw): Promise<AdapterResu
   };
 }
 
+/** Fetch the MTR station index plus every terminus schedule. Shared by the panel
+    adapter and the map layer's animation loop, so the layer and the panel can
+    never disagree about where the trains are. ~20 keyless calls; a failed
+    terminus is skipped, not fatal. */
+export async function fetchMtrData(src: SourceDef): Promise<{ mtr: P.MtrStationsData; schedules: P.MtrSchedule[] }> {
+  const mtr = (await json(await fetch("data/mtr_stations.json"))) as P.MtrStationsData;
+  const schedules: P.MtrSchedule[] = [];
+  const jobs: Promise<void>[] = [];
+  for (const [line, def] of Object.entries(mtr.lines)) {
+    const termini = new Set([def.DT[0], def.DT[def.DT.length - 1]].filter(Boolean));
+    for (const sta of termini) {
+      const url = `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=${encodeURIComponent(line)}&sta=${encodeURIComponent(sta as string)}`;
+      jobs.push(
+        json(await fetchSource(withUrl(src, url)))
+          .then((payload) => {
+            const block = Object.values(payload?.data ?? {})[0] as { UP?: unknown[]; DOWN?: unknown[] } | undefined;
+            for (const dir of ["UP", "DOWN"] as const) {
+              for (const r of (block?.[dir] ?? []) as Record<string, unknown>[]) {
+                if (String(r["valid"] ?? "Y") === "N") continue;
+                schedules.push({ line, dir, dest: String(r["dest"] ?? ""), ttnt: Number(r["ttnt"]) });
+              }
+            }
+          })
+          .catch(() => {}),
+      );
+    }
+  }
+  await Promise.all(jobs);
+  return { mtr, schedules };
+}
+
 const ADAPTERS: Record<string, Adapter> = {
   // THE AI BRIEF. It reads the SAME payload the generator wrote - live copy first, committed
   // snapshot as the fallback - so the panel's timestamp is the model's own generation time and
@@ -274,7 +305,7 @@ const ADAPTERS: Record<string, Adapter> = {
       // returns no rows, and "no rows" would read as "no trains are coming" - a different, wrong claim.
       const parts = await Promise.all(
         hit.lines.map(async (l) => {
-          const { items, observedAt } = P.parseMtrSchedule(await json(await fetchSource(withUrl(src, schedule(l, hit.code)))));
+          const { items, observedAt } = P.parseMtrSchedule(await json(await fetchSource(withUrl(src, schedule(l, hit.code)))), MTR_NAME);
           const lineName = MTR_LINE_TC[l] ?? l;
           return { items: items.map((it) => ({ ...it, sub: it.sub ? `${lineName} · ${it.sub}` : lineName })), observedAt };
         }),
@@ -287,7 +318,7 @@ const ADAPTERS: Record<string, Adapter> = {
     }
 
     const payload = await json(await fetchSource(withUrl(src, schedule(line, sta))));
-    const { items, observedAt } = P.parseMtrSchedule(payload);
+    const { items, observedAt } = P.parseMtrSchedule(payload, MTR_NAME);
     return { data: { kind: "list", items }, observedAt };
   },
 
@@ -707,37 +738,17 @@ const ADAPTERS: Record<string, Adapter> = {
   },
 
   async mtr_trains(src) {
-    // Estimated positions from next-train ETAs (no GTFS-RT in HK). Fetch each
-    // line's two termini, then place every upcoming train by linear interpolation
-    // along its line. ~20 keyless calls; a failed terminus is skipped, not fatal.
-    const mtr = (await json(await fetch("data/mtr_stations.json"))) as P.MtrStationsData;
-    const schedules: { line: string; dir: "UP" | "DOWN"; dest: string; ttnt: number }[] = [];
-    const jobs: Promise<void>[] = [];
-    for (const [line, def] of Object.entries(mtr.lines)) {
-      const termini = new Set([def.DT[0], def.DT[def.DT.length - 1]].filter(Boolean));
-      for (const sta of termini) {
-        const url = `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=${encodeURIComponent(line)}&sta=${encodeURIComponent(sta as string)}`;
-        jobs.push(
-          json(await fetchSource(withUrl(src, url)))
-            .then((payload) => {
-              const block = Object.values(payload?.data ?? {})[0] as { UP?: unknown[]; DOWN?: unknown[] } | undefined;
-              for (const dir of ["UP", "DOWN"] as const) {
-                for (const r of (block?.[dir] ?? []) as Record<string, unknown>[]) {
-                  if (String(r["valid"] ?? "Y") === "N") continue;
-                  schedules.push({ line, dir, dest: String(r["dest"] ?? ""), ttnt: Number(r["ttnt"]) });
-                }
-              }
-            })
-            .catch(() => {}),
-        );
-      }
-    }
-    await Promise.all(jobs);
+    // Estimated positions from next-train ETAs (no GTFS-RT in HK). fetchMtrData
+    // grabs each line's two termini and every upcoming train; estimateMtrTrains
+    // places each by linear interpolation along its line. The `state` carries the
+    // raw mtr + schedules so the map layer's animation loop can re-run the
+    // estimate continuously (ttnt decremented by wall-clock) between 30s refetches.
+    const { mtr, schedules } = await fetchMtrData(src);
     const trains = P.estimateMtrTrains(schedules, mtr);
     return {
       data: { kind: "status_grid", cells: P.mtrStatus(trains) },
       observedAt: new Date(),
-      state: { records: trains, records_fresh: trains },
+      state: { records: trains, records_fresh: trains, mtr, schedules },
       geo: P.mtrToGeoJson(trains),
     };
   },
@@ -1012,6 +1023,12 @@ const MTR_LINE_TC: Record<string, string> = {
   AEL: "機場快綫", TCL: "東涌綫", TML: "屯馬綫", EAL: "東鐵綫", SIL: "南港島綫",
   TKL: "將軍澳綫", ISL: "港島綫", TWL: "荃灣綫", KTL: "觀塘綫", DRL: "迪士尼綫",
 };
+
+/** Every station code → bilingual name, from the build-time index. parseMtrSchedule
+    resolves a schedule's `dest` code against this so the next-train panel reads
+    「往 金鐘」 rather than 「往 ADM」. */
+const MTR_NAME: Record<string, { tc: string; en: string }> = {};
+for (const s of MTR_STATIONS) MTR_NAME[s.code] = { tc: s.tc, en: s.en };
 
 /** Resolve "金鐘" / "admiralty" / "adm" to a station. Exact wins over prefix, prefix over substring,
     so typing a full name never lands on a longer one that merely contains it. */

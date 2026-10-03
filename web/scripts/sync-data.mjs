@@ -30,6 +30,8 @@ const files = [
   ["data/verticals.json", "verticals.json"],
   ["data/layers.json", "layers.json"],
   ["data/mtr_stations.json", "mtr_stations.json"],
+  // MTR line polylines, generated from mtr_stations.json (see data/mtr_lines.json).
+  ["data/mtr_lines.json", "mtr_lines.json"],
   ["data/cameras_td.json", "cameras_td.json"],
   ["data/cameras_hko.json", "cameras_hko.json"],
   ["data/leave_plan.json", "leave_plan.json"],

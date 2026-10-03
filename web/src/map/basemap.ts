@@ -14,6 +14,7 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { HK_CENTER, HK_ZOOM } from "../config.ts";
 import { h } from "../lib/dom.ts";
+import { lang, onLangChange } from "../lib/i18n.ts";
 
 export const LANDSD_URL = "https://www.landsd.gov.hk/";
 export const STYLE_URL = "basemap/style.json";
@@ -74,21 +75,26 @@ export function createMap(container: HTMLElement): maplibregl.Map {
  * what Cyrus was actually objecting to.
  */
 export function landsdBadge(): HTMLElement {
-  return h(
-    "div",
-    { class: "landsd-badge" },
-    h("img", {
-      class: "landsd-logo",
-      src: "/brand/landsd-logo.svg",
-      alt: "地政總署 Lands Department",
-    }),
-    h(
-      "a",
-      { href: LANDSD_URL, target: "_blank", rel: "noopener", title: "地政總署 Lands Department" },
-      "Map from Lands Department",
-    ),
-    h("span", {}, "地圖由地政總署提供"),
-  );
+  // Logo + ONE notice line (Cyrus 2026-10-03): the badge used to show the notice in BOTH
+  // languages at once, which read as three redundant credits. The licence requires the logo
+  // and the prescribed wording — one language is enough, and it follows the UI language.
+  const badge = h("div", { class: "landsd-badge" });
+  const render = () =>
+    badge.replaceChildren(
+      h("img", {
+        class: "landsd-logo",
+        src: "/brand/landsd-logo.svg",
+        alt: "地政總署 Lands Department",
+      }),
+      h(
+        "a",
+        { href: LANDSD_URL, target: "_blank", rel: "noopener", title: "地政總署 Lands Department" },
+        lang() === "tc" ? "地圖由地政總署提供" : "Map from Lands Department",
+      ),
+    );
+  render();
+  onLangChange(render);
+  return badge;
 }
 
 export type BasemapKind = "topo" | "imagery" | "esri-topo" | "esri-gray";

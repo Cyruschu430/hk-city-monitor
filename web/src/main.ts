@@ -177,7 +177,9 @@ async function boot(): Promise<void> {
   // The tileset is 12.2M triangles, so the deck.gl overlay AND the tileset URL both sit behind the
   // dynamic import inside map/overlays3d.ts - turning this on is the only thing that fetches
   // either, and measure:boot fails if a 3D chunk ever reaches the critical path.
-  const btn3d = h("button", { class: "btn-3d", type: "button", "aria-pressed": "false" }, "3D");
+  // LOCKED for phase-one (Cyrus 2026-10-03): 3D is still internal testing, so the switch is
+  // present (moved under the zoom control) but disabled — remove `disabled` to reopen it.
+  const btn3d = h("button", { class: "btn-3d", type: "button", "aria-pressed": "false", disabled: true }, "3D");
   let on3d = false;
   let busy3d = false;
   // State is carried by the LABEL as well as the outline: colour alone would leave the button
@@ -188,8 +190,8 @@ async function boot(): Promise<void> {
     btn3d.textContent = on3d ? (tc ? "3D 開" : "3D ON") : "3D";
     btn3d.setAttribute("aria-pressed", String(on3d));
     btn3d.title = tc
-      ? "切換 3D 建築（地政總署 Open3Dhk 三維數碼地圖，lazy 載入）"
-      : "Toggle 3D buildings (LandsD Open3Dhk 3D digital map, lazy)";
+      ? "3D 建築圖層（Phase 1 內部測試中，暫未開放）"
+      : "3D buildings layer (phase-one internal testing, not open yet)";
   };
   btn3d.addEventListener("click", async () => {
     if (busy3d) return;

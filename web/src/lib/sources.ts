@@ -1,4 +1,4 @@
-// sources.ts — the source registry as DATA (PRIMITIVES §0: registries are
+// sources.ts — the source registry as DATA (registries are
 // JSON, not classes). Knows two things: how to reach a source (browser-direct
 // vs the Worker proxy, per the registry's own `fetch` field), and how to
 // template its URL (a probed URL may carry a sample date — TECH_SPEC notes

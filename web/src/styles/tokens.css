@@ -1,4 +1,4 @@
-/* Design tokens — copied exactly from DESIGN_BRIEF.md §2 (measured/iterated there). */
+/* Design tokens for the application — measured and iterated in the source. */
 :root{
   /* The dark theme is the default and lives on :root, so nothing below changes
      for a dark user. `color-scheme` also tells the browser to render native

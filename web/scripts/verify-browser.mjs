@@ -346,7 +346,7 @@ try {
       tickerText: (ticker?.textContent ?? "").trim().slice(0, 60),
     };
   });
-  // DESIGN_BRIEF §6: market data is amber OUTSIDE trading hours by design, and a
+  // Market data is amber OUTSIDE trading hours by design, and a
 // rarely-updated official RSS may be legitimately stale — the honesty contract
 // is "real numbers, correct ages", not "always green".
   const mktOk = ["live", "stale"].includes(newPanels.market?.state) && (newPanels.market?.text ?? "").length > 10;
@@ -1032,7 +1032,7 @@ try {
       // so a painted feature is proof the icon exists.
       //
       // VIEWPORT ONLY — `queryRenderedFeatures` returns what is currently painted
-      // (AGENTS.md Pitfall 7), and by this point in the run the map has been panned
+      // and by this point in the run the map has been panned
       // and resized, so this can legitimately read 0 with the pins perfectly
       // healthy. It is therefore a DIAGNOSTIC, not the assertion: the assertion is
       // on the SOURCE, which holds every pin regardless of where the camera is.
@@ -1434,7 +1434,7 @@ try {
     /模式|modelled|modeled/i.test(windFlow.label) && windFlow.checked === "true",
     `圖層名="${windFlow.label}" · 開關=${windFlow.checked}`);
   // The particle animation itself needs a real GPU — a headless pass says nothing
-  // about it (AGENTS.md). What is asserted instead is the field behind it, which
+  // about it. What is asserted instead is the field behind it, which
   // is the part that would silently be empty or constant on a regression, plus the
   // general "every legend row shows a real mark" check further down.
   await railClick("風場"); // leave it off

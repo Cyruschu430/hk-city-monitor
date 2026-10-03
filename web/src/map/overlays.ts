@@ -1,6 +1,6 @@
 // overlays.ts — renders a vertical's `layers` array onto the map.
 //
-// PRIMITIVES §2/§0.00: a layer is ONE definition in layers.json, rendered by
+// A layer is ONE definition in layers.json, rendered by
 // the map engine as 2D (MapLibre) or 3D (deck.gl); a vertical never writes
 // 2D code. This file is the 2D renderer for the three geoms that carry data:
 //   polygon → GeoJSON fill+line (CSDI district boundaries)
@@ -693,7 +693,7 @@ function attributeHtml(p: Record<string, unknown>, lngLat: maplibregl.LngLat): s
   const tc = lang() === "tc";
   // CSDI publishes every field as a `Foo_tc` / `Foo_en` / `Foo_sc` triple. Group
   // them back into one logical field so the popup shows 地址 once, not three
-  // times, and pick the language of the current UI (AGENTS.md: { tc, en } of the
+  // times, and pick the language of the current UI ({ tc, en } of the
   // same field, never twin fields that drift).
   const groups = new Map<string, { tc?: unknown; en?: unknown; value?: unknown }>();
   for (const [k, v] of Object.entries(p)) {
@@ -907,7 +907,7 @@ async function controlPointLayer(map: maplibregl.Map, def: LayerDefRaw, args: La
  * which a reader can only judge against what is underneath.
  *
  * A 200 carrying no features is a real state and it THROWS. This project's own rule is that a 200
- * is not evidence of data (SOURCE_COVERAGE_REVIEW §6.5), and an empty layer would draw nothing
+ * is not evidence of data, and an empty layer would draw nothing
  * while leaving the toggle on — the dead control the readiness guards exist to catch.
  */
 async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs): Promise<void> {

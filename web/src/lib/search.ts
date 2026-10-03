@@ -1,7 +1,7 @@
 // search.ts — the reader's search queries.
 //
 // Its own module on purpose: render.ts must not import adapters.ts. The renderer is a pure function of
-// the data it is handed (PRIMITIVES §6) and has no business knowing the data layer exists - and the
+// the data it is handed and has no business knowing the data layer exists - and the
 // honesty test suite loads render.ts under plain node ESM, where adapters.ts (which pulls a JSON index
 // and the source registry) cannot resolve at all. Two ten-line helpers living alone keeps both true.
 

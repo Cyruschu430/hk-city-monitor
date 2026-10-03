@@ -1,5 +1,5 @@
 # HK City Monitor Worker — the project's only server-side piece.
-# What it is for (SECURITY.md §4, COST.md §4):
+# What it is for:
 #   1. CORS proxy for the sources.json entries whose "fetch" is "proxy" (102 of 171)
 #   2. target-host whitelist derived from sources.json — NOT an open proxy
 #   3. per-IP rate limit + edge cache, so a busy day does not get us blocked by LandsD
@@ -14,8 +14,8 @@ name = "hk-city-monitor"
 main = "src/index.js"
 compatibility_date = "2025-06-01"
 
-# Non-secret configuration. These URLs are public endpoints (they are in PRIMITIVES.md
-# §0.00, already public) — putting them HERE instead of the front end is the injection
+# Non-secret configuration. These URLs are public endpoints (already public) —
+# putting them HERE instead of the front end is the injection
 # pattern, not secrecy. When LandsD starts enforcing a key, the keyed URL goes in as a
 # secret with the SAME NAME (`wrangler secret put TILES3D_BUILDING_URL`) — a secret
 # shadows a var of the same name, and a keyed URL must never be committed.

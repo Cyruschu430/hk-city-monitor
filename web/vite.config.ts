@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     target: "es2022",
     // deck.gl is only reachable through a dynamic import behind the 3D toggle;
-    // it lands in its own chunk and never ships on first paint (PRIMITIVES §0.00).
+    // it lands in its own chunk and never ships on first paint.
     chunkSizeWarningLimit: 1200,
   },
 });

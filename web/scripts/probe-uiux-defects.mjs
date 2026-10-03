@@ -6,7 +6,7 @@
 // tap targets too small to hit, and content that spills under the status bar.
 // Those are all measurements, so they are what this probe reports.
 //
-// It is deliberately NOT a screenshot review — AGENTS.md records a screenshot
+// It is deliberately NOT a screenshot review — a screenshot has been recorded
 // calling a two-column grid single-column and a fixed build still broken.
 import { chromium } from "playwright-core";
 

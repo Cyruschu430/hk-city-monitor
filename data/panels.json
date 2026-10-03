@@ -1,5 +1,5 @@
 {
- "_comment": "Panel registry. source must exist in sources.json; render must be one of the 8 closed types in PRIMITIVES.md. title carries BOTH official languages (tc = 繁體中文, en = English). [2026-09-27] aircraft_status RESTORED: the withdrawn note named its own restore condition — a PC-side collector publishing static JSON — and scripts/collect_aircraft.py is that collector. The panel reads data/aircraft.json, not the upstream host, so Cloudflare egress is no longer in the path.",
+ "_comment": "Panel registry. source must exist in sources.json; render must be one of the 8 closed types listed in `_renders`. title carries BOTH official languages (tc = 繁體中文, en = English). [2026-09-27] aircraft_status RESTORED: the withdrawn note named its own restore condition — a PC-side collector publishing static JSON — and scripts/collect_aircraft.py is that collector. The panel reads data/aircraft.json, not the upstream host, so Cloudflare egress is no longer in the path.",
  "_renders": [
   "big_number",
   "list",

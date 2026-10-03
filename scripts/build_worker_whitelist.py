@@ -10,7 +10,7 @@ from sources.json, never hand-maintained: run this after editing sources.json.
 The whitelist is host-level (the scheme+host of every "url" and every
 "candidates" entry), because that is the granularity SECURITY.md specifies.
 It intentionally includes browser-mode hosts too: the LandsD tile hosts are
-browser-mode (ACAO=*) yet COST.md routes their tiles through the Worker for
+browser-mode (ACAO=*) yet their tiles are routed through the Worker for
 edge caching, so they must pass the same check.
 
 Run:  python3 build_worker_whitelist.py           # writes worker/src/whitelist.generated.js

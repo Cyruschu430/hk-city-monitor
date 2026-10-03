@@ -1,9 +1,9 @@
-// render.ts — PRIMITIVES §6: ONE renderer for all eight render types.
+// render.ts — ONE renderer for all eight render types.
 // Adding a ninth type is a spec change, not a coding decision; a vertical may
 // never carry its own render code. Driven only by panels.json + the data the
 // panel engine hands over.
 //
-// Honesty (DESIGN_BRIEF §6) is not optional decoration:
+// Honesty is not optional decoration:
 //   loading → skeleton that reserves height
 //   live    → body + freshness chip
 //   stale   → body + amber chip naming the lag; border degrades
@@ -100,8 +100,8 @@ export interface StatusCell {
 
 export type TableCell = string | { text: string; cls?: string; spark?: number[] };
 
-/** A hand-rolled SVG sparkline path — AGENTS.md: "Charts: hand-rolled SVG
-    sparklines. No charting library."
+/** A hand-rolled SVG sparkline path — hand-rolled sparklines only, no
+    charting library.
     Normalised to the series' OWN min/max: an absolute scale would flatten a
     quiet day to a straight line and say nothing. A flat series draws at
     mid-height instead of dividing by zero.

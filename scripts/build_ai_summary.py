@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 r"""build_ai_summary.py - one short bilingual brief from data this project already publishes.
 
-WHY THIS IS ALLOWED TO EXIST. AGENTS.md bans an LLM in the RUNTIME path and carves out exactly one
+WHY THIS IS ALLOWED TO EXIST. An LLM is banned from the RUNTIME path, with exactly one
 exception: "a future feature wants an LLM, it must be low-frequency (daily/weekly) with a small
 context, and the frequency + context size get reported before it is added." Reported to Cyrus
 2026-10-01, who halved the proposed frequency himself (12/24):
@@ -522,7 +522,7 @@ def main() -> int:
         raise SystemExit(
             "context grew past the reported ceiling. Do not raise the ceiling silently: the "
             "frequency and the context size were reported to Cyrus before this job was added, "
-            "and AGENTS.md requires a new report when either changes."
+            "and a new report is required when either changes."
         )
     for i in inputs:
         print(f"  {i['file']:24s} from {i['from']:9s} observed {i['observed']}")

@@ -1,6 +1,6 @@
 // drawer.ts — the focus drawer: one camera, big, with everything known about
 // it and a link back to the source that published it. Opens over the panel
-// column, closes on Esc or the chevron (DESIGN_BRIEF §4).
+// column, closes on Esc or the chevron.
 
 import { clear, h, icon } from "../lib/dom.ts";
 import { stamp } from "../lib/format.ts";

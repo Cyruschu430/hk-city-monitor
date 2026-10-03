@@ -1,5 +1,5 @@
-/* HK City Monitor v0.2 — hand-written CSS. Layout per DESIGN_BRIEF §4,
-   component grammar per §7, honesty states per §6, motion ceiling per §5.
+/* HK City Monitor v0.2 — hand-written CSS. Layout, component grammar,
+   honesty states and the motion ceiling follow the project design system.
    No shadows-as-decoration: depth comes from hairlines and surfaces. */
 
 *{box-sizing:border-box}
@@ -433,7 +433,7 @@ a:hover{color:var(--cyan)}
   display:inline-flex;align-items:center;justify-content:center;min-height:24px}
 #langSwitch button[aria-pressed="true"],#themeSwitch button[aria-pressed="true"]{background:var(--cyan-tint);color:var(--cyan)}
 
-/* Sparkline: hand-rolled SVG (AGENTS.md — no charting library). Sits under the
+/* Sparkline: hand-rolled SVG (no charting library). Sits under the
    change figure in the same cell so the market table keeps its three columns.
    Width note: the panel body is ~309px (see the .gauges note below); 295px here
    predates the current #layout and was a stale number. */
@@ -697,8 +697,8 @@ a:hover{color:var(--cyan)}
    the TRACK to its tallest item. Read that block before changing anything here —
    the A/B numbers are in it, and the two properties must not be confused.
 
-   The column-count approach is rejected for the three reasons in AGENTS.md
-   Pitfall 12 (no-op on a flex container; extra columns sideways inside a
+   The column-count approach is rejected for three reasons
+   (no-op on a flex container; extra columns sideways inside a
    definite-height scroller; 1fr cannot shrink below min-content). */
 
 .panel{border:1px solid var(--hairline);border-radius:var(--radius);padding:0;min-width:0;
@@ -959,7 +959,7 @@ a:hover{color:var(--cyan)}
    the overflow it was meant to fix. A basis of 0 with flex-grow makes the label
    yield to the value but never vanish, and min-width:0 is what lets the
    ellipsis engage at all (a flex item's automatic minimum is its min-content
-   width, so overflow:hidden is inert without it — AGENTS.md Pitfall 12). */
+   width, so overflow:hidden is inert without it). */
 .status .sl{font-size:11px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;
   white-space:nowrap;min-width:0;flex:1 1 0%}
 .status .sv{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--dim);
@@ -1052,7 +1052,7 @@ a:hover{color:var(--cyan)}
   #themeSwitch{display:none}
 }
 
-/* ---------- reduced motion: required, not optional (DESIGN_BRIEF §5) ---------- */
+/* ---------- reduced motion: required, not optional ---------- */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }

@@ -19,7 +19,7 @@ export function ageText(at: Date, now = new Date()): string {
   return fmt.format(-Math.floor(s / 86400), "day");
 }
 
-/** Stale chip: "數據 +6分鐘" (DESIGN_BRIEF §6). */
+/** Stale chip: "數據 +6分鐘". */
 export function staleText(at: Date, now = new Date()): string {
   const s = Math.max(0, Math.round((now.getTime() - at.getTime()) / 1000));
   const m = Math.floor(s / 60);

@@ -50,7 +50,7 @@ def main():
     token = None
     try:
         for _ in range(5):
-            url = f"{BASE}?{BBOX}" + (f"&nextToken={token}" if token else "")
+            url = f"{BASE}?{BBOX}" + (f"&pagination.nextToken={token}" if token else "")
             payload = get(url, KEY)
             all_vessels.extend(payload.get("vessels") or [])
             token = payload.get("nextToken")

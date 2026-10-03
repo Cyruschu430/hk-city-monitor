@@ -507,6 +507,17 @@ def main() -> int:
             # an attempt that finds a recent brief leaves it alone, so the PUBLISHED frequency
             # stays the two a day that were reported, while a failed attempt gets another chance
             # half an hour later instead of losing the slot entirely.
+            #
+            # The publish step uploads whatever `--out` holds, and in a CI checkout that file is
+            # the COMMITTED snapshot - days old. Returning here without writing it made a
+            # "nothing to do" run OVERWRITE the fresh brief it had just read from live-data, so
+            # each skip undid the run before it and the panel sat on a two-day-old timestamp
+            # while the workflow reported success. The age check reads live-data and the publish
+            # reads the checkout; writing the brief that was read makes the two agree, and the
+            # publish becomes the no-op this path claims to be.
+            path = ROOT / args.out
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(prev, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
             print(f"skip     published brief is {age:.1f}h old (< {args.skip_if_fresh}h) - nothing to do")
             return 0
 

@@ -415,6 +415,19 @@
    }
   },
   {
+   "id": "mtr_trains",
+   "source": "mtr_trains",
+   "render": "status_grid",
+   "title": {
+    "tc": "港鐵列車（推算位置）",
+    "en": "MTR trains (estimated)"
+   },
+   "cadence_note": {
+    "tc": "實時（每 30 秒）",
+    "en": "Real-time (30s)"
+   }
+  },
+  {
    "id": "aircraft_status",
    "source": "adsb_lol_hk",
    "render": "status_grid",

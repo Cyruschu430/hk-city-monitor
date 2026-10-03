@@ -266,11 +266,11 @@ const ADAPTERS: Record<string, Adapter> = {
           items: [
             {
               title: prose,
-              sub: tc ? "AI 生成 · 只覆述上方數字,可能有錯" : "AI-generated from the figures listed; may be wrong",
-              // The two things a reader does not need on screen and a checker does: which model
-              // wrote it and which files it was handed. Cyrus, 2026-10-01: "users doesn't need to
-              // see this". They move to the tooltip and the link, so the claim stays traceable
-              // without turning a two-sentence brief into a build log.
+              // The model id and the input list are deliberately NOT on screen: a reader does not
+              // need a build log, and the claim stays traceable through the link to the published
+              // JSON, which records both. The panel's own source line already says the text was
+              // written by a model ("… 由免費模型覆述已發佈數據" / "a free model reading published
+              // data back"), which is the disclosure a reader actually needs.
               href: liveDataUrl("data/ai_summary.json") ?? undefined,
               time: String(j.generated ?? "").replace("T", " ").slice(0, 16),
               ok: true,

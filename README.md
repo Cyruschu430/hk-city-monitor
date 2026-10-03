@@ -4,6 +4,8 @@
 
 **A real-time situational-awareness dashboard for Hong Kong — one map, many open data sources, no API keys.**
 
+[![ci](https://github.com/Cyruschu430/hk-city-monitor/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Cyruschu430/hk-city-monitor/actions/workflows/ci.yml)
+
 [Live deployment](https://hk-city-monitor.pages.dev) · [Data sources](SOURCES.md) · [Attribution](ATTRIBUTION.md) · [Security](SECURITY.md) · [Self-hosting](SELF_HOSTING.md) · [Technical specification](TECH_SPEC.md)
 
 ---
@@ -50,6 +52,18 @@ Press **Ctrl-K** or **⌘K** to search every mode, every panel and every map cam
 A scheduled GitHub Action assembles **eleven live feeds** — aircraft positions, berth vacancy, water-suspension notices, carpark occupancy, baselines, A&E waiting times, control-point queues, the AQHI, 10-minute wind and the warning summary — trims them to a context under 7 KB, and asks a free LLM for one short bilingual brief at 08:00 and 20:00 HKT.
 
 The browser makes **no model calls**: the brief is a static JSON file, fetched like any other panel. The model is not permitted to compute anything — the figures arrive under their publishers' own field names with their own timestamps, the prompt forbids arithmetic and inference, and the panel prints the model id, its inputs and the generation time. Deciding that something is *wrong* stays with the deterministic rule engine, never the model.
+
+## Engineering rules
+
+A dashboard that shows live numbers is easy to fake. These are the rules this one is held to instead, and each is enforced by something runnable rather than by good intentions. Several exist because an earlier version of this project broke one.
+
+1. **No figure without a source.** Every number on screen carries the publisher it came from and that publisher's own timestamp. Nothing is inferred, interpolated or scored; panels show traceable observations only, and a source that has never answered is not shown at all.
+2. **An LLM is banned from the runtime path.** The single exception is the twice-daily city brief: generated off-line, shipped as a static file, forbidden from computing anything, and printed alongside its own model id and inputs.
+3. **A source is working only after a real probe.** `scripts/probe_sources.py` requests every endpoint and regenerates the catalogue from the responses — 160 of 180 reachable at the last run. A declaration in `sources.json` is a hypothesis until the network confirms it.
+4. **The UI is verified in the DOM, never from a screenshot.** Screenshots have misreported this application's layout before, so the browser checks assert on rendered DOM state instead of pixels.
+5. **Withdrawn features are recorded, not deleted.** When a panel or a mode is removed, the registry keeps the reason and the route back, so the same idea is not silently rebuilt a month later.
+6. **The counts in these documents are checked.** `scripts/check_doc_counts.py` compares every figure written into the README, the landing page and the guides against `sources.json`, `data/panels.json`, `data/layers.json` and `data/verticals.json`. A registry change that leaves a stale number in prose fails the build.
+7. **Nothing is called finished on assertion.** Typecheck, the unit tests, the data-registry validator and the document-count check all run in CI on every push to `master`.
 
 ## Objectives
 
@@ -183,9 +197,14 @@ The project follows a spec-driven workflow: sources are validated with a real ne
 ```bash
 cd web
 npm run typecheck        # TypeScript, 0 errors expected
+npm test                 # 5 assertion suites; no browser, no server
 npm run check:all        # 9 checks (needs a preview server on 127.0.0.1:4173)
-python3 scripts/validate_config.py
+cd ..
+python3 scripts/validate_config.py    # registry: ids, references, panel wiring
+python3 scripts/check_doc_counts.py   # every count in the docs matches a registry
 ```
+
+CI runs the typecheck, the unit tests and both Python validators on every push to `master`; `check:all` additionally exercises the rendered UI and needs a local preview server.
 
 Key conventions:
 

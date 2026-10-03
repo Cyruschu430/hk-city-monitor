@@ -1,0 +1,47 @@
+name: ci
+
+# The front end ships as static files, so there is no service to smoke-test after a
+# deploy. What can rot silently is the build, the parsers and the counts the public
+# documents claim. Those are what this runs.
+#
+# Scoped to master and pull requests on purpose: the live collectors push to the
+# `live-data` branch every 10 minutes, which would otherwise start 144 runs a day.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: web
+
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: web
+
+      - name: Unit tests
+        run: npm test
+        working-directory: web
+
+      - name: Data registry consistency
+        run: python3 scripts/validate_config.py
+
+      - name: Documented counts match the registries
+        run: python3 scripts/check_doc_counts.py

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-HK">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>HK City Monitor · 香港城市監察</title>
-<meta name="description" content="香港城市監察 — 喺瀏覽器運行嘅香港城市情報儀表板。天氣、交通、口岸、航班、水電、市況，全部官方開放數據，一版睇齊，每個數字可溯源。開源專案，非政府系統。">
+<title>HK City Monitor</title>
+<meta name="description" content="HK City Monitor — a browser-based situational-awareness dashboard for Hong Kong. Weather, traffic, border crossings, flights, utilities and markets, all from official open data, on one screen, every figure traceable to its source. Open source; not a government system.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2305070d'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%2322d3ee' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%2322d3ee'/%3E%3C/svg%3E">
 <style>
 :root{
@@ -70,7 +70,6 @@ a:focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; border-radiu
 }
 .brand{ display:flex; align-items:center; gap:10px; }
 .brand .name{ font-family:var(--mono); font-size:12px; letter-spacing:.14em; color:var(--txt); font-weight:600; }
-.brand .tc{ color:var(--dim); font-weight:500; }
 .dot{
   width:7px; height:7px; border-radius:50%;
   background:var(--ok); box-shadow:0 0 0 0 rgba(52,211,153,.5);
@@ -82,13 +81,6 @@ a:focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; border-radiu
   100%{ box-shadow:0 0 0 0 rgba(52,211,153,0); }
 }
 .status-right{ display:flex; align-items:center; gap:14px; }
-.lang{ display:flex; gap:2px; border:1px solid var(--hairline); border-radius:var(--radius-pill); padding:2px; }
-.lang button{
-  appearance:none; border:0; background:transparent; cursor:pointer;
-  color:var(--dim); font-family:var(--mono); font-size:11px; letter-spacing:.1em;
-  padding:4px 11px; border-radius:var(--radius-pill); line-height:1;
-}
-.lang button[aria-pressed="true"]{ background:var(--hairline-hi); color:var(--txt); }
 .status a.live{ color:var(--cyan); font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-decoration:none; border:1px solid var(--hairline-hi); border-radius:var(--radius-pill); padding:5px 12px; }
 .status a.live:hover{ background:var(--hairline); }
 
@@ -192,7 +184,6 @@ footer .wrap{ padding-top:40px; padding-bottom:40px; }
 .credits .dot{ display:inline-block; width:4px; height:4px; margin:0 10px 2px; animation:none; box-shadow:none; }
 
 @media (max-width:640px){
-  .brand .tc{ display:none; }
   .status{ padding:10px 14px; }
   .wrap{ padding:0 18px; }
   .hero{ padding:56px 0 32px; }
@@ -211,31 +202,28 @@ footer .wrap{ padding-top:40px; padding-bottom:40px; }
   <div class="brand">
     <span class="dot" aria-hidden="true"></span>
     <span class="name">HK CITY MONITOR</span>
-    <span class="tc">香港城市監察</span>
   </div>
   <div class="status-right">
-    <div class="lang" role="group" aria-label="Language">
-      <button type="button" id="langTc" aria-pressed="true">繁中</button>
-      <button type="button" id="langEn" aria-pressed="false">EN</button>
-    </div>
     <a class="live" href="https://hk-city-monitor.pages.dev/">LIVE</a>
   </div>
 </header>
 
 <main>
   <div class="wrap hero">
-    <p class="eyebrow"><span data-tc="香港城市監察" data-en="HK City Monitor">香港城市監察</span><span class="sep"> / </span><span data-tc="香港城市情報儀表板" data-en="City Intelligence">香港城市情報儀表板</span></p>
-    <h1><span data-tc="香港，一版睇齊。" data-en="Hong Kong, on one screen.">香港，一版睇齊。</span></h1>
+    <p class="eyebrow">HK City Monitor<span class="sep"> / </span>City Intelligence</p>
+    <h1>Hong Kong, <span class="accent">on one screen.</span></h1>
     <p class="lede">
-      <span data-tc="喺瀏覽器運行嘅香港城市情報儀表板。天氣、交通、口岸、航班、水電、市況 —— 全部嚟自官方開放數據，一版睇齊，" data-en="A browser-only city-intelligence dashboard for Hong Kong. Weather, traffic, borders, flights, utilities, markets — all from official open data, one screen, ">喺瀏覽器運行嘅香港城市情報儀表板。天氣、交通、口岸、航班、水電、市況 —— 全部嚟自官方開放數據，一版睇齊，</span><strong data-tc="每個數字都連得返去源頭。" data-en="every figure traceable to its source.">每個數字都連得返去源頭。</strong>
+      A browser-based situational-awareness dashboard for Hong Kong. Weather, traffic, border crossings,
+      flights, utilities and markets — all from official open data, on a single map and panel set,
+      <strong>with every figure traceable to its source.</strong>
     </p>
     <div class="actions">
       <a class="btn btn-live" href="https://hk-city-monitor.pages.dev/">
         <span class="tag">LIVE</span>
-        <span data-tc="開啟儀表板" data-en="Open the dashboard">開啟儀表板</span>
+        <span>Open the dashboard</span>
       </a>
       <a class="btn btn-ghost" href="https://github.com/Cyruschu430/hk-city-monitor">
-        <span data-tc="GitHub 原始碼" data-en="Source on GitHub">GitHub 原始碼</span>
+        <span>Source on GitHub</span>
       </a>
     </div>
     <p class="url-line"><span class="prompt">$</span> hk-city-monitor.pages.dev</p>
@@ -243,106 +231,99 @@ footer .wrap{ padding-top:40px; padding-bottom:40px; }
 
   <div class="wrap">
     <div class="stats" role="list">
-      <div class="stat" role="listitem"><span class="n mono">177</span><span class="l" data-tc="數據來源" data-en="sources">數據來源</span></div>
-      <div class="stat" role="listitem"><span class="n mono">24</span><span class="l" data-tc="面板" data-en="panels">面板</span></div>
-      <div class="stat" role="listitem"><span class="n mono">15</span><span class="l" data-tc="地圖圖層" data-en="map layers">地圖圖層</span></div>
-      <div class="stat" role="listitem"><span class="n mono">10</span><span class="l" data-tc="模式" data-en="modes">模式</span></div>
-      <div class="stat" role="listitem"><span class="n mono">16</span><span class="l" data-tc="規則 · 5 範疇" data-en="rules · 5 domains">規則 · 5 範疇</span></div>
+      <div class="stat" role="listitem"><span class="n mono">180</span><span class="l">data sources</span></div>
+      <div class="stat" role="listitem"><span class="n mono">25</span><span class="l">panels</span></div>
+      <div class="stat" role="listitem"><span class="n mono">17</span><span class="l">map layers</span></div>
+      <div class="stat" role="listitem"><span class="n mono">10</span><span class="l">modes</span></div>
+      <div class="stat" role="listitem"><span class="n mono">1,047</span><span class="l">live cameras</span></div>
     </div>
   </div>
 
   <div class="wrap">
     <section id="what">
-      <div class="sec-head"><span class="idx">01</span><span class="label" data-tc="係咩" data-en="What it is">係咩</span></div>
-      <h2 data-tc="一個淨係用瀏覽器開嘅城市情報儀表板" data-en="A city-intelligence dashboard that runs in the browser">一個淨係用瀏覽器開嘅城市情報儀表板</h2>
-      <p data-tc="香港城市監察用一套確定性規則引擎，解讀香港政府同公共機構嘅開放數據。運行時完全冇 LLM，冇 cookie，冇追蹤，冇帳戶，冇伺服器，冇資料庫 —— 開個網頁，就係全部。"
-         data-en="HK City Monitor uses a deterministic rule engine to interpret open data published by Hong Kong government departments and public bodies. No LLM in the runtime path, no cookies, no tracking, no account, no server, no database — open the page and that is the whole thing.">香港城市監察用一套確定性規則引擎，解讀香港政府同公共機構嘅開放數據。運行時完全冇 LLM，冇 cookie，冇追蹤，冇帳戶，冇伺服器，冇資料庫 —— 開個網頁，就係全部。</p>
-      <p data-tc="數據嚟自香港政府部門同公共機構（CSDI 空間數據共享平台、data.gov.hk 等等）。每個來源沿用佢自己嘅授權，儀表板逐項標明出處同新鮮度。"
-         data-en="Data comes from Hong Kong government departments and public bodies (the CSDI spatial data platform, data.gov.hk and others). Each source keeps its own licence, and the dashboard credits every source and shows its freshness.">數據嚟自香港政府部門同公共機構（CSDI 空間數據共享平台、data.gov.hk 等等）。每個來源沿用佢自己嘅授權，儀表板逐項標明出處同新鮮度。</p>
+      <div class="sec-head"><span class="idx">01</span><span class="label">What it is</span></div>
+      <h2>A city-intelligence dashboard that runs entirely in the browser</h2>
+      <p>HK City Monitor consolidates open data published by Hong Kong government departments and public bodies onto one live map. There is no server component, no database, no account and no tracking: the application is a static bundle that reads from public endpoints directly.</p>
+      <p>Data comes from the CSDI spatial data platform, data.gov.hk and institutional publishers such as the Observatory and the Airport Authority. Each source keeps its own licence, and the dashboard credits every source and reports its freshness.</p>
       <div class="callout">
-        <div class="h" data-tc="誠實" data-en="Honesty">誠實</div>
-        <p data-tc="冇一個數字係作嘅。每個數字都列明來源、連結同攞數時間；數據過咗新鮮期會明顯變黃／變紅，唔會扮新鮮。"
-           data-en="No figure is invented. Every number shows its source, a link and the time it was read; past its freshness window a panel visibly degrades instead of pretending to be live.">冇一個數字係作嘅。每個數字都列明來源、連結同攞數時間；數據過咗新鮮期會明顯變黃／變紅，唔會扮新鮮。</p>
+        <div class="h">Honesty</div>
+        <p>No figure is invented. Every number shows its source, a link and the time it was read. Past its freshness window a panel visibly degrades rather than presenting stale data as current.</p>
       </div>
     </section>
 
     <section id="features">
-      <div class="sec-head"><span class="idx">02</span><span class="label" data-tc="有咩睇" data-en="What you see">有咩睇</span></div>
-      <h2 data-tc="十個模式，每個都答一條你真係會問嘅問題" data-en="Ten modes, each answering a question you would actually ask">十個模式，每個都答一條你真係會問嘅問題</h2>
+      <div class="sec-head"><span class="idx">02</span><span class="label">What you see</span></div>
+      <h2>Ten modes, each answering a question you would actually ask</h2>
       <div class="modes">
-        <div class="mode"><span class="m-name" data-tc="颱風模式" data-en="Typhoon">颱風模式</span><span class="m-q" data-tc="會唔會掛 8 號？聽日飛唔飛得成？" data-en="Will the No. 8 go up? Is tomorrow's flight on?">會唔會掛 8 號？聽日飛唔飛得成？</span></div>
-        <div class="mode"><span class="m-name" data-tc="口岸模式" data-en="Border">口岸模式</span><span class="m-q" data-tc="而家過關要等幾耐？" data-en="How long is the queue at the crossing now?">而家過關要等幾耐？</span></div>
-        <div class="mode"><span class="m-name" data-tc="停水模式" data-en="Water">停水模式</span><span class="m-q" data-tc="我嗰區有冇停水？幾時回復？" data-en="Is my district's water off? When does it come back?">我嗰區有冇停水？幾時回復？</span></div>
-        <div class="mode"><span class="m-name" data-tc="天氣模式" data-en="Weather">天氣模式</span><span class="m-q" data-tc="今日會唔會落雨？要唔要帶遮？" data-en="Will it rain today? Do I need an umbrella?">今日會唔會落雨？要唔要帶遮？</span></div>
-        <div class="mode"><span class="m-name" data-tc="交通模式" data-en="Traffic">交通模式</span><span class="m-q" data-tc="而家邊條路塞？下一班車幾時到？" data-en="Which road is jammed? When is the next bus?">而家邊條路塞？下一班車幾時到？</span></div>
-        <div class="mode"><span class="m-name" data-tc="無人機模式" data-en="Drone">無人機模式</span><span class="m-q" data-tc="而家飛唔飛得？邊區有風、邊度禁飛？" data-en="Can I fly now? Where is it windy, and where is it a no-fly zone?">而家飛唔飛得？邊區有風、邊度禁飛？</span></div>
-        <div class="mode"><span class="m-name" data-tc="貨運模式" data-en="Freight">貨運模式</span><span class="m-q" data-tc="貨運物流而家有冇阻滯？" data-en="Any holdups in freight and logistics right now?">貨運物流而家有冇阻滯？</span></div>
-        <div class="mode"><span class="m-name" data-tc="醫療模式" data-en="Health">醫療模式</span><span class="m-q" data-tc="急症室等幾耐？邊度有 AED？" data-en="How long is the A&amp;E wait? Where is the nearest AED?">急症室等幾耐？邊度有 AED？</span></div>
-        <div class="mode"><span class="m-name" data-tc="民生模式" data-en="Civic">民生模式</span><span class="m-q" data-tc="我嗰區有冇停水／停車位／空氣差？" data-en="Any water cuts, parking, or bad air in my district?">我嗰區有冇停水／停車位／空氣差？</span></div>
-        <div class="mode"><span class="m-name" data-tc="直擊模式" data-en="Live">直擊模式</span><span class="m-q" data-tc="而家香港發生緊咩事？" data-en="What is happening in Hong Kong right now?">而家香港發生緊咩事？</span></div>
+        <div class="mode"><span class="m-name">Typhoon</span><span class="m-q">Will the No. 8 signal go up? Is tomorrow's flight on?</span></div>
+        <div class="mode"><span class="m-name">Border</span><span class="m-q">How long is the queue at the crossing right now?</span></div>
+        <div class="mode"><span class="m-name">Water</span><span class="m-q">Is my district's water off, and when does it come back?</span></div>
+        <div class="mode"><span class="m-name">Weather</span><span class="m-q">Will it rain today? Do I need an umbrella?</span></div>
+        <div class="mode"><span class="m-name">Traffic</span><span class="m-q">Which road is jammed? When is the next bus or train?</span></div>
+        <div class="mode"><span class="m-name">Drone</span><span class="m-q">Can I fly now? Where is it windy, and where is it restricted?</span></div>
+        <div class="mode"><span class="m-name">Freight</span><span class="m-q">Are there hold-ups in freight and logistics right now?</span></div>
+        <div class="mode"><span class="m-name">Health</span><span class="m-q">How long is the A&amp;E wait? Where is the nearest AED?</span></div>
+        <div class="mode"><span class="m-name">Civic</span><span class="m-q">Any water cuts, parking or air-quality issues in my district?</span></div>
+        <div class="mode"><span class="m-name">Live</span><span class="m-q">What is happening in Hong Kong right now?</span></div>
       </div>
-      <h3 data-tc="面板（節錄）" data-en="Panels (a selection)">面板（節錄）</h3>
-      <p data-tc="城市簡報（每日兩次由排程工作生成、以靜態 JSON 發布 —— 運行時仍然零 LLM）、天氣警告、空氣質素健康指數、港鐵下一班車、九巴到站時間、口岸輪候、停車場空位、停水、航班、市況、攝影機牆、直播。"
-         data-en="A city brief (written twice a day by a scheduled job and published as a static JSON file — still zero LLM at runtime), weather warnings, AQHI air quality, MTR next trains, KMB bus ETAs, cross-boundary queues, carpark vacancy, water suspension, flights, markets, camera walls, live streams.">城市簡報（每日兩次由排程工作生成、以靜態 JSON 發布 —— 運行時仍然零 LLM）、天氣警告、空氣質素健康指數、港鐵下一班車、九巴到站時間、口岸輪候、停車場空位、停水、航班、市況、攝影機牆、直播。</p>
+      <h3>Panels (a selection)</h3>
+      <p>A city brief (written twice a day by a scheduled job and published as a static JSON file), weather warnings, air-quality health index, MTR next trains, KMB bus ETAs, cross-boundary queues, carpark vacancy, water-suspension notices, flights, markets, camera walls and live streams.</p>
     </section>
 
     <section id="how">
-      <div class="sec-head"><span class="idx">03</span><span class="label" data-tc="點運作" data-en="How it works">點運作</span></div>
-      <h2 data-tc="規則引擎，唔係黑盒" data-en="A rule engine, not a black box">規則引擎，唔係黑盒</h2>
+      <div class="sec-head"><span class="idx">03</span><span class="label">How it works</span></div>
+      <h2>Explicit thresholds, not a black box</h2>
       <ul class="plain">
-        <li><b data-tc="16 條確定性規則，覆蓋 5 個範疇。" data-en="16 deterministic rules across 5 domains.">16 條確定性規則，覆蓋 5 個範疇。</b> <span class="q" data-tc="決定「有冇事、幾嚴重」嘅係門檻值，唔係模型。" data-en="What counts as “something is up” is a threshold, not a model.">決定「有冇事、幾嚴重」嘅係門檻值，唔係模型。</span></li>
-        <li><b data-tc="運行路徑零 LLM。" data-en="Zero LLM in the runtime path.">運行路徑零 LLM。</b> <span class="q" data-tc="唯一有 AI 參與嘅係每日兩次嘅城市簡報，由排程工作寫好、當靜態檔案發布；你用緊嗰陣，瀏覽器冇生成任何嘢。" data-en="The only AI involvement is the twice-daily city brief, written by a scheduled job and published as a static file; while you use it, the browser generates nothing.">唯一有 AI 參與嘅係每日兩次嘅城市簡報，由排程工作寫好、當靜態檔案發布；你用緊嗰陣，瀏覽器冇生成任何嘢。</span></li>
-        <li><b data-tc="冇 cookie、冇追蹤、冇帳戶、冇資料庫。" data-en="No cookies, no tracking, no account, no database.">冇 cookie、冇追蹤、冇帳戶、冇資料庫。</b></li>
-        <li><b data-tc="每個數字都可溯源。" data-en="Every figure is traceable.">每個數字都可溯源。</b> <span class="q" data-tc="來源名、連結、攞數時間。過咗新鮮期就明顯降級，唔會硬扮 live。" data-en="Source name, link and read time. Past its freshness window it visibly degrades rather than faking live.">來源名、連結、攞數時間。過咗新鮮期就明顯降級，唔會硬扮 live。</span></li>
+        <li><b>Severity is a threshold over published values, not a model.</b> <span class="q">What counts as “something is up” is a declared comparison against the publisher's own figures.</span></li>
+        <li><b>A context engine can activate a mode automatically.</b> <span class="q">When declared conditions are met — a typhoon signal is hoisted, a water-suspension notice is in force — the matching mode is selected. The rules are data, not code, and are unit-tested.</span></li>
+        <li><b>No LLM in the runtime path.</b> <span class="q">The only AI involvement is the twice-daily city brief, written by a scheduled job and published as a static file; while you use the dashboard, the browser generates nothing.</span></li>
+        <li><b>No cookies, no tracking, no account, no database.</b></li>
+        <li><b>Every figure is traceable.</b> <span class="q">Source name, link and read time — and past its freshness window it degrades visibly rather than faking live.</span></li>
       </ul>
     </section>
 
     <section id="who">
-      <div class="sec-head"><span class="idx">04</span><span class="label" data-tc="啱邊個" data-en="Who it is for">啱邊個</span></div>
-      <h2 data-tc="俾想一眼睇清香港嘅人" data-en="For people who want Hong Kong at a glance">俾想一眼睇清香港嘅人</h2>
+      <div class="sec-head"><span class="idx">04</span><span class="label">Who it is for</span></div>
+      <h2>For people who want Hong Kong at a glance</h2>
       <ul class="plain">
-        <li><b data-tc="住喺香港嘅人" data-en="Hong Kong residents">住喺香港嘅人</b> <span class="q" data-tc="—— 出門口前睇天氣、交通、口岸、停水。" data-en="— weather, traffic, borders and water before you leave the house.">—— 出門口前睇天氣、交通、口岸、停水。</span></li>
-        <li><b data-tc="返工返學嘅人" data-en="Commuters">返工返學嘅人</b> <span class="q" data-tc="—— 下一班車幾時到、而家邊度塞。" data-en="— when the next train or bus is, and where it is jammed now.">—— 下一班車幾時到、而家邊度塞。</span></li>
-        <li><b data-tc="開源情報（OSINT）愛好者" data-en="OSINT enthusiasts">開源情報（OSINT）愛好者</b> <span class="q" data-tc="—— 可溯源、開放、可自架。" data-en="— traceable, open, self-hostable.">—— 可溯源、開放、可自架。</span></li>
-        <li><b data-tc="開發者" data-en="Developers">開發者</b> <span class="q" data-tc="—— 開源（AGPL-3.0），可以 fork、改、自架。" data-en="— open source (AGPL-3.0); fork it, change it, host it yourself.">—— 開源（AGPL-3.0），可以 fork、改、自架。</span></li>
+        <li><b>Hong Kong residents</b> <span class="q">— weather, traffic, border crossings and water supply before leaving the house.</span></li>
+        <li><b>Commuters</b> <span class="q">— when the next train or bus is, and where it is jammed right now.</span></li>
+        <li><b>OSINT researchers</b> <span class="q">— traceable, open and self-hostable.</span></li>
+        <li><b>Developers</b> <span class="q">— open source under AGPL-3.0; fork it, adapt it, host it yourself.</span></li>
       </ul>
     </section>
 
     <section id="data">
-      <div class="sec-head"><span class="idx">05</span><span class="label" data-tc="數據同授權" data-en="Data &amp; licences">數據同授權</span></div>
-      <h2 data-tc="全部數據都有出處同授權" data-en="Every source has an attribution and a licence">全部數據都有出處同授權</h2>
-      <p><span data-tc="所有數據都嚟自香港政府部門同公共機構公開發布嘅資料。每個來源用返佢自己嘅授權條款；本專案唔轉載內容，只呈現數據同連回原文。逐項出處、授權同更新頻率喺 repo 嘅 "
-         data-en="All data is published openly by Hong Kong government departments and public bodies. Each source keeps its own licence; the project does not republish content, it only surfaces data and links back to the original. Sources, licences and refresh cadences are itemised in ">所有數據都嚟自香港政府部門同公共機構公開發布嘅資料。每個來源用返佢自己嘅授權條款；本專案唔轉載內容，只呈現數據同連回原文。逐項出處、授權同更新頻率喺 repo 嘅 </span><a href="https://github.com/Cyruschu430/hk-city-monitor/blob/master/ATTRIBUTION.md">ATTRIBUTION.md</a><span data-tc="列明。" data-en=".">列明。</span></p>
+      <div class="sec-head"><span class="idx">05</span><span class="label">Data &amp; licences</span></div>
+      <h2>Every source has an attribution and a licence</h2>
+      <p>All data is published openly by Hong Kong government departments and public bodies. Each source keeps its own licence; the project does not republish content, it presents data and links back to the original. Sources, licences and refresh cadences are itemised in <a href="https://github.com/Cyruschu430/hk-city-monitor/blob/master/ATTRIBUTION.md">ATTRIBUTION.md</a>.</p>
       <ul class="plain">
-        <li><b data-tc="空間數據共享平台（CSDI）同 data.gov.hk" data-en="CSDI and data.gov.hk">空間數據共享平台（CSDI）同 data.gov.hk</b> <span class="q" data-tc="—— 政府開放數據。" data-en="— government open data.">—— 政府開放數據。</span></li>
-        <li><b data-tc="底圖：地政總署（LandsD）地形圖瓦片。" data-en="Basemap: Lands Department (LandsD) topographic tiles.">底圖：地政總署（LandsD）地形圖瓦片。</b></li>
-        <li><b data-tc="航拍影像：Esri World Imagery。" data-en="Aerial imagery: Esri World Imagery.">航拍影像：Esri World Imagery。</b> <span class="q" data-tc="（「Powered by Esri」）" data-en="(“Powered by Esri”)">（「Powered by Esri」）</span></li>
-        <li><span class="q" data-tc="個別來源嘅授權仍在核實中，詳見 repo。" data-en="A few sources’ licences are still being confirmed — see the repo.">個別來源嘅授權仍在核實中，詳見 repo。</span></li>
+        <li><b>CSDI and data.gov.hk</b> <span class="q">— government open data.</span></li>
+        <li><b>Basemap: Lands Department (LandsD) topographic tiles.</b></li>
+        <li><b>Aerial imagery: Esri World Imagery.</b> <span class="q">(“Powered by Esri”)</span></li>
+        <li><span class="q">A small number of source licences are still being confirmed — see the repository.</span></li>
       </ul>
     </section>
 
     <section id="run">
-      <div class="sec-head"><span class="idx">06</span><span class="label" data-tc="本地運行" data-en="Run it locally">本地運行</span></div>
-      <h2 data-tc="開源，你可以自己起一個" data-en="Open source — run your own">開源，你可以自己起一個</h2>
-      <p data-tc="成個嘢係一個靜態 bundle，任何靜態伺服器都 serve 到。本地試："
-         data-en="The whole thing is a static bundle — any static host can serve it. To try it locally:">成個嘢係一個靜態 bundle，任何靜態伺服器都 serve 到。本地試：</p>
-<pre><span class="c"># 1. clone 落嚟</span>
+      <div class="sec-head"><span class="idx">06</span><span class="label">Run it locally</span></div>
+      <h2>Open source — run your own</h2>
+      <p>The whole application is a static bundle that any static host can serve. To try it locally:</p>
+<pre><span class="c"># 1. clone</span>
 git clone https://github.com/Cyruschu430/hk-city-monitor
 cd hk-city-monitor/web
 
-<span class="c"># 2. build 同 preview</span>
+<span class="c"># 2. build and preview</span>
 npm ci
 npm run build
 npx vite preview --host 127.0.0.1 --port 4173</pre>
-      <p><span data-tc="然後開 http://127.0.0.1:4173。完整自架教學見 repo 嘅 "
-         data-en="Then open http://127.0.0.1:4173. Full self-hosting guide in ">然後開 http://127.0.0.1:4173。完整自架教學見 repo 嘅 </span><a href="https://github.com/Cyruschu430/hk-city-monitor/blob/master/SELF_HOSTING.md">SELF_HOSTING.md</a><span data-tc="。" data-en=".">。</span></p>
+      <p>Then open http://127.0.0.1:4173. The full self-hosting guide, including the edge proxy and the optional scheduled collectors, is in <a href="https://github.com/Cyruschu430/hk-city-monitor/blob/master/SELF_HOSTING.md">SELF_HOSTING.md</a>.</p>
     </section>
 
     <section id="licence">
-      <div class="sec-head"><span class="idx">07</span><span class="label" data-tc="授權" data-en="Licence">授權</span></div>
-      <h2 data-tc="AGPL-3.0" data-en="AGPL-3.0">AGPL-3.0</h2>
-      <p><span data-tc="呢個專案用 AGPL-3.0 授權。你可以自由使用、修改同再發布，但你分發出去嘅版本（包括當服務咁提供）都要以 AGPL-3.0 授權。完整條款見 "
-         data-en="This project is licensed AGPL-3.0. You are free to use, modify and redistribute it, but any version you distribute (including as a service) must also be AGPL-3.0. Full terms in the ">呢個專案用 AGPL-3.0 授權。你可以自由使用、修改同再發布，但你分發出去嘅版本（包括當服務咁提供）都要以 AGPL-3.0 授權。完整條款見 </span><a href="https://github.com/Cyruschu430/hk-city-monitor/blob/master/LICENSE">LICENSE</a><span data-tc="檔。" data-en="file.">檔。</span></p>
+      <div class="sec-head"><span class="idx">07</span><span class="label">Licence</span></div>
+      <h2>AGPL-3.0</h2>
+      <p>This project is licensed under AGPL-3.0. You are free to use, modify and redistribute it, but any version you distribute — including one offered as a service — must also be AGPL-3.0. Full terms in the <a href="https://github.com/Cyruschu430/hk-city-monitor/blob/master/LICENSE">LICENSE</a> file.</p>
     </section>
   </div>
 </main>
@@ -351,13 +332,14 @@ npx vite preview --host 127.0.0.1 --port 4173</pre>
   <div class="wrap">
     <div class="foot-col">
       <div>
-        <h3 data-tc="關於" data-en="About">關於</h3>
-        <p data-tc="香港 GIS 從業者 Cyrus Chu 嘅個人開源項目。" data-en="An open-source personal project by Cyrus Chu, a Hong Kong GIS practitioner.">香港 GIS 從業者 Cyrus Chu 嘅個人開源項目。</p>
-        <p data-tc="數據源自政府開放數據平台；本專案獨立維護。" data-en="Data comes from government open-data platforms; the project is independently maintained.">數據源自政府開放數據平台；本專案獨立維護。</p>
-        <p data-tc="個人項目；航拍影像採用 Esri 公開免費服務。" data-en="A personal project; aerial imagery uses Esri's free public service.">個人項目；航拍影像採用 Esri 公開免費服務。</p>
+        <h3>About</h3>
+        <p>An open-source personal project by Cyrus Chu, a Hong Kong GIS practitioner.</p>
+        <p>Data comes from government open-data platforms; the project is independently maintained.</p>
+        <p>A personal project; aerial imagery uses Esri's free public service.</p>
+        <p>Not affiliated with the HKSAR Government.</p>
       </div>
       <div>
-        <h3 data-tc="連結" data-en="Links">連結</h3>
+        <h3>Links</h3>
         <ul class="plain">
           <li><a href="https://hk-city-monitor.pages.dev/">Live · hk-city-monitor.pages.dev</a></li>
           <li><a href="https://github.com/Cyruschu430/hk-city-monitor">GitHub · Cyruschu430/hk-city-monitor</a></li>
@@ -367,37 +349,9 @@ npx vite preview --host 127.0.0.1 --port 4173</pre>
       </div>
     </div>
     <div class="credits">
-      <span data-tc="底圖 © 地政總署" data-en="Basemap © Lands Department">底圖 © 地政總署</span><span class="dot" aria-hidden="true"></span><span data-tc="航拍影像 Powered by Esri" data-en="Imagery Powered by Esri">航拍影像 Powered by Esri</span><span class="dot" aria-hidden="true"></span><span data-tc="開源 · AGPL-3.0" data-en="Open source · AGPL-3.0">開源 · AGPL-3.0</span>
+      <span>Basemap © Lands Department</span><span class="dot" aria-hidden="true"></span><span>Imagery Powered by Esri</span><span class="dot" aria-hidden="true"></span><span>Open source · AGPL-3.0</span>
     </div>
   </div>
 </footer>
-
-<script>
-/* Bilingual switch: mirrors the app's { tc, en } pattern. Each translatable
-   element carries both strings in data-tc / data-en; the default text is the
-   Traditional Chinese. If JS is disabled the page still reads fully in 繁中. */
-(function () {
-  var KEY = "hkcm.lang";
-  var els = Array.prototype.slice.call(document.querySelectorAll("[data-tc][data-en]"));
-  var btnTc = document.getElementById("langTc");
-  var btnEn = document.getElementById("langEn");
-  function apply(l) {
-    document.documentElement.lang = l === "tc" ? "zh-HK" : "en";
-    els.forEach(function (e) {
-      e.textContent = e.getAttribute(l === "tc" ? "data-tc" : "data-en");
-    });
-    if (btnTc && btnEn) {
-      btnTc.setAttribute("aria-pressed", String(l === "tc"));
-      btnEn.setAttribute("aria-pressed", String(l === "en"));
-    }
-  }
-  var lang = "tc";
-  try { var v = localStorage.getItem(KEY); if (v === "tc" || v === "en") lang = v; } catch (e) {}
-  apply(lang);
-  function setLang(l) { lang = l; try { localStorage.setItem(KEY, l); } catch (e) {} apply(l); }
-  if (btnTc) btnTc.addEventListener("click", function () { setLang("tc"); });
-  if (btnEn) btnEn.addEventListener("click", function () { setLang("en"); });
-})();
-</script>
 </body>
 </html>

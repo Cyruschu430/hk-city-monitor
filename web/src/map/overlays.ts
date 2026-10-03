@@ -73,6 +73,32 @@ function stale(args: LayerArgs, gen: number): boolean {
   return args.isCurrent !== undefined && !args.isCurrent(gen);
 }
 
+/** MTR train popup: one human line — destination + rounded minutes — plus the 推算 marker.
+    The generic attributePopup would dump bearing/dest/line/ttnt/estimated as raw floats and
+    codes ("dest TIK · line KTL · ttnt 7.626276666666567"), which is not a sentence a reader
+    can use. */
+function mtrTrainPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<div style="padding:9px 11px;font:12px/1.55 var(--font-ui)">
+          <b>${esc(p["Name"])}</b>
+          <div style="color:#8ea6c4;font-size:11px;margin-top:3px">${tc ? "推算位置（非 GPS）" : "Estimated position (not GPS)"}</div>
+        </div>`,
+      )
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+
 // --- MTR train layer animation --------------------------------------------------
 // The mtr_trains layer is an ESTIMATE recomputed every 30s from next-train ETAs.
 // Between refetches a requestAnimationFrame loop re-runs estimateMtrTrains with
@@ -492,7 +518,8 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     // Attributes on the moving path too. The aircraft layer was withdrawn, but the
     // vessel one is coming and it draws exactly here — leaving this branch without
     // a popup would recreate the weather-station bug on a brand new layer.
-    attributePopup(map, `${id}-point`);
+    if (glyph === "mtr-train") mtrTrainPopup(map, `${id}-point`);
+    else attributePopup(map, `${id}-point`);
     // Trains keep sliding between the 30s schedule refetches (see startMtrAnimation).
     if (glyph === "mtr-train") void startMtrAnimation(map, id, () => fetchMtrData(src));
     return;

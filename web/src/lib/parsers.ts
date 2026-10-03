@@ -645,18 +645,21 @@ export function estimateMtrTrains(
 export function mtrToGeoJson(trains: MtrTrain[]): GeoJSON.FeatureCollection {
   return {
     type: "FeatureCollection",
-    features: trains.map((t) => ({
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [t.lon, t.lat] },
-      properties: {
-        Name: `${lang() === "tc" ? "往" : "to "}${lang() === "tc" ? t.dest_tc : t.dest_en} · ${t.ttnt}${lang() === "tc" ? " 分鐘" : " min"}`,
-        bearing: t.heading,
-        dest: t.dest,
-        line: t.line,
-        ttnt: t.ttnt,
-        estimated: true,
-      },
-    })),
+    features: trains.map((t) => {
+      const mins = Math.max(1, Math.round(t.ttnt));
+      return {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [t.lon, t.lat] },
+        properties: {
+          Name: `${lang() === "tc" ? "往" : "to "}${lang() === "tc" ? t.dest_tc : t.dest_en} · ${mins} ${lang() === "tc" ? "分鐘" : "min"}`,
+          bearing: t.heading,
+          dest: t.dest,
+          line: t.line,
+          ttnt: mins,
+          estimated: true,
+        },
+      };
+    }),
   };
 }
 

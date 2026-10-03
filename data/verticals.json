@@ -245,7 +245,6 @@
     "hk_market_table"
    ],
    "layers": [
-    "berth_vacancy",
     "aircraft",
     "vessels",
     "hk_facility_areas",

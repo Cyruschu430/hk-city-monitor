@@ -29,7 +29,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "td_snapshot",
@@ -48,7 +48,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_webcam",
@@ -67,7 +67,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_webcam_index",
@@ -83,7 +83,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_warnsum",
@@ -99,7 +99,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_warninginfo",
@@ -115,7 +115,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_rhrread",
@@ -131,7 +131,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_fnd",
@@ -147,7 +147,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_swt",
@@ -163,7 +163,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_tide",
@@ -183,7 +183,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_radiation",
@@ -204,7 +204,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_earthquake",
@@ -224,7 +224,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_radar",
@@ -244,7 +244,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_satellite",
@@ -261,7 +261,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "td_speedmap",
@@ -312,7 +312,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "td_traffic_speed_city",
@@ -328,7 +328,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "td_carpark_vacancy",
@@ -347,7 +347,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ogcio_carpark_vacancy",
@@ -363,7 +363,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "bus_eta_citybus_nlb",
@@ -383,7 +383,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "sb_bwt_status",
@@ -400,7 +400,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hkemobility_control_point",
@@ -417,7 +417,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "immd_control_points",
@@ -428,12 +428,12 @@
    "url": "https://www.immd.gov.hk/hkt/contactus/control_points.html",
    "auth": "none",
    "cadence": "static",
-   "notes": "Static list of 13 control points with opening hours. Hardcode once — lets the UI show 現正開放／已關閉 without any live source.",
+   "notes": "Static list of 13 control points with opening hours. Hardcode once — lets the UI show open/closed without any live source.",
    "kind": "api",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "adsb_lol_hk",
@@ -450,7 +450,7 @@
    "fetch": "browser",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "adsb.lol — ODbL 1.0（准商業用）；OpenSky 明文禁 live product，所以唔用",
+   "license": "adsb.lol — ODbL 1.0 (commercial use permitted); OpenSky explicitly forbids live products, so it is not used",
    "todo": false
   },
   {
@@ -468,7 +468,7 @@
    "fetch": "browser",
    "cors_note": "讀 data/vessels.json（collector 出嘅 static file）",
    "cost": "free",
-   "license": "VesselAPI 免費層 — 見服務條款",
+   "license": "VesselAPI free tier — see the service terms",
    "todo": false
   },
 
@@ -486,7 +486,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "lcsd_facility_usage",
@@ -502,7 +502,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "afcd_closed_trails",
@@ -522,7 +522,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hk_public_holidays",
@@ -543,7 +543,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "gov_press_rss",
@@ -564,7 +564,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "fsd_press",
@@ -581,7 +581,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "yahoo_hsi",
@@ -592,12 +592,12 @@
    "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EHSI?interval=1d&range=1d",
    "auth": "none",
    "cadence": "delayed",
-   "notes": "NO CORS header — must be proxied server side (nginx proxy_pass, 3 lines). Verified working: ^HSI 24750.78 HKD, ^HSCE, 0700.HK, 9988.HK, 3690.HK, 1810.HK, 0005.HK, 0388.HK, 1299.HK, 0939.HK also work. DELAYED — must be labelled 延遲報價 in the UI.",
+   "notes": "NO CORS header — must be proxied server side (nginx proxy_pass, 3 lines). Verified working: ^HSI 24750.78 HKD, ^HSCE, 0700.HK, 9988.HK, 3690.HK, 1810.HK, 0005.HK, 0388.HK, 1299.HK, 0939.HK also work. DELAYED — must be labelled as delayed in the UI.",
    "kind": "api",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "Yahoo Finance — 非官方端點，僅供個人參考"
+   "license": "Yahoo Finance — unofficial endpoint, personal reference only"
   },
 
   {
@@ -634,7 +634,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "als_address_lookup",
@@ -654,7 +654,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "usgs_earthquakes",
@@ -671,7 +671,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "USGS — 公共領域（美國政府作品）"
+   "license": "USGS — public domain (US Government work)"
   },
   {
    "id": "nasa_eonet",
@@ -688,7 +688,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "NASA EONET — 公共領域（美國政府作品）"
+   "license": "NASA EONET — public domain (US Government work)"
   },
   {
    "id": "open_meteo",
@@ -705,7 +705,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "Open-Meteo — CC BY 4.0，非商業免費層"
+   "license": "Open-Meteo — CC BY 4.0; the free tier is non-commercial"
   },
   {
    "id": "open_meteo_wind_grid",
@@ -724,7 +724,7 @@
    "fetch": "proxy",
    "cors_note": "ACAO=* (so browser-direct also works, but the rate limit is why we proxy)",
    "cost": "free",
-   "license": "Open-Meteo — CC BY 4.0，非商業免費層"
+   "license": "Open-Meteo — CC BY 4.0; the free tier is non-commercial"
   },
   {
    "id": "cc_fuel_price",
@@ -744,7 +744,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "消費者委員會 — 見網站條款"
+   "license": "Consumer Council — see the website terms"
   },
   {
    "id": "cc_online_price_watch",
@@ -759,12 +759,12 @@
    "auth": "none",
    "cadence": "weekly",
    "todo": true,
-   "notes": "Supermarket prices across the major chains (惠康, 百佳, Market Place, AEON, 大昌, city'super...) for hundreds of product categories. Hierarchical server-rendered URLs (/opw/list/{cat}/{sub}/{subsub}) but the product pages carry NO prices in the HTML — prices arrive via an AJAX call that still needs reversing. Higher effort and higher fragility than the fuel tool. Prefer asking for a feed.",
+   "notes": "Supermarket prices across the major chains (Wellcome, ParknShop, Market Place, AEON, DCH Food Mart, city'super…) for hundreds of product categories. Hierarchical server-rendered URLs (/opw/list/{cat}/{sub}/{subsub}) but the product pages carry NO prices in the HTML — prices arrive via an AJAX call that still needs reversing. Higher effort and higher fragility than the fuel tool. Prefer asking for a feed.",
    "kind": "document",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "消費者委員會 — 見網站條款"
+   "license": "Consumer Council — see the website terms"
   },
   {
    "id": "cc_infant_formula_survey",
@@ -781,7 +781,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "消費者委員會 — 見網站條款"
+   "license": "Consumer Council — see the website terms"
   },
   {
    "id": "cc_complaints_stats",
@@ -798,7 +798,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "td_routes_and_fares",
@@ -818,7 +818,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "lcsd_smartplay_prog",
@@ -834,7 +834,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "lcsd_events_xml",
@@ -850,7 +850,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "lcsd_eventdates_xml",
@@ -866,7 +866,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "lcsd_venues_xml",
@@ -882,7 +882,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "lcsd_venue_master",
@@ -893,12 +893,12 @@
    "url": "https://www.lcsd.gov.hk/datagovhk/venue/venue.json",
    "auth": "none",
    "cadence": "periodic",
-   "notes": "629 venues across 15 categories. Has OpeningHour_en/cn AND ClosedOn_en/cn AND PublicHolidayOpeningHour — this is how the UI answers '邊個場今日開唔開' without any live source. A temporary-closure feed does NOT exist (checked); holiday.xml returns an empty <holiday/>.",
+   "notes": "629 venues across 15 categories. Has OpeningHour_en/cn AND ClosedOn_en/cn AND PublicHolidayOpeningHour — this is how the UI answers 'which venue is open today' without any live source. A temporary-closure feed does NOT exist (checked); holiday.xml returns an empty <holiday/>.",
    "kind": "api",
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://wcms.lcsd.hksarg",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "urbtix_event_batch",
@@ -929,7 +929,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "csdi_lcsd_tennis",
@@ -945,7 +945,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "csdi_lcsd_badminton",
@@ -961,7 +961,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "csdi_lcsd_basketball",
@@ -977,7 +977,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "csdi_lcsd_libraries",
@@ -993,7 +993,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "csdi_lcsd_museums",
@@ -1009,7 +1009,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "csdi_lcsd_parks",
@@ -1025,7 +1025,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "csdi_lcsd_holiday_camps",
@@ -1041,7 +1041,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "csdi_lcsd_bbq",
@@ -1057,7 +1057,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "afcd_closed_facilities",
@@ -1073,7 +1073,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "gov_news_law_order",
@@ -1085,12 +1085,12 @@
    "url_en": "https://www.news.gov.hk/en/categories/law_order/html/articlelist.rss.xml",
    "auth": "none",
    "cadence": "continuous",
-   "notes": "The 治安 topic feed. Other topics follow the same pattern: admin, finance, environment, health, infrastructure, school_work, city_life. Title + link only in our UI.",
+   "notes": "The law-and-order topic feed. Other topics follow the same pattern: admin, finance, environment, health, infrastructure, school_work, city_life. Title + link only in our UI.",
    "kind": "api",
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "location_search",
@@ -1106,7 +1106,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "epd_aqhi_rss",
@@ -1123,7 +1123,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "epd_aqhi_24h",
@@ -1140,7 +1140,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "epd_aqhi_forecast",
@@ -1157,7 +1157,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "sb_bwt_json",
@@ -1169,12 +1169,12 @@
    "auth": "none",
    "cadence": "15 minutes",
    "todo": false,
-   "notes": "SOLVED — this is the JSON behind 口岸通, and it is the highest-value source in the project. updateDate + cpInfoList[]; each control point has code, cpName, openFrom/openTo and arrival/departure, each broken down into resident / visitor / car / cross-border shuttle, with status 1/2/3 for the green-yellow-red level. Keyless. NOTE: there is no Chinese in the path — /bwt/json/overview_tc.json sits directly under www.sb.gov.hk.",
+   "notes": "SOLVED — this is the JSON behind the Security Bureau's boundary-crossing portal, and it is the highest-value source in the project. updateDate + cpInfoList[]; each control point has code, cpName, openFrom/openTo and arrival/departure, each broken down into resident / visitor / car / cross-border shuttle, with status 1/2/3 for the green-yellow-red level. Keyless. NOTE: there is no Chinese in the path — /bwt/json/overview_tc.json sits directly under www.sb.gov.hk.",
    "kind": "api",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "kmb_eta",
@@ -1195,7 +1195,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "mtr_next_train",
@@ -1212,7 +1212,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "mtr_trains",
@@ -1229,7 +1229,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "mtr_lines",
@@ -1243,8 +1243,8 @@
    "todo": false,
    "fetch": "browser",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
-   "notes": "Reference geometry generated from data/mtr_stations.json (the publisher's own lines-and-stations CSV): one LineString per heavy-rail line plus the 落馬洲 / 康城 spurs, with the official line colour carried per feature. Static reference — see the file."
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required",
+   "notes": "Reference geometry generated from data/mtr_stations.json (the publisher's own lines-and-stations CSV): one LineString per heavy-rail line plus the Lok Ma Chau and LOHAS Park spurs, with the official line colour carried per feature. Static reference — see the file."
   },
   {
    "id": "hkia_flights",
@@ -1261,7 +1261,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "香港機場管理局 開放數據 — 需標明出處"
+   "license": "Airport Authority Hong Kong open data — attribution required"
   },
   {
    "id": "lwb_eta",
@@ -1278,7 +1278,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "adsbdb",
@@ -1306,12 +1306,12 @@
    "auth": "none",
    "cadence": "monthly",
    "todo": false,
-   "notes": "The OFFICIAL property price and rental index series — the public-sector counterpart to 中原 CCL/CRI. Monthly for the headline series; completions, stock, vacancy and take-up are annual. Filenames are historical table numbers, e.g. 1.1A(86-98).csv, 1.1Q(82-98).csv — list the directory rather than guessing a filename.",
+   "notes": "The OFFICIAL property price and rental index series — the public-sector counterpart to the Centaline CCL/CRI. Monthly for the headline series; completions, stock, vacancy and take-up are annual. Filenames are historical table numbers, e.g. 1.1A(86-98).csv, 1.1Q(82-98).csv — list the directory rather than guessing a filename.",
    "kind": "api",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "landreg_monthly",
@@ -1328,7 +1328,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "censtatd_press_rss",
@@ -1340,12 +1340,12 @@
    "auth": "none",
    "cadence": "continuous",
    "todo": false,
-   "notes": "The '統計處資料 update 一下' problem, solved: every statistical release lands here first, with the publication calendar behind it.",
+   "notes": "The 'keep Census and Statistics Department data current' problem, solved: every statistical release lands here first, with the publication calendar behind it.",
    "kind": "api",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "censtatd_table_110_01003",
@@ -1357,12 +1357,12 @@
    "auth": "none",
    "cadence": "half-yearly",
    "todo": false,
-   "notes": "Any 統計處 table downloads as XLSX through this query-string form — swap the id. Half-yearly for population. Related ids worth wiring: 110-01001 (population by sex and age), 130-06102 (domestic households).",
+   "notes": "Any Census and Statistics Department table downloads as XLSX through this query-string form — swap the id. Half-yearly for population. Related ids worth wiring: 110-01001 (population by sex and age), 130-06102 (domestic households).",
    "kind": "api",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "censtatd_2021_census",
@@ -1379,7 +1379,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "centaline_ccl",
@@ -1391,7 +1391,7 @@
    "auth": "none",
    "cadence": "weekly",
    "todo": true,
-   "notes": "Be clear about what this is: 中原 CCL/CRI is a PRIVATE product of 中原地產, not open data. It is published as weekly (CCL) and monthly (CRI) press releases and republished by third parties. No public API exists and the licence is theirs. Options, in order of preference: (1) use the official 差餉物業估價署 index instead — it is free, monthly and unambiguous; (2) if the CCL number matters for narrative, cite it with a link and never present it as our own data; (3) only consider scraping the research page if the citation route proves insufficient.",
+   "notes": "Be clear about what this is: the Centaline CCL/CRI is a PRIVATE product of Centaline Property Agency, not open data. It is published as weekly (CCL) and monthly (CRI) press releases and republished by third parties. No public API exists and the licence is theirs. Options, in order of preference: (1) use the official Rating and Valuation Department index instead — it is free, monthly and unambiguous; (2) if the CCL number matters for narrative, cite it with a link and never present it as our own data; (3) only consider scraping the research page if the citation route proves insufficient.",
    "kind": "document",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
@@ -1407,11 +1407,11 @@
    "auth": "none",
    "cadence": "yearly",
    "todo": false,
-   "notes": "喂 date=YYYY-MM-DD，回農曆日期（年月日、干支、生肖）。年度 CSV 全表：hko_data/calendar/nongli_calendar_2023.csv。呢個就係所有農曆功能嘅官方地基 —— 農曆新年、清明、中秋、初一十五、擇日，全部由佢計，唔使自己寫曆法。",
+   "notes": "Takes date=YYYY-MM-DD and returns the lunar calendar date (year, month, day, the sexagenary cycle and the zodiac sign). The full annual CSV is hko_data/calendar/nongli_calendar_2023.csv. This is the official foundation for every lunar-calendar feature — Lunar New Year, Ching Ming, Mid-Autumn, the first and fifteenth of each lunar month, and auspicious-date selection are all derived from it, so no calendar arithmetic has to be written by hand.",
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_sunrise_sunset",
@@ -1423,11 +1423,11 @@
    "auth": "none",
    "cadence": "yearly",
    "todo": false,
-   "notes": "全年逐日日出日落。三種人會用：影相嘅（黃金時間）、跑山嘅（幾點天黑）、風水／座向參考。同一個 opendata.php 仲有月出月落。",
+   "notes": "Daily sunrise and sunset for the whole year. Three audiences: photographers (golden hour), trail runners (when it gets dark) and feng-shui / orientation reference. The same opendata.php also carries moonrise and moonset.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_wbgt",
@@ -1439,11 +1439,11 @@
    "auth": "none",
    "cadence": "10 minutes",
    "todo": false,
-   "notes": "濕球黑球溫度 — 戶外工作與運動嘅真正熱壓力指標，比氣溫誠實得多。對露營、賽事、地盤、跑步都直接有用。",
+   "notes": "Wet Bulb Globe Temperature — the honest heat-stress measure for outdoor work and sport, far more meaningful than air temperature. Directly useful for camping, events, construction sites and running.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_rain_nowcast",
@@ -1455,11 +1455,11 @@
    "auth": "none",
    "cadence": "hourly",
    "todo": false,
-   "notes": "格網狀未來降雨預報 —— 可以砌落雨動畫／時間軸，係整個天氣層最有動感嘅一個。另有 _tc 中文版。",
+   "notes": "Gridded rainfall nowcast — enough to build a rain animation or a timeline, and the most dynamic element of the weather layer. A _tc Chinese variant also exists.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_stations_network",
@@ -1477,7 +1477,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=https://hk-city-monitor.pages.dev",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_smart_lamppost",
@@ -1489,11 +1489,11 @@
    "auth": "none",
    "cadence": "10 minutes",
    "todo": false,
-   "notes": "街頭級氣象站（智慧燈柱），比天文台站密得多。位置表 + device type 表各一個 JSON。做微尺度城市氣候／跑步路線熱壓力嘅原材料。",
+   "notes": "Street-level weather stations (smart lampposts), far denser than Observatory stations. One JSON for locations and one for device types. Raw material for micro-scale urban climate and heat-stress mapping along running routes.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_tc_track",
@@ -1505,11 +1505,11 @@
    "auth": "none",
    "cadence": "as issued",
    "todo": false,
-   "notes": "Live tropical cyclone list and track — the data behind the HKO TC track pages. Feeds the 颱風模式 vertical. Note the host is www.weather.gov.hk (not data.weather.gov.hk).",
+   "notes": "Live tropical cyclone list and track — the data behind the HKO TC track pages. Feeds the typhoon vertical. Note the host is www.weather.gov.hk (not data.weather.gov.hk).",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_tc_besttrack",
@@ -1525,7 +1525,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "immd_cp_queue",
@@ -1540,11 +1540,11 @@
    "auth": "none",
    "cadence": "15 minutes",
    "todo": false,
-   "notes": "THE OFFICIAL control-point waiting time feed from Immigration — 15-minute cadence, no key. This is better than reading 口岸通's page: 口岸通 gives a green/yellow/red band, this gives the actual queue time. Keep 口岸通 too — it adds the incident notices and the cross-boundary shuttle waits. Found only by the full CKAN scan; a keyword search misses it. Verified response keys are the control-point codes themselves: HYW, HZM, LMC, LSC, LWS, MKT.",
+   "notes": "THE OFFICIAL control-point waiting time feed from Immigration — 15-minute cadence, no key. This is better than reading the Security Bureau portal's page: that portal gives a green/yellow/red band, this gives the actual queue time. Keep the portal too — it adds the incident notices and the cross-boundary shuttle waits. Found only by the full CKAN scan; a keyword search misses it. Verified response keys are the control-point codes themselves: HYW, HZM, LMC, LSC, LWS, MKT.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ha_ae_waiting",
@@ -1560,7 +1560,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "醫院管理局 Hospital Authority 開放數據 — 需標明出處"
+   "license": "Hospital Authority open data — attribution required"
   },
   {
    "id": "wsd_water_suspension",
@@ -1578,7 +1578,7 @@
    "kind": "api",
    "pipeline": "scripts/build_water_suspension.py → data/water_suspension.json",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "wsd_water_suspension_districts",
@@ -1590,12 +1590,12 @@
    "auth": "none",
    "cadence": "on update",
    "todo": false,
-   "notes": "VERIFIED 2026-09-19: 18 district polygons (esriGeometryPolygon) for the same official 'Temporary Water Suspension Notices' dataset, served from CSDI over TLS 1.3 with the Origin echoed back (CORS open). Every feature carries DISTRICT, DISTRICT_CHINESE and URL — that URL is the per-district CSV on the legacy-TLS host, so the geometry is usable live while the records still come from the collector. This is what gives 停水模式 a real map layer instead of geom:none.",
+   "notes": "VERIFIED 2026-09-19: 18 district polygons (esriGeometryPolygon) for the same official 'Temporary Water Suspension Notices' dataset, served from CSDI over TLS 1.3 with the Origin echoed back (CORS open). Every feature carries DISTRICT, DISTRICT_CHINESE and URL — that URL is the per-district CSV on the legacy-TLS host, so the geometry is usable live while the records still come from the collector. This is what gives the water-supply vertical a real map layer instead of geom:none.",
    "kind": "api",
    "fetch": "browser",
    "cors_note": "echoes Origin → ACAO = 你嘅 origin",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "yahoo_hk_quotes",
@@ -1607,12 +1607,12 @@
    "auth": "none",
    "cadence": "delayed",
    "todo": false,
-   "notes": "DELAYED quotes — 延遲報價, never presented as real-time: ^HSI, ^HSCE, 0700.HK, 9988.HK over the public keyless chart endpoint. HK convention red=up/green=down, labelled in the panel. Per-symbol fetches are collapsed by the Worker's edge cache.",
+   "notes": "DELAYED quotes, labelled as delayed, never presented as real-time: ^HSI, ^HSCE, 0700.HK, 9988.HK over the public keyless chart endpoint. HK convention red=up/green=down, labelled in the panel. Per-symbol fetches are collapsed by the Worker's edge cache.",
    "kind": "api",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 要 proxy",
    "cost": "free",
-   "license": "Yahoo Finance — 非官方端點，僅供個人參考"
+   "license": "Yahoo Finance — unofficial endpoint, personal reference only"
   },
   {
    "id": "td_carpark_info",
@@ -1629,7 +1629,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "lcsd_court_booking",
@@ -1646,11 +1646,11 @@
    "auth": "none",
    "cadence": "5 minutes",
    "todo": false,
-   "notes": "!! I PREVIOUSLY DECLARED THIS DID NOT EXIST, AND I WAS WRONG. LCSD publishes the live availability of bookable sessions per venue every 5 minutes, keyless, for badminton / basketball / tennis / turf soccer / volleyball. So the honest answer to 'can we show 訂場情況' is yes — with real vacancy, not a workaround. Every court type is the same path with a different sport segment.",
+   "notes": "!! I PREVIOUSLY DECLARED THIS DID NOT EXIST, AND I WAS WRONG. LCSD publishes the live availability of bookable sessions per venue every 5 minutes, keyless, for badminton / basketball / tennis / turf soccer / volleyball. So the honest answer to 'can we show court bookability' is yes — with real vacancy, not a workaround. Every court type is the same path with a different sport segment.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "mardep_crossboundary_ferry",
@@ -1669,7 +1669,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "mardep_vessel_arrivals",
@@ -1688,7 +1688,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "gmb_eta",
@@ -1707,7 +1707,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "sunferry_eta",
@@ -1757,7 +1757,7 @@
    "fetch": "browser",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "aqhi_city_dashboard",
@@ -1776,7 +1776,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_heat_index",
@@ -1792,7 +1792,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "hko_1min_temperature",
@@ -1808,7 +1808,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_ceo_opendata_policy_address_highlights_by_ce",
@@ -1830,7 +1830,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hkstp_hkstp_hkstp_corporate_info_upcoming_event",
@@ -1848,7 +1848,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSTP 開放數據 — 見其開放數據條款"
+   "license": "HKSTP open data — see its open-data terms"
   },
   {
    "id": "ck_hkstp_hkstp_hkstp_carpark_ev_vacancy",
@@ -1866,7 +1866,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSTP 開放數據 — 見其開放數據條款"
+   "license": "HKSTP open data — see its open-data terms"
   },
   {
    "id": "ck_hkstp_hkstp_hkstp_carpark_vacancy",
@@ -1884,7 +1884,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSTP 開放數據 — 見其開放數據條款"
+   "license": "HKSTP open data — see its open-data terms"
   },
   {
    "id": "ck_nlb_bus_nlb_bus_service_v1",
@@ -1905,7 +1905,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_nlb_bus_nlb_bus_service_v2",
@@ -1926,7 +1926,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_tis_1_special_traffic_news",
@@ -1946,7 +1946,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_tis_19_special_traffic_news_v2",
@@ -1967,7 +1967,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_ctb_eta_transport_realtime_eta",
@@ -1989,7 +1989,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_dpo_datagovhk1_pressrelease_search",
@@ -2007,7 +2007,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_gridded_rainfall_nowcast_in_hong_kong",
@@ -2028,7 +2028,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_latest_fifteen_minute_mean_uv_index",
@@ -2049,7 +2049,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_latest_tidal_info",
@@ -2070,7 +2070,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_rainfall_in_the_past_hour",
@@ -2091,7 +2091,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_regional_weather_past_24_hour_tempera",
@@ -2112,7 +2112,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_latest_one_minute_solar_radiation_inf",
@@ -2133,7 +2133,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_latest_one_minute_mean_grass_temp",
@@ -2154,7 +2154,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_latest_one_minute_mean_rh",
@@ -2175,7 +2175,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_latest_one_minute_mean_sea_level_pres",
@@ -2196,7 +2196,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_regional_weather_latest_10_min_mean_v",
@@ -2217,7 +2217,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_latest_ten_minute_wind_info",
@@ -2238,7 +2238,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_max_and_min_air_temp_since_midnight",
@@ -2259,7 +2259,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_immd_set5_statistics_passenger_traffic_festiv",
@@ -2280,7 +2280,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_lcsd_lib_lib_computers",
@@ -2301,7 +2301,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=0",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_lcsd_facility_facility_tsp",
@@ -2319,7 +2319,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_md_hydro_10mintues_latest_tidal_information",
@@ -2340,7 +2340,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_md_mardep_vessel_arrivals_and_departures",
@@ -2362,7 +2362,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_msd_1_metered_parking_spaces_data",
@@ -2382,7 +2382,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_sm_2_journey_time_indicators",
@@ -2400,7 +2400,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_sm_8_journey_time_indicators_v2",
@@ -2418,7 +2418,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_msd_2_non_metered_parking_spaces_data",
@@ -2438,7 +2438,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_sm_7_real_time_arrival_data_of_gmb",
@@ -2459,7 +2459,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_sm_3_speed_map_panels",
@@ -2477,7 +2477,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_sm_9_speed_map_panels_v2",
@@ -2498,7 +2498,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_tis_33_traffic_data_traffic_detectors_inst",
@@ -2518,7 +2518,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_sm_4_traffic_data_strategic_major_roads",
@@ -2540,7 +2540,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_tis_2_traffic_snapshot_images",
@@ -2562,7 +2562,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_td_sm_1_traffic_speed_map",
@@ -2580,7 +2580,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_wkcda_wkcarpark_wkcarpark",
@@ -2619,7 +2619,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_epd_airteam_past24hr_aqhi_of_individual_air_q",
@@ -2640,7 +2640,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_epd_airteam_past24hr_pc_of_individual_air_qua",
@@ -2661,7 +2661,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_epd_airteam_past_record_of_air_pollution_inde",
@@ -2683,7 +2683,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_epd_airteam_past_record_of_air_pollution_inde_2",
@@ -2705,7 +2705,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://aqhi.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_hourly_ambient_gamma_radiation_level_",
@@ -2726,7 +2726,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_cloud_ground_lightning_count_past_hou",
@@ -2747,7 +2747,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_hko_rss_local_weather_forecast",
@@ -2768,7 +2768,7 @@
    "fetch": "browser",
    "cors_note": "ACAO=*",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "ck_hk_immd_set2_address_and_working_hours_of_office",
@@ -2789,7 +2789,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "epd_beach_grading",
@@ -2808,7 +2808,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "afcd_red_tide",
@@ -2827,7 +2827,7 @@
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "rthk_local",
@@ -2840,11 +2840,11 @@
    "auth": "none",
    "cadence": "continuous",
    "todo": false,
-   "notes": "RTHK RTHK Local News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+   "notes": "RTHK RTHK Local News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's traffic bulletins are a web PAGE only and have no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "rthk_world",
@@ -2857,11 +2857,11 @@
    "auth": "none",
    "cadence": "continuous",
    "todo": false,
-   "notes": "RTHK RTHK International News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+   "notes": "RTHK RTHK International News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's traffic bulletins are a web PAGE only and have no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "rthk_finance",
@@ -2874,11 +2874,11 @@
    "auth": "none",
    "cadence": "continuous",
    "todo": false,
-   "notes": "RTHK RTHK Finance News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+   "notes": "RTHK RTHK Finance News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's traffic bulletins are a web PAGE only and have no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "rthk_sport",
@@ -2891,11 +2891,11 @@
    "auth": "none",
    "cadence": "continuous",
    "todo": false,
-   "notes": "RTHK RTHK Sport News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+   "notes": "RTHK RTHK Sport News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's traffic bulletins are a web PAGE only and have no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "rthk_china",
@@ -2908,11 +2908,11 @@
    "auth": "none",
    "cadence": "continuous",
    "todo": false,
-   "notes": "RTHK RTHK Greater China News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's 交通消息 (traffic bulletins) is a web PAGE only and has no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
+   "notes": "RTHK RTHK Greater China News. Verified 20 items. Feed list taken from RTHK's own RSS index (news.rthk.hk/rthk/ch/rss.htm) rather than guessed — the guessed paths returned a 200 HTML app shell with zero items, which is a false success. RTHK's traffic bulletins are a web PAGE only and have no RSS: TD's Special Traffic News is the authoritative traffic source anyway, so nothing is missing.",
    "fetch": "proxy",
    "cors_note": "冇 ACAO → 頁面 fetch 唔到",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "gov_news_admin",
@@ -2929,7 +2929,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "gov_news_finance",
@@ -2946,7 +2946,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "gov_news_environment",
@@ -2963,7 +2963,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "gov_news_health",
@@ -2980,7 +2980,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "gov_news_infrastructure",
@@ -2997,7 +2997,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "gov_news_school_work",
@@ -3014,7 +3014,7 @@
    "fetch": "proxy",
    "cors_note": "白名單限制 ACAO=https://sc.news.gov.hk",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "open3dhk_building",
@@ -3030,7 +3030,7 @@
    "notes": "VERIFIED 200, a valid 3D Tiles 1.2.3 tileset: gltfUpAxis Y, 218,927 components, 12,199,184 triangles, 36,557,692 vertices — the whole HK territory of buildings. WGS84, Cesium 3D Tiles open format, free for commercial and non-commercial use with attribution to the Government. Get a free key by emailing 3dmap@landsd.gov.hk (Lands Department, GIS Projects Section). LIMITS: 100 concurrent users, 5GB/s — so do not build a demo that hammers it. NOTE: the docs publish a sample key and the endpoint currently answers without one; do NOT rely on that, and never commit a key to this repo — it belongs in the Cloudflare Worker secret. 12M triangles means this loads on demand, never on first paint.",
    "cors_note": "CORS 回 echo Origin（技術上可直接 fetch），但 key 唔可以落前端 → 一定要經 Worker",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "open3dhk_infrastructure",
@@ -3046,7 +3046,7 @@
    "notes": "VERIFIED 200, valid tileset: 1,826 components, 7,602,740 triangles, 22,797,304 vertices. Same key, licence and limits as the building tileset.",
    "cors_note": "CORS 回 echo Origin（技術上可直接 fetch），但 key 唔可以落前端 → 一定要經 Worker",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "open3dhk_tilemodel",
@@ -3059,10 +3059,10 @@
    "cadence": "as issued",
    "todo": false,
    "fetch": "proxy",
-   "notes": "VERIFIED 200: 3D Tiles 1.1, geometricError 271850.84. The mesh-model (方格形式) visualisation map built from oblique aerial imagery, covering the whole territory — heavier but more faithful than the individualised building models.",
+   "notes": "VERIFIED 200: 3D Tiles 1.1, geometricError 271850.84. The mesh-model visualisation map built from oblique aerial imagery, covering the whole territory — heavier but more faithful than the individualised building models.",
    "cors_note": "CORS 回 echo Origin（技術上可直接 fetch），但 key 唔可以落前端 → 一定要經 Worker",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "landsd_basemap_tiles",
@@ -3077,7 +3077,7 @@
    "fetch": "browser",
    "notes": "VERIFIED 200, image/png, 256×256, 30,360 bytes, ACAO=* — keyless, CORS-open, no key. URL: /xyz/basemap/{WGS84|HK80}/{z}/{x}/{y}.png, z10-20. The official HK topographic basemap, so the map is Hong Kong rather than a generic world basemap. MANDATORY attribution: Lands Department logo on the map face plus 'Map from Lands Department'. Courtesy limit: do not invoke with large numbers of requests in a short period — cache tiles in the Worker.",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "landsd_label_tiles",
@@ -3095,7 +3095,7 @@
    "fetch": "browser",
    "notes": "VERIFIED 200, 256×256, 4,521 bytes, only 2.4% non-transparent pixels — the signature of a real transparent label overlay with actual text, not a blank tile. URL: /xyz/label/hk/{tc|en|sc}/{WGS84|HK80}/{z}/{x}/{y}.png. This is the source of the Hong Kong feel Cyrus asked for: official Hong Kong place names in Traditional Chinese, as a separate overlay layer on the basemap. Works on top of any basemap including the imagery tiles.",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "landsd_imagery_tiles",
@@ -3110,7 +3110,7 @@
    "fetch": "browser",
    "notes": "VERIFIED 200, 256×256, 183,355 bytes, ACAO=* — a real aerial image tile, keyless. URL: /xyz/imagery/{sr}/{z}/{x}/{y}.png, z0-20 WGS84. LandsD's own aerial photo and satellite imagery, so a keyless satellite basemap exists without Esri — though Esri World_Imagery (also keyless, verified) remains a good alternative or blend. Copyright covers Digital Aerial Photo and Digital Orthophoto.",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
    "id": "esri_world_imagery",
@@ -3140,7 +3140,7 @@
    "auth": "none",
    "cadence": "manual",
    "todo": false,
-   "notes": "NOT official open data: 17 Hong Kong live cameras plus 16 international 24/7 news channels (data/live_streams.json), split into region tabs that come from the file itself. Live state resolved at runtime via the hqdefault_live.jpg probe; off-air tiles say 現時無直播. Group 'live' rather than 'cameras' or 'news' because a wall of live video is neither a camera feed nor a news list, and putting it in either tab made that tab lie about its contents.",
+   "notes": "NOT official open data: 17 Hong Kong live cameras plus 16 international 24/7 news channels (data/live_streams.json), split into region tabs that come from the file itself. Live state resolved at runtime via the hqdefault_live.jpg probe; off-air tiles say 'not currently streaming'. Group 'live' rather than 'cameras' or 'news' because a wall of live video is neither a camera feed nor a news list, and putting it in either tab made that tab lie about its contents.",
    "kind": "custom",
    "fetch": "n/a",
    "cors_note": "瀏覽器直接 load YouTube 縮圖／embed，唔經 proxy",
@@ -3158,7 +3158,7 @@
    "todo": false,
    "fetch": "browser",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required",
    "notes": "290 zones, all Polygon, published by the Civil Aviation Department as the exact RFZ boundaries — this is the dataset the previous passes could not reach, because data.gov.hk and CSDI carry no RFZ layer and the only source is the eSUA notice map, which offers no export URL. So it is EXPORTED BY HAND and committed, the same shape as the other collector outputs: a human refreshes it, and cadence 'irregular' is the honest description of that. Each feature carries its own `fill`/`stroke`, so the publisher's styling draws the map and a restyle upstream needs no code change. MEASURED 2026-09-27: 3,083,323 bytes / 290 features. Properties are ENGLISH ONLY (name / effectiveDateTime / description2) — the popup labels the fields in the UI language and shows the publisher's values verbatim, because inventing a Chinese name for a regulated zone would create an official-sounding name that does not exist. Ranges: 'Cheung Sheung (Low-altitude Economy Regulatory Sandbox)' and 4 other sandbox zones (2025-2026) plus older police-post and Frontier Closed Area zones (2022)."
   },
   {
@@ -3173,8 +3173,8 @@
    "todo": false,
    "fetch": "browser",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
-   "notes": "CSDI, two official publishers in one file: 海事處 公眾貨物裝卸區 (120 berth polygons, MARDEP) and 民航處 機場進場限制區 (8 polygons, MARDEP). Collector output — see scripts/build_facilities.py. MEASURED 2026-09-27: 128 features, 134,075 bytes. WHY THESE TWO AND NOT MORE: every CSDI facility candidate was probed first. Public Piers (531) and Coordinates of ferry piers (74) carry exactly one attribute each - STRUCTURE_ = 'HP077', STOP_ID = '101101' - with no name, so 605 anonymous dots is visual noise rather than information, and they are deliberately not shipped. WHY THE LIVE BERTH VACANCY IS NOT HERE: the cargo-area service also returns a real-time berth vacancy flag (Vacant Y/N). This file is static, and a live flag baked into a committed snapshot is a stale number presented as current. The berths ship as durable infrastructure; live vacancy needs its own collector with a cadence and a timestamp."
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required",
+   "notes": "CSDI, two official publishers in one file: Marine Department public cargo working areas (120 berth polygons, MARDEP) and Civil Aviation Department airport approach-restriction areas (8 polygons, CAD). Collector output — see scripts/build_facilities.py. MEASURED 2026-09-27: 128 features, 134,075 bytes. WHY THESE TWO AND NOT MORE: every CSDI facility candidate was probed first. Public Piers (531) and Coordinates of ferry piers (74) carry exactly one attribute each - STRUCTURE_ = 'HP077', STOP_ID = '101101' - with no name, so 605 anonymous dots is visual noise rather than information, and they are deliberately not shipped. WHY THE LIVE BERTH VACANCY IS NOT HERE: the cargo-area service also returns a real-time berth vacancy flag (Vacant Y/N). This file is static, and a live flag baked into a committed snapshot is a stale number presented as current. The berths ship as durable infrastructure; live vacancy needs its own collector with a cadence and a timestamp."
   },
   {
    "id": "hk_facility_pins",
@@ -3188,8 +3188,8 @@
    "todo": false,
    "fetch": "browser",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
-   "notes": "CSDI 屋宇署 bd_rcd_1630980890272_70649 — 23 licensed oil storage installations, each a tank of 110,000 litres or more (Buildings Ordinance s.2(1)). Collector output, see scripts/build_facilities.py. MEASURED 2026-09-27: 23 features, 7,932 bytes; the publisher ships both languages, so every feature carries Name_tc/Name_en and Address_tc/Address_en and the popup follows the UI language. WHY THE ADDRESS IS THE HEAD: the dataset has no per-installation name — all 23 rows share the dataset title — so the address is the only field that tells one tank from another, and a popup with the same title on every pin answers nothing."
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required",
+   "notes": "CSDI Buildings Department bd_rcd_1630980890272_70649 — 23 licensed oil storage installations, each a tank of 110,000 litres or more (Buildings Ordinance s.2(1)). Collector output, see scripts/build_facilities.py. MEASURED 2026-09-27: 23 features, 7,932 bytes; the publisher ships both languages, so every feature carries Name_tc/Name_en and Address_tc/Address_en and the popup follows the UI language. WHY THE ADDRESS IS THE HEAD: the dataset has no per-installation name — all 23 rows share the dataset title — so the address is the only field that tells one tank from another, and a popup with the same title on every pin answers nothing."
   },
   {
    "id": "hk_berth_vacancy",
@@ -3203,7 +3203,7 @@
    "todo": false,
    "fetch": "browser",
    "cost": "free",
-   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required",
    "notes": "Live: MARDEP mardep_rcd_1638859086572_29125 via CSDI, collected by scripts/collect_berths.py and published to the `live-data` branch by scripts/live_cycle.sh. MEASURED 2026-09-28: 120 berths, 45,055 bytes, 27 vacant / 93 in use. WHY THIS IS A SEPARATE LAYER FROM hk_facility_areas: that one is static reference geometry — where the cargo working areas are, which does not change — while this one carries the `Vacant` flag, which changes hour to hour. Baking a live flag into a committed static snapshot is a stale number presented as current, so the live field gets its own file, its own cadence and its own timestamp. Every feature carries LastUpdate, not just a file header, because a reader who opens a popup should not have to trust that the file is fresh."
   },
   {

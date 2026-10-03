@@ -7,7 +7,9 @@ name: ai-brief
 # Cyrus 2026-10-01; he cut the proposed hourly cadence to this. Current shape:
 #
 #   frequency  2/day, 08:00 and 20:00 HKT (00:00 and 12:00 UTC)
-#   context    928 bytes measured - five files, the fields named in SOURCES
+#   context    1675 bytes measured 2026-10-03 - eleven inputs: the five files named in SOURCES
+#              plus six publishers' endpoints fetched server-side (Cyrus 2026-10-03: more data,
+#              more insight). The ceiling is 7 KB and the script fails the run above it.
 #   output     data/ai_summary.json, force-pushed to `live-data` like every other live file
 #   runtime    NO model call. The browser fetches a static JSON file; there is no key in the
 #              bundle and no per-visitor request to any LLM.
@@ -29,6 +31,11 @@ on:
     - cron: "0 0,12 * * *"
     - cron: "30 0,12 * * *"
   workflow_dispatch:
+    inputs:
+      force:
+        description: Regenerate even if the published brief is fresh (use after a prompt change)
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -47,7 +54,7 @@ jobs:
           CHATANYWHERE_API_KEY: ${{ secrets.CHATANYWHERE_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           HKCM_AI_MODEL: ${{ vars.HKCM_AI_MODEL }}
-        run: python3 scripts/build_ai_summary.py --skip-if-fresh 6 --out data/ai_summary.json
+        run: python3 scripts/build_ai_summary.py ${{ inputs.force && '--skip-if-fresh 0' || '--skip-if-fresh 6' }} --out data/ai_summary.json
 
       # THE BRANCH IS FORCE-PUSHED AS ONE ORPHAN COMMIT, so a file that is not named here is
       # DELETED from it. Calling publish_live.py with ai_summary.json alone would have taken the

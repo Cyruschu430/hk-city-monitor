@@ -34,8 +34,26 @@ function ent(s: string): string {
 }
 
 // --- time helpers -------------------------------------------------------------
+/**
+ * A datetime that carries no offset is Hong Kong time, and is attached here.
+ *
+ * `new Date("2026-05-13 09:30")` is parsed in the MACHINE's timezone, so the same
+ * ferry row produced 01:30Z on a +08 machine and 09:30Z on a UTC one, and the MTR
+ * `"2026-09-23 15:45:18"` stamps were eight hours out on any machine that is not in
+ * HKT. The CI runner (UTC) caught it; a developer in Hong Kong would not have.
+ * Every publisher's feed in this file means HKT, which the hkWallTime import above
+ * already promises, so the offset is added once here instead of at each call site.
+ *
+ * A date-only string ("2026-05-13") is left alone: JavaScript defines it as UTC
+ * midnight, and shifting it by +08:00 would move it to the previous day.
+ */
 function iso(s: string): Date | null {
-  const d = new Date(s);
+  let v = s.trim();
+  if (!/(?:Z|[+-]\d{2}:?\d{2})$/.test(v)) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/.exec(v);
+    if (m) v = `${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6] ?? "00"}+08:00`;
+  }
+  const d = new Date(v);
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
@@ -501,11 +519,10 @@ function stripCdata(s: string): string {
 
 /** A timestamp that is either ISO-with-offset (KMB: "2026-09-23T15:53:00+08:00")
     or bare local with no T and no timezone (MTR: "2026-09-23 15:45:18"). Both
-    shapes are MEASURED from the live payloads, not assumed. */
+    shapes are MEASURED from the live payloads, not assumed. `iso` attaches the
+    +08:00 that the bare shape leaves out. */
 function parseStamp(s: string | undefined | null): Date | null {
-  if (!s) return null;
-  const d = new Date(s.includes("T") ? s : s.replace(" ", "T"));
-  return Number.isNaN(d.getTime()) ? null : d;
+  return s ? iso(s) : null;
 }
 
 /** MTR destination codes → names. A code that is NOT in this table is shown AS

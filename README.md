@@ -209,6 +209,7 @@ CI runs the typecheck, the unit tests and both Python validators on every push t
 Key conventions:
 
 - **Verify against the real source.** A source is marked working only after a live probe returns the expected payload; `scripts/probe_sources.py` regenerates `SOURCES.md` from these results.
+- **Assume Hong Kong time, and prove it.** Several publishers ship timestamps with no timezone. `new Date()` parses those in the machine's own zone, so a parser bug of that kind is invisible in Hong Kong and shows up as an eight-hour error anywhere else. `TZ=UTC npm test` is the run that catches it.
 - **Verify the UI in the DOM, not from a screenshot.** Browser checks assert on rendered DOM state, because screenshots have previously misreported layout.
 - **Guard the request budget.** A cold load is measured against a fixed Worker-request budget so that adding a panel cannot silently exhaust the free-tier quota.
 - **Attribute everything.** Attribution is generated from `sources.json`; it is never hand-edited.

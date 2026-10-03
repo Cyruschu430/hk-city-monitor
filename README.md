@@ -1,62 +1,187 @@
-# HK City Monitor · 香港城市監察
+# HK City Monitor
 
-香港本土實時態勢儀表板。**全開源（AGPL-3.0）**。
+**A real-time situational-awareness dashboard for Hong Kong — one map, many open data sources, no API keys.**
 
-一版睇齊香港：官方交通快拍、天文台天氣攝影機、天氣警告、口岸情況、飛機、船隻、交通、
-停車場、康文署設施同活動、市場數據 —— 全部公開數據，可以 filter 到香港範圍嘅就接入嚟。
+[Live deployment](https://hk-city-monitor.pages.dev) · [Data sources](SOURCES.md) · [Attribution](ATTRIBUTION.md) · [Security](SECURITY.md) · [Self-hosting](SELF_HOSTING.md) · [Technical specification](TECH_SPEC.md)
 
-> **宗旨：數據嘅廣泛性、開放性、公開度 —— OSINT 就係要推動呢樣嘢。**
-> 每個數字都連得返去源頭，用戶可以自己驗證。
+---
 
-參考架構：[World Monitor](https://github.com/koala73/worldmonitor)（AGPL-3.0）。
-本項目係獨立項目，**唔係** World Monitor 官方產品，亦同香港特區政府（包括其「AI城市大腦」
-計劃）**無任何關係**。
+## Overview
 
-## 現況
+HK City Monitor is an open-source, browser-based dashboard that consolidates Hong Kong's public open data into a single live map. Traffic cameras, weather observations, transport schedules, border-crossing wait times, aircraft positions, market indices and civic-service data are rendered onto one MapLibre / deck.gl surface, with every reading traceable to its publisher.
 
-v0.2 已經上線：**https://hk-city-monitor.pages.dev**
+The application is fully static. There is no database, no user account and no API key in the shipped bundle. Sources that a browser cannot read directly — because the publisher sends no permissive `Access-Control-Allow-Origin` header — are routed through a single whitelist-limited Cloudflare Worker proxy.
 
-一版睇齊：交通快拍相機牆（運輸署 1,013 + 天文台 34）、天氣警告、颱風路徑、口岸輪候時間、
-航班（社群 ADS-B）、船隻（AIS）、港鐵／巴士到站、停車場空位、急症室輪候、空氣質素、
-延遲市場報價、YouTube 直播牆 —— 全部免 API key，逐項可溯源。
+The goal is a *verifiable* picture of the territory: a reader should be able to click any number and reach the government or institutional page it came from.
 
-## 文件
+## Objectives
 
-| 檔案 | 內容 |
+The project is built around a single principle: **OSINT depends on breadth, openness and publicness.**
+
+- **Breadth** — if a free, public, Hong Kong-filterable source exists, it is integrated. The question is never "is this useful" but "is this real data".
+- **Openness** — every source is documented in this repository with its endpoint, update cadence, key requirement and licence. There are no hidden sources.
+- **Publicness** — every figure links back to its origin, so a reader can verify it independently instead of trusting the dashboard.
+- **A hard boundary** — "open" applies to *data*. The project publishes no unverified allegations about individuals, performs no person-tracking and stores no personal data. See [SECURITY.md](SECURITY.md).
+
+### Non-goals
+
+- HK City Monitor is **not** part of any government system and is **not** affiliated with the HKSAR Government. It does not use the name 「AI城市大腦」 (an official programme announced in the 2026 Policy Address) as a product name, to avoid any implication of official status.
+- It does not ingest non-public data (internal departmental sensors, private back-ends).
+- It does not compute or display unverified inference scores; panels show traceable raw observations only.
+
+## Features
+
+Data is organised into **panels** (individual readouts) that appear in context-specific **verticals** (pre-arranged views for a scenario, such as typhoon mode). The current build ships 24 panels.
+
+**Live imagery**
+- Transport Department traffic snapshots (1,013 cameras, ~2-minute cadence)
+- Hong Kong Observatory weather cameras (34 stations, ~5-minute cadence)
+- Camera wall and embedded television news streams
+
+**Weather and environment**
+- Weather warnings, current conditions and the 9-day forecast
+- Weather radar and satellite imagery
+- Air Quality Health Index (per-station, plus a 24-hour history)
+- Rainfall nowcast and tide/radiation/earthquake feeds
+
+**Transport**
+- Driving-speed indication and special traffic news
+- Carpark vacancy
+- Bus ETA (KMB / CTB) and MTR next-train
+- Public-transport routes and fares
+
+**Border and civic services**
+- Land boundary control-point waiting times (Security Bureau)
+- Accident & Emergency waiting times
+- Water-suspension notices, LCSD bookable-session availability, AED locations
+
+**Aviation, marine and markets**
+- Live aircraft positions (community ADS-B, multiple independent mirrors) and airport flight information
+- Vessel arrivals/departures and berth vacancy
+- Hong Kong and global market indices
+
+**Spatial base**
+- CSDI vector layers, address lookup (ALS) and place-name search
+- 3D building models and terrain
+
+## Tech stack
+
+| Layer | Technology |
 |---|---|
-| `TECH_SPEC.md` | **已實測數據源清單**（endpoint、更新頻率、要唔要 key、狀態 🟢🟡🔴）＋ 法律界線 |
-| `SOURCES.md` | 全部數據源目錄（由 `scripts/probe_sources.py` 自動生成） |
-| `SECURITY.md` | 公開專案安全規範 |
-| `SELF_HOSTING.md` | 自架指南（fork 自己出一份） |
+| Front end | TypeScript, Vite 7 |
+| Map rendering | MapLibre GL JS, deck.gl 9 (2D and 3D) |
+| 3D tiles | `@loaders.gl/3d-tiles` |
+| Edge proxy | Cloudflare Worker (single, whitelist-limited) |
+| Static hosting | Cloudflare Pages |
+| Scheduling | GitHub Actions / host cron (optional live collectors) |
+| Browser tests | Playwright (Chromium) |
 
-## 快速開始
+There is deliberately no application server, database or ORM. The only server-side component is the edge proxy, which exists solely to add CORS headers and keep any future credentials out of the client.
 
-```bash
-# 1. 重建相機資料（官方清單 → 靜態 JSON）
-python3 scripts/build_cameras.py
+## Architecture
 
-# 2. 睇 v0.1 原型（任何靜態伺服器）
-python3 -m http.server 8000
+```
+                    ┌──────────────────────────────────────────┐
+  Browser  ───────► │  Static bundle (Cloudflare Pages)        │
+                    │  MapLibre + deck.gl, panels, verticals   │
+                    └───────────────┬──────────────────────────┘
+                                    │
+        ┌───────────────────────────┼─────────────────────────────┐
+        │                           │                             │
+  Direct fetch                Edge proxy (Worker)          Static live data
+  (publisher sends            (publisher has no CORS;      (high-frequency feeds
+   ACAO: *)                    whitelist + rate limit)      pre-published as JSON)
+        │                           │                             │
+        ▼                           ▼                             ▼
+   Government /               Government /                  GitHub raw branch /
+   institutional APIs         institutional APIs            static host
 ```
 
-v0.2 應用程式喺 `web/`（Vite + TypeScript）。開發：
+**Contract:** collectors always emit static JSON and the front end only ever reads JSON. Adding a data source means adding one collector and one panel; the core rendering logic does not change.
 
-```bash
-cd web && npm install && npm run dev
+## Repository layout
+
+```
+.
+├── web/                    Front-end application (TypeScript + Vite)
+│   ├── src/
+│   │   ├── data/           Panel and vertical definitions
+│   │   ├── lib/            Parsers, adapters, formatting, rendering helpers
+│   │   ├── map/            Map layers, symbols, popups, 3D overlays
+│   │   ├── styles/         Application CSS
+│   │   └── ui/             Panel and status-bar components
+│   └── test/               Browser checks (Playwright)
+├── worker/                 Cloudflare Worker edge proxy (whitelist + rate limit)
+├── scripts/                Collectors, builders, probes and validators (Python / Node)
+├── data/                   Static snapshots and generated registries
+├── docs/                   Project landing page (GitHub Pages)
+├── sources.json            Source registry — the single source of truth for data sources
+├── SOURCES.md              Generated source catalogue (do not edit by hand)
+├── ATTRIBUTION.md          Generated attribution list (do not edit by hand)
+├── TECH_SPEC.md            Technical and data-source specification
+├── SECURITY.md             Security policy and threat model
+└── SELF_HOSTING.md         Deployment guide
 ```
 
-## 數據來源
+## Getting started
 
-所有數據來自香港政府及其他公開來源。請參閱 `TECH_SPEC.md` 逐項列出嘅出處、
-更新頻率同授權。**本項目唔轉載媒體內容**，新聞只出標題同連結。
+Requires **Node 22+**.
 
-- 運輸署 交通快拍圖像（[DATA.GOV.HK](https://data.gov.hk/tc-data/dataset/hk-td-tis_2-traffic-snapshot-images)）
-- 香港天文台 天氣攝影機及[開放數據 API](https://data.weather.gov.hk/weatherAPI/doc/HKO_Open_Data_API_Documentation_tc.pdf)
-- 地形圖底圖及地名標籤：**地圖來自地政總署**（Lands Department）· 航拍影像：地政總署
-- 三維數碼地圖：地政總署 · 全球影像底圖（備選）：Esri World Imagery
-- 其他底圖備選 © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors · © [CARTO](https://carto.com/attributions)
+```bash
+git clone https://github.com/Cyruschu430/hk-city-monitor.git
+cd hk-city-monitor/web
+npm ci
+npm run build
+npx vite preview --host 127.0.0.1 --port 4173
+```
 
-## 授權
+This runs the front end against direct-fetch sources only. Around half of the panels load this way; the remainder are proxy-backed and display an explicit error state until the Worker is deployed. See [SELF_HOSTING.md](SELF_HOSTING.md) for the full procedure, including the Worker and the optional live collectors.
 
-AGPL-3.0-only。基於 [World Monitor](https://github.com/koala73/worldmonitor)（作者 Elie Habib）
-嘅架構概念建立；本項目使用獨立品牌。
+## Development workflow
+
+The project follows a spec-driven workflow: sources are validated with a real network request before a panel is built, and a change is not considered complete until it is verified by a runnable check.
+
+```bash
+cd web
+npm run typecheck        # TypeScript, 0 errors expected
+npm run check:all        # 9 checks (needs a preview server on 127.0.0.1:4173)
+python3 scripts/validate_config.py
+```
+
+Key conventions:
+
+- **Verify against the real source.** A source is marked working only after a live probe returns the expected payload; `scripts/probe_sources.py` regenerates `SOURCES.md` from these results.
+- **Verify the UI in the DOM, not from a screenshot.** Browser checks assert on rendered DOM state, because screenshots have previously misreported layout.
+- **Guard the request budget.** A cold load is measured against a fixed Worker-request budget so that adding a panel cannot silently exhaust the free-tier quota.
+- **Attribute everything.** Attribution is generated from `sources.json`; it is never hand-edited.
+
+## Roadmap
+
+Delivered:
+
+- **v0.1** — static map, Transport Department and Observatory cameras, weather warnings, market panels, camera wall, live streams.
+- **v0.2** — design-system rewrite, full-screen map with floating panels, focus drawer, staleness states, clustering, keyboard control.
+
+Planned:
+
+- **v0.3 — global free layers.** Aircraft (community ADS-B), earthquakes (USGS), natural events (NASA EONET), traffic speed, special traffic news, carpark vacancy, bus/minibus/ferry ETA, AQHI, radar and satellite imagery.
+- **v0.3.5 — civic services.** Border wait times, A&E waiting times, water-suspension notices, LCSD bookable sessions, AED locations, cross-border ferry arrivals.
+- **v0.4 — persistent-connection collectors.** AIS vessel tracking (subject to a measured coverage test), event NLP layer.
+- **v0.5 — 3D and variants.** Globe ↔ city view, CSDI 3D buildings, timeline scrubber, thematic variants (transport / weather / market).
+- **v1.0 — platform.** Programmatic access (MCP/REST API for agents), desktop shell, full variant set, and an offline snapshot mode.
+
+## Data sources
+
+Every source is declared in [`sources.json`](sources.json) and probed against the live network. The generated catalogue — endpoint, publisher, update cadence, key requirement, licence and last probe result — is in [`SOURCES.md`](SOURCES.md). Publisher attribution obligations are listed in [`ATTRIBUTION.md`](ATTRIBUTION.md).
+
+Sources are predominantly Hong Kong Government open data (data.gov.hk, CSDI) and institutional feeds (the Observatory, the Airport Authority, the Consumer Council), supplemented by community and global open APIs filtered to the Hong Kong bounding box.
+
+## Licensing and attribution
+
+- Source code is licensed under **AGPL-3.0-only**.
+- Data remains the property of its publishers; attribution is mandatory and is rendered on the map and in panel footers.
+- The project is **not affiliated with, endorsed by, or part of the HKSAR Government**.
+
+## Credits
+
+Created and maintained by Cyrus Chu, a Hong Kong GIS practitioner. Architecture is inspired by [`koala73/worldmonitor`](https://github.com/koala73/worldmonitor) (AGPL-3.0); this project is an independent Hong Kong implementation.

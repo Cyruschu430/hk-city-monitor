@@ -1,134 +1,132 @@
-# Self-hosting HK City Monitor
+# Self-Hosting Guide
 
-The whole thing is **a static bundle, one Cloudflare Worker, and a git branch**. There is no
-database, no user system, and no API key anywhere in the shipped code — so self-hosting is
-mostly copying three values into a `.env` and pointing them at your own accounts.
+HK City Monitor consists of a static bundle, a single Cloudflare Worker and a git branch. There is
+no database, no user system and no API key in the shipped code, so self-hosting amounts to building
+the bundle, deploying the Worker and pointing a small number of configuration values at your own
+accounts.
 
-Everything below was last run on 2026-09-28 on the maintainer's machine. Numbers are measured,
-not estimated; where a number is a property of YOUR deployment, it says so.
+Figures below were measured on 2026-09-28. Measured values are labelled as such; where a value is a
+property of your own deployment, this is stated explicitly.
 
-## What you need
+## Requirements
 
-| Piece | Required? | What it costs | Host runs it |
+| Component | Required | Cost | Runs on |
 |---|---|---|---|
-| Node 22+ | yes | — | your machine / CI |
-| The built bundle (`web/dist`) | yes | — | any static host |
-| Cloudflare Worker | to see the full source set | free plan, no card | Cloudflare |
-| Cloudflare Pages | to publish | free plan, unlimited requests | Cloudflare |
-| The live collectors | optional | free | any host with outbound network |
+| Node 22+ | Yes | — | Your machine / CI |
+| Built bundle (`web/dist`) | Yes | — | Any static host |
+| Cloudflare Worker | To see the full source set | Free plan, no card | Cloudflare |
+| Cloudflare Pages | To publish | Free plan, unlimited requests | Cloudflare |
+| Live collectors | Optional | Free | Any host with outbound network |
 
-## 1. The 5-command version (no accounts, no Worker)
+The source registry declares 180 sources; the Worker proxies those that cannot be read directly by
+a browser, with an allow-list of 67 hosts.
+
+## 1. Minimal setup (no accounts, no Worker)
 
 ```bash
-git clone <this repo> && cd <repo>/web
+git clone https://github.com/Cyruschu430/hk-city-monitor.git
+cd hk-city-monitor/web
 npm ci
 npm run build
 npx vite preview --host 127.0.0.1 --port 4173
 ```
 
-**MEASURED: 13 of the 24 panels work like this.** They are `analysis_brief`, `live_wall`,
-`warnings_list`, `special_traffic_list`, `cameras_wall`, `water_suspension_list`,
-`ae_waiting_grid`, `aqhi_gauge_grid`, `carpark_vacancy_list`, `stations_status`,
-`mtr_next_train_list`, `kmb_eta_table`, `aircraft_status`.
+Panels whose publishers send a permissive CORS header load directly and work with no further setup.
+The remainder are proxy-backed: without the Worker they display an explicit error state
+("unable to read data — Worker proxy required"). This is deliberate — a panel that cannot load says
+so, rather than rendering an empty box.
 
-The other 11 are **proxy-backed**: their publishers send no `access-control-allow-origin`, so a
-browser cannot read them and they need the Worker. Without it they show their error state —
-"未能讀取數據 — 需要 Worker 代理" — which is deliberate: a panel that cannot load says so
-instead of rendering an empty box.
-
-## 2. Full source set: deploy the Worker
+## 2. Full source set (deploy the Worker)
 
 ```bash
 cd worker
-npx wrangler login          # free Cloudflare account; enable the project, then delete the key
-npx wrangler deploy         # prints https://<name>.<you>.workers.dev
-curl "https://<name>.<you>.workers.dev/health"   # {"ok":true,"version":"0.2.0","whitelistHosts":67}
+npx wrangler login          # free Cloudflare account; revoke the session key afterwards
+npx wrangler deploy         # prints https://<name>.<account>.workers.dev
+curl "https://<name>.<account>.workers.dev/health"
+# {"ok":true,"version":"0.2.0","whitelistHosts":67}
 ```
 
 Then point the front end at it and **rebuild**:
 
 ```bash
 cd ../web && cp .env.example .env
-# VITE_WORKER_BASE=https://<name>.<you>.workers.dev
+# set VITE_WORKER_BASE=https://<name>.<account>.workers.dev
 npm run build
 ```
 
-⚠️ **`VITE_WORKER_BASE` is BUILD-TIME.** Vite inlines it; the same bundle cannot switch
-backends at runtime. Forgetting it does not error — the 11 proxy panels silently fall back to
-their error state, and `data/build-manifest.json` is the only place that records what the build
-used (`tilesVia`). This trap has already cost this project a round of debugging.
+`VITE_WORKER_BASE` is a **build-time** value. Vite inlines it, so the same bundle cannot switch
+backends at runtime. If it is omitted, no error is raised — the proxy-backed panels simply fall back
+to their error state. `data/build-manifest.json` is the only record of the backend a build used.
 
-The Worker is a **whitelist** proxy: it refuses any host that is not in `sources.json`
-(`whitelist.generated.js`, 67 hosts), refuses `http://` and credentials-in-URL, and rate-limits
-per IP. Measured against the deployed instance: 15 of 15 refusal cases pass
-(`node test/probe-worker-security.mjs <your worker url>`). It is not an open relay — verify that
-on YOUR deployment before you rely on it.
+The Worker is a whitelist proxy. It refuses any host not listed in `sources.json`
+(`worker/src/whitelist.generated.js`), refuses `http://` and credentials embedded in a URL, and
+rate-limits per IP. It is not an open relay; verify this against your own deployment with
+`node worker/test/probe-worker-security.mjs <your worker url>` before relying on it.
 
-## 3. Live files (optional, and the one non-obvious trap)
+## 3. Live data files (optional)
 
-Three files change every few minutes and cannot come from the bundle: aircraft (ADS-B), berth
-vacancy (MARDEP via CSDI) and water suspension (WSD). `scripts/live_cycle.sh` collects them and
-`scripts/publish_live.py` force-pushes them as **one orphan commit** to a `live-data` branch,
-which the browser reads from `raw.githubusercontent.com` (`access-control-allow-origin: *`, no
-key, no build).
+Three feeds change every few minutes and cannot be served from the bundle: aircraft positions
+(ADS-B), berth vacancy (MARDEP via CSDI) and water-suspension notices (WSD). `scripts/live_cycle.sh`
+collects them, and `scripts/publish_live.py` force-publishes them as a single orphan commit to a
+`live-data` branch. The browser reads that branch from `raw.githubusercontent.com`, which sends
+`Access-Control-Allow-Origin: *` — no key and no build required.
 
-🔴 **A fork must set `VITE_LIVE_BASE`.** The built-in default names THIS project's branch.
-Reading someone else's live data does not announce itself — the payload is well-formed and the
-timestamps are real, they are simply not yours:
+**A fork must set `VITE_LIVE_BASE`.** The built-in default names this project's branch. Reading
+another project's live data is not self-evident: the payload is well-formed and the timestamps are
+real, they simply belong to a different deployment.
 
 ```
-VITE_LIVE_BASE=https://raw.githubusercontent.com/<you>/<repo>/<live-branch>
+VITE_LIVE_BASE=https://raw.githubusercontent.com/<owner>/<repo>/<live-branch>
 ```
 
-Leave it unset and the app reads the committed snapshots instead. The panels then age to amber
-on their own, because every payload carries the publisher's own timestamp — which is the honest
-outcome, not a broken one.
+If it is left unset, the application reads the committed snapshots instead. The affected panels then
+age to their stale state on their own, because every payload carries the publisher's own timestamp.
 
-Running your own collectors needs one thing this repo cannot ship: **a push credential on the
-collector host** (this project uses a repo-scoped deploy key, so a compromised host can write
-exactly one public repo). `HKCM_REMOTE` selects it. Collection is outbound-only; nothing listens.
+Running your own collectors requires one thing this repository cannot ship: a push credential on the
+collector host. This project uses a repository-scoped deploy key, so a compromised collector can
+write to exactly one public repository. `HKCM_REMOTE` selects the remote. Collection is outbound
+only; nothing listens for inbound traffic.
 
-## 4. Publish
+## 4. Publishing
 
-The bundle is static, so any host works. This project uses **Cloudflare Pages** because its free
-tier allows commercial use and unlimited requests, and because going over the Worker's
-100,000 requests/day limit **fails** rather than bills.
+The bundle is static, so any host works. This project uses Cloudflare Pages because its free tier
+permits commercial use and serves unlimited requests, and because exceeding the Worker's 100,000
+requests/day limit fails closed rather than producing a bill.
 
 ```bash
 cd web && npm run build
 npx wrangler pages deploy dist --project-name=<your project> --branch=main
 ```
 
-**MEASURED cold-load cost: 21 Worker requests** (budget 34, see `npm run check:quota`), so one
-visitor costs 1/4,761 of the daily allowance. That number is a property of the source registry;
-re-measure it after adding panels.
+The measured cold-load cost is 26 Worker requests (budget 34, see `npm run check:quota`), so one
+visitor consumes roughly 1/3,846 of the daily allowance. That figure is a property of the source
+registry; re-measure it after adding panels.
 
-## 5. Verify a change before you believe it
+## 5. Verifying a change
 
 ```bash
 cd web
-npm run typecheck                 # 0 errors
+npm run typecheck                 # TypeScript, 0 errors expected
 npm run check:all                 # 9 checks; needs a preview on 127.0.0.1:4173 first
 python3 scripts/validate_config.py
 ```
 
-The browser checks need a Chromium. They default to the maintainer's Windows path, so on any
-other machine set `CHROME_PATH` (and `HKCM_CHROME` for the older ones):
+The browser checks require Chromium. They default to the maintainer's Windows path, so on any other
+machine set `CHROME_PATH` (and `HKCM_CHROME` for the older checks):
 
 ```bash
 CHROME_PATH=/usr/bin/chromium npm run check:all
 ```
 
-A claim about the UI is verified **in the DOM**, never from a screenshot — screenshots have
-already called a two-column grid single-column, reported a fixed build as still broken, and made
-a correct light theme look dark.
+Claims about the interface are verified in the DOM, never from a screenshot — screenshots have
+previously misreported a two-column grid as single-column and a correct light theme as dark.
 
 ## Non-negotiables
 
-- **No keys in the front end, ever.** A key that must exist lives on a server-side collector or
-  in the Worker's environment, never in the bundle.
-- **AGPL-3.0.** A fork that you serve to others stays AGPL-3.0. `ATTRIBUTION.md` is generated by
-  `scripts/build_attribution.py` from `sources.json` — never hand-edit it.
-- **Attribution is mandatory** on the map face (the LandsD logo) and in the panel footers.
-- This project is **not affiliated with the HKSAR Government** and is **not** part of its
-  「AI城市大腦」 programme. Never imply official status.
+- **No credentials in the front end, ever.** A required key lives in the Worker's environment or on
+  a server-side collector, never in the bundle.
+- **AGPL-3.0.** A fork that you serve to others must remain under AGPL-3.0. `ATTRIBUTION.md` is
+  generated by `scripts/build_attribution.py` from `sources.json` and must not be hand-edited.
+- **Attribution is mandatory** on the map face and in every panel footer.
+- **No implied official status.** This project is not affiliated with the HKSAR Government and is
+  not part of its 「AI城市大腦」 programme.

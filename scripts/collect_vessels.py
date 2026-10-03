@@ -17,7 +17,7 @@ the schedule reports a failure instead of the map quietly going blank.
 
 Env: VESSELAPI_KEY. Out: data/vessels.json
 """
-import json, os, sys, urllib.request
+import json, os, sys, urllib.error, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "data", "vessels.json")
@@ -56,6 +56,11 @@ def main():
             token = payload.get("nextToken")
             if not token:
                 break
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", "replace")
+        print(f"FAIL HTTP {exc.code} {exc.reason}: {body[:600]}", file=sys.stderr)
+        print("FAIL kept the previous vessels.json", file=sys.stderr)
+        return 1
     except Exception as exc:                                     # noqa: BLE001 - reported below
         print(f"FAIL {exc}", file=sys.stderr)
         print("FAIL kept the previous vessels.json", file=sys.stderr)

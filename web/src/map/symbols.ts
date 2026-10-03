@@ -124,10 +124,52 @@ const S = 44; // icon box; map icons are drawn at 44px and scaled by icon-size
 
 /** Ink for glyphs that sit on a coloured disc (dark reads best on cyan/violet). */
 function stroke(ctx: CanvasRenderingContext2D) {
-  ctx.strokeStyle = "rgba(6,10,18,.92)";
-  ctx.lineWidth = 2.4;
+  ctx.strokeStyle = "rgba(6,10,18,.9)";
+  ctx.lineWidth = 2.2;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
+}
+
+// --- colour helpers (hex → rgb / rgba / lighten) -------------------------------
+function hexRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+function rgba(hex: string, a: number): string {
+  const [r, g, b] = hexRgb(hex);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function lighten(hex: string, amt: number): string {
+  const [r, g, b] = hexRgb(hex);
+  const f = (v: number) => Math.round(v + (255 - v) * amt);
+  return `rgb(${f(r)},${f(g)},${f(b)})`;
+}
+
+/** A luminous, top-lit disc behind an agency glyph. The "old school" look was a flat
+    circle with a hard dark border; this reads as a glowing orb (the app's glow/glass
+    aesthetic) while the glyph's dark ink stays as a cut-out on top. Used by both the
+    map (`renderGlyph`) and the legend (`drawGlyphInto`) so the two can never drift. */
+function drawDisc(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, color: string): void {
+  // soft outer glow
+  const glow = ctx.createRadialGradient(x, y, r * 0.5, x, y, r * 1.9);
+  glow.addColorStop(0, rgba(color, 0.32));
+  glow.addColorStop(1, rgba(color, 0));
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(x, y, r * 1.9, 0, Math.PI * 2);
+  ctx.fill();
+  // disc: light falls from the top-left, base colour at the rim
+  const disc = ctx.createRadialGradient(x - r * 0.35, y - r * 0.42, r * 0.12, x, y, r);
+  disc.addColorStop(0, lighten(color, 0.5));
+  disc.addColorStop(1, color);
+  ctx.fillStyle = disc;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  // thin light rim, replacing the hard dark outline
+  ctx.strokeStyle = rgba("#ffffff", 0.22);
+  ctx.lineWidth = 1;
+  ctx.stroke();
 }
 
 /** CCTV camera: a body wedge on a bracket, lens pointing right. */
@@ -683,17 +725,7 @@ function renderGlyph(id: GlyphId, scale = 2): ImageData {
   if (!ctx) throw new Error("canvas 2d unavailable for map glyphs");
   ctx.scale(scale, scale);
   if (spec.disc) {
-    // Solid agency-coloured disc + thin dark edge: the symbol stays legible on
-    // both the dark topo and the bright aerial basemap, and the colour encodes
-    // the agency (cyan = 運輸署, violet = 天文台).
-    const c = S / 2;
-    ctx.beginPath();
-    ctx.arc(c, c, c - 3, 0, Math.PI * 2);
-    ctx.fillStyle = spec.disc;
-    ctx.fill();
-    ctx.lineWidth = 1.6;
-    ctx.strokeStyle = "rgba(6,10,18,.9)";
-    ctx.stroke();
+    drawDisc(ctx, S / 2, S / 2, S / 2 - 3, spec.disc);
     spec.draw(ctx, S * 0.82);
   } else {
     spec.draw(ctx, S);
@@ -726,14 +758,7 @@ export function drawGlyphInto(canvas: HTMLCanvasElement, id: GlyphId, size = 16)
   const k = (size * scale) / S;
   ctx.scale(k, k);
   if (spec.disc) {
-    const c = S / 2;
-    ctx.beginPath();
-    ctx.arc(c, c, c - 3, 0, Math.PI * 2);
-    ctx.fillStyle = spec.disc;
-    ctx.fill();
-    ctx.lineWidth = 1.6;
-    ctx.strokeStyle = "rgba(6,10,18,.9)";
-    ctx.stroke();
+    drawDisc(ctx, S / 2, S / 2, S / 2 - 3, spec.disc);
     spec.draw(ctx, S * 0.82);
   } else {
     spec.draw(ctx, S);

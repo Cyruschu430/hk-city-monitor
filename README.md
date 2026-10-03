@@ -8,6 +8,10 @@
 
 ---
 
+![HK City Monitor in use — scenario modes, the ⌘K command palette and the city brief](.github/assets/demo.gif)
+
+*The dashboard in use: switching scenario modes, jumping through the keyboard palette and reading the city brief. [Full 1:24 demo (MP4, 94 MB)](https://github.com/Cyruschu430/hk-city-monitor/releases/download/v0.2.0/hk-city-monitor-demo.mp4).*
+
 ## Overview
 
 HK City Monitor is an open-source, browser-based dashboard that consolidates Hong Kong's public open data into a single live map. Traffic cameras, weather observations, transport schedules, border-crossing wait times, aircraft positions, market indices and civic-service data are rendered onto one MapLibre / deck.gl surface, with every reading traceable to its publisher.
@@ -15,6 +19,37 @@ HK City Monitor is an open-source, browser-based dashboard that consolidates Hon
 The application is fully static. There is no database, no user account and no API key in the shipped bundle. Sources that a browser cannot read directly — because the publisher sends no permissive `Access-Control-Allow-Origin` header — are routed through a single whitelist-limited Cloudflare Worker proxy.
 
 The goal is a *verifiable* picture of the territory: a reader should be able to click any number and reach the government or institutional page it came from.
+
+## Highlights
+
+### Ten scenario modes, each answering one question
+
+The same map and the same 180 sources, rearranged around one concrete question at a time — so the dashboard answers something instead of showing everything:
+
+| Mode | The question it answers |
+| --- | --- |
+| Typhoon | Will signal 8 be hoisted, and will my flight leave tomorrow? |
+| Border Crossing | How long is the queue at the control point right now? |
+| Water Suspension | Is my district under a water suspension, and when does it end? |
+| Weather | Will it rain today, and do I need an umbrella? |
+| Traffic | Which road is jammed, and when is the next train? |
+| Drone | Can I fly now, where is it windy, and where is it banned? |
+| Freight | Is freight and logistics moving right now? |
+| Health | How long is the A&E wait, and where is the nearest AED? |
+| Civic | Any water suspension, parking or bad air in my district? |
+| Live | What is happening in Hong Kong right now? |
+
+Modes are data, not code: `data/verticals.json` decides which modes exist, and which panels and layers each one shows.
+
+### ⌘K — jump to anything
+
+Press **Ctrl-K** or **⌘K** to search every mode, every panel and every map camera by name, in the current language, and go straight there. The whole dashboard becomes reachable from the keyboard without learning the layout first.
+
+### A city brief written twice a day from the live feeds
+
+A scheduled GitHub Action assembles **eleven live feeds** — aircraft positions, berth vacancy, water-suspension notices, carpark occupancy, baselines, A&E waiting times, control-point queues, the AQHI, 10-minute wind and the warning summary — trims them to a context under 7 KB, and asks a free LLM for one short bilingual brief at 08:00 and 20:00 HKT.
+
+The browser makes **no model calls**: the brief is a static JSON file, fetched like any other panel. The model is not permitted to compute anything — the figures arrive under their publishers' own field names with their own timestamps, the prompt forbids arithmetic and inference, and the panel prints the model id, its inputs and the generation time. Deciding that something is *wrong* stays with the deterministic rule engine, never the model.
 
 ## Objectives
 
@@ -33,7 +68,7 @@ The project is built around a single principle: **OSINT depends on breadth, open
 
 ## Features
 
-Data is organised into **panels** (individual readouts) that appear in context-specific **verticals** (pre-arranged views for a scenario, such as typhoon mode). The current build ships 24 panels.
+Data is organised into **panels** (individual readouts) that appear in context-specific **verticals** (pre-arranged views for a scenario, such as typhoon mode). The current build ships 25 panels.
 
 **Live imagery**
 - Transport Department traffic snapshots (1,013 cameras, ~2-minute cadence)

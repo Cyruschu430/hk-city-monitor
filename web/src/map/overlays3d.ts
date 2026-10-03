@@ -50,7 +50,15 @@ async function build(map: maplibregl.Map): Promise<Overlay3d> {
     pickable: false,
   });
 
-  const overlay = new MapboxOverlay({ interleaved: true, layers: [layer] });
+  const overlay = new MapboxOverlay({
+    interleaved: true,
+    layers: [layer],
+    // Force WebGL, not luma's default "best-available" (which probes WebGPU first):
+    // a WebGPU requestAdapter({powerPreference}) on Windows Chrome logs the
+    // "powerPreference option is currently ignored" warning on every 3D toggle,
+    // and interleaved mode shares MapLibre's WebGL context regardless.
+    deviceProps: { type: "webgl" },
+  });
   map.addControl(overlay as unknown as maplibregl.IControl);
   // QA/debug hooks: the harness asserts the overlay is present, empty when
   // "off", and repopulated when "on" again — i.e. the 3D really is an

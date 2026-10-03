@@ -269,21 +269,6 @@
         "scope": "hk"
       },
       "_comment": "AIS vessel positions from VesselAPI, a 6-hourly snapshot (not live — aisstream.io went silent 2026-08 and blocks datacenter egress). Same pointLayer path as aircraft: `symbol: vessel` plus a per-feature icon-rotate on `bearing` (COG, falling back to heading). OFF by default for the same reason aircraft is: a moving layer nobody asked for is a layer on every reader's map."
-    },
-    {
-      "id": "berth_vacancy",
-      "source": "hk_berth_vacancy",
-      "render": "list",
-      "geom": "polygon",
-      "title": {
-        "tc": "泊位空缺（實時）",
-        "en": "Berth vacancy (live)"
-      },
-      "popup": "facility_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "Live berth vacancy at the public cargo working areas. Polygon, like hk_facility_areas and for the same reason: the publisher draws each berth AS this boundary. This is the layer that makes 貨運模式 answer a question about NOW rather than about where things are — 27 vacant of 120, and the popup carries the collection time so a stale reading cannot pass as a live one. OFF by default, and it is the one facility layer that would be defensible ON: it is small, and it is the only live signal in the mode."
     }
   ]
 }

@@ -179,7 +179,7 @@ try {
     const ctrl = document.querySelector(".maplibregl-ctrl-attrib");
     return { badge: badge?.textContent?.trim() ?? null, ctrl: ctrl?.textContent?.trim() ?? null };
   });
-  check("標註：地圖面有「Map from Lands Department 地政總署」", (attrib.badge ?? "").includes("Lands Department"),
+  check("標註：地圖面有 LandsD 版權提示", (attrib.badge ?? "").includes("Lands Department") || (attrib.badge ?? "").includes("地圖由地政總署提供"),
     `badge="${attrib.badge}" ctrl="${attrib.ctrl}"`);
 
   // --- 2b. the app must land on 總覽 BY ITSELF --------------------------------

@@ -157,49 +157,21 @@ export function createStatusBar(root: HTMLElement): StatusBar {
   // belongs with the chrome rather than in a panel — and the line it joins is already the
   // one that says where everything else came from.
   const coverEl = h("span", { class: "cover-text" });
-  // The coverage line ends with the author and a link to the source. Cyrus asked for his GitHub
-  // here specifically (2026-10-01) — this project is his portfolio, and a reader who wants to
-  // check a claim should not have to guess where the code is.
-  const creditsEl = h(
-    "a",
-    {
-      class: "credits",
-      href: "https://github.com/Cyruschu430/hk-city-monitor",
-      target: "_blank",
-      rel: "noopener noreferrer",
-      title: lang() === "tc" ? "作者 · GitHub" : "Author · GitHub",
-    },
-    lang() === "tc" ? "由 Cyrus Chu 建立 · 資料 © 各發布者" : "Built by Cyrus Chu · data © the publishers",
-  );
-  // Cyrus asked for a GitHub button here ("here could insert a Github button to the repo
-  // maybe?? what do you think?") - yes: a labelled target beats an unlabelled link, and a reader
-  // checking a claim should see where the code lives. Quiet styling, so it does not compete with
-  // the data on the same line.
-  const repoBtn = h(
-    "a",
-    {
-      class: "gh-btn",
-      href: "https://github.com/Cyruschu430/hk-city-monitor",
-      target: "_blank",
-      rel: "noopener noreferrer",
-      title: lang() === "tc" ? "開源原始碼（AGPL-3.0）" : "Source code (AGPL-3.0)",
-    },
-    lang() === "tc" ? "GitHub 原始碼" : "Source on GitHub",
-  );
+  // Author/GitHub credits live in the PAGE FOOTER, not the header coverage line (Cyrus 2026-10-03:
+  // removed the header credits + repo button as clutter — the footer already carries authorship,
+  // licence and the source link, and saying it twice on one screen is noise).
   const coverWrap = h(
     "div",
     { class: "coverage", title: "" },
     h("span", { class: "cover-dot" }),
     coverEl,
-    repoBtn,
-    creditsEl,
   );
 
   root.append(
     h(
       "div",
       { class: "sb-row1" },
-      h("div", { class: "brand" }, h("img", { class: "brand-icon", src: "/icon-192.png", alt: "" }), h("h1", {}, "HK CITY MONITOR"), h("span", { class: "sub" }, "香港城市監察")),
+      h("div", { class: "brand" }, h("h1", {}, "HK CITY MONITOR"), h("span", { class: "sub" }, "香港城市監察")),
       h(
         "div",
         { class: "meta" },

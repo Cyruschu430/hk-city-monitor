@@ -167,26 +167,16 @@ ok(Object.values(tdAfter).every((v) => v === "visible"),
 // version of this test a headless browser can honestly run (deck.gl needs a real GPU, so "it drew
 // buildings" is not checkable here, and asserting it would be the same class of lie the project
 // keeps paying for).
-const hud3d = await page.evaluate(() =>
-  [...document.querySelectorAll("button")].some((x) => /^3D$/.test(x.textContent.trim())));
-ok(hud3d, "the HUD 3D switch is present in the map view");
-if (hud3d) {
-  const outcome = await page.evaluate(async () => {
-    const b = [...document.querySelectorAll("button")].find((x) => /^3D$/.test(x.textContent.trim()));
-    b.click();
-    // The dynamic import + /config/3d + the deck.gl chunk. 12s is generous; a timeout here is a
-    // finding, not flake: it means the button did neither of the two things it must do.
-    for (let i = 0; i < 120; i++) {
-      await new Promise((r) => setTimeout(r, 100));
-      const on = b.getAttribute("aria-pressed") === "true";
-      const said = !!document.querySelector(".btn-3d-msg");
-      if (on || said) return { on, said, why: said ? document.querySelector(".btn-3d-msg").textContent : "" };
-    }
-    return { on: false, said: false, why: "neither 3D nor a message after 12s" };
-  });
-  ok(outcome.on || outcome.said,
-    `3D switch either turns on or explains itself (on=${outcome.on} msg=${JSON.stringify(outcome.why ?? "").slice(0, 120)})`);
-}
+// LOCKED for phase-one (Cyrus 2026-10-03): 3D is still internal testing, so the switch is
+// present but DISABLED — clicking it must do nothing (no toggle, no fetch). When it reopens,
+// restore the previous "click either turns on OR explains itself" assertion, which is the one
+// thing a headless browser can honestly check (deck.gl needs a real GPU, so "it drew buildings"
+// is not checkable here).
+const hud3dLocked = await page.evaluate(() => {
+  const b = [...document.querySelectorAll("button")].find((x) => /^3D$/.test(x.textContent.trim()));
+  return b ? b.disabled : null;
+});
+ok(hud3dLocked === true, "the 3D switch is LOCKED (disabled) for phase-one testing");
 // These two stay ABSENCE assertions: 3D is a layer toggled from the map view, not a LAYERS row and
 // not a rail button, so a row here would be a second control for one layer.
 ok(!(await page.evaluate(() => !!document.querySelector('.lyr-item[data-row="buildings3d"]'))),

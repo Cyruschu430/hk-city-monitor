@@ -16,7 +16,7 @@ const LICENSE = "https://www.gnu.org/licenses/agpl-3.0.html";
 
 const T = {
   data: {
-    tc: "數據來源:政府各部門及公共機構的開放數據(CSDI、data.gov.hk 等),各有其授權條款。本項目為開源社群項目,由義工維護,希望以開放數據回饋社會。",
+    tc: "數據來源：政府各部門及公共機構的開放數據（CSDI、data.gov.hk 等），各有其授權條款。本項目為開源社群項目，由義工維護，希望以開放數據回饋社會。",
     en: "Data: open data published by Hong Kong government departments and public bodies (CSDI, data.gov.hk and others), each under its own licence. This is an open-source community project, maintained by volunteers, to put open data to public use.",
   },
   source: { tc: "原始碼", en: "Source" },

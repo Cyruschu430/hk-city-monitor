@@ -482,17 +482,20 @@ a:hover{color:var(--cyan)}
 #mapWrap{grid-column:1;grid-row:1;position:relative;min-height:0;min-width:0}
 #map{position:absolute;inset:0;background:var(--void)}
 #mapHud{position:absolute;inset:0;pointer-events:none;z-index:5}
-/* The 3D switch, bottom-left of the map face. Map-face tokens only (check:static fails a
-   themed token here): it sits on the map, not in a card. pointer-events:auto because #mapHud
-   is a pass-through layer, so its children must opt back in or the button cannot be clicked
-   while the map still pans everywhere else. */
-.btn-3d{position:absolute;left:10px;bottom:12px;pointer-events:auto;z-index:6;font:inherit;
+/* The 3D switch. Moved under the top-right zoom control (Cyrus 2026-10-03): it was bottom-left,
+   stranded away from the other map-face controls. top:74px clears the two 29px zoom buttons plus
+   their 10px margin. LOCKED (disabled) for phase-one testing. Map-face tokens only (check:static
+   fails a themed token here): it sits on the map, not in a card. pointer-events:auto because
+   #mapHud is a pass-through layer, so its children must opt back in or the button cannot be
+   clicked while the map still pans everywhere else. */
+.btn-3d{position:absolute;right:10px;top:74px;pointer-events:auto;z-index:6;font:inherit;
   font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--map-face);
   background:var(--map-face-bg);border:1px solid var(--map-face-line);border-radius:4px;
   padding:4px 10px;cursor:pointer}
 .btn-3d[aria-pressed="true"]{outline:2px solid var(--map-face);outline-offset:-2px;
   border-color:var(--map-face)}
-.btn-3d[disabled],.btn-3d.busy{cursor:progress;color:var(--map-face-dim)}
+.btn-3d[disabled]{cursor:not-allowed;opacity:.55;color:var(--map-face-dim)}
+.btn-3d.busy{cursor:progress;color:var(--map-face-dim)}
 .btn-3d.err{border-color:var(--map-face);border-style:dashed}
 .btn-3d-msg{position:absolute;left:10px;bottom:44px;max-width:min(420px,60vw);
   pointer-events:none;font-size:11px;line-height:1.35;color:var(--map-face);

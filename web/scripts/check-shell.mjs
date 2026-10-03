@@ -61,8 +61,8 @@ await browser.close();
 
 ok(r.livePulse === 0, "the brand dot is gone");
 ok(!r.freshCellInHeader, "the freshness cell is not in the header (nothing reads as a bare \"1 stale\")");
-ok(r.iconSrc === "/icon-192.png", `the app icon is beside the name (src=${r.iconSrc})`);
-ok(r.ghHref === "https://github.com/Cyruschu430/hk-city-monitor", `the GitHub button targets the repo (${r.ghHref})`);
+ok(r.iconSrc === null, `the app icon is gone — the name stands alone (Cyrus 2026-10-03; src=${r.iconSrc})`);
+ok(r.ghHref === null, `the header GitHub button is gone — the footer carries the repo (${r.ghHref})`);
 if (r.foot && r.mapWrap && r.panelCol) {
   ok(r.foot.top >= r.mapWrap.bottom - 2, `the footer is below the map (foot ${Math.round(r.foot.top)} vs map bottom ${Math.round(r.mapWrap.bottom)})`);
   ok(r.foot.top >= r.panelCol.bottom - 2, `the footer is below the panel column (foot ${Math.round(r.foot.top)} vs panels bottom ${Math.round(r.panelCol.bottom)})`);

@@ -246,8 +246,8 @@
       "geom": "point",
       "symbol": "vessel",
       "title": {
-        "tc": "船隻（AIS）",
-        "en": "Vessels (AIS)"
+        "tc": "船位置",
+        "en": "Vessel positions"
       },
       "popup": "vessel_popup",
       "filters": {

@@ -61,7 +61,6 @@ const OVERVIEW = [
   "hko_cameras_wall",
   "special_traffic_list",
   "mtr_next_train_list",
-  "kmb_eta_table",
   "tp_queue_grid",
   "hk_market_table",
   // crypto_prices withdrawn 2026-09-24: CoinGecko 429s Cloudflare's egress on
@@ -106,6 +105,9 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // interpolated from next-train ETAs. OFF by default so a reader turns it on
   // deliberately rather than mistaking an estimate for a fix.
   { id: "mtr_trains", label: { tc: "港鐵列車（推算）", en: "MTR trains (estimated)" } },
+  // Reference network under the train layer — the reader turns this on to read the
+  // moving trains against the lines they run on. OFF by default.
+  { id: "mtr_lines", label: { tc: "港鐵路線", en: "MTR lines" } },
   // 「（模式格網）」 is not decoration. This layer is Open-Meteo MODEL output, and
   // `weather_stations` one row below is the OBSERVED counterpart — two layers with
   // the same subject and different epistemics, one click apart. The rail label is
@@ -315,6 +317,7 @@ async function boot(): Promise<void> {
       return [`vl-${def.id}-points`];
     }
     if (def.geom === "point") return [`vl-${def.id}-circle`, `vl-${def.id}-count`, `vl-${def.id}-point`];
+    if (def.geom === "line") return [`vl-${def.id}-line`];
     if (def.geom === "raster") return [`vl-${def.id}-fill`];
     // `poi` (curated reference POIs, drawn by controlPointLayer) does NOT use the
     // `-point`/`-label` suffix scheme — it adds the BARE id plus `-label`. Missing

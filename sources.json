@@ -1232,6 +1232,21 @@
    "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
   },
   {
+   "id": "mtr_lines",
+   "group": "transport",
+   "name": "港鐵路綫（參考）",
+   "name_en": "MTR lines (reference)",
+   "type": "geojson",
+   "url": "data/mtr_lines.json",
+   "auth": "none",
+   "cadence": "irregular",
+   "todo": false,
+   "fetch": "browser",
+   "cost": "free",
+   "license": "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處",
+   "notes": "Reference geometry generated from data/mtr_stations.json (the publisher's own lines-and-stations CSV): one LineString per heavy-rail line plus the 落馬洲 / 康城 spurs, with the official line colour carried per feature. Static reference — see the file."
+  },
+  {
    "id": "hkia_flights",
    "group": "aviation",
    "name": "香港國際機場 航班",

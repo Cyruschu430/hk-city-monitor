@@ -357,7 +357,7 @@
     "en": "Carpark Vacancy"
    },
    "params": {
-    "max_rows": 12
+    "max_rows": 60
    },
    "wide": true,
    "cadence_note": {
@@ -439,10 +439,6 @@
    "cadence_note": {
     "tc": "每 5 分鐘（收集器）",
     "en": "Every 5 minutes (collector)"
-   },
-   "disclaimer": {
-    "tc": "社群接收數據，覆蓋唔完整；位置係接收器推算，唔可以當導航用。",
-    "en": "Community-received data with incomplete coverage; positions are receiver-derived and must not be used for navigation."
    }
   },
   {

@@ -221,9 +221,10 @@ export function parseImmdQueue(json: Record<string, { arrQueue: number; depQueue
       // band rather than a cryptic 0′.
       const m = (mins: number) =>
         mins <= 0 ? (lang() === "tc" ? "少於 15 分鐘" : "< 15 min") : `${mins} ${lang() === "tc" ? "分鐘" : "min"}`;
+      const dir = lang() === "tc" ? { arr: "入境", dep: "出境" } : { arr: "in", dep: "out" };
       return {
         label: lang() === "tc" ? nm.tc : nm.en,
-        value: `${m(q.arrQueue)} · ${m(q.depQueue)}`,
+        value: `${dir.arr} ${m(q.arrQueue)} · ${dir.dep} ${m(q.depQueue)}`,
         status,
       };
     });
@@ -520,10 +521,13 @@ export const MTR_DEST: Record<string, { tc: string; en: string }> = {
     trains each. `valid: "N"` means the train is NOT in passenger service — it is
     shown and marked rather than dropped, because a silently shorter list reads
     as "these are all the trains there are". */
-export function parseMtrSchedule(j: {
-  sys_time?: string;
-  data?: Record<string, { UP?: unknown[]; DOWN?: unknown[] }>;
-}): { items: ListItem[]; observedAt: Date | null } {
+export function parseMtrSchedule(
+  j: {
+    sys_time?: string;
+    data?: Record<string, { UP?: unknown[]; DOWN?: unknown[] }>;
+  },
+  names?: Record<string, { tc: string; en: string }>,
+): { items: ListItem[]; observedAt: Date | null } {
   const tc = lang() === "tc";
   const key = j.data ? Object.keys(j.data)[0] : undefined;
   const block = key ? j.data?.[key] : undefined;
@@ -532,18 +536,19 @@ export function parseMtrSchedule(j: {
     for (const r of (block?.[dir] ?? []) as Record<string, unknown>[]) rows.push({ r, up: dir === "UP" });
   }
   const items: ListItem[] = rows
-    .map(({ r, up }) => {
+    .map(({ r }) => {
       const ttnt = Number(r["ttnt"]);
       const code = String(r["dest"] ?? "");
-      const nm = MTR_DEST[code] ?? { tc: code, en: code };
-      const plat = String(r["plat"] ?? "");
+      const nm = (names ?? MTR_DEST)[code] ?? { tc: code, en: code };
       const inService = String(r["valid"] ?? "Y") !== "N";
-      const dirText = tc ? (up ? "上行" : "下行") : up ? "Up" : "Down";
       return {
         ttnt: Number.isFinite(ttnt) ? ttnt : Number.MAX_SAFE_INTEGER,
         item: {
-          title: `${tc ? "往" : "to "}${tc ? nm.tc : nm.en} · ${plat}${tc ? " 號月台" : ""}`,
-          sub: inService ? dirText : `${dirText} · ${tc ? "不載客" : "not in service"}`,
+          // Simple readout (Cyrus 2026-10-03): destination + minutes, nothing else.
+          // Platform and 上行/下行 are dropped — for someone tracking their own station
+          // the destination already implies the direction, and a platform number is
+          // noise until you are standing on the concourse.
+          title: `${tc ? "往" : "to "}${tc ? nm.tc : nm.en}${inService ? "" : tc ? "（不載客）" : " (not in service)"}`,
           time: Number.isFinite(ttnt) ? (ttnt <= 0 ? (tc ? "即將" : "due") : `${ttnt} ${tc ? "分鐘" : "min"}`) : "—",
         } satisfies ListItem,
       };
@@ -576,6 +581,14 @@ export interface MtrTrain {
   ttnt: number;
 }
 
+/** One upcoming train at a terminus, as the schedule feed reports it. */
+export interface MtrSchedule {
+  line: string;
+  dir: "UP" | "DOWN";
+  dest: string;
+  ttnt: number;
+}
+
 function bearingDeg(aLat: number, aLon: number, bLat: number, bLon: number): number {
   const dLon = ((bLon - aLon) * Math.PI) / 180;
   const lat1 = (aLat * Math.PI) / 180;
@@ -586,7 +599,7 @@ function bearingDeg(aLat: number, aLon: number, bLat: number, bLon: number): num
 }
 
 export function estimateMtrTrains(
-  schedules: { line: string; dir: "UP" | "DOWN"; dest: string; ttnt: number }[],
+  schedules: MtrSchedule[],
   mtr: MtrStationsData,
 ): MtrTrain[] {
   const out: MtrTrain[] = [];

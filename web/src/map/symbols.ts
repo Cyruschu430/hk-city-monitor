@@ -19,6 +19,7 @@ export type GlyphId =
   | "plane"
   | "ferry"
   | "vessel"
+  | "mtr-train"
   | "water"
   // Border control points, one per crossing KIND. The glyph is identical and the
   // DISC carries the kind (land violet / sea cyan / air blue), which is the same
@@ -289,6 +290,43 @@ function drawVessel(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
+/** MTR train: top-down carriage, rounded nose up (rotated per-bearing by the layer,
+ *  exactly like `plane` and `vessel`). A rectangle with a rounded front and two window
+ *  bars reads as a rail vehicle at 44px and keeps reading when the moving-layer halo
+ *  disc sits behind it; a heavier side-view train would turn to mush below ~20px. */
+function drawTrain(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.beginPath();
+  ctx.moveTo(-4.5, -13); // front-left
+  ctx.quadraticCurveTo(0, -16, 4.5, -13); // rounded nose
+  ctx.lineTo(4.5, 12);
+  ctx.quadraticCurveTo(0, 14, -4.5, 12); // rounded tail
+  ctx.closePath();
+  ctx.fillStyle = "rgba(233,242,255,.95)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(5,7,13,.85)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // Windows, as two short vertical bars — enough to say "carriage", not a face.
+  ctx.strokeStyle = "rgba(5,7,13,.55)";
+  ctx.lineWidth = 1.4;
+  ctx.lineCap = "round";
+  for (const seg of [
+    { y0: -9, y1: -1 },
+    { y0: 3, y1: 10 },
+  ]) {
+    ctx.beginPath();
+    ctx.moveTo(-2, seg.y0);
+    ctx.lineTo(-2, seg.y1);
+    ctx.moveTo(2, seg.y0);
+    ctx.lineTo(2, seg.y1);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 /** Ferry: a hull seen from above. */
 function drawFerry(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
@@ -520,6 +558,7 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   plane: { draw: drawPlane },
   ferry: { draw: drawFerry, disc: "#38bdf8" },
   vessel: { draw: drawVessel, disc: "#38bdf8" },
+  "mtr-train": { draw: drawTrain },
   water: { draw: drawWater, disc: "#22d3ee" },
   "cp-land": { draw: drawControlPoint, disc: "#a855f7" },
   "cp-sea": { draw: drawControlPoint, disc: "#22d3ee" },

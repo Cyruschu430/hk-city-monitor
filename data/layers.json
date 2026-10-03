@@ -228,7 +228,7 @@
       "source": "mtr_trains",
       "render": "status_grid",
       "geom": "point",
-      "symbol": "plane",
+      "symbol": "mtr-train",
       "title": {
         "tc": "港鐵列車（推算位置）",
         "en": "MTR trains (estimated)"
@@ -237,7 +237,22 @@
       "filters": {
         "scope": "hk"
       },
-      "_comment": "Estimated positions from next-train ETAs, NOT GPS. `symbol: plane` plus a per-feature `bearing` reuse the aircraft pointLayer icon-rotate path; the popup is the aircraft one so the shared builder already reads its fields."
+      "_comment": "Estimated positions from next-train ETAs, NOT GPS. `symbol: mtr-train` plus a per-feature `bearing` reuse the moving-layer icon-rotate path (overlays.ts pointLayer); the popup is the aircraft one so the shared builder already reads its fields. The layer animates: a requestAnimationFrame loop re-runs estimateMtrTrains with ttnt decremented by wall-clock, so trains slide smoothly along their line between the 30s schedule re-fetches instead of jumping each poll."
+    },
+    {
+      "id": "mtr_lines",
+      "source": "mtr_lines",
+      "render": "list",
+      "geom": "line",
+      "title": {
+        "tc": "港鐵路線",
+        "en": "MTR lines"
+      },
+      "popup": null,
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "Reference geometry for the MTR: one LineString per heavy-rail line (plus the 落馬洲 / 康城 spurs), generated from data/mtr_stations.json by hand (see the file). `geom: line` draws through overlays.ts lineLayer with the official line colour carried per feature. OFF by default — it is a backdrop the reader turns on when they want to read the train layer against the network."
     },
     {
       "id": "vessels",

@@ -1,3 +1,5 @@
+![HK City Monitor — a real-time situational-awareness dashboard for Hong Kong](.github/assets/banner.jpg)
+
 # HK City Monitor
 
 **A real-time situational-awareness dashboard for Hong Kong — one map, many open data sources, no API keys.**

@@ -27,31 +27,31 @@ SOURCES = ROOT / "sources.json"
 # Kept deliberately short and factual. HKSAR departments publish under the
 # Government's open-data terms (data.gov.hk), which permit free re-use with
 # attribution; several department sites carry the same notice.
-GOV = "HKSAR Government 開放數據（data.gov.hk 條款）— 需標明出處"
+GOV = "HKSAR Government open data (data.gov.hk terms) — attribution required"
 RULES: list[tuple[str, str]] = [
     (".gov.hk", GOV),
     ("data.gov.hk", GOV),
     ("gov.hk", GOV),
     # Lands Department tiles/3D — separate terms page, same attribution duty.
-    ("map.gov.hk", "地政總署 Lands Department — 需於地圖標明出處"),
-    ("geodata.gov.hk", "地政總署 Lands Department — 需於地圖標明出處"),
+    ("map.gov.hk", "Lands Department (LandsD) — attribution required on the map"),
+    ("geodata.gov.hk", "Lands Department (LandsD) — attribution required on the map"),
     # RTHK is a government broadcaster but publishes its own feed terms.
     ("rthk.hk", GOV),
     # Third parties with explicit, known licences.
-    ("api.adsb.lol", "ODbL 1.0 — 需標明 adsb.lol 出處"),
-    ("adsb.fi", "ODbL 1.0 — 需標明 adsb.fi 出處"),
-    ("opensky-network.org", "OpenSky Network — 非商業用途；見 opensky-network.org 條款"),
-    ("aisstream.io", "aisstream.io 免費層 — 見服務條款"),
+    ("api.adsb.lol", "adsb.lol — ODbL 1.0 (commercial use permitted); OpenSky explicitly forbids live products, so it is not used"),
+    ("adsb.fi", "ODbL 1.0 — attribution to adsb.fi required"),
+    ("opensky-network.org", "OpenSky Network — non-commercial use; see opensky-network.org terms"),
+    ("aisstream.io", "aisstream.io free tier — see the service terms"),
     ("static.data.gov.hk", GOV),
-    ("api.coingecko.com", "CoinGecko 免費 API — 需標明出處"),
-    ("earthquake.usgs.gov", "USGS — 公共領域（美國政府作品）"),
-    ("eonet.gsfc.nasa.gov", "NASA EONET — 公共領域（美國政府作品）"),
-    ("api.open-meteo.com", "Open-Meteo — CC BY 4.0，非商業免費層"),
-    ("query1.finance.yahoo.com", "Yahoo Finance — 非官方端點，僅供個人參考"),
+    ("api.coingecko.com", "CoinGecko free API — attribution required"),
+    ("earthquake.usgs.gov", "USGS — public domain (US Government work)"),
+    ("eonet.gsfc.nasa.gov", "NASA EONET — public domain (US Government work)"),
+    ("api.open-meteo.com", "Open-Meteo — CC BY 4.0; the free tier is non-commercial"),
+    ("query1.finance.yahoo.com", "Yahoo Finance — unofficial endpoint, personal reference only"),
     ("basemaps.cartocdn.com", "CARTO / OpenStreetMap contributors — ODbL"),
     ("openstreetmap.org", "OpenStreetMap contributors — ODbL"),
-    ("hkstp.org", "HKSTP 開放數據 — 見其開放數據條款"),
-    ("consumer.org.hk", "消費者委員會 — 見網站條款"),
+    ("hkstp.org", "HKSTP open data — see its open-data terms"),
+    ("consumer.org.hk", "Consumer Council — see the website terms"),
     ("hkemobility.gov.hk", GOV),
     ("1823.gov.hk", GOV),
     ("info.gov.hk", GOV),
@@ -65,13 +65,13 @@ RULES: list[tuple[str, str]] = [
     ("hkma.gov.hk", GOV),
     # Public bodies that publish their own open-data terms rather than sitting
     # under the .gov.hk umbrella. Attribution duty is the same.
-    ("ha.org.hk", "醫院管理局 Hospital Authority 開放數據 — 需標明出處"),
-    ("hongkongairport.com", "香港機場管理局 開放數據 — 需標明出處"),
-    ("arcgisonline.com", "Esri World Imagery — 見 Esri 使用條款（僅作後備底圖）"),
+    ("ha.org.hk", "Hospital Authority open data — attribution required"),
+    ("hongkongairport.com", "Airport Authority Hong Kong open data — attribution required"),
+    ("arcgisonline.com", "Esri — ArcGIS Online public map services (subject to the Esri Terms of Use)"),
 ]
 
 # Never silently stamp a licence onto a publisher we have not checked.
-UNKNOWN_NOTE = "未確認授權 — 需人手核對來源條款"
+UNKNOWN_NOTE = "Unverified licence — the publisher's terms need manual review"
 
 
 def licence_for(url: str) -> str | None:

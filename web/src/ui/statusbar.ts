@@ -4,7 +4,6 @@
 // has a fixed home (a value that moves around reads as an amateur dashboard).
 
 import { clear, h } from "../lib/dom.ts";
-import { clockNow } from "../lib/format.ts";
 import { lang, setLang, onLangChange, type Lang } from "../lib/i18n.ts";
 import { onThemeChange, setTheme, theme, type Theme } from "../lib/theme.ts";
 
@@ -59,7 +58,6 @@ export function createStatusBar(root: HTMLElement): StatusBar {
   modeEl.setAttribute("aria-label", "模式 / mode");
   const camsEl = h("span", {});
   const tilesEl = h("span", {});
-  const clockEl = h("span", {});
   const freshEl = h("span", {});
   const freshDot = h("i", { class: "stat-dot" });
   const langBox = h("div", { id: "langSwitch", role: "group", "aria-label": "language" });
@@ -175,26 +173,23 @@ export function createStatusBar(root: HTMLElement): StatusBar {
       h(
         "div",
         { class: "meta" },
-        // ponytail: freshStat and tilesStat are still built above and still written to
-        // (setFreshness / setTiles) — they are simply not appended any more. Cyrus
-        // 2026-10-02: seven cells in one row left "1 stale" with no room for its own
-        // label, so it rendered as a bare meaningless number. Freshness is already said
-        // per panel and again in the coverage line below, and the basemap is named by
-        // the mandatory LandsD attribution on the map face. Removing the cells from the
-        // row is the whole fix; deleting the elements would churn three callers.
+        // ponytail: freshStat, tilesStat and camsStat are still built above and still
+        // written to (setFreshness / setTiles / setCameras) — they are simply not
+        // appended any more. Cyrus 2026-10-02: seven cells in one row left "1 stale"
+        // with no room for its own label, so it rendered as a bare meaningless number.
+        // Freshness is already said per panel and again in the coverage line below, and
+        // the basemap is named by the mandatory LandsD attribution on the map face.
+        // Cyrus 2026-10-03: the camera count and the HKT clock came out too — the
+        // camera-wall tab owns its own count, and the clock duplicated the placard's
+        // timestamp. Removing the cells is the whole fix; deleting the elements would
+        // churn the callers.
         modeStat,
-        camsStat,
-        stat("HKT", clockEl),
         langBox,
         themeBox,
       ),
     ),
     coverWrap,
   );
-
-  const timer = window.setInterval(() => (clockEl.textContent = clockNow()), 1000);
-  clockEl.textContent = clockNow();
-  window.addEventListener("beforeunload", () => window.clearInterval(timer));
 
   return {
     setCameras(td, hko) {

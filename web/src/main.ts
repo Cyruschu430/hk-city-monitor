@@ -135,11 +135,9 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // one mode's subject, and a layer that appears in 總覽 without being asked for is the thing the
   // verticals exist to prevent.
   { id: "hk_facility_pins", label: { tc: "貯油裝置", en: "Oil storage installations" } },
-  // The only LIVE layer in 貨運模式 — 120 berths and how many are free right now, refreshed every
-  // 5 minutes by scripts/live_cycle.sh and published to the `live-data` branch. The three facility
-  // layers above it answer "where"; this one answers "now", which is the question the mode's panel
-  // is actually asking.
-  { id: "berth_vacancy", label: { tc: "泊位空缺（實時）", en: "Berth vacancy (live)" } },
+  // Vessel positions (AIS via VesselAPI, 6-hourly snapshot) — the marine counterpart to the
+  // aircraft layer, and the layer that replaces the withdrawn berth-vacancy polygon.
+  { id: "vessels", label: { tc: "船位置", en: "Vessel positions" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its

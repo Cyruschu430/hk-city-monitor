@@ -83,7 +83,7 @@ export function landsdBadge(): HTMLElement {
     badge.replaceChildren(
       h("img", {
         class: "landsd-logo",
-        src: "/brand/landsd-logo.svg",
+        src: "/brand/landsd-logo.png",
         alt: "地政總署 Lands Department",
       }),
       h(

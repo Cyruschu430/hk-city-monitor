@@ -307,74 +307,73 @@ function drawPlane(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** Vessel: top-down hull silhouette, nose up — pointed bow, straight transom,
- *  and a superstructure block aft. Rotates by COG the same way `plane` rotates
- *  by track, so a ship points where it is sailing. Filled marine cyan so it
- *  reads as "on water" against the dark basemap; the dark outline keeps it
- *  legible once the halo disc sits behind it (the aircraft lesson). */
+/** Vessel: top-down hull, nose up, elongated to a ~3:1 proportion with a rounded stern and a
+ *  longer superstructure. Rotates by COG like `plane` rotates by track. Filled marine cyan so it
+ *  reads as "on water" against the dark basemap; the dark outline keeps it legible behind the
+ *  halo disc. */
 function drawVessel(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();
   ctx.translate(c, c);
   ctx.beginPath();
-  ctx.moveTo(0, -13); // bow tip
-  ctx.lineTo(5, -4);
-  ctx.lineTo(5, 8); // starboard side to transom
-  ctx.lineTo(-5, 8); // flat stern
-  ctx.lineTo(-5, -4);
+  ctx.moveTo(0, -16); // bow tip
+  ctx.quadraticCurveTo(4.5, -8, 4.5, -2);
+  ctx.lineTo(4.5, 7);
+  ctx.quadraticCurveTo(4.5, 11, 0, 11); // rounded stern
+  ctx.quadraticCurveTo(-4.5, 11, -4.5, 7);
+  ctx.lineTo(-4.5, -2);
+  ctx.quadraticCurveTo(-4.5, -8, 0, -16);
   ctx.closePath();
   ctx.fillStyle = "rgba(56,189,248,.95)"; // #38bdf8 marine cyan
   ctx.fill();
   ctx.strokeStyle = "rgba(5,7,13,.85)";
   ctx.lineWidth = 1;
   ctx.stroke();
-  // superstructure block aft
-  ctx.beginPath();
-  ctx.moveTo(-1.5, -3);
-  ctx.lineTo(1.5, -3);
-  ctx.lineTo(1.5, 5);
-  ctx.lineTo(-1.5, 5);
-  ctx.closePath();
+  // superstructure (longer cabin)
   ctx.fillStyle = "rgba(233,242,255,.9)";
-  ctx.fill();
-  ctx.stroke();
+  ctx.fillRect(-1.8, -4, 3.6, 11);
+  ctx.strokeRect(-1.8, -4, 3.6, 11);
   ctx.restore();
 }
 
-/** MTR train: top-down carriage, rounded nose up (rotated per-bearing by the layer,
- *  exactly like `plane` and `vessel`). A rectangle with a rounded front and two window
- *  bars reads as a rail vehicle at 44px and keeps reading when the moving-layer halo
- *  disc sits behind it; a heavier side-view train would turn to mush below ~20px. */
+/** MTR train: top-down carriage, nose up (rotated per-bearing, like `plane` and `vessel`).
+ *  Silver body + MTR red centre band + black windshield — the real MTR silver/red/black livery.
+ *  A side-view train would turn to mush below ~20px. */
 function drawTrain(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();
   ctx.translate(c, c);
+  // carriage body — silver
   ctx.beginPath();
-  ctx.moveTo(-4.5, -13); // front-left
-  ctx.quadraticCurveTo(0, -16, 4.5, -13); // rounded nose
-  ctx.lineTo(4.5, 12);
-  ctx.quadraticCurveTo(0, 14, -4.5, 12); // rounded tail
+  ctx.moveTo(-5, -14);
+  ctx.quadraticCurveTo(0, -17, 5, -14);
+  ctx.lineTo(5, 13);
+  ctx.quadraticCurveTo(0, 15, -5, 13);
   ctx.closePath();
-  ctx.fillStyle = "rgba(233,242,255,.95)";
+  ctx.fillStyle = "#cdd5dc";
   ctx.fill();
   ctx.strokeStyle = "rgba(5,7,13,.85)";
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 1.1;
+  ctx.lineJoin = "round";
   ctx.stroke();
-  // Windows, as two short vertical bars — enough to say "carriage", not a face.
-  ctx.strokeStyle = "rgba(5,7,13,.55)";
-  ctx.lineWidth = 1.4;
-  ctx.lineCap = "round";
-  for (const seg of [
-    { y0: -9, y1: -1 },
-    { y0: 3, y1: 10 },
-  ]) {
-    ctx.beginPath();
-    ctx.moveTo(-2, seg.y0);
-    ctx.lineTo(-2, seg.y1);
-    ctx.moveTo(2, seg.y0);
-    ctx.lineTo(2, seg.y1);
-    ctx.stroke();
-  }
+  // black windshield
+  ctx.beginPath();
+  ctx.moveTo(-4.2, -11);
+  ctx.quadraticCurveTo(0, -13.5, 4.2, -11);
+  ctx.lineTo(4.2, -8);
+  ctx.quadraticCurveTo(0, -9.5, -4.2, -8);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(10,14,22,.85)";
+  ctx.fill();
+  // MTR red centre band
+  ctx.beginPath();
+  ctx.moveTo(-1.8, -8);
+  ctx.lineTo(-1.8, 11);
+  ctx.lineTo(1.8, 11);
+  ctx.lineTo(1.8, -8);
+  ctx.closePath();
+  ctx.fillStyle = "#d71e28";
+  ctx.fill();
   ctx.restore();
 }
 

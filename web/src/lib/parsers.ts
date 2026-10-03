@@ -577,7 +577,7 @@ export interface MtrTrain {
   dest_en: string;
   lat: number;
   lon: number;
-  heading: number; // degrees, towards the destination
+  heading: number; // degrees, along the current segment (a→b), not at the terminus
   ttnt: number;
 }
 
@@ -629,7 +629,9 @@ export function estimateMtrTrains(
     const t = Math.max(0, Math.min(1, back - i0));
     const lat = a.lat + (b.lat - a.lat) * t;
     const lon = a.lon + (b.lon - a.lon) * t;
-    const heading = (bearingDeg(lat, lon, destSta.lat, destSta.lon) + 360) % 360;
+    // ponytail: nose along the CURRENT segment (a→b), not at the far terminus —
+    // a curved line pointing at its destination reads as drifting sideways off the track.
+    const heading = (bearingDeg(a.lat, a.lon, b.lat, b.lon) + 360) % 360;
     out.push({
       id: `${s.line}-${s.dest}-${Math.round(s.ttnt * 10)}`,
       line: s.line,

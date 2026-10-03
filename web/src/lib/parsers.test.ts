@@ -678,5 +678,21 @@ console.log("\nparsers.test.ts: ALL PASS");
     assert.ok(Math.abs(mid[0]!.lat - 22.1) < 0.001 && Math.abs(mid[0]!.lon - 114.1) < 0.001, `ttnt 2.5 → station B, got ${mid[0]!.lat},${mid[0]!.lon}`);
     assert.equal(P.estimateMtrTrains([{ line: "L", dir: "DOWN" as const, dest: "C", ttnt: 99 }], mtr).length, 0, "ttnt beyond line → dropped");
     console.log(`✓ 港鐵推算: ttnt 0 → 終點，ttnt 2.5 → 一站前，超線 → 丟棄`);
+
+    // Curved line: heading must track the CURRENT segment, not the terminus —
+    // a train eastbound on a corner that points at its NE destination drifts sideways.
+    const corner = {
+      stations: {
+        A: { code: "A", name_tc: "甲", name_en: "A", lat: 22.0, lon: 114.0 },
+        B: { code: "B", name_tc: "乙", name_en: "B", lat: 22.0, lon: 114.1 },
+        C: { code: "C", name_tc: "丙", name_en: "C", lat: 22.1, lon: 114.1 },
+      },
+      lines: { L: { name_tc: "L", name_en: "L", DT: ["A", "B", "C"], UT: ["C", "B", "A"], branches: [] } },
+      travel_min: 2.5,
+    };
+    const tr = P.estimateMtrTrains([{ line: "L", dir: "DOWN" as const, dest: "C", ttnt: 3.75 }], corner);
+    assert.equal(tr.length, 1, "one train mid-corner");
+    assert.ok(Math.abs(tr[0]!.heading - 90) < 1, `heading along A→B, got ${tr[0]!.heading} (want ~90°)`);
+    console.log(`✓ 港鐵 heading 沿線段: ${tr[0]!.heading.toFixed(1)}°（直角轉彎唔指向終點）`);
   }
 }

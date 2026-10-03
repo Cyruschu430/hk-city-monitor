@@ -495,9 +495,10 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
       source: id,
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 5.5, 12, 7.5, 16, 10] as never,
-        "circle-color": "rgba(8,14,24,.78)",
-        "circle-stroke-color": "rgba(120,180,240,.55)",
+        "circle-color": "rgba(8,14,24,.62)",
+        "circle-stroke-color": "rgba(56,189,248,.4)",
         "circle-stroke-width": 1,
+        "circle-blur": 0.5,
       },
     });
     map.addLayer({

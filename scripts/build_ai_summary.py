@@ -7,7 +7,7 @@ context, and the frequency + context size get reported before it is added." Repo
 2026-10-01, who halved the proposed frequency himself (12/24):
 
     runs        2/day  - cron `0 0,12 * * *` UTC = 08:00 and 20:00 HKT
-    context     < 4 KB of JSON, the fields listed in SOURCES (the script fails above that)
+    context     < 7 KB of JSON, the fields listed in SOURCES + LIVE_API (the script fails above that)
     output      ONE static file, `data/ai_summary.json`, published to the `live-data` branch
     runtime     zero model calls. The browser fetches a JSON file like any other panel.
 
@@ -31,8 +31,11 @@ Run:
 from __future__ import annotations
 
 import argparse
+import csv
+import io
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -53,7 +56,34 @@ LIVE_FILES = ("aircraft.json", "berth_vacancy.json", "water_suspension.json")
 
 # The whole context, and the ceiling it must stay under.
 SOURCES = ("aircraft.json", "berth_vacancy.json", "water_suspension.json", "carpark_info.json", "baselines.json")
-MAX_CONTEXT_BYTES = 4000
+MAX_CONTEXT_BYTES = 7000
+
+# Six additional LIVE sources (Cyrus 2026-10-03: "依家多了其他data, 會唔會可以多D insight").
+# Fetched server-side straight from the publisher endpoints — no CORS on a GitHub runner, so the
+# app's browser/proxy split does not apply here. Each is slimmed to a couple of fields; a source
+# that cannot be reached is skipped with a warning, never fatal.
+LIVE_API = {
+    "ae_waiting": "https://www.ha.org.hk/opendata/aed/aedwtdata2-tc.json",
+    "cp_queue": "https://secure1.info.gov.hk/immd/mobileapps/2bb9ae17/data/CPQueueTimeR.json",
+    "aqhi": "https://dashboard.data.gov.hk/api/aqhi-individual?format=json",
+    "wind_10min": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv",
+    "warnsum": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc",
+    "special_traffic": "https://resource.data.one.gov.hk/td/tc/specialtrafficnews.xml",
+}
+
+# Land control-point codes → names, so the brief says 香園圍 rather than HYW. Same map as
+# web/src/lib/parsers.ts CP_STATIONS.
+CP_NAMES = {
+    "HYW": "香園圍", "HZM": "港珠澳大橋", "LMC": "落馬洲", "LSC": "落馬洲支線",
+    "LWS": "羅湖", "MKT": "文錦渡", "SBC": "深圳灣", "STK": "沙頭角",
+}
+
+def _minutes(s: str) -> float:
+    """'1 小時 30 分鐘' / '2.5 小時' / '少於 15 分鐘' → minutes, for ordering only."""
+    s = s.replace("少於", "").replace("約", "").strip()
+    h = re.search(r"(\d+(?:\.\d+)?)\s*小時", s)
+    m = re.search(r"(\d+)\s*分鐘", s)
+    return (float(h.group(1)) if h else 0) * 60 + (int(m.group(1)) if m else 0)
 
 # MEASURED 2026-10-01 against the public model list (openrouter.ai/api/v1/models needs no key):
 # 462 models, 16 end in `:free`, and only 6 of those support `response_format` - which this script
@@ -99,9 +129,12 @@ RULES, in order of importance:
    a figure that is not there. If a number is missing, say nothing about it.
 2. No advice, no predictions, no politics, no speculation about causes. Describe what the data
    shows, in the present tense.
-3. Plain language a resident understands. No jargon, no "insights", no "leverage", no emoji.
-4. Two sentences maximum per language, under 45 words each.
-5. The data is public open data from Hong Kong government departments and public bodies.
+3. You may add AT MOST ONE grounded cross-reference ("X is high while Y is light", across two data
+   sources) — only when BOTH sides are numbers already in DATA, and you must name them. Never
+   infer a cause the data does not show.
+4. Plain language a resident understands. No jargon, no "insights", no "leverage", no emoji.
+5. Two sentences maximum per language, under 45 words each.
+6. The data is public open data from Hong Kong government departments and public bodies.
 
 Return ONLY JSON, no prose around it: {"tc": "<two sentences, Traditional Chinese, Cantonese register>", "en": "<two sentences in English>"}
 
@@ -174,6 +207,78 @@ def slim(file: str, payload: dict) -> dict:
     return {}
 
 
+def fetch_api(key: str, url: str):
+    """Fetch one LIVE publisher endpoint. Returns decoded text for csv/xml, a parsed dict for JSON,
+    or None when unreachable — a source that cannot be reached is skipped, never fatal."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA})
+        with urllib.request.urlopen(req, timeout=25) as res:
+            raw = res.read()
+    except (urllib.error.URLError, TimeoutError) as exc:
+        print(f"  WARN {key}: unreachable ({exc})", file=sys.stderr)
+        return None
+    if key == "wind_10min":
+        return raw.decode("utf-8-sig", errors="replace")
+    if key == "special_traffic":
+        return raw.decode("utf-8", errors="replace")
+    try:
+        return json.loads(raw.decode("utf-8-sig"))
+    except json.JSONDecodeError as exc:
+        print(f"  WARN {key}: not JSON ({exc})", file=sys.stderr)
+        return None
+
+
+def slim_api(key: str, payload) -> dict:
+    """A couple of signal fields per LIVE source. Figures come straight out of the payload, or are a
+    count/max over it — the script never hands the model a number it should add up itself."""
+    if key == "ae_waiting":
+        rows = payload.get("waitTime") or []
+        by_wait = sorted(rows, key=lambda r: _minutes(str(r.get("t45p50") or "")), reverse=True)
+        return {
+            "observed": payload.get("updateTime"),
+            "hospitals": len(rows),
+            "longest": [{"hosp": r.get("hospName"), "t45p50": r.get("t45p50")} for r in by_wait[:3]],
+        }
+    if key == "cp_queue":
+        open_pts = {c: v for c, v in (payload or {}).items()
+                    if v.get("arrQueue", 99) < 95 or v.get("depQueue", 99) < 95}
+        if not open_pts:
+            return {"open": 0, "busiest": None}
+        busiest = max(open_pts.items(), key=lambda kv: max(kv[1].get("arrQueue", 0), kv[1].get("depQueue", 0)))
+        return {
+            "open": len(open_pts),
+            "busiest": {"point": CP_NAMES.get(busiest[0], busiest[0]),
+                        "arr_min": busiest[1].get("arrQueue"), "dep_min": busiest[1].get("depQueue")},
+        }
+    if key == "aqhi":
+        rows = payload if isinstance(payload, list) else []
+        top = max(rows, key=lambda r: int(r.get("aqhi") or 0), default=None)
+        return {
+            "stations": len(rows),
+            "max": top.get("aqhi") if top else None,
+            "risk": top.get("health_risk") if top else None,
+            "observed": top.get("publish_date") if top else None,
+        }
+    if key == "wind_10min":
+        rows = list(csv.DictReader(io.StringIO(payload)))
+        gusts = []
+        for r in rows:
+            g = str(r.get("10-Minute Maximum Gust(km/hour)") or "").strip()
+            if g.isdigit():
+                gusts.append((r.get("Automatic Weather Station"), int(g)))
+        top = max(gusts, key=lambda x: x[1]) if gusts else None
+        return {
+            "stations": len(rows),
+            "max_gust_kmh": top,
+            "observed": rows[0].get("Date time") if rows else None,
+        }
+    if key == "warnsum":
+        return {"active": len(payload or {}), "names": [str(v.get("name") or k) for k, v in (payload or {}).items()]}
+    if key == "special_traffic":
+        return {"messages": payload.count("<message>")}
+    return {}
+
+
 def build_context(offline: bool) -> tuple[dict, list[dict], list[str]]:
     facts, inputs, warnings = {}, [], []
     for file in SOURCES:
@@ -192,6 +297,17 @@ def build_context(offline: bool) -> tuple[dict, list[dict], list[str]]:
             continue
         facts[file] = s
         inputs.append({"file": file, "from": where, "observed": s.get("observed") or s.get("observed_ms")})
+    for key, url in LIVE_API.items():
+        payload = fetch_api(key, url)
+        if payload is None:
+            warnings.append(f"{key}: unreachable")
+            continue
+        s = slim_api(key, payload)
+        if not s:
+            warnings.append(f"{key}: shape not recognised")
+            continue
+        facts[key] = s
+        inputs.append({"file": key, "from": "live-api", "observed": s.get("observed")})
     return facts, inputs, warnings
 
 
@@ -237,7 +353,7 @@ def call_model(model: str, context: str, key: str) -> dict:
     payload = {
         "model": bare,
         "messages": [{"role": "user", "content": PROMPT + context}],
-        "max_tokens": 400,
+        "max_tokens": 500,
         "temperature": 0.2,
     }
     # `response_format: json_object` is an OpenAI/OpenRouter feature that ChatAnywhere does not

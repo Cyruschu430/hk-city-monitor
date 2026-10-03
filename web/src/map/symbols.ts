@@ -118,6 +118,10 @@ interface GlyphSpec {
   /** solid agency-coloured disc behind the glyph — high contrast at any zoom,
       and the colour still encodes which agency the symbol belongs to */
   disc?: string;
+  /** optical-centring nudge: the glyph ink isn't drawn dead-centre in its box
+      (a camera sits on its bracket, a droplet is bulb-heavy). Applied as a
+      translate just before draw. 44-grid units. */
+  off?: [number, number];
 }
 
 const S = 44; // icon box; map icons are drawn at 44px and scaled by icon-size
@@ -598,7 +602,7 @@ function drawWater(ctx: CanvasRenderingContext2D, size: number): void {
 }
 
 const GLYPHS: Record<GlyphId, GlyphSpec> = {
-  "cam-td": { draw: drawCamera, disc: "#22d3ee" },
+  "cam-td": { draw: drawCamera, disc: "#22d3ee", off: [1, -3.5] },
   "cam-hko": { draw: drawStation, disc: "#a855f7" },
   "station-wind": { draw: drawStation, disc: "#38bdf8" },
   aqhi: { draw: drawAqhi, disc: "#34d399" },
@@ -726,7 +730,8 @@ function renderGlyph(id: GlyphId, scale = 2): ImageData {
   ctx.scale(scale, scale);
   if (spec.disc) {
     drawDisc(ctx, S / 2, S / 2, S / 2 - 3, spec.disc);
-    spec.draw(ctx, S * 0.82);
+    if (spec.off) ctx.translate(spec.off[0], spec.off[1]);
+    spec.draw(ctx, S);
   } else {
     spec.draw(ctx, S);
   }
@@ -759,7 +764,8 @@ export function drawGlyphInto(canvas: HTMLCanvasElement, id: GlyphId, size = 16)
   ctx.scale(k, k);
   if (spec.disc) {
     drawDisc(ctx, S / 2, S / 2, S / 2 - 3, spec.disc);
-    spec.draw(ctx, S * 0.82);
+    if (spec.off) ctx.translate(spec.off[0], spec.off[1]);
+    spec.draw(ctx, S);
   } else {
     spec.draw(ctx, S);
   }

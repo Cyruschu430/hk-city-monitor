@@ -70,6 +70,8 @@ Data is organised into **panels** (individual readouts) that appear in context-s
 |---|---|
 | Front end | TypeScript, Vite 7 |
 | Map rendering | MapLibre GL JS, deck.gl 9 (2D and 3D) |
+| Basemap & imagery | Esri ArcGIS Online public services — World Imagery, World Topographic Map, Light Gray Canvas (keyless) |
+| Basemap (Hong Kong) | Lands Department topographic and imagery tiles |
 | 3D tiles | `@loaders.gl/3d-tiles` |
 | Edge proxy | Cloudflare Worker (single, whitelist-limited) |
 | Static hosting | Cloudflare Pages |
@@ -184,4 +186,8 @@ Sources are predominantly Hong Kong Government open data (data.gov.hk, CSDI) and
 
 ## Credits
 
-Created and maintained by Cyrus Chu, a Hong Kong GIS practitioner. Architecture is inspired by [`koala73/worldmonitor`](https://github.com/koala73/worldmonitor) (AGPL-3.0); this project is an independent Hong Kong implementation.
+Created and maintained by Cyrus Chu, a Hong Kong GIS practitioner.
+
+Basemap and imagery are provided by **Esri ArcGIS Online public services** (World Imagery, World Topographic Map and Light Gray Canvas) and by the **Lands Department**. Both are credited on the map face and in the panel footers.
+
+Architecture is inspired by [`koala73/worldmonitor`](https://github.com/koala73/worldmonitor) (AGPL-3.0); this project is an independent Hong Kong implementation.

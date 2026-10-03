@@ -182,6 +182,8 @@ a:hover{color:var(--cyan)}
   font-size:11px;line-height:1.45;color:var(--dim)}
 .foot-row{display:flex;align-items:center;gap:10px;margin-bottom:3px;flex-wrap:wrap}
 .foot-author{color:var(--txt);font-family:var(--font-ui)}
+.foot-gh{display:inline-flex;align-items:center;color:var(--txt);opacity:.85}
+.foot-gh:hover{color:var(--cyan);opacity:1}
 /* MEASURED 2026-10-01: --cyan is #0e7f97 in the light theme, which is 4.15:1 on this surface
    (needs 4.5) - check:contrast caught exactly these two links. Underlining carries the "link"
    signal instead of colour, so it survives every theme, and the hover keeps the cyan for anyone
@@ -388,7 +390,7 @@ a:hover{color:var(--cyan)}
    accessibility tree with the pixels. */
 .cam-nav .cam-nav-b{display:none}
 /* discrete instrument readouts: label above value, hairline separated */
-.stat{display:flex;flex-direction:column;gap:1px;padding:0 17px;line-height:1.15;
+.stat{display:flex;flex-direction:column;gap:1px;padding:0 22px;line-height:1.15;
   border-left:1px solid var(--hairline)}
 .stat:first-child{border-left:0}
 .stat-label{font-family:var(--font-ui);font-size:11px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
@@ -417,7 +419,7 @@ a:hover{color:var(--cyan)}
 .stat-fresh[data-fresh="bad"] .stat-value{color:var(--alert)}
 /* Language and theme switches share one pill treatment — they are the same kind
    of control (a small exclusive choice) and must not drift apart visually. */
-#langSwitch,#themeSwitch{display:flex;border:1px solid var(--hairline);border-radius:var(--radius-pill);overflow:hidden}
+#langSwitch,#themeSwitch{display:flex;border:1px solid var(--hairline);border-radius:var(--radius-pill);overflow:hidden;margin-left:14px}
 #langSwitch button,#themeSwitch button{padding:3px 10px;font-size:11px;color:var(--dim);letter-spacing:.08em}
 /* WCAG 2.2 AA 2.5.8 wants a 24x24 minimum target. MEASURED 2026-09-25
    (scripts/probe-uiux-defects.mjs): the language and theme pills were 44x22 and

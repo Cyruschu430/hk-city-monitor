@@ -268,7 +268,7 @@
       "filters": {
         "scope": "hk"
       },
-      "_comment": "AIS vessel positions from VesselAPI, a 6-hourly snapshot (not live — aisstream.io went silent 2026-08 and blocks datacenter egress). Same pointLayer path as aircraft: `symbol: vessel` plus a per-feature icon-rotate on `bearing` (COG, falling back to heading). OFF by default for the same reason aircraft is: a moving layer nobody asked for is a layer on every reader's map."
+      "_comment": "AIS vessel positions from VesselAPI, a twice-daily snapshot (not live — aisstream.io went silent 2026-08 and blocks datacenter egress). Same pointLayer path as aircraft: `symbol: vessel` plus a per-feature icon-rotate on `bearing` (COG, falling back to heading). OFF by default for the same reason aircraft is: a moving layer nobody asked for is a layer on every reader's map."
     }
   ]
 }

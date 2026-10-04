@@ -8,8 +8,9 @@ branch (the aircraft pattern). aisstream.io — the only free WebSocket AIS —
 went silent 2026-08 and blocks datacenter egress, so VesselAPI (REST) is the
 fallback.
 
-WHY 6 HOURS. Ships move far slower than aircraft. 6h = 120 calls/month, well
-inside the 150-call free tier, with headroom for a 31-day month.
+WHY 12 HOURS. Ships move far slower than aircraft. 2 pages x 2 runs a day =
+~124 calls/month inside the 150-call free tier, with headroom for a 31-day month.
+A page cannot exceed 50 rows, so coverage past 50 is pages, not a bigger page.
 
 A FAILED RUN MUST NOT DESTROY A GOOD FILE. A refused key, a network error or
 zero position reports leave the previous file untouched and exit non-zero, so
@@ -48,18 +49,24 @@ def main():
         print("FAIL kept the previous vessels.json — an empty map is not an update", file=sys.stderr)
         return 1
 
-    # One bbox query should cover HK waters in a single page; follow nextToken
-    # up to a cap so a paginated answer still flattens into one file.
+    # Pages per run and runs per month have to multiply to under the free tier's
+    # 150 calls: 2 pages x 2 runs a day = ~124 calls in a 31-day month. A single
+    # 50-row page was not enough once the cap forced the page size down from 100,
+    # so the honest trade is a slower cadence for full coverage — ships move far
+    # slower than aircraft, which is why 12 hours is fine here.
+    MAX_PAGES = 2
     all_vessels = []
     token = None
+    truncated = False
     try:
-        for _ in range(5):
+        for _ in range(MAX_PAGES):
             url = f"{BASE}?{BBOX}" + (f"&pagination.nextToken={token}" if token else "")
             payload = get(url, KEY)
             all_vessels.extend(payload.get("vessels") or [])
             token = payload.get("nextToken")
             if not token:
                 break
+            truncated = True                 # more pages exist than we are allowed
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", "replace")
         print(f"FAIL HTTP {exc.code} {exc.reason}: {body[:600]}", file=sys.stderr)
@@ -81,6 +88,11 @@ def main():
     with open(tmp, "w", encoding="utf-8") as fh:
         fh.write(body)
     os.replace(tmp, OUT)                                         # atomic
+    if truncated:
+        # Loud on purpose: a silent truncation looks exactly like a quiet harbour.
+        print(f"WARN hit the {MAX_PAGES}-page cap with more vessels pending — "
+              f"coverage is truncated, raise MAX_PAGES and slow the schedule together",
+              file=sys.stderr)
     print(f"OK   {os.path.basename(OUT)}  {len(body.encode('utf-8')):,} bytes  "
           f"{len(with_pos)} vessels with a position")
     return 0

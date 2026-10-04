@@ -1,8 +1,10 @@
 # vessel-publish.yml — keep the AIS vessel snapshot current without a machine of our own.
 #
-# WHY 6 HOURS. Ships move far slower than aircraft, so a 6-hourly snapshot is honest
-# rather than a deficiency; 6h = 120 calls/month against VesselAPI's 150-call free tier,
-# leaving headroom for a 31-day month.
+# WHY 12 HOURS. Ships move far slower than aircraft, so a 12-hourly snapshot is honest
+# rather than a deficiency — and it is what the free tier affords. VesselAPI refuses any
+# page larger than 50 rows (it is not clamped, it is a 400) and allows 150 calls a month,
+# so 2 pages x 2 runs a day = ~124 calls in a 31-day month. The cadence and the page
+# count have to be raised together or the quota runs out before the month does.
 #
 # WHY THIS IS A SEPARATE WORKFLOW FROM live-publish.yml. The aircraft/berth/water files
 # change on a ~10-minute cadence; vessels do not. Two workflows push the SAME orphan
@@ -16,7 +18,7 @@ name: vessel-publish
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 */12 * * *"
   workflow_dispatch:
 
 permissions:

@@ -216,14 +216,14 @@ Every URL was requested over HTTP for real. 🟢 = 200 with real data · 🟡 = 
 
 | Source | Endpoint | Status | Cadence | Auth | Response |
 |---|---|---|---|---|---|
-| Hong Kong Vessel Positions (AIS, 6h) | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | every 6 hours (collector → live-data branch) | none | — |
+| Hong Kong Vessel Positions (AIS, 12h) | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | every 12 hours (collector → live-data branch) | none | — |
 | Marine Department Cross-boundary Ferry Arrivals / Departures (5 min) | `https://www.mardep.gov.hk/e_files/hk/opendata/arrival_tc.csv` | 🟢 ok | 5 minutes | none | CSV ~57 rows, cols: 抵達時間|出發地|營運公司|碼頭|泊位|現況 |
 | Marine Department Vessel Arrivals / Departures (20 min) | `https://www.mardep.gov.hk/e_files/en/opendata/RN0010.XML` | 🟢 ok | 15 minutes | none | XML, 0 <item> entries, root tags: RN0010, G_SQL1, VESSEL_NAME, SHIP_TYPE_DESC, LIC_MD_REF |
 | Latest tidal information | `https://tide1.hydro.gov.hk/hotide/OpenData/All_tc.csv` | 🟢 ok | 10 minutes | none | 196B of text/csv |
 | Vessel arrivals and departures | `https://www.mardep.gov.hk/e_files/en/opendata/RP05005i.XML` | 🟢 ok | Every 20 minutes | none | XML, 0 <item> entries, root tags: RP05005IXML, G_SQL1, CALL_SIGN, VESSEL_NAME, SHIP_TYPE |
 | Public Cargo Working Area berth vacancy (live) | `not an HTTP endpoint (websocket or still unknown)` | 🟡 unprobeable | every 5 minutes (collector → live-data branch) | none | — |
 
-- **Hong Kong Vessel Positions (AIS, 6h)** — AIS vessel positions from VesselAPI (REST bbox query), polled every 6h by .github/workflows/vessel-publish.yml and read from data/vessels.json — the aircraft pattern. aisstream.io (the only free WebSocket AIS) went silent 2026-08 and its datacenter egress is blocked, so VesselAPI is the fallback: free tier 150 calls/month, 6h = 120/month with 30 to spare. Terrestrial AIS, so coverage is strongest in port/coastal waters and ships beyond ~40nm offshore are absent. This is a 6-hourly SNAPSHOT, not live positions — the panel and cadence note say so.
+- **Hong Kong Vessel Positions (AIS, 12h)** — AIS vessel positions from VesselAPI (REST bbox query), polled every 12h by .github/workflows/vessel-publish.yml and read from data/vessels.json — the aircraft pattern. aisstream.io (the only free WebSocket AIS) went silent 2026-08 and its datacenter egress is blocked, so VesselAPI is the fallback: free tier 150 calls/month, and a page is capped at 50 rows, so 2 pages x 2 runs a day = ~124/month. Terrestrial AIS, so coverage is strongest in port/coastal waters and ships beyond ~40nm offshore are absent. This is a twice-daily SNAPSHOT, not live positions — the panel and cadence note say so.
 - **Marine Department Cross-boundary Ferry Arrivals / Departures (5 min)** — Cross-boundary ferry arrivals and departures, 5-minute cadence. Together with the ImmD queue time this completes the 'cross the border by any mode' picture.
 - **Marine Department Vessel Arrivals / Departures (20 min)** — Ocean and river vessel arrivals/departures. Also declared missing earlier and found by the full scan — the lesson repeats: a keyword search is not evidence of absence.
 - **Latest tidal information** — Auto-imported from the CKAN full scan (catalogue tier, unreviewed) · Marine Department · hk-md-hydro-10mintues-latest-tidal-information
@@ -455,7 +455,7 @@ Other data set update upon there is any adjustment. | none | JSON object, keys: 
 - `bus_eta_citybus_nlb` — Citybus / NLB ETA → 422 — endpoint exists, needs POST body/parameters
 - `hkemobility_control_point` — HKeMobility Control Point Status → HTML page — title: HKeMobility
 - `adsb_lol_hk` — adsb.lol Hong Kong Flights (community ADS-B) → not an HTTP endpoint (websocket or still unknown)
-- `vessel_api` — Hong Kong Vessel Positions (AIS, 6h) → not an HTTP endpoint (websocket or still unknown)
+- `vessel_api` — Hong Kong Vessel Positions (AIS, 12h) → not an HTTP endpoint (websocket or still unknown)
 - `fsd_press` — FSD Press Releases → HTML page — title: 新聞公報 | 香港消防處
 - `open_meteo_wind_grid` — Open-Meteo Wind Field Grid (352 points, for the flow animation) → https://api.open-meteo.com/v1/forecast?latitude={LATS}&longitude={LONS}&current=wind_speed_10m,wind_direction_10m&timezone=Asia%2FHong_Kong -> HTTP 403
 - `cc_fuel_price` — Consumer Council Fuel Price Watch (motor vehicle fuel prices) → HTML page — title: 今日折扣及優惠 - 消費者委員會油價資訊通

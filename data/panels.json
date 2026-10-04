@@ -451,12 +451,12 @@
    },
    "params": {},
    "cadence_note": {
-    "tc": "每 6 小時（快照，非實時）",
-    "en": "Every 6 hours (snapshot, not live)"
+    "tc": "每 12 小時（快照，非實時）",
+    "en": "Every 12 hours (snapshot, not live)"
    },
    "disclaimer": {
-    "tc": "陸基 AIS 接收數據，離岸約 40 海里外嘅船隻可能收唔到；6 小時快照，唔可以當導航用。",
-    "en": "Terrestrial AIS; coverage drops off ~40nm offshore. A 6-hourly snapshot, not for navigation."
+    "tc": "陸基 AIS 接收數據，離岸約 40 海里外嘅船隻可能收唔到；12 小時快照，唔可以當導航用。",
+    "en": "Terrestrial AIS; coverage drops off ~40nm offshore. A twice-daily snapshot, not for navigation."
    }
   }
  ]

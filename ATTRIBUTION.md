@@ -267,7 +267,7 @@ file is a licence requirement, not a courtesy.
 
 | Source | Name | URL |
 |---|---|---|
-| `vessel_api` | Hong Kong Vessel Positions (AIS, 6h) | data/vessels.json |
+| `vessel_api` | Hong Kong Vessel Positions (AIS, 12h) | data/vessels.json |
 
 ### adsb.lol — ODbL 1.0 (commercial use permitted); OpenSky explicitly forbids live products, so it is not used
 

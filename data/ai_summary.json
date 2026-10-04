@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-03T20:22:50+08:00",
+ "generated": "2026-10-05T00:56:45+08:00",
  "model": "ca/gpt-4o-mini",
  "provenance": {
   "generator": "LLM summary of published open data",
@@ -7,17 +7,17 @@
    {
     "file": "aircraft.json",
     "from": "live-data",
-    "observed": 1791013671500
+    "observed": 1791121969000
    },
    {
     "file": "berth_vacancy.json",
     "from": "live-data",
-    "observed": "2026-10-03 15:47"
+    "observed": "2026-10-04 21:52"
    },
    {
     "file": "water_suspension.json",
     "from": "live-data",
-    "observed": "2026-10-03T15:50:08+08:00"
+    "observed": "2026-10-04T21:55:02+08:00"
    },
    {
     "file": "carpark_info.json",
@@ -32,7 +32,7 @@
    {
     "file": "ae_waiting",
     "from": "live-api",
-    "observed": "2026年10月3日 下午8時15分"
+    "observed": "2026年10月5日 上午12時45分"
    },
    {
     "file": "cp_queue",
@@ -42,12 +42,12 @@
    {
     "file": "aqhi",
     "from": "live-api",
-    "observed": "2026-10-03T19:30:00"
+    "observed": "2026-10-04T23:30:00"
    },
    {
     "file": "wind_10min",
     "from": "live-api",
-    "observed": "202610032010"
+    "observed": "202610050040"
    },
    {
     "file": "warnsum",
@@ -64,7 +64,7 @@
   "disclaimer": "AI-generated from the figures above. It is not analysis, not advice, and not an official notice."
  },
  "brief": {
-  "tc": "目前有8個水務暫停，涉及中西區、九龍城區、元朗區、北區、南區和大埔區。醫院急症室的等待時間最長為威爾斯親王醫院的8小時。香港的空氣質素指數為4，風速最高為18公里每小時。現時有47架飛機在空中，8架在地面。",
-  "en": "There are currently 8 active water suspensions affecting Central and Western District, Kowloon City District, Yuen Long District, North District, Southern District, and Tai Po District. The longest waiting time in emergency departments is 8 hours at Prince of Wales Hospital. The air quality index in Hong Kong is 4, with a maximum wind speed of 18 kilometers per hour. There are 47 aircraft airborne and 8 on the ground."
+  "tc": "目前有五個地區的水供應中斷，包括中西區、九龍城區、元朗區、北區和南區。醫院的等待時間方面，廣華醫院的最長等待時間為7.5小時，基督教聯合醫院為6.5小時，天水圍醫院為5.5小時。空氣質素指數為中等，最大風速為每小時30公里。現時有120個泊位，其中27個空置。",
+  "en": "Currently, there are five districts with water supply suspension: Central and Western District, Kowloon City District, Yuen Long District, North District, and Southern District. In terms of hospital waiting times, the longest wait at Kwong Wah Hospital is 7.5 hours, 6.5 hours at Christian Alliance Hospital, and 5.5 hours at Tin Shui Wai Hospital. The air quality index is moderate, with a maximum wind speed of 30 km/h. There are 120 berths, with 27 vacant."
  }
 }

@@ -26,7 +26,11 @@ KEY = os.environ.get("VESSELAPI_KEY", "").strip()
 # Hong Kong waters with margin: harbour, approaches, Pearl River estuary mouth.
 # VesselAPI bbox params: latBottom/latTop/lonLeft/lonRight.
 BASE = "https://api.vesselapi.com/v1/location/vessels/bounding-box"
-BBOX = "filter.latBottom=22.05&filter.latTop=22.65&filter.lonLeft=113.70&filter.lonRight=114.55&pagination.limit=100"
+# 50 is VesselAPI's hard cap. A larger limit is not clamped, it is refused with
+# HTTP 400 invalid_parameter, which killed every scheduled run between 2026-10-03
+# and 2026-10-04 — coverage past 50 comes from the nextToken loop below, not from
+# a bigger page. Do not raise this number.
+BBOX = "filter.latBottom=22.05&filter.latTop=22.65&filter.lonLeft=113.70&filter.lonRight=114.55&pagination.limit=50"
 
 
 def get(url, key):

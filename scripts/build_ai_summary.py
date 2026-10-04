@@ -289,6 +289,22 @@ def slim_api(key: str, payload) -> dict:
     return {}
 
 
+_PRIORITY = (
+    # The prompt walks a priority list - warnings, then waits, then air/wind, then movement, then
+    # counts. A weak model mirrors the ORDER of what it is handed, so the data is handed in that
+    # same order: the 00:52 brief led with water suspensions and then padded with aircraft, berth
+    # and carpark counts while the A&E wait, the AQHI and the wind sat below them, unmentioned.
+    # Same keys, same bytes, ordered the way the prompt already asks for them.
+    "water_suspension.json",
+    "special_traffic", "warnsum",
+    "ae_waiting", "cp_queue",
+    "aqhi", "wind_10min",
+    "aircraft.json",
+    "berth_vacancy.json", "carpark_info.json",
+    "baselines.json",
+)
+
+
 def build_context(offline: bool) -> tuple[dict, list[dict], list[str]]:
     facts, inputs, warnings = {}, [], []
     for file in SOURCES:
@@ -318,7 +334,8 @@ def build_context(offline: bool) -> tuple[dict, list[dict], list[str]]:
             continue
         facts[key] = s
         inputs.append({"file": key, "from": "live-api", "observed": s.get("observed")})
-    return facts, inputs, warnings
+    ordered = {k: facts[k] for k in sorted(facts, key=lambda k: _PRIORITY.index(k) if k in _PRIORITY else len(_PRIORITY))}
+    return ordered, inputs, warnings
 
 
 # TWO PROVIDERS, ONE SHAPE. Cyrus added a ChatAnywhere key on 2026-10-02 because the OpenRouter
@@ -548,6 +565,23 @@ def main() -> int:
         assert issubclass(TimeoutError, NET_ERRORS)
         assert issubclass(urllib.error.URLError, NET_ERRORS)
         assert issubclass(ConnectionResetError, NET_ERRORS)
+        # Asserting the tuple is not enough - someone can narrow the except clause and leave the
+        # tuple intact. Provoke the failure for real: a refused connection is the same class of
+        # event as the timeout that killed the 2026-10-04 run, needs no key and no network.
+        real_provider = provider_of
+        globals()["provider_of"] = lambda m: ("http://127.0.0.1:9/v1/chat/completions", "_SELFTEST_KEY", m)
+        try:
+            try:
+                call_model("selftest/model", "{}", "selftest")
+            except _Busy:
+                pass
+            except BaseException as exc:                      # noqa: BLE001 - the point of the check
+                raise SystemExit(f"SELF-TEST FAILED: a dead connection escaped as "
+                                 f"{type(exc).__name__}: {exc} - the chain would die on model #1")
+            else:
+                raise SystemExit("SELF-TEST FAILED: call_model returned without a model answering")
+        finally:
+            globals()["provider_of"] = real_provider
         print("SELF-TEST OK  freshness rule holds (fresh / 8h-old / unreadable / missing); "
               "network failures stay inside the chain")
         return 0

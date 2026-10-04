@@ -358,6 +358,13 @@ def provider_of(model: str) -> tuple[str, str]:
     return (*PROVIDERS["openrouter"], model)
 
 
+# The exception classes that mean "this model could not answer", as opposed to "we sent a bad
+# request". ONLY _Busy keeps the chain walking, so this tuple is the difference between a fallback
+# and a dead run: a bare TimeoutError escaped it on 2026-10-04 and killed the job on model #1 while
+# five others went untried. Declared here, above its use, so the reader meets it before the except.
+NET_ERRORS = (TimeoutError, urllib.error.URLError, OSError)
+
+
 def call_model(model: str, context: str, key: str) -> dict:
     url, key_env, bare = provider_of(model)
     payload = {
@@ -401,7 +408,7 @@ def call_model(model: str, context: str, key: str) -> dict:
     )
     try:
         with urllib.request.urlopen(req, timeout=90) as res:
-            payload = json.loads(res.read().decode())
+            body_text = res.read().decode()
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode(errors="replace")[:200]
         # 429 (the shared free pool is busy) and 5xx (the provider hiccuped) are the model's
@@ -411,7 +418,22 @@ def call_model(model: str, context: str, key: str) -> dict:
         if exc.code == 429 or exc.code >= 500:
             raise _Busy(f"HTTP {exc.code}: {detail}") from exc
         raise SystemExit(f"OpenRouter HTTP {exc.code} for {model}: {detail}")
-    text = (payload["choices"][0]["message"]["content"] or "").strip()
+    except NET_ERRORS as exc:
+        # A connection that times out or drops is the SAME class of event as a 429: the model, not
+        # us. Measured 2026-10-04 - this escaped ask_chain() as a bare TimeoutError, so the run died
+        # on the FIRST model and never reached the other five, which is the one thing the chain
+        # exists to prevent. Every failure that means "no usable answer" must arrive as _Busy.
+        raise _Busy(f"{type(exc).__name__}: {exc}") from exc
+    try:
+        payload = json.loads(body_text)
+    except json.JSONDecodeError as exc:
+        raise _Busy(f"non-JSON body: {body_text[:200]}") from exc
+    try:
+        text = (payload["choices"][0]["message"]["content"] or "").strip()
+    except (KeyError, IndexError, TypeError) as exc:
+        # A free proxy can answer 200 with an error object instead of choices; that is still "this
+        # model produced nothing", not a crash.
+        raise _Busy(f"unexpected response shape: {json.dumps(payload)[:200]}") from exc
     if text.startswith("```"):
         text = text.strip("`").split("\n", 1)[-1].rsplit("```", 1)[0]
     try:
@@ -521,7 +543,13 @@ def main() -> int:
         assert brief_age_hours({"generated": (now - timedelta(hours=8)).isoformat()}) > 6.0
         assert brief_age_hours({"generated": "not a date"}) is None
         assert brief_age_hours({}) is None
-        print("SELF-TEST OK  freshness rule holds (fresh / 8h-old / unreadable / missing)")
+        # The chain only walks on _Busy, so every "cannot answer" class has to be in NET_ERRORS.
+        # Narrowing that tuple back to HTTPError-only is exactly the 2026-10-04 dead run.
+        assert issubclass(TimeoutError, NET_ERRORS)
+        assert issubclass(urllib.error.URLError, NET_ERRORS)
+        assert issubclass(ConnectionResetError, NET_ERRORS)
+        print("SELF-TEST OK  freshness rule holds (fresh / 8h-old / unreadable / missing); "
+              "network failures stay inside the chain")
         return 0
 
     if args.skip_if_fresh > 0:

@@ -575,6 +575,19 @@ export function parseMtrSchedule(
   return { items, observedAt: parseStamp(j.sys_time) };
 }
 
+/** Minutes from a rendered "7 分鐘" / "11 min" / "due" label, for ORDERING only.
+ *
+ *  The per-line schedule arrives already sorted, but a station served by four lines merges four
+ *  lists, and sorting the merged set on the DISPLAY string is lexical: "11 分鐘" sorts before
+ *  "7 分鐘", so the list reads as unsorted at exactly the stations people care about. "due"/"即將"
+ *  carries no number and sorts first, which is what it means.
+ *
+ *  Lives here rather than in the adapter so it can be asserted without a network call. */
+export function minsFromLabel(label: string | undefined): number {
+  const m = /(\d+)/.exec(label ?? "");
+  return m ? Number(m[1]) : 0;
+}
+
 // --- MTR train position ESTIMATE -------------------------------------------------
 // MTR publishes no GTFS-RT vehicle positions, only next-train ETAs. A train
 // reported "N minutes from terminus T" is placed by linear interpolation along

@@ -298,6 +298,18 @@ const ADAPTERS: Record<string, Adapter> = {
     // by scripts/build-mtr-index.mjs - stable data that costs nothing to ship and would cost a Worker
     // whitelist entry plus quota to fetch at runtime.
     const q = searchQuery(panel.id);
+    // Label every row with its LINE. A station can be served by four lines and the API answers
+    // per line, so a bare "往柴灣" only states the DIRECTION — at 中環 that could be 港島綫,
+    // 荃灣綫, 東鐵綫 or 南港島綫. Cyrus 2026-10-06: 「佢係只能夠往邊個方向」.
+    //
+    // It was applied on the SEARCH path only, so the pinned default drifted from it and read
+    // differently depending on whether the reader had typed anything. Both paths go through this
+    // one function now, which is what stops them drifting again.
+    const label = <T extends { sub?: string }>(l: string, items: T[]): T[] => {
+      const lineName = MTR_LINE_TC[l] ?? l;
+      return items.map((it) => ({ ...it, sub: it.sub ? `${lineName} · ${it.sub}` : lineName }));
+    };
+
     if (q) {
       const hit = findMtrStation(q);
       if (!hit) throw new Error(`搵唔到港鐵站「${q}」 · No MTR station matches "${q}"`);
@@ -306,20 +318,21 @@ const ADAPTERS: Record<string, Adapter> = {
       const parts = await Promise.all(
         hit.lines.map(async (l) => {
           const { items, observedAt } = P.parseMtrSchedule(await json(await fetchSource(withUrl(src, schedule(l, hit.code)))), MTR_NAME);
-          const lineName = MTR_LINE_TC[l] ?? l;
-          return { items: items.map((it) => ({ ...it, sub: it.sub ? `${lineName} · ${it.sub}` : lineName })), observedAt };
+          return { items: label(l, items), observedAt };
         }),
       );
       const items = parts
         .flatMap((x) => x.items)
-        .sort((a, b) => String(a.time ?? "").localeCompare(String(b.time ?? "")));
+        // Numeric, not lexical - see P.minsFromLabel. Sorting the display string puts "11 分鐘"
+        // ahead of "7 分鐘" and the merged list looks unsorted.
+        .sort((a, b) => P.minsFromLabel(a.time) - P.minsFromLabel(b.time));
       if (items.length === 0) return { data: { kind: "list", items: [], emptyText: `${hit.tc} ${hit.en}：目前冇班次資料 · no train data right now` }, observedAt: parts[0]?.observedAt ?? null };
       return { data: { kind: "list", items }, observedAt: parts[0]?.observedAt ?? null };
     }
 
     const payload = await json(await fetchSource(withUrl(src, schedule(line, sta))));
     const { items, observedAt } = P.parseMtrSchedule(payload, MTR_NAME);
-    return { data: { kind: "list", items }, observedAt };
+    return { data: { kind: "list", items: label(line, items) }, observedAt };
   },
 
   async kmb_eta(src, panel) {

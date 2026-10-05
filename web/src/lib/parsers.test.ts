@@ -599,7 +599,12 @@ console.log("\nparsers.test.ts: ALL PASS");
   assert.ok(items.every((i) => i.title.startsWith("往") || i.title.startsWith("to ")), "每班都有目的地");
   assert.ok(items.some((i) => /\d+ 分鐘/.test(i.time ?? "") || i.time === "即將"), "有到站分鐘");
   assert.ok(observedAt instanceof Date, "sys_time 解析到（無 T、無時區）");
-  console.log(`✓ 港鐵下一班: ${items.length} 班；首班 ${items[0]!.title} · ${items[0]!.time}`);
+  // The MERGE order across lines. Sorting the display label lexically puts "11 分鐘" before
+  // "7 分鐘" — a measured bug (2026-10-06) that made the list look unsorted at exactly the
+  // multi-line stations people track. "即將" means due, so it sorts first.
+  const merged = ["11 分鐘", "7 分鐘", "即將", "20 分鐘"].sort((a, b) => P.minsFromLabel(a) - P.minsFromLabel(b));
+  assert.deepEqual(merged, ["即將", "7 分鐘", "11 分鐘", "20 分鐘"], `合併排序要按數字：${merged.join(" < ")}`);
+  console.log(`✓ 港鐵下一班: ${items.length} 班；首班 ${items[0]!.title} · ${items[0]!.time} · 合併排序按數字`);
 }
 
 // KMB arrivals at one stop. The 備註 column is the honesty point of this panel.

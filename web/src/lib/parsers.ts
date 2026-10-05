@@ -802,6 +802,19 @@ export interface CarparkRow {
    *  independently, so one row can be minutes old while the one beside it is a
    *  week old. Without carrying this the panel has no way to say which. */
   updatedAt: Date | null;
+  /** WGS84 position from TD's `basic_info_all`, or null when the record carried no usable pair.
+   *
+   *  Added 2026-10-06 for the carpark POINT layer. The vacancy feed has no position at all, so
+   *  without this the twenty table rows are the only carpark output the app can produce. Null is a
+   *  first-class value, not a failure: a park with no coordinate belongs in the table and NOT on the
+   *  map, and defaulting to 0/0 would place it in the Atlantic, which reads as real.
+   *
+   *  The join is by `park_id` and BOTH sides are TD's own ids ("tdc166p1"). The other publisher of
+   *  Hong Kong carpark vacancy — data.gov.hk's one-stop feed — numbers the same car parks "12" and
+   *  carries its own coordinates; its ids are NOT interchangeable with these, and a layer built on
+   *  that feed would need a join nobody can verify. */
+  lat: number | null;
+  lon: number | null;
 }
 
 /** vacancy_all.json + basic_info_all.json both wrap {car_park:[…]}; merge by
@@ -834,7 +847,7 @@ export interface CarparkRow {
  *  and DOES lack `capacity`; the assertion was the defect. */
 export function parseCarpark(vacancyJson: unknown, infoJson: unknown, maxRows: number): CarparkRow[] {
   const vac = (vacancyJson as { car_park?: CarparkVacancyRec[] })?.car_park ?? [];
-  const info = (infoJson as { car_park?: { park_id?: string; name_tc?: string; name_en?: string }[] })?.car_park ?? [];
+  const info = (infoJson as { car_park?: { park_id?: string; name_tc?: string; name_en?: string; latitude?: number; longitude?: number }[] })?.car_park ?? [];
   const byId = new Map(info.filter((p) => p.park_id).map((p) => [p.park_id!, p]));
   const rows: CarparkRow[] = [];
   for (const p of vac) {
@@ -856,6 +869,9 @@ export function parseCarpark(vacancyJson: unknown, infoJson: unknown, maxRows: n
       name: (base.name_tc ?? base.name_en)!,
       vacancy,
       updatedAt: latest ? new Date(latest) : null,
+      // Present as a PAIR or not at all — a lone latitude is not a position.
+      lat: typeof base.latitude === "number" && typeof base.longitude === "number" ? base.latitude : null,
+      lon: typeof base.latitude === "number" && typeof base.longitude === "number" ? base.longitude : null,
     });
   }
   // Most free spaces first. `name` as tie-break so the order is stable between

@@ -279,9 +279,35 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   const timed = rows.filter((r) => r.updatedAt instanceof Date && Number.isFinite(r.updatedAt.getTime()));
   assert.ok(timed.length > 0, `${timed.length}/${rows.length} rows carry a parsed report time`);
 
+  // 8. Coordinates ride along as a PAIR or not at all — this is the entire input of the carpark
+  //    map layer, so it is pinned here rather than left to the panel (which ignores them).
+  //    The fixture is a faithful capture of `basic_info_all` and DOES carry latitude/longitude for
+  //    every park (that is why an earlier draft of this check, asserting they were all absent,
+  //    failed) — so the live path is asserted from the fixture and the REJECTION paths
+  //    synthetically: a half-pair coerced into a number puts the car park at 0/0 in the Atlantic,
+  //    which renders as a real position off the coast of Africa.
+  const located = rows.filter((r) => r.lat !== null && r.lon !== null);
+  assert.equal(located.length, rows.length, `${located.length}/${rows.length} rows carry a coordinate pair`);
+  assert.ok(
+    located.every((r) => r.lat! > 22.0 && r.lat! < 22.7 && r.lon! > 113.7 && r.lon! < 114.6),
+    "every coordinate falls inside Hong Kong's bounding box",
+  );
+  const carRows = (parkRaw: Record<string, unknown>[]) =>
+    P.parseCarpark(
+      { car_park: parkRaw.map((p) => ({ park_id: p["park_id"], vehicle_type: [{ type: "P", service_category: [{ vacancy: 3 }] }] })) },
+      { car_park: parkRaw },
+      5,
+    );
+  const none = carRows([{ park_id: "z", name_tc: "冇座標場" }]);
+  assert.deepEqual([none[0]!.lat, none[0]!.lon], [null, null], "no coordinate pair → null, never 0");
+  const half = carRows([{ park_id: "y", name_tc: "半對場", latitude: 22.3247 }]);
+  assert.equal(half[0]!.lat, null, "a lone latitude is not a position");
+  assert.equal(half[0]!.lon, null, "a lone latitude implies no longitude either");
+
   console.log(
     `✓ 停車場: ${rows.length} 個（私家車空位最多優先）· 首位 ${rows[0]!.name} ${rows[0]!.vacancy} 個 · ` +
-      `多車種場 ${multiType} 個（只用 P 種）· 有時間戳 ${timed.length}/${rows.length}`,
+      `多車種場 ${multiType} 個（只用 P 種）· 有時間戳 ${timed.length}/${rows.length} · ` +
+      `座標: 一對先算（半對→null）`,
   );
 }
 

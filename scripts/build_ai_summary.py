@@ -382,6 +382,25 @@ def provider_of(model: str) -> tuple[str, str]:
 NET_ERRORS = (TimeoutError, urllib.error.URLError, OSError)
 
 
+def is_edge_block(body: str) -> bool:
+    """True when a 4xx body is an edge/CDN block page rather than the API's own error.
+
+    The distinction decides whether a rejected request stops the run or walks the chain: "your key
+    is wrong" is ours and must stop it; "I do not like your IP" is the edge's and must fall through
+    to the next model. MEASURED 2026-10-02 - ChatAnywhere's Cloudflare answered the GitHub runner
+    with `error code: 1010` while an ordinary host got 200, and because every non-429 4xx raised
+    SystemExit, one provider's edge block killed the whole chain.
+
+    Markers are taken from real block pages (Cloudflare challenge HTML, its 1010/1020 ban codes);
+    a provider's own JSON error carries none of them. Ceiling: an API error body that happens to
+    say "cloudflare" reads as an edge block, which costs one extra model attempt - not a lost run.
+    """
+    low = body.lower()
+    return ("<html" in low or "<!doctype html" in low or "cloudflare" in low
+            or "attention required" in low
+            or "error code: 101" in low or "error code: 102" in low)
+
+
 def call_model(model: str, context: str, key: str) -> dict:
     url, key_env, bare = provider_of(model)
     payload = {
@@ -434,6 +453,11 @@ def call_model(model: str, context: str, key: str) -> dict:
         # a one-line configuration error into a mystery, so they stop the run.
         if exc.code == 429 or exc.code >= 500:
             raise _Busy(f"HTTP {exc.code}: {detail}") from exc
+        # A 403 from the EDGE is not our request being wrong - it is the CDN refusing this IP, the
+        # same class of event as a 429, so it walks the chain. A 403 from the API itself (bad key)
+        # still stops the run below.
+        if exc.code == 403 and is_edge_block(detail):
+            raise _Busy(f"edge block HTTP 403: {detail}") from exc
         # Name the provider that ACTUALLY refused. This line hardcoded "OpenRouter", so a 403 from
         # ChatAnywhere read as an OpenRouter block - it sent a whole session hunting the wrong
         # provider and nearly dropped a key that works. Derived from PROVIDERS so it cannot drift.
@@ -569,6 +593,13 @@ def main() -> int:
         assert issubclass(TimeoutError, NET_ERRORS)
         assert issubclass(urllib.error.URLError, NET_ERRORS)
         assert issubclass(ConnectionResetError, NET_ERRORS)
+        # An edge block must walk the chain; the provider's own error must not. Asserted on real
+        # bodies, because the decision is a body-string test and a narrowed marker list compiles
+        # fine while silently killing a provider.
+        assert is_edge_block("<!DOCTYPE html><html><head><title>Attention Required!") is True
+        assert is_edge_block('{"error":{"message":"error code: 1010"}}') is True
+        assert is_edge_block('{"error":{"message":"invalid api key"}}') is False
+        assert is_edge_block('{"error":{"code":401,"message":"No auth credentials found"}}') is False
         # Asserting the tuple is not enough - someone can narrow the except clause and leave the
         # tuple intact. Provoke the failure for real: a refused connection is the same class of
         # event as the timeout that killed the 2026-10-04 run, needs no key and no network.
@@ -586,8 +617,47 @@ def main() -> int:
                 raise SystemExit("SELF-TEST FAILED: call_model returned without a model answering")
         finally:
             globals()["provider_of"] = real_provider
+        # PROVOKE the edge block, do not assert the classifier's string list: a narrowed marker
+        # list compiles and passes an assert-only check while still killing a provider in
+        # production. A local server answering 403 with Cloudflare's block page exercises the whole
+        # branch - urllib raising, exc.read() yielding the body, the classifier firing, _Busy
+        # reaching the chain.
+        import threading
+        from http.server import BaseHTTPRequestHandler, HTTPServer
+
+        class _Blocked(BaseHTTPRequestHandler):
+            def do_POST(self):                                # noqa: N802 - stdlib naming
+                body = (b"<!DOCTYPE html><html><head><title>Attention Required! | Cloudflare"
+                        b"</title></head><body>error code: 1010</body></html>")
+                self.send_response(403)
+                self.send_header("Content-Type", "text/html; charset=UTF-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, format, *args):              # keep the self-test output clean
+                pass
+
+        srv = HTTPServer(("127.0.0.1", 0), _Blocked)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        globals()["provider_of"] = lambda m: (
+            f"http://127.0.0.1:{srv.server_port}/v1/chat/completions", "_SELFTEST_KEY", m)
+        try:
+            try:
+                call_model("selftest/model", "{}", "selftest")
+            except _Busy:
+                pass
+            except BaseException as exc:                       # noqa: BLE001 - the point of the check
+                raise SystemExit(f"SELF-TEST FAILED: an edge 403 escaped as {type(exc).__name__}: "
+                                 f"{exc} - one provider's CDN would still kill the chain")
+            else:
+                raise SystemExit("SELF-TEST FAILED: an edge 403 was treated as a brief")
+        finally:
+            srv.shutdown()
+            globals()["provider_of"] = real_provider
         print("SELF-TEST OK  freshness rule holds (fresh / 8h-old / unreadable / missing); "
-              "network failures stay inside the chain")
+              "network failures stay inside the chain; an edge 403 walks the chain while a "
+              "provider's own error stops it")
         return 0
 
     if args.skip_if_fresh > 0:

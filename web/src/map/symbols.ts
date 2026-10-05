@@ -24,6 +24,10 @@ export type GlyphId =
   // vehicle layers draw a vehicle, and Cyrus's standing rule is that a marker which only
   // GLOWS is standing in for something it cannot show.
   | "bus"
+  // Car parks. The glyph is a car and the DISC is the international parking blue — the disc carries
+  // the meaning; see the layer 「停車場空位」. Placed on a point, never a glowing dot, for the same
+  // reason as the bus.
+  | "parking"
   | "water"
   // Border control points, one per crossing KIND. The glyph is identical and the
   // DISC carries the kind (land violet / sea cyan / air blue), which is the same
@@ -440,6 +444,55 @@ function drawBus(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
+/** Parking: a top-down car on the international parking blue.
+ *
+ *  The DISC carries the meaning — blue is the one colour a driver already reads as "parking" — and
+ *  the glyph says what kind of place it marks, the same split the border-control points use. Nose
+ *  points to −Y like every other vehicle glyph, so one rotation convention covers the family.
+ *
+ *  A car is SHORTER and rounder than the bus (~1:2.2 against ~1:2.7), with a tapered nose and a
+ *  cabin inset from both ends. At 44px that taper plus the disc colour is all that separates the two
+ *  at a glance, because both are light bodies with dark glass. */
+function drawParking(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  // body — tapered at both ends
+  ctx.beginPath();
+  ctx.moveTo(-4.4, -12);
+  ctx.quadraticCurveTo(0, -15.5, 4.4, -12);
+  ctx.lineTo(5.2, -2);
+  ctx.lineTo(4.6, 11);
+  ctx.quadraticCurveTo(0, 13.6, -4.6, 11);
+  ctx.lineTo(-5.2, -2);
+  ctx.closePath();
+  ctx.fillStyle = "#cdd5dc";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(5,7,13,.85)";
+  ctx.lineWidth = 1.1;
+  ctx.lineJoin = "round";
+  ctx.stroke();
+  // windscreen, set back from the nose
+  ctx.beginPath();
+  ctx.moveTo(-3.6, -9.6);
+  ctx.quadraticCurveTo(0, -11.6, 3.6, -9.6);
+  ctx.lineTo(3.6, -6.4);
+  ctx.lineTo(-3.6, -6.4);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(10,14,22,.85)";
+  ctx.fill();
+  // rear window
+  ctx.beginPath();
+  ctx.moveTo(-3.2, 6.4);
+  ctx.lineTo(3.2, 6.4);
+  ctx.lineTo(3.2, 9.2);
+  ctx.quadraticCurveTo(0, 10.4, -3.2, 9.2);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(10,14,22,.7)";
+  ctx.fill();
+  ctx.restore();
+}
+
 /** Ferry: a hull seen from above. */
 function drawFerry(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
@@ -673,6 +726,7 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   vessel: { draw: drawVessel },
   "mtr-train": { draw: drawTrain },
   bus: { draw: drawBus },
+  parking: { draw: drawParking, disc: "#2563eb" },
   water: { draw: drawWater, disc: "#22d3ee" },
   "cp-land": { draw: drawControlPoint, disc: "#a855f7" },
   "cp-sea": { draw: drawControlPoint, disc: "#22d3ee" },

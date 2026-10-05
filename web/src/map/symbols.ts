@@ -20,6 +20,10 @@ export type GlyphId =
   | "ferry"
   | "vessel"
   | "mtr-train"
+  // Buses (KMB / 龍運, and later the other operators). A bus glyph, never a light dot: the
+  // vehicle layers draw a vehicle, and Cyrus's standing rule is that a marker which only
+  // GLOWS is standing in for something it cannot show.
+  | "bus"
   | "water"
   // Border control points, one per crossing KIND. The glyph is identical and the
   // DISC carries the kind (land violet / sea cyan / air blue), which is the same
@@ -378,6 +382,64 @@ function drawTrain(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
+/** Bus: a top-down bus — flat front, two window bands and a roof sign, which is what separates
+ *  "a bus" from "a smaller train" at 44px. The nose points to −Y, the same convention as the
+ *  train, plane and vessel, because the layer rotates the icon by the vehicle's own bearing.
+ *
+ *  A bus is SHORT and BOXY (~1:2.7 against the train's ~1:4), so the proportions carry as much of
+ *  the reading as the detail does. Drawn from primitives like every other glyph: no icon font, no
+ *  emoji, no binary asset in the repo. */
+function drawBus(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  // body — blunt at the front, slightly rounded at the back
+  ctx.beginPath();
+  ctx.moveTo(-6, -14);
+  ctx.lineTo(6, -14);
+  ctx.lineTo(6, 13);
+  ctx.quadraticCurveTo(6, 15, 4, 15);
+  ctx.lineTo(-4, 15);
+  ctx.quadraticCurveTo(-6, 15, -6, 13);
+  ctx.closePath();
+  ctx.fillStyle = "#cdd5dc";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(5,7,13,.85)";
+  ctx.lineWidth = 1.1;
+  ctx.lineJoin = "round";
+  ctx.stroke();
+  // windscreen, flat across the front
+  ctx.beginPath();
+  ctx.moveTo(-5, -12.6);
+  ctx.lineTo(5, -12.6);
+  ctx.lineTo(5, -9.4);
+  ctx.lineTo(-5, -9.4);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(10,14,22,.85)";
+  ctx.fill();
+  // side window bands — the detail that makes it read as a bus rather than a box
+  for (const x of [-4.6, 4.6]) {
+    ctx.beginPath();
+    ctx.moveTo(x - 0.7, -8);
+    ctx.lineTo(x + 0.7, -8);
+    ctx.lineTo(x + 0.7, 8);
+    ctx.lineTo(x - 0.7, 8);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(10,14,22,.6)";
+    ctx.fill();
+  }
+  // roof sign — the amber route panel a Hong Kong bus carries at the front of its roof
+  ctx.beginPath();
+  ctx.moveTo(-3.2, -7.4);
+  ctx.lineTo(3.2, -7.4);
+  ctx.lineTo(3.2, -4.6);
+  ctx.lineTo(-3.2, -4.6);
+  ctx.closePath();
+  ctx.fillStyle = "#f0a11e";
+  ctx.fill();
+  ctx.restore();
+}
+
 /** Ferry: a hull seen from above. */
 function drawFerry(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
@@ -610,6 +672,7 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   ferry: { draw: drawFerry, disc: "#38bdf8" },
   vessel: { draw: drawVessel },
   "mtr-train": { draw: drawTrain },
+  bus: { draw: drawBus },
   water: { draw: drawWater, disc: "#22d3ee" },
   "cp-land": { draw: drawControlPoint, disc: "#a855f7" },
   "cp-sea": { draw: drawControlPoint, disc: "#22d3ee" },

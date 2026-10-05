@@ -23,13 +23,15 @@ name: ai-brief
 # names a model is refused outright by an auto-only key - so the restriction meant to save money
 # breaks the job. A named `:free` model costs nothing, which is the property actually wanted.
 on:
-  # Two SLOTS a day, each with a second attempt half an hour later. The script skips its own
-  # model call when the published brief is under 6 hours old, so the second attempt only does
-  # work when the first one failed on a busy shared pool - the published frequency stays the
-  # two-a-day that was reported.
+  # EVERY TWO HOURS, NOT TWO FIXED SLOTS. The script skips its own model call whenever the
+  # published brief is under 6 hours old, so the PUBLISHED frequency is still the two-a-day that
+  # was reported - what changes is the LATENESS. GitHub's scheduler delays runs under load, and
+  # the two-slot shape let a healthy pipeline look broken: measured 2026-10-05, the 00:00Z and
+  # 00:30Z slots arrived at 03:05Z and 06:00Z (+3h and +5.5h) and the 12:00Z/12:30Z slots had not
+  # run by 20:41 HKT, so the published brief was nine hours old while every step that ran was fine.
+  # Twelve slots bound that drift: whichever slot first finds the brief over 6h old regenerates it.
   schedule:
-    - cron: "0 0,12 * * *"
-    - cron: "30 0,12 * * *"
+    - cron: "0 */2 * * *"
   workflow_dispatch:
     inputs:
       force:
@@ -48,7 +50,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build the brief (fetches live-data, calls the model, refuses to publish empty)
+      - id: brief
+        name: Build the brief (fetches live-data, calls the model, refuses to publish empty)
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           CHATANYWHERE_API_KEY: ${{ secrets.CHATANYWHERE_API_KEY }}
@@ -63,7 +66,13 @@ jobs:
       # would have replaced live values with stale ones. Fetch the current copies first, and
       # refuse to publish at all if any of them cannot be fetched: publishing nothing costs a
       # stale brief, publishing without them costs three panels.
+      # A SKIPPED BRIEF MUST NOT REACH THIS STEP. The script's skip path writes the brief it READ
+      # into --out, so publishing it was a no-op on the DATA - but not on the JOB: the publish can
+      # fail by itself (the shared-runner contents-API 403 of 2026-10-05), which turned a "nothing
+      # to do" run red and is why the brief read as constantly failing while it was never the
+      # broken part. With the step skipped, the job colour means what it says: green = brief healthy.
       - name: Publish it to the live-data branch, with the files it is not responsible for
+        if: steps.brief.outputs.skipped != 'true'
         run: |
           set -eu
           for f in aircraft.json berth_vacancy.json water_suspension.json; do
@@ -73,4 +82,5 @@ jobs:
           python3 scripts/publish_live.py data/aircraft.json data/berth_vacancy.json data/water_suspension.json data/ai_summary.json
 
       - name: Print what was published
+        if: steps.brief.outputs.skipped != 'true'
         run: python3 -c "import json;d=json.load(open('data/ai_summary.json',encoding='utf-8'));print('model',d['model']);print('tc',d['brief']['tc']);print('en',d['brief']['en'])"

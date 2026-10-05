@@ -607,6 +607,15 @@ def main() -> int:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(prev, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
             print(f"skip     published brief is {age:.1f}h old (< {args.skip_if_fresh}h) - nothing to do")
+            # Tell the workflow a skip happened, so it can SKIP THE PUBLISH STEP TOO. Republishing
+            # an unchanged brief is a no-op on the DATA but not on the JOB: the publish can fail on
+            # its own (the shared-runner contents-API 403, 2026-10-05) and that turned a "nothing to
+            # do" run red, which is why the brief read as constantly broken. Unset outside CI, hence
+            # the guarded read rather than a required one.
+            gh_out = os.environ.get("GITHUB_OUTPUT")
+            if gh_out:
+                with open(gh_out, "a", encoding="utf-8") as fh:
+                    fh.write("skipped=true\n")
             return 0
 
     facts, inputs, warnings = build_context(args.offline)

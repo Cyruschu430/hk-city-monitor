@@ -29,6 +29,7 @@ Usage:  py publish_live.py data/aircraft.json data/berth_vacancy.json
 import json
 import os, subprocess, sys, tempfile, shutil
 import urllib.error
+import urllib.parse
 import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -58,20 +59,48 @@ def git(*args, cwd):
 # holding README.md and ai_summary.json only). The rule is not "remember the other files": it is
 # "this script owns the files it was handed and nothing else".
 #
-# The list comes from the GitHub contents API on a public repo, so it needs no token and cannot go
-# stale the way a constant does.
+# The list comes from the GitHub contents API. It cannot go stale the way a constant does.
+#
+# MEASURED 2026-10-05 - "a public repo needs no token" was WRONG and it was the bug. Anonymous
+# API calls get 60 requests an hour PER IP; GitHub Actions runners share egress IPs, so the
+# listing died with `HTTP 403: rate limit exceeded` at random and the job went red (last seen
+# 2026-10-05 06:00 in ai-brief, AFTER the brief itself had been skipped - the brief was never
+# the broken part, which is why it looked like "ai-brief 成日 fail"). With a token: 5,000/hr.
+# The token is DISCOVERED, never required - an anonymous call still works, just 60/hr.
 API = "https://api.github.com/repos/Cyruschu430/hk-city-monitor/contents"
+
+
+def _api_token() -> str:
+    """Token for the contents API, or '' to fall back to the anonymous 60/hr budget."""
+    tok = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
+    if tok:
+        return tok
+    # Every workflow already hides one inside HKCM_REMOTE:
+    #   https://x-access-token:<token>@github.com/owner/repo.git
+    try:
+        netloc = urllib.parse.urlsplit(REPO).netloc
+        if "@" in netloc:
+            userinfo = netloc.rsplit("@", 1)[0]
+            return userinfo.split(":", 1)[1] if ":" in userinfo else ""
+    except ValueError:
+        pass
+    return ""
 
 
 def carry_forward(tmp: str, files: list[str]) -> None:
     """Copy every file already on the branch that this run is not replacing."""
     have = {os.path.basename(f) for f in files}
+    token = _api_token()
+    req_headers = {"User-Agent": "hkcm-collector",
+                   "Accept": "application/vnd.github+json"}
+    if token:
+        req_headers["Authorization"] = f"Bearer {token}"
     try:
-        req = urllib.request.Request(f"{API}?ref={BRANCH}",
-                                     headers={"User-Agent": "hkcm-collector",
-                                              "Accept": "application/vnd.github+json"})
+        req = urllib.request.Request(f"{API}?ref={BRANCH}", headers=req_headers)
         with urllib.request.urlopen(req, timeout=20) as r:
             listing = json.loads(r.read().decode())
+        print(f"LIST  {BRANCH}: {len(listing)} entr(ies) via "
+              f"{'authenticated' if token else 'ANONYMOUS (60/hr - set GITHUB_TOKEN)'} API")
     except Exception as e:  # noqa: BLE001
         print(f"FAIL  cannot list {BRANCH}: {e} - refusing to publish, this push would delete files",
               file=sys.stderr)

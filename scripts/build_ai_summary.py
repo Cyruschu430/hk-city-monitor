@@ -434,7 +434,11 @@ def call_model(model: str, context: str, key: str) -> dict:
         # a one-line configuration error into a mystery, so they stop the run.
         if exc.code == 429 or exc.code >= 500:
             raise _Busy(f"HTTP {exc.code}: {detail}") from exc
-        raise SystemExit(f"OpenRouter HTTP {exc.code} for {model}: {detail}")
+        # Name the provider that ACTUALLY refused. This line hardcoded "OpenRouter", so a 403 from
+        # ChatAnywhere read as an OpenRouter block - it sent a whole session hunting the wrong
+        # provider and nearly dropped a key that works. Derived from PROVIDERS so it cannot drift.
+        who = next((k for k, v in PROVIDERS.items() if v[1] == key_env), "unknown provider")
+        raise SystemExit(f"{who} HTTP {exc.code} for {model}: {detail}")
     except NET_ERRORS as exc:
         # A connection that times out or drops is the SAME class of event as a 429: the model, not
         # us. Measured 2026-10-04 - this escaped ask_chain() as a bare TimeoutError, so the run died

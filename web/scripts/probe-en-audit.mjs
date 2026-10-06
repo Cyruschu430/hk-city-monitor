@@ -1,6 +1,6 @@
 // probe-en-audit.mjs — find text that is STILL Chinese when the UI is in English.
 //
-// Cyrus: "EN version not really all (Content) in English, review please."
+// Requested: "EN version not really all (Content) in English, review please."
 //
 // Rather than reading every component, switch the app to EN and scan the RENDERED
 // DOM for CJK characters. Anything with a Han character in EN mode is a string

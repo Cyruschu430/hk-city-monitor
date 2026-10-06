@@ -351,7 +351,7 @@ try {
 // is "real numbers, correct ages", not "always green".
   const mktOk = ["live", "stale"].includes(newPanels.market?.state) && (newPanels.market?.text ?? "").length > 10;
   const newsOk = ["live", "stale"].includes(newPanels.news?.state) && (newPanels.news?.text ?? "").length > 8;
-  // Crypto was WITHDRAWN 2026-09-24 (Cyrus): CoinGecko 429s Cloudflare's egress
+  // Crypto was WITHDRAWN 2026-09-24: CoinGecko 429s Cloudflare's egress
   // on every production load. This check used to TOLERATE that error state; the
   // contract is now that the panel is gone, and — more usefully — that removing
   // it left no trace. Asserting absence is what stops a withdrawal from
@@ -540,7 +540,7 @@ try {
       restored: recs.filter((r) => r.status === "供水已恢復").length,
     };
   });
-  // Cyrus 2026-09-25: "boundary polygon 有誤導性; 我覺得顯示 point location 就夠".
+  // 2026-09-25 decision: "boundary polygon 有誤導性; 我覺得顯示 point location 就夠".
   // The tint is deleted, so the assertion is now the NEGATIVE one: no `-fill`,
   // `-line` or `-label` may survive under this prefix. A check that only counted
   // the pins would pass just as happily with the misleading polygon still painted
@@ -648,7 +648,7 @@ try {
   });
   check("P0-6 熱帶氣旋名唔會重複（DUJUAN DUJUAN）", !tcName.doubled, `note="${tcName.note}"`);
 
-  // P2: the ticker CLASSIFIES headlines by news type (Cyrus).
+  // P2: the ticker CLASSIFIES headlines by news type.
   //
   // The taxonomy is the publishers' own section feeds (RTHK 本地/國際/兩岸/財經/體育,
   // news.gov.hk's category feeds, TD traffic), so this asserts a checkable fact
@@ -1002,7 +1002,7 @@ try {
   // trusting the layer.
 
   // --- 5b. the suspension PINS are a symbol, not a dot -------------------------
-  // Cyrus 2026-09-25: "Suspension Location layer and Border control point layer -
+  // 2026-09-25 decision: "Suspension Location layer and Border control point layer -
   // use relevant symbology for them, don't use simple point symbols." Both were
   // plain `circle` layers, so the shape said nothing and colour carried the whole
   // message.
@@ -1395,7 +1395,7 @@ try {
     ].join(" · "));
 
   // --- 9b1b. wind FLOW, and what became of the honesty rule -------------------
-  // Cyrus 2026-09-25: "make wind field this layer to wind flow renderer animation
+  // 2026-09-25 decision: "make wind field this layer to wind flow renderer animation
   // layer". The layer now draws a GPU particle field over a MODELLED grid
   // (`map/wind.ts` + `lib/windgrid.ts`), so `vl-wind_field-point` no longer
   // exists and the barb checks that used to live here — the fade-by-distance

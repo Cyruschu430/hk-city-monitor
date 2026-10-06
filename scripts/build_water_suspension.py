@@ -96,7 +96,7 @@ def parse_hk_date(s: str) -> str | None:
 # WHY HERE AND NOT IN THE BROWSER. The map used to highlight a whole DISTRICT for
 # a suspension, because the WSD feed carries a district name and nothing else --
 # so "停水受影響地區" painted an entire 18-district polygon red when the actual
-# outage was one building. Cyrus asked for the affected LOCATIONS:
+# outage was one building. The affected LOCATIONS were requested:
 # "Layers District with water suspension should refering to Panel 水務署 臨時停水
 # 通知 showing the affected locations by geocoding."
 #

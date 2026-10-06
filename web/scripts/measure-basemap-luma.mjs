@@ -1,7 +1,7 @@
 // measure-basemap-luma.mjs — sample the map face and report its mean luma.
 //
 // WHY THIS EXISTS: style.json's basemap paint was tuned against a measured luma table (~35, very
-// dark) and Cyrus's verdict on the live site was "有啲暗太過黑". A number that was measured once
+// dark) and the verdict on the live site was "有啲暗太過黑". A number that was measured once
 // and then edited has to be measured again — the comment block in sync-data.mjs claims specific
 // luma values, and a claim about a rendering is not something to assert from the paint values.
 //

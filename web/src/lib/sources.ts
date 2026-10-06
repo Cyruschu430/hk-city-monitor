@@ -209,7 +209,7 @@ const MEMO_MS = 30_000;
 // single-flight: one upstream fetch per URL at a time. The layer engine and the
 // panel engine fire the SAME source together on mode activation — without this,
 // both miss the memo simultaneously and the upstream gets two hits where one
-// would do (the rival's `pending Map<url,Promise>` pattern, browser edition).
+// would do (the `pending Map<url,Promise>` pattern, browser edition).
 const pending = new Map<string, Promise<Response>>();
 
 export function clearDataCache(): void {

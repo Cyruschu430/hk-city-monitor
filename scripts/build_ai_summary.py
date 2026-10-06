@@ -3,7 +3,7 @@ r"""build_ai_summary.py - one short bilingual brief from data this project alrea
 
 WHY THIS IS ALLOWED TO EXIST. An LLM is banned from the RUNTIME path, with exactly one
 exception: "a future feature wants an LLM, it must be low-frequency (daily/weekly) with a small
-context, and the frequency + context size get reported before it is added." Reported to Cyrus
+context, and the frequency + context size get reported before it is added." Reported to the owner
 2026-10-01, who halved the proposed frequency himself (12/24):
 
     runs        2/day  - cron `0 0,12 * * *` UTC = 08:00 and 20:00 HKT
@@ -58,7 +58,7 @@ LIVE_FILES = ("aircraft.json", "berth_vacancy.json", "water_suspension.json")
 SOURCES = ("aircraft.json", "berth_vacancy.json", "water_suspension.json", "carpark_info.json", "baselines.json")
 MAX_CONTEXT_BYTES = 7000
 
-# Six additional LIVE sources (Cyrus 2026-10-03: "依家多了其他data, 會唔會可以多D insight").
+# Six additional LIVE sources (2026-10-03: "依家多了其他data, 會唔會可以多D insight").
 # Fetched server-side straight from the publisher endpoints — no CORS on a GitHub runner, so the
 # app's browser/proxy split does not apply here. Each is slimmed to a couple of fields; a source
 # that cannot be reached is skipped with a warning, never fatal.
@@ -338,7 +338,7 @@ def build_context(offline: bool) -> tuple[dict, list[dict], list[str]]:
     return ordered, inputs, warnings
 
 
-# TWO PROVIDERS, ONE SHAPE. Cyrus added a ChatAnywhere key on 2026-10-02 because the OpenRouter
+# TWO PROVIDERS, ONE SHAPE. A ChatAnywhere key was added on 2026-10-02 because the OpenRouter
 # free pool answered 429 on every run for days. Both speak the OpenAI chat-completions protocol, so
 # the only difference is the base URL and which environment variable holds the key - which means the
 # fallback order can stay one visible list instead of two code paths.
@@ -360,7 +360,7 @@ PROVIDERS = {
     "openrouter": ("https://openrouter.ai/api/v1/chat/completions", "OPENROUTER_API_KEY"),
     "ca": ("https://api.chatanywhere.org/v1/chat/completions", "CHATANYWHERE_API_KEY"),
     # Groq added 2026-10-02 as a second escape hatch: OpenAI-compatible, free tier, no per-account
-    # cap on how many keys you may create (ChatAnywhere refused Cyrus a new key with "已超过当前 Key
+    # cap on how many keys you may create (ChatAnywhere refused a new key with "已超过当前 Key
     # 配额"). Wire it the same way - a prefix and one env var - so whichever key he can actually
     # obtain is a one-line change, not a second code path.
     "groq": ("https://api.groq.com/openai/v1/chat/completions", "GROQ_API_KEY"),
@@ -703,7 +703,7 @@ def main() -> int:
     if len(context.encode()) > MAX_CONTEXT_BYTES:
         raise SystemExit(
             "context grew past the reported ceiling. Do not raise the ceiling silently: the "
-            "frequency and the context size were reported to Cyrus before this job was added, "
+            "frequency and the context size were reported to the owner before this job was added, "
             "and a new report is required when either changes."
         )
     for i in inputs:

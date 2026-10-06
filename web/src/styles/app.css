@@ -164,7 +164,7 @@ a:hover{color:var(--cyan)}
 /* MEASURED 2026-10-01: the first version of this control was a <select> spanning the tile,
    which sat over the LIVE badge at top-right. `check:livewall` caught it the only way it can be
    caught — the badge is the STOP control once a stream is playing, and the clicks meant for it
-   landed on the select, so no started tile could be stopped. It is two 17px arrows now (Cyrus:
+   landed on the select, so no started tile could be stopped. It is two 17px arrows now (requested:
    "唔要 drop down menu 好多亂碼" — the publisher's stream names are 40 characters of mixed script
    in a list the width of a thumbnail), which keeps the controls apart at any tile size and
    releases pointer events entirely while a player covers the tile. */
@@ -202,7 +202,7 @@ a:hover{color:var(--cyan)}
 [data-panel="special_traffic_list"] .plist li{display:block;-webkit-line-clamp:8;overflow:visible}
 /* Same reason as the traffic list above, and the same one-line shape: the city brief is
    a sentence a reader has to finish, and a two-line clamp with an ellipsis truncated it
-   mid-claim. Cyrus 2026-10-02: "唔好有 ... ，唔夠就開多行". A summary nobody can read to
+   mid-claim. 2026-10-02: "唔好有 ... ，唔夠就開多行". A summary nobody can read to
    the end is worse than a taller panel. */
 [data-panel="ai_brief"] .plist li{display:block;-webkit-line-clamp:unset;overflow:visible}
 
@@ -374,7 +374,7 @@ a:hover{color:var(--cyan)}
 .src-hold{text-decoration:none;cursor:inherit}
 /* The clock is part of the placard's sentence - WHAT, and AS OF WHEN - so it shares the
    baseline instead of drifting onto its own row. */
-/* Cyrus 2026-10-02: the clock goes UNDER 香港實時情況, not beside it - the placard reads as a
+/* 2026-10-02: the clock goes UNDER 香港實時情況, not beside it - the placard reads as a
    two-line label rather than a row. Flex column with the scope first; the check asserts the
    geometry, not this declaration. */
 #mapHead{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
@@ -383,7 +383,7 @@ a:hover{color:var(--cyan)}
    The listener lives on document (see initColumnResize) and hit-tests this 7px strip. */
 #panelCol{position:relative}
 #panelCol::before{content:"";position:absolute;left:-3px;top:0;bottom:0;width:7px;cursor:col-resize;z-index:6}
-/* Cyrus 2026-10-02: "Remove <> 功能". The two arrows were the ONLY stream switcher (a <select>
+/* 2026-10-02: "Remove <> 功能". The two arrows were the ONLY stream switcher (a <select>
    of publisher titles rendered as 40-character mixed-script garbage, which is why they replaced
    it), but the drawer is already the switcher for channels, so the tile keeps its one job:
    click to start or stop. display:none rather than visibility, so the buttons leave the
@@ -394,7 +394,7 @@ a:hover{color:var(--cyan)}
   border-left:1px solid var(--hairline)}
 .stat:first-child{border-left:0}
 .stat-label{font-family:var(--font-ui);font-size:11px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
-/* MEASURED 2026-10-01 (Cyrus: "HEADER 呢堆字走位"): the clock repaints every second and
+/* MEASURED 2026-10-01 (reported "HEADER 呢堆字走位"): the clock repaints every second and
    "1,047"/"180" change length as they update, so with proportional digits every value in
    this row was free to resize and shove its neighbours. Tabular figures give a digit one
    width, which is the whole difference between a readout and a readout that twitches. */
@@ -455,7 +455,7 @@ a:hover{color:var(--cyan)}
    The narrow-screen rule below re-flattens this, because there the rail leaves the grid entirely. */
 /* SPLIT LAYOUT — rail | map | panel column, read left to right.
    ------------------------------------------------------------------------
-   Cyrus, 2026-09-27: "嗰堆儀表板擺喺右邊，user 可以scroll down … 咁樣我相信大量嘅panel都應該搞得掂".
+   Requested 2026-09-27: "嗰堆儀表板擺喺右邊，user 可以scroll down … 咁樣我相信大量嘅panel都應該搞得掂".
    It used to be two stacked ROWS (map on top, a panel band below, each 1fr), which is fine for six panels
    and wrong for sixty: the map got 50% of the height whether or not the reader was looking at it, and the
    panel band scrolled the whole page rather than itself.
@@ -473,7 +473,7 @@ a:hover{color:var(--cyan)}
 #layout{flex:1 1 auto;display:grid;/** Two columns now, not three (2026-10-01). The 56px rail is gone and its job —
  *  picking a mode — moved into the status bar, so this grid is the map and the panel
  *  column. The map keeps the width; nothing else about the layout changes. */
-  /* Reader-resizable (Cyrus 2026-10-02: "每 panel 拉寬/收窄" -> 3 欄). The track follows --panel-w,
+  /* Reader-resizable (2026-10-02: "每 panel 拉寬/收窄" -> 3 欄). The track follows --panel-w,
      which main.ts writes and localStorage keeps; the inner grid is already auto-fill, so widening
      this one value is what produces the second and third column. */
   grid-template-columns:minmax(0,1fr) clamp(300px,var(--panel-w,30vw),96vw);
@@ -484,7 +484,7 @@ a:hover{color:var(--cyan)}
 #mapWrap{grid-column:1;grid-row:1;position:relative;min-height:0;min-width:0}
 #map{position:absolute;inset:0;background:var(--void)}
 #mapHud{position:absolute;inset:0;pointer-events:none;z-index:5}
-/* The 3D switch. Moved under the top-right zoom control (Cyrus 2026-10-03): it was bottom-left,
+/* The 3D switch. Moved under the top-right zoom control (2026-10-03): it was bottom-left,
    stranded away from the other map-face controls. top:74px clears the two 29px zoom buttons plus
    their 10px margin. LOCKED (disabled) for phase-one testing. Map-face tokens only (check:static
    fails a themed token here): it sits on the map, not in a card. pointer-events:auto because
@@ -542,13 +542,13 @@ a:hover{color:var(--cyan)}
    on the map face, not a footnote. MapLibre's own AttributionControl carries the
    text; this badge is the always-visible face of it. */
 .landsd-badge{position:absolute;right:10px;
-  /* Above MapLibre's own attribution line, not beside it (Cyrus 2026-10-02: keep the notice,
+  /* Above MapLibre's own attribution line, not beside it (2026-10-02: keep the notice,
      give it a proper panel, seat it above the Esri credit) - the two then read as one block in
      the corner. bottom:34px clears the attribution control's own height; check:shell asserts the
      geometry against that control's measured rect rather than trusting this number. */
   bottom:46px;display:flex;align-items:center;gap:7px;padding:5px 10px;
   background:var(--map-face-bg);border:1px solid var(--map-face-line);border-radius:7px;
-  /* White, like the attribution line below it (Cyrus 2026-10-02) - was --map-face-dim. Still a
+  /* White, like the attribution line below it (2026-10-02) - was --map-face-dim. Still a
      map-face token, so check:tokens keeps passing on any theme. */
   font-size:11px;color:var(--map-face);letter-spacing:.03em;
   backdrop-filter:blur(6px);box-shadow:0 1px 8px rgba(0,0,0,.28)}
@@ -1135,7 +1135,7 @@ a:hover{color:var(--cyan)}
   padding: 4px 0;
   border-bottom: 1px solid var(--hairline);
 }
-/* THE STATUS BAR IS NOT A PANEL. MEASURED 2026-10-01 (Cyrus: "header 有堆字走位, 大左"):
+/* THE STATUS BAR IS NOT A PANEL. MEASURED 2026-10-01 (reported "header 有堆字走位, 大左"):
    the KPI rules below are shared by `.stat` / `.stat-value`, and the top strip uses the
    same classes — so a 19px mono value with a 10px letter-spaced label landed inside a 40px
    bar, pushed the row's cells over each other and read as broken chrome. The density pass

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """build_lcsd.py - LCSD leisure facilities from CSDI into one compact GeoJSON pair.
 
-WHY THIS EXISTS: the 康文署 layer (Phase 1a of Cyrus's roadmap, 2026-10-06). The
+WHY THIS EXISTS: the 康文署 layer (Phase 1a of the roadmap, 2026-10-06). The
 venue feeds (venues.xml / venue.json / smartplay) carry NO coordinates - measured:
 `<latitude />` and `<longitude />` are empty tags, and ALS geocoding a place name
 is unreliable (3/21 wrong in a live test). The CSDI LCSD datasets are the OFFICIAL

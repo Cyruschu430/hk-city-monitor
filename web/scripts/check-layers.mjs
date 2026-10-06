@@ -83,7 +83,7 @@ const clickRow = (id) => page.evaluate((r) => {
 // ── 1. EVERY RAIL LAYER IS REACHABLE FROM THE LAYERS CONTROL, AND ONLY FROM THERE.
 //
 // Until 2026-10-01 each of these layers had TWO entry points: a 1.5px glyph on the left rail
-// and a row here. Cyrus removed the rail's layer icons ("堆icon panel is abundant"), so the
+// and a row here. The rail's layer icons were removed ("堆icon panel is abundant"), so the
 // assertion flips direction rather than disappearing — it now guards that every rail layer HAS
 // a row, and that no layer icon has crept back onto the rail. A second control that nobody
 // maintains is exactly how the two drifted apart; the `aria-pressed` bug this block was written
@@ -150,7 +150,7 @@ ok(Object.values(tdAfter).every((v) => v === "visible"),
 // ── 6. 3D IS GONE, and this asserts it stays gone.
 //
 // This used to toggle `buildings3d` and assert it switched on. There is no `buildings3d` any more:
-// Cyrus removed the layer AND the HUD 3D button on 2026-09-27 ("3D buildings (heavy) Remove呢個layer,
+// The layer AND the HUD 3D button were removed on 2026-09-27 ("3D buildings (heavy) Remove呢個layer,
 // 出唔到又冇用" / "3D 個button出唔到個3D tiles既"), because `/data/tiles3d.json` returned the SPA
 // fallback — the tileset was never configured — while the control reported success and set no error.
 //
@@ -167,7 +167,7 @@ ok(Object.values(tdAfter).every((v) => v === "visible"),
 // version of this test a headless browser can honestly run (deck.gl needs a real GPU, so "it drew
 // buildings" is not checkable here, and asserting it would be the same class of lie the project
 // keeps paying for).
-// LOCKED for phase-one (Cyrus 2026-10-03): 3D is still internal testing, so the switch is
+// LOCKED for phase-one: 3D is still internal testing, so the switch is
 // present but DISABLED — clicking it must do nothing (no toggle, no fetch). When it reopens,
 // restore the previous "click either turns on OR explains itself" assertion, which is the one
 // thing a headless browser can honestly check (deck.gl needs a real GPU, so "it drew buildings"

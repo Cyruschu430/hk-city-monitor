@@ -2,7 +2,7 @@
 """classify.py — where each registry source BELONGS: the map, a panel, both, or nowhere.
 
 WHY THIS EXISTS. The registry has 177 entries and `coverage.py` answers "is this wired?", which is the
-wrong question to plan from. The right one is Cyrus's, 2026-09-27:
+wrong question to plan from. The right one, from 2026-09-27:
 
     "有啲嘢未必係真係地圖嚟㗎嘛… 有啲可能係資訊性嘅嘢未必真係需要一個 layer 囉 … 最緊要就係分清楚邊啲
      擺落去地圖係有用嘅，個 spatial relation 輸入特別有關係"

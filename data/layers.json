@@ -182,8 +182,8 @@
       "render": "list",
       "geom": "polygon",
       "title": {
-        "tc": "貨運及機場設施",
-        "en": "Cargo & airport facilities"
+        "tc": "裝卸泊位及機場設施",
+        "en": "Cargo berths & airport facilities"
       },
       "popup": "facility_popup",
       "filters": {

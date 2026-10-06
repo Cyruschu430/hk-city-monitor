@@ -130,7 +130,7 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // 公眾貨物裝卸區（海事處）＋機場進場限制區（民航處）. 128 polygons from CSDI, 134KB, OFF by default.
   // These are the facilities 貨運模式's panels are ABOUT — before this the mode listed flight and
   // traffic rows with nothing on the map saying where the cargo actually moves.
-  { id: "hk_facility_areas", label: { tc: "貨運及機場設施", en: "Cargo & airport facilities" } },
+  { id: "hk_facility_areas", label: { tc: "裝卸泊位及機場設施", en: "Cargo berths & airport facilities" } },
   // 23 貯油裝置（屋宇署牌照名單）, 8KB. Small enough to be on by default, but it stays off: it is
   // one mode's subject, and a layer that appears in 總覽 without being asked for is the thing the
   // verticals exist to prevent.

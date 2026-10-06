@@ -1107,6 +1107,39 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
   map.on("mouseleave", `${id}-fill`, () => (map.getCanvas().style.cursor = ""));
 }
 
+/** Hiking-trail popup: name, type, difficulty (band-coloured), length,
+ *  start → finish. A line click should say WHICH trail it is — the layer is
+ *  now the default-on headline, silent lines would be half a feature. */
+function trailPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  const pick = (p: Record<string, unknown>, tcKey: string, enKey: string): string =>
+    String(lang() === "tc" ? p[tcKey] ?? p[enKey] ?? "" : p[enKey] ?? p[tcKey] ?? "");
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const diff = pick(p, "DIFFICULTY_TC", "DIFFICULTY_EN");
+    const diffColor = /極費力|very demanding/i.test(diff) ? "#ef4444" : /費力|demanding/i.test(diff) ? "#f59e0b" : "#22c55e";
+    const start = pick(p, "STARTpt_TC", "STARTpt_EN");
+    const finish = pick(p, "FINISHpt_TC", "FINISHpt_EN");
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "320px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<div class="aed-pop"><b>${esc(pick(p, "TRAIL_NAME_TC", "TRAIL_NAME_EN"))}</b>` +
+          `<div style="color:var(--night-dim);font-size:11px;margin-top:2px">${esc(pick(p, "TYPE_TC", "TYPE_EN"))}${pick(p, "REGION_TC", "REGION_EN") ? " · " + esc(pick(p, "REGION_TC", "REGION_EN")) : ""}</div>` +
+          `<div style="color:${diffColor};font-weight:600;margin-top:6px">${esc(diff)}</div>` +
+          (p["MEASURE_LEN"] ? `<div style="margin-top:4px">${tc ? "長度" : "Length"} ${esc(p["MEASURE_LEN"])} m</div>` : "") +
+          (start && finish ? `<div style="margin-top:2px">${esc(start)} → ${esc(finish)}</div>` : "") +
+          `</div>`,
+      )
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+
 /** A `line` geom layer: static GeoJSON LineStrings (the MTR network). Colour comes
     from each feature's own `color` property, so the line colour draws the map and
     a restyle upstream needs no code change. */
@@ -1138,6 +1171,7 @@ async function lineLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs)
       "line-opacity": 0.9,
     },
   });
+  if (def.popup === "trail_popup") trailPopup(map, `${id}-line`);
 }
 
 export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[], args: LayerArgs): Promise<string[]> {

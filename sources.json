@@ -3551,6 +3551,30 @@
    "cadence": "as issued",
    "notes": "TD psi space-info CSV — 20,712 metered spaces with sensor, each with ParkingSpaceId (the join key the occupancy feed shares), street, district and coordinates. Built by scripts/build_meters.py.",
    "todo": false
+  },
+  {
+   "id": "mtr_bus_stops_geojson",
+   "group": "transport",
+   "name": "港鐵接駁巴士 站點（位置）",
+   "name_en": "MTR Feeder Bus Stops (positions)",
+   "type": "geojson",
+   "url": "data/mtr_bus_stops.geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "855 stops from MTR CSV (opendata.mtr.com.hk/mtr_bus_stops.csv), built to data/mtr_bus_stops.geojson by scripts/build_mtr_bus_stops.py.",
+   "todo": false
+  },
+  {
+   "id": "td_ai_cctv_stations",
+   "group": "transport",
+   "name": "運輸署 AI 影像分析閉路電視（位置）",
+   "name_en": "TD AI Video Analytics CCTV (positions)",
+   "type": "geojson",
+   "url": "data/ai_cctv_stations.geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "16 TD AI Video Analytics CCTV cameras (CSDI td_rcd_1671693527354_28926), built to data/ai_cctv_stations.geojson by scripts/build_ai_cctv.py.",
+   "todo": false
   }
  ]
 }

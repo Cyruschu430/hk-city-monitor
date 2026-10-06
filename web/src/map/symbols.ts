@@ -68,7 +68,9 @@ export type GlyphId =
   | "speed"
   // Public EV chargers (EPD): a lightning bolt — "plug in here", the one thing
   // a charger layer needs to say at a glance.
-  | "ev";
+  | "ev"
+  // On-street sensor parking: no glyph — the live colour disc is the signal.
+  | "meter";
 
 /** AED: the universal defibrillator mark — a heart with a bolt through it. */
 function drawAed(ctx: CanvasRenderingContext2D, size: number): void {
@@ -790,6 +792,15 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   // Public EV chargers: a lightning bolt on the same dark sign disc — the bolt
   // is the meaning, the disc keeps it a place rather than a bare glyph.
   ev: { draw: drawEv, disc: "#080e18" },
+  // Sensor parking space: no disc at all — the live colour (red/green/grey)
+  // IS the meaning, and any icon on top would hide it at this density.
+  meter: { draw: (ctx, size) => {
+    const c = size / 2;
+    ctx.fillStyle = "#5b6472";
+    ctx.beginPath();
+    ctx.arc(c, c, c, 0, Math.PI * 2);
+    ctx.fill();
+  } },
 };
 
 /** Public EV charger: a lightning bolt — dark disc + white ring, bolt in the

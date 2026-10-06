@@ -308,7 +308,7 @@
   },
   {
    "id": "mtr_bus_stops",
-   "source": "mtr_bus_eta",
+   "source": "mtr_bus_stops_geojson",
    "render": "list",
    "geom": "point",
    "symbol": "bus",
@@ -325,7 +325,7 @@
   },
   {
    "id": "journey_time",
-   "source": "ck_hk_td_sm_8_journey_time_indicators_v2",
+   "source": "td_journey_time_locations",
    "render": "list",
    "geom": "point",
    "symbol": "jt",
@@ -344,7 +344,7 @@
   },
   {
    "id": "ai_cctv_speed",
-   "source": "td_ai_cctv",
+   "source": "td_ai_cctv_stations",
    "render": "list",
    "geom": "point",
    "symbol": "speed",

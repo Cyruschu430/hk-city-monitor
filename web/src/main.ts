@@ -86,8 +86,8 @@ const OVERVIEW = [
 const TRIGGER_POLL_MS = 3 * 60_000;
 
 const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean }[] = [
-  { id: "cameras_td", label: { tc: "運輸署相機", en: "TD cameras" }, on: true },
-  { id: "cameras_hko", label: { tc: "天文台相機", en: "HKO cameras" }, on: true },
+  { id: "cameras_td", label: { tc: "運輸署相機", en: "TD cameras" }, on: false },
+  { id: "cameras_hko", label: { tc: "天文台相機", en: "HKO cameras" }, on: false },
   // 航機（ADS-B）withdrawn from the shipped UI 2026-09-23.
   //
   // MEASURED: adsb.fi and adsb.lol both answer 200 from a home IP but return
@@ -100,7 +100,7 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // RESTORED 2026-09-27. The withdrawal note named its own restore condition — a PC-side collector
   // publishing static JSON — and scripts/collect_aircraft.py is that collector. The layer reads
   // data/aircraft.json, so api.adsb.lol's block on cloud egress is no longer in the path.
-  { id: "aircraft", label: { tc: "航機（社群 ADS-B）", en: "Aircraft (community ADS-B)" }, on: true },
+  { id: "aircraft", label: { tc: "航機（社群 ADS-B）", en: "Aircraft (community ADS-B)" }, on: false },
   // Estimated, not GPS: MTR publishes no vehicle positions, so these dots are
   // interpolated from next-train ETAs. OFF by default so a reader turns it on
   // deliberately rather than mistaking an estimate for a fix.
@@ -173,7 +173,7 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // label). The other three satellite layers stay off: ae_hospitals, water_suspension and
   // control_points are VERTICAL-driven by design, and turning them on here would fight the
   // config-not-code architecture the verticals exist to prove.
-  { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" }, on: true },
+  { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" }, on: false },
   { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
   // Keyless Esri bases. A basemap is a choice, not a layer: these switch the
   // base under everything, and setBasemap() keeps them mutually exclusive.

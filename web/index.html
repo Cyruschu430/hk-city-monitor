@@ -16,15 +16,7 @@
 try{var t=localStorage.getItem("hkcm.theme")||"system";
 document.documentElement.dataset.theme=(t==="light"||(t==="system"&&!matchMedia("(prefers-color-scheme: dark)").matches))?"light":"dark";}catch(e){}
 </script>
-<script>
-/* PWA service worker. Registered on load; guarded so it never throws on
-   environments without SW support. The worker itself never caches /data/*. */
-if ("serviceWorker" in navigator && location.protocol === "https:") {
-  addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
-  });
-}
-</script>
+<script src="/sw-register.js" defer></script>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

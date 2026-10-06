@@ -1127,7 +1127,11 @@ async function lineLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs)
     id: `${id}-line`,
     type: "line",
     source: id,
-    layout: { "line-join": "round", "line-cap": "round" },
+    layout: {
+      "line-join": "round",
+      "line-cap": "round",
+      ...(def.dash ? { "line-dasharray": def.dash } : {}),
+    },
     paint: {
       "line-color": ["coalesce", ["get", "color"], "#22d3ee"] as never,
       "line-width": ["interpolate", ["linear"], ["zoom"], 8, 1.2, 12, 2.2, 16, 3.5] as never,

@@ -290,6 +290,19 @@
       "refresh_ms": 3600000,
       "_comment": "39 graded beaches (positions from the EPD RSS's own WGS84 cells) with the LIVE daily grading merged by the same adapter the beach_grading_list panel reads — dots and counts cannot disagree. Hourly refresh. popup beach_popup shows the grade in its band colour."
       },
+      {
+      "id": "hiking_trails",
+      "source": "afcd_hiking_trails",
+      "render": "none",
+      "geom": "line",
+      "title": {
+       "tc": "行山徑",
+       "en": "Hiking trails"
+      },
+      "popup": null,
+      "dash": [6, 4],
+      "_comment": "167 official AFCD hiking trails (CSDI afcd_rcd_1665568199103_4360, keyless) as simplified LineStrings — the lineLayer draws them green (per-feature color) DASHED (def.dash). Green dashed is the user's stated look. Built by scripts/build_hiking_trails.py (15.6 MB raw CSDI geometry simplified to 1.17 MB at 5 m tolerance)."
+      },
     {
       "id": "lcsd_facilities",
       "source": "lcsd_facilities",

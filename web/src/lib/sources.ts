@@ -92,6 +92,10 @@ export interface LayerDefRaw {
       static layer drawn once. Config-not-code: the loop is generic, the
       cadence is this field. */
   refresh_ms?: number;
+  /** Line-dasharray for a `line` geom layer (hiking trails: [6, 4] dashed).
+      Absent = solid. Config-not-code; the builder is shared with the MTR
+      network, which stays solid. */
+  dash?: number[];
 }
 
 /** The publisher's name in the ACTIVE language, falling back to the Chinese one.

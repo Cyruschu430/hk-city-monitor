@@ -320,7 +320,8 @@
     "layers": [
     "water_suspension",
     "water_suspension_districts",
-    "aed_locations"
+    "aed_locations",
+    "hiking_trails"
    ],
    "window": "now",
    "location_scope": "district",

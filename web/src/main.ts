@@ -153,6 +153,9 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // 39 EPD-graded beaches, positions from the RSS's own WGS84 cells, LIVE daily
   // grade merged by the beach_grading_list panel's adapter. OFF by default.
   { id: "beach_grading", label: { tc: "泳灘水質", en: "Beach water quality" } },
+  // 167 AFCD hiking trails (CSDI, official) — green dashed linework, the look
+  // Cyrus asked for. ON by default: this is the layer people come for.
+  { id: "hiking_trails", label: { tc: "行山徑", en: "Hiking trails" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its

@@ -3336,6 +3336,20 @@
    "cost": "free"
   },
   {
+   "id": "afcd_hiking_trails",
+   "group": "civic",
+   "name": "漁護署 郊野公園遠足徑",
+   "name_en": "AFCD Hiking Trails in Country Parks",
+   "type": "geojson",
+   "url": "data/hiking_trails.geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "167 official hiking trails (CSDI afcd_rcd_1665568199103_4360, keyless — unlike the token-gated closed-trails service). Built by scripts/build_hiking_trails.py: raw CSDI geometry is ~15.6 MB, simplified to 1.17 MB at 5 m Douglas-Peucker tolerance (round caps hide the rest). Each feature carries color #22c55e; the layer draws green DASHED via def.dash [6,4].",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free"
+  },
+  {
    "id": "td_detector_avg_speed",
    "group": "transport",
    "name": "運輸署 交通探測器 平均車速",

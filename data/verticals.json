@@ -179,9 +179,10 @@
     "mtr_next_train_list",
     "mtr_trains",
     "carpark_vacancy_list",
+    "sensor_parking_occupancy",
     "crossboundary_ferry_table"
-   ],
-   "layers": [
+    ],
+    "layers": [
     "cameras_all",
     "control_points"
    ],
@@ -192,9 +193,10 @@
     "mtr_next_train_list",
     "mtr_trains",
     "carpark_vacancy_list",
+    "sensor_parking_occupancy",
     "crossboundary_ferry_table"
-   ]
-  },
+    ]
+    },
   {
    "id": "drone",
    "name": {

@@ -366,6 +366,19 @@
    }
   },
   {
+   "id": "sensor_parking_occupancy",
+   "source": "td_sensor_parking_occupancy",
+   "render": "status_grid",
+   "title": {
+    "tc": "路邊感應車位佔用",
+    "en": "On-street sensor parking"
+   },
+   "cadence_note": {
+    "tc": "即時",
+    "en": "Live"
+   }
+  },
+  {
    "id": "wind_status",
    "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
    "render": "status_grid",

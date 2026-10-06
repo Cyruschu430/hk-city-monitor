@@ -3280,6 +3280,20 @@
    "cost": "free"
   },
   {
+   "id": "td_sensor_parking_occupancy",
+   "group": "transport",
+   "name": "運輸署 路邊感應車位 實時佔用",
+   "name_en": "TD On-street Sensor Parking — Live Occupancy",
+   "type": "dataset",
+   "url": "https://resource.data.one.gov.hk/td/psiparkingspaces/occupancystatus/occupancystatus.csv",
+   "auth": "none",
+   "cadence": "live",
+   "notes": "Live occupancy of on-street parking spaces installed with sensors (O=occupied / V=vacant, date in the row). ~20.7k spaces. No coordinates in this feed and the ids do NOT join the nmospiot coordinate file (different schemes, measured 0 overlap) — so this powers the sensor_parking_occupancy PANEL only, never a map layer.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free"
+  },
+  {
    "id": "td_detector_avg_speed",
    "group": "transport",
    "name": "運輸署 交通探測器 平均車速",

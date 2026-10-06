@@ -811,6 +811,26 @@ export function aqhiStationKey(name: unknown): string {
   return String(name ?? "").replace(" Air Quality Monitoring Station", "").trim();
 }
 
+/** Parse TD's occupancystatus.csv (on-street sensor parking) into city-wide
+ *  counts. Column 3 is OccupancyStatus: O = occupied, V = vacant; the date
+ *  (MM/DD/YYYY) is column 4. The columns were misread once (N/NU in column 2
+ *  are ParkingMeterStatus, NOT occupancy) — the test pins the indices. */
+export function parseSensorOccupancy(csv: string): { total: number; occupied: number; vacant: number; updated: string } {
+  let occupied = 0;
+  let vacant = 0;
+  let updated = "";
+  for (const line of csv.split(/\r?\n/).slice(1)) {
+    if (!line.trim()) continue;
+    const cols = line.split(",");
+    const status = cols[2]?.trim() ?? "";
+    if (status === "O") occupied++;
+    else if (status === "V") vacant++;
+    const d = (cols[3] ?? "").trim();
+    if (d && d > updated) updated = d;
+  }
+  return { total: occupied + vacant, occupied, vacant, updated };
+}
+
 /** Normalise an HKO regional-station name for the 1-minute temperature merge:
  *  strip the standard suffixes, and alias the three CSV abbreviations CSDI
  *  spells out (measured 2026-10-06: 36/39 match cleanly, these three did not).

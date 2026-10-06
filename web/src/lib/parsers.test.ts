@@ -351,6 +351,23 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log("✓ 1 分鐘氣溫: CSV 入 key（3 個縮寫 alias 對到 CSDI 官方名）");
 }
 
+// 17d. Sensor-parking occupancy: the O/V are column 3, NOT the N/NU pair in
+// column 2 (ParkingMeterStatus) — misread once, pinned here so it cannot regress.
+{
+  const s = P.parseSensorOccupancy(
+    "ParkingSpaceId,ParkingMeterStatus,OccupancyStatus,OccupancyDateChanged\n" +
+      "10006A,N,O,10/06/2026\n" +
+      "10007B,N,V,10/06/2026\n" +
+      "10008C,NU,O,10/06/2026\n" +
+      "10009D,N,V,10/05/2026\n",
+  );
+  assert.equal(s.total, 4, "rows with a status");
+  assert.equal(s.occupied, 2, "O in col3 counts; N/NU in col2 must NOT");
+  assert.equal(s.vacant, 2);
+  assert.equal(s.updated, "10/06/2026", "latest date wins");
+  console.log("✓ 感應車位: O/V 計數（欄位索引釘死）");
+}
+
 // 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).
 {
   const cells = P.parseImmdQueue({ HYW: { arrQueue: 0, depQueue: 0 }, LWS: { arrQueue: 25, depQueue: 18 } }, ["HYW", "LWS"]);

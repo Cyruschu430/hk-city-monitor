@@ -996,6 +996,28 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async td_sensor_parking_occupancy(src) {
+    // City-wide occupancy of on-street parking spaces installed with sensors.
+    // No coordinates in this feed (and its ids do not join the nmospiot
+    // coordinate file — different schemes) so this powers the panel only;
+    // it never becomes a map layer.
+    const csv = await text(await get(src));
+    const s = P.parseSensorOccupancy(csv);
+    const tc = lang() === "tc";
+    const cells: StatusCell[] = [
+      { label: tc ? "感應車位總數" : "Sensor spaces", value: String(s.total), status: 0 },
+      { label: tc ? "泊緊" : "Occupied", value: String(s.occupied), status: 0 },
+      { label: tc ? "空位" : "Vacant", value: String(s.vacant), status: 0 },
+      { label: tc ? "更新日期" : "Updated", value: s.updated, status: 0 },
+    ];
+    const t = Date.parse(s.updated);
+    return {
+      data: { kind: "status_grid", cells },
+      observedAt: Number.isFinite(t) ? new Date(t) : new Date(),
+      state: { records: s.total },
+    };
+  },
+
   async td_carpark_vacancy(src, panel, ctx) {
     const max = Number(panel.params?.["max_rows"] ?? 10);
     const infoSrc = ctx.registry.byId.get("td_carpark_info");

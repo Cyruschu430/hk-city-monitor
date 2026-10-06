@@ -3539,6 +3539,18 @@
    "kind": "api",
    "fetch": "browser",
    "cost": "free"
+  },
+  {
+   "id": "td_parking_meters",
+   "group": "transport",
+   "name": "運輸署 路邊泊車位位置（感應咪錶）",
+   "name_en": "TD On-street Parking Space Positions (sensor meters)",
+   "type": "geojson",
+   "url": "data/parking_meters.geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "TD psi space-info CSV — 20,712 metered spaces with sensor, each with ParkingSpaceId (the join key the occupancy feed shares), street, district and coordinates. Built by scripts/build_meters.py.",
+   "todo": false
   }
  ]
 }

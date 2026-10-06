@@ -996,13 +996,47 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
-  async td_sensor_parking_occupancy(src) {
+  async td_sensor_parking_occupancy(src, _panel, ctx) {
     // City-wide occupancy of on-street parking spaces installed with sensors.
-    // No coordinates in this feed (and its ids do not join the nmospiot
-    // coordinate file — different schemes) so this powers the panel only;
-    // it never becomes a map layer.
+    // The feed itself has no coordinates, but scripts/build_meters.py baked the
+    // position of every sensor space (ParkingSpaceId is the join key), so the
+    // map layer gets a live O/V dot per space while the panel keeps its counts.
     const csv = await text(await get(src));
     const s = P.parseSensorOccupancy(csv);
+    // id → occupied, straight off the same CSV columns the parser pins (0 = id,
+    // 2 = OccupancyStatus) — the map and the panel read the SAME parse.
+    const occ = new Map<string, boolean>();
+    for (const line of csv.split(/\r?\n/).slice(1)) {
+      if (!line.trim()) continue;
+      const c = line.split(",");
+      const st = (c[2] ?? "").trim();
+      if (st === "O" || st === "V") occ.set((c[0] ?? "").trim(), st === "O");
+    }
+    let geo: GeoJSON.FeatureCollection | null = null;
+    const posSrc = ctx.registry.byId.get("td_parking_meters");
+    if (posSrc) {
+      try {
+        const fc = (await json(await get(posSrc))) as GeoJSON.FeatureCollection;
+        geo = {
+          type: "FeatureCollection",
+          features: (fc.features ?? []).map((f) => {
+            const p = (f.properties ?? {}) as Record<string, unknown>;
+            const id = String(p["id"] ?? "");
+            const isOcc = occ.get(id);
+            return {
+              ...f,
+              properties: {
+                ...p,
+                occupied: isOcc === undefined ? null : isOcc ? 1 : 0,
+                color: isOcc === undefined ? "#5b6472" : isOcc ? "#ef3d5b" : "#34d399",
+              },
+            } as GeoJSON.Feature;
+          }),
+        };
+      } catch {
+        // positions missing → the layer simply cannot draw; the panel is unaffected
+      }
+    }
     const tc = lang() === "tc";
     const cells: StatusCell[] = [
       { label: tc ? "感應車位總數" : "Sensor spaces", value: String(s.total), status: 0 },
@@ -1013,6 +1047,7 @@ const ADAPTERS: Record<string, Adapter> = {
     const t = Date.parse(s.updated);
     return {
       data: { kind: "status_grid", cells },
+      geo: geo ?? undefined,
       observedAt: Number.isFinite(t) ? new Date(t) : new Date(),
       state: { records: s.total },
     };
@@ -1274,11 +1309,13 @@ const ADAPTERS: Record<string, Adapter> = {
     const infoSrc = ctx.registry.byId.get("td_carpark_info");
     if (!infoSrc) throw new Error("sources.json 冇 td_carpark_info");
     const [v, info] = await Promise.all([json(await get(src)), json(await get(infoSrc))]);
-    const rows = P.parseCarpark(v, info, max);
+    const rowsAll = P.parseCarpark(v, info, Number.MAX_SAFE_INTEGER);
     // The reader's search box (panels.json params.search) filters by park name.
-    // Max_rows still caps the UNSEARCHED list, so a typed query can out-limit it.
+    // Max_rows caps the PANEL table only; the map geo below gets every park so
+    // the layer shows all 556 spaces, not the panel's window into them.
     const q = searchQuery(panel.id);
-    const shown = q ? rows.filter((r) => r.name.toLowerCase().includes(q.toLowerCase())) : rows;
+    const filtered = q ? rowsAll.filter((r) => r.name.toLowerCase().includes(q.toLowerCase())) : rowsAll;
+    const rows = filtered.slice(0, max);
     const tc = lang() === "tc";
     // THREE columns, not four. The 總數 column this panel used to show read "—"
     // for all 12 rows because `basic_info_all.json` has NO capacity field at all
@@ -1298,12 +1335,12 @@ const ADAPTERS: Record<string, Adapter> = {
       data: {
         kind: "table",
         columns: tc ? ["停車場", "私家車空位", "該場更新"] : ["Carpark", "Free (car)", "Reported"],
-        rows: shown.map((r) => [r.name, String(r.vacancy), fmt(r.updatedAt)]),
+        rows: rows.map((r) => [r.name, String(r.vacancy), fmt(r.updatedAt)]),
       },
       // The map layer draws the SAME rows through the SAME parse, so the layer
       // and the panel cannot disagree about how many spaces are left. Parks
       // without a coordinate pair are dropped by carparkToGeoJson itself.
-      geo: P.carparkToGeoJson(shown),
+      geo: P.carparkToGeoJson(filtered),
       // The NEWEST per-park report, so the panel's own clock is not older than
       // the freshest row it is showing. `null` when the feed carried no times at
       // all, which the panel renders as its no-timestamp state rather than

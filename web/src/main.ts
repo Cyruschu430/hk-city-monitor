@@ -143,6 +143,7 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // OFF by default: a reader who wants a space turns it on, a reader who does
   // not never pays for the 60s refresh.
   { id: "carpark_vacancy", label: { tc: "停車場空位", en: "Car park vacancies" } },
+  { id: "sensor_parking_spaces", label: { tc: "路邊感應車位", en: "On-street sensor spaces" }, on: false },
   // 952 LCSD leisure facilities (libraries, museums, parks, courts, camps, bbq)
   // from nine CSDI services — the official geometry, not a geocode. OFF by
   // default like every reference layer; the generic attribute popup handles it.
@@ -564,6 +565,9 @@ async function boot(): Promise<void> {
       }
       const cam = [...cameras.td, ...cameras.hko].find((c) => c.id === img.id);
       if (cam) drawer.openCamera(cam);
+      // A static board (speed map panel): not a camera id, no video — just
+      // show the image big instead of eating the click.
+      else drawer.openStatic({ src: img.src, name: img.name });
     },
     onState: emit,
   });

@@ -13,6 +13,8 @@ export interface Drawer {
   openCamera(cam: Camera): void;
   /** Live-stream video: thumbnail + LIVE badge, or an honest off-air state. */
   openVideo(v: { id: string; title: string; channel?: string; live: boolean }): void;
+  /** A static snapshot (speed map panel board, etc.): plain image, big. */
+  openStatic(img: { src: string; name: string }): void;
   close(): void;
   isOpen(): boolean;
 }
@@ -33,6 +35,24 @@ export function createDrawer(root: HTMLElement): Drawer {
   return {
     isOpen: () => open,
     close,
+    openStatic(img) {
+      open = true;
+      root.hidden = false;
+      clear(root);
+      root.append(
+        h(
+          "div",
+          { class: "drawer-head" },
+          h("h2", { title: img.name }, img.name),
+          h(
+            "button",
+            { class: "drawer-close", type: "button", onclick: close, "aria-label": lang() === "tc" ? "閂" : "Close" },
+            icon("M6 6l12 12M18 6L6 18", 16),
+          ),
+        ),
+        h("div", { class: "pimg", style: "margin:0" }, h("img", { src: img.src, alt: img.name })),
+      );
+    },
     openVideo(v) {
       open = true;
       root.hidden = false;

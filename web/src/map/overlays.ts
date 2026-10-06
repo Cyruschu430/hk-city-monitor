@@ -518,14 +518,14 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // seconds, so clusters would re-form constantly and hide exactly the
   // individual tracks this layer exists to show. Camera points are static and
   // stay clustered.
-  const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel" || glyph === "mtr-train";
+  const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel" || glyph === "mtr-train" || def.symbol === "meter";
   map.addSource(id, {
     type: "geojson",
     data: fc,
     ...(moving ? {} : { cluster: true, clusterRadius: 46, clusterMaxZoom: 13 }),
   });
 
-  if (moving) {
+  if (moving && def.symbol !== "meter") {
     // Aircraft get a dark halo disc under the glyph. The first version drew the
     // bare plane outline, which on the dark basemap is a faint white speck you
     // have to hunt for (caught in a screenshot review) — the camera layers had
@@ -543,26 +543,45 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
         "circle-blur": 0.5,
       },
     });
-    map.addLayer({
-      id: `${id}-point`,
-      type: "symbol",
-      source: id,
-      // `icon-rotate` reads the `bearing` property the adapter writes, so a
-      // plane points where it is flying rather than all pointing north.
-      layout: {
-        "icon-image": glyph,
-        "icon-size": ["interpolate", ["linear"], ["zoom"], 8, 0.32, 12, 0.46, 16, 0.64] as never,
-        "icon-rotate": ["get", "bearing"],
-        "icon-rotation-alignment": "map",
-        "icon-allow-overlap": true,
-        "icon-ignore-placement": true,
-      },
-    });
+    if (def.symbol === "meter") {
+      // Sensor parking spaces: a bare colour disc per space — red occupied,
+      // green vacant, grey unknown. No glyph: the disc IS the meaning.
+      map.addLayer({
+        id: `${id}-point`,
+        type: "circle",
+        source: id,
+        paint: {
+          "circle-color": ["coalesce", ["get", "color"], "#5b6472"] as never,
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 2.6, 13, 3.8, 16, 5.5] as never,
+          "circle-stroke-color": "#0b0f14",
+          "circle-stroke-width": 1,
+        },
+      });
+      if (def.popup === "sensor_popup") sensorPopup(map, `${id}-point`);
+    } else {
+      map.addLayer({
+        id: `${id}-point`,
+        type: "symbol",
+        source: id,
+        // `icon-rotate` reads the `bearing` property the adapter writes, so a
+        // plane points where it is flying rather than all pointing north.
+        layout: {
+          "icon-image": glyph,
+          "icon-size": ["interpolate", ["linear"], ["zoom"], 8, 0.32, 12, 0.46, 16, 0.64] as never,
+          "icon-rotate": ["get", "bearing"],
+          "icon-rotation-alignment": "map",
+          "icon-allow-overlap": true,
+          "icon-ignore-placement": true,
+        },
+      });
+    }
     // Attributes on the moving path too. The aircraft layer was withdrawn, but the
     // vessel one is coming and it draws exactly here — leaving this branch without
     // a popup would recreate the weather-station bug on a brand new layer.
-    if (glyph === "mtr-train") mtrTrainPopup(map, `${id}-point`);
-    else attributePopup(map, `${id}-point`);
+    if (def.symbol !== "meter") {
+      if (glyph === "mtr-train") mtrTrainPopup(map, `${id}-point`);
+      else attributePopup(map, `${id}-point`);
+    }
     // Trains keep sliding between the 30s schedule refetches (see startMtrAnimation).
     if (glyph === "mtr-train") void startMtrAnimation(map, id, () => fetchMtrData(src));
     return;
@@ -714,6 +733,31 @@ function aedPopup(map: maplibregl.Map, layerId: string): void {
     new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
       .setLngLat(e.lngLat)
       .setHTML(`<div class="aed-pop">${rows.join("")}</div>`)
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+function sensorPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const occ = p["occupied"];
+    const stateTxt =
+      occ === 1 ? (tc ? "泊緊" : "Occupied") : occ === 0 ? (tc ? "空位" : "Vacant") : tc ? "無數據" : "No data";
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<div class="aed-pop"><b>${esc(p["street"] || p["id"])}</b>` +
+          `<div><span>${tc ? "車位" : "Space"}</span> <b>${esc(p["id"])}</b></div>` +
+          `<div><span>${tc ? "狀態" : "Status"}</span> <b style="color:${occ === 1 ? "#ef3d5b" : occ === 0 ? "#34d399" : "#9aa1ab"}">${stateTxt}</b></div>` +
+          (p["district"] ? `<div><span>${tc ? "地區" : "District"}</span> ${esc(p["district"])}</div>` : "") +
+          `</div>`,
+      )
       .addTo(map);
   });
   map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));

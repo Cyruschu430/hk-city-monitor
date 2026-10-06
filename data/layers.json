@@ -1,427 +1,444 @@
 {
-  "_comment": "Map layer registry. geom ∈ point/polygon/line/raster/poi/none.",
-  "geoms": [
-    "point",
-    "polygon",
-    "line",
-    "raster",
-    "poi",
-    "none"
-  ],
-  "layers": [
-    {
-      "id": "control_points",
-      "source": "immd_cp_queue",
-      "render": "status_grid",
-      "geom": "poi",
-      "symbol": "cp-land",
-      "title": {
-        "tc": "出入境管制站",
-        "en": "Immigration Control Points"
-      },
-      "_comment": "The POIs 口岸模式 is ABOUT. Before this the mode drew only camera dots: three panels of queue and ferry times with nothing on the map saying which crossings they referred to — the panel-to-map link was missing in the one mode where the map should lead. Positions come from data/control_points.json (reference data with a validation trail: each coordinate checked against an official anchor and rejected beyond 1.5km, which caught four wrong lookups). The popup joins the LIVE queue reading from the trigger state, so it answers the panel's question rather than restating the name. 深圳灣 has no coordinate — it is resolved at district level instead of being given a confident wrong pin.",
-      "popup": "control_point_popup",
-      "filters": {
-        "scope": "hk"
-      }
-    },
-    {
-      "id": "cameras_all",
-      "source": "td_camera_list",
-      "render": "image_wall",
-      "geom": "point",
-      "symbol": "cam-td",
-      "title": {
-        "tc": "交通快拍相機",
-        "en": "Traffic Cameras"
-      },
-      "popup": "camera_popup",
-      "filters": {
-        "scope": "hk"
-      }
-    },
-    {
-      "id": "hko_cameras",
-      "source": "hko_webcam_index",
-      "render": "image_wall",
-      "geom": "point",
-      "symbol": "cam-hko",
-      "title": {
-        "tc": "天氣攝影機",
-        "en": "Weather Cameras"
-      },
-      "popup": "camera_popup",
-      "filters": {
-        "scope": "hk"
-      }
-    },
-    {
-      "id": "rain_nowcast",
-      "source": "hko_rain_nowcast",
-      "render": "raster_map",
-      "geom": "raster",
-      "title": {
-        "tc": "降雨臨近預報",
-        "en": "Rainfall Nowcast"
-      },
-      "popup": null,
-      "filters": {
-        "scope": "hk"
-      }
-    },
-    {
-      "id": "ae_hospitals",
-      "source": "ha_ae_waiting",
-      "render": "gauge_grid",
-      "geom": "none",
-      "title": {
-        "tc": "急症室",
-        "en": "A&E Departments"
-      },
-      "popup": "ae_popup",
-      "filters": {
-        "scope": "hk"
-      }
-    },
-    {
-      "id": "water_suspension",
-      "source": "wsd_water_suspension",
-      "render": "list",
-      "geom": "none",
-      "title": {
-        "tc": "停水通知",
-        "en": "Water Suspensions"
-      },
-      "popup": null,
-      "filters": {
-        "scope": "district"
-      }
-    },
-    {
-      "id": "water_suspension_districts",
-      "source": "wsd_water_suspension",
-      "render": "list",
-      "geom": "point",
-      "symbol": "no-water",
-      "title": {
-        "tc": "停水位置",
-        "en": "Suspension locations"
-      },
-      "_title_note": "MEASURED 2026-09-24: an earlier title 停水位置（大廈／街道）＋受影響地區 was 17 characters and the LAYERS control is 230px wide, so it ellipsised mid-word to 停水位置（大廈／街道）＋受… — a layer name the reader could not finish. Now that the district tint is gone the name is simply 停水位置, which fits with room to spare.",
-      "_comment": "WATER SUSPENSION PINS (2026-09-25 decision): a district boundary tint overstated the affected area — one building outage painted a whole 18-district polygon red. Pins show the ACTUAL claim the data supports (each notice geocoded to its own street address), and the layer title no longer mentions districts because it no longer draws any. Pins stay two-tone — alert red for 食水 (drinking water, the life-safety case) and amber for 鹹水 (flushing water). CONSEQUENCE: the CSDI 18-district source `wsd_water_suspension_districts` and its geometry are now unused, and `polygonLayer`/`normaliseDistricts` were deleted with it. If the tint ever returns, the 深水埗區 trailing-CRLF fix that `normaliseDistricts` existed for is in git history — and it is a real upstream defect, not a rumour.",
-      "popup": null,
-      "filters": {
-        "scope": "hk"
-      }
-    },
-    {
-      "_comment": "WIND FLOW — a GPU particle animation over a MODELLED 22x16 lattice (Open-Meteo, 352 points), not the station barbs it used to draw. The barbs answered 'what is the wind at this instrument'; a flow animation answers 'where is the air going', which is what a reader reads off a weather map. geom is 'none' because zero MapLibre layers are created — map/wind.ts draws the whole thing through a deck.gl MapboxOverlay, so visibility belongs to that overlay, like the 3D layer, and clearVerticalLayers has nothing to clear. It used to be 'poi' with a stale 'wind-barb' symbol, which worked only by accident: 'poi' MEANS the curated border-crossing POI renderer, so listing this layer in a vertical would have handed a modelled wind field to the control-point drawer. HONESTY: this is modelled data; the weather_stations layer is the OBSERVED counterpart and both are one click apart, because conflating a model with a measurement is the dishonest option. Zero MapLibre layers are created, so nothing needs clearing.",
-      "id": "wind_field",
-      "source": "open_meteo_wind_grid",
-      "render": "status_grid",
-      "geom": "none",
-      "symbol": "wind-flow",
-      "title": {
-        "tc": "風場（模式格網）",
-        "en": "Wind flow (modelled)"
-      },
-      "popup": null,
-      "filters": {
-        "scope": "hk"
-      }
-    },
-    {
-      "id": "weather_stations",
-      "source": "hko_stations_network",
-      "render": "status_grid",
-      "geom": "point",
-      "symbol": "station-wind",
-      "title": {
-        "tc": "氣象站位置",
-        "en": "Weather stations"
-      },
-      "popup": null,
-      "filters": {
-        "scope": "hk"
-      },
-      "refresh_ms": 300000,
-      "_comment": "49 official HKO station positions (CSDI) with live 1-minute temperatures merged by the hko_stations_network adapter (36/39 names match, three aliased). 5-minute refresh."
-    },
-    {
-      "id": "drone_rfz",
-      "source": "drone_rfz",
-      "render": "list",
-      "geom": "polygon",
-      "title": {
-        "tc": "無人機禁飛區",
-        "en": "Drone restricted zones"
-      },
-      "popup": "rfz_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "The first polygon layer since 2026-09-25. That removal was specific to the water district tint, whose polygon asserted more than the notice said (a district outline around a water suspension reads as the whole district being cut off). Nothing about that reason applies here: CAD publishes the zone AS this boundary, so the polygon IS the data rather than a generalisation of it. OFF by default — 290 polygons at 3MB is not first paint."
-    },
-    {
-      "id": "aed_locations",
-      "source": "fsd_aed",
-      "render": "list",
-      "geom": "point",
-      "symbol": "aed",
-      "title": {
-        "tc": "公眾 AED（心臟去顫器）",
-        "en": "Public AEDs"
-      },
-      "popup": "aed_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "4,652 public defibrillators, clustered by the generic point path (clusterRadius 46, clusterMaxZoom 13) exactly like the camera layers — no bespoke clustering code, because the pattern already existed and re-writing it for one layer is how two cluster behaviours end up on one map. OFF by default: it is 707KB, and a layer that loads by default is a layer every reader pays for. The popup answers ONE question first — can the public use it — because an AED behind a locked office door and one on a street corner are the same dot otherwise."
-    },
-    {
-      "id": "hk_facility_areas",
-      "source": "hk_facility_areas",
-      "render": "list",
-      "geom": "polygon",
-      "title": {
-        "tc": "裝卸泊位及機場設施",
-        "en": "Cargo berths & airport facilities"
-      },
-      "popup": "facility_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "公眾貨物裝卸區 + 機場進場限制區. The facilities 貨運模式's panels are ABOUT: before this the mode listed flight and traffic rows with the map saying nothing about where cargo actually moves, which is the panel-to-map link missing in the one mode where the map should lead. Polygon is right here for the same reason it is right for the drone RFZ and wrong for the water district tint: the publishers draw the zone AS this boundary, so the polygon IS the data rather than a generalisation of it. OFF by default - 128 polygons is 134KB, and a layer that loads unasked is a layer every reader pays for. Popup properties follow the CSDI shape attributeHtml expects (Name as the head, Type_tc/Type_en as a labelled row) - short keys render as '未命名' plus raw unlabelled keys."
-    },
-    {
-      "id": "hk_facility_pins",
-      "source": "hk_facility_pins",
-      "render": "list",
-      "geom": "point",
-      "symbol": "oil-tank",
-      "title": {
-        "tc": "貯油裝置",
-        "en": "Oil storage installations"
-      },
-      "popup": "facility_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "23 licensed oil storage installations. A `point` layer must name a `symbol` and pointLayer throws without one (overlays.ts:347); the glyph is `oil-tank` in symbols.ts. Small enough (7,932 bytes) that size is NOT the reason it is off by default — being one mode's subject is: a layer that appears in 總覽 without being asked for is what the verticals exist to prevent."
-    },
-    {
-      "id": "aircraft",
-      "source": "adsb_lol_hk",
-      "render": "list",
-      "geom": "point",
-      "symbol": "plane",
-      "title": {
-        "tc": "航機（社群 ADS-B）",
-        "en": "Aircraft (community ADS-B)"
-      },
-      "popup": "aircraft_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "Live ADS-B traffic. Restored with the same change that restored the panel: the layer was withdrawn because adsb.lol blocks cloud egress, and the map now reads data/aircraft.json published by the PC collector instead of the upstream host. `symbol: plane` plus a per-feature icon-rotate is the existing path in overlays.ts pointLayer — the glyph and the rotation were left intact through the withdrawal, so this is a config entry and not new drawing code. ON by default: wanted back on every vertical."
-    },
-    {
-      "id": "mtr_trains",
-      "source": "mtr_trains",
-      "render": "status_grid",
-      "geom": "point",
-      "symbol": "mtr-train",
-      "title": {
-        "tc": "港鐵列車（推算位置）",
-        "en": "MTR trains (estimated)"
-      },
-      "popup": "aircraft_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "Estimated positions from next-train ETAs, NOT GPS. `symbol: mtr-train` plus a per-feature `bearing` reuse the moving-layer icon-rotate path (overlays.ts pointLayer); the popup is the aircraft one so the shared builder already reads its fields. The layer animates: a requestAnimationFrame loop re-runs estimateMtrTrains with ttnt decremented by wall-clock, so trains slide smoothly along their line between the 30s schedule re-fetches instead of jumping each poll."
-    },
-    {
-      "id": "mtr_lines",
-      "source": "mtr_lines",
-      "render": "list",
-      "geom": "line",
-      "title": {
-        "tc": "港鐵路線",
-        "en": "MTR lines"
-      },
-      "popup": null,
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "Reference geometry for the MTR: one LineString per heavy-rail line (plus the 落馬洲 / 康城 spurs), generated from data/mtr_stations.json by hand (see the file). `geom: line` draws through overlays.ts lineLayer with the official line colour carried per feature. OFF by default — it is a backdrop the reader turns on when they want to read the train layer against the network."
-    },
-    {
-      "id": "aqhi_stations",
-      "source": "aqhi_city_dashboard",
-      "render": "list",
-      "geom": "point",
-      "symbol": "aqhi",
-      "title": {
-        "tc": "空氣質素指數 AQHI",
-        "en": "Air Quality Health Index"
-      },
-      "popup": "aqhi_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "refresh_ms": 3600000,
-      "_comment": "18 official station positions (CSDI epd_rcd_1629267205214_40635) with LIVE hourly readings merged by the same adapter the aqhi_gauge_grid panel reads — dots and gauges cannot disagree. Hourly refresh (AQHI publishes on the hour). popup aqhi_popup shows the number + health-risk band + station type + address."
-      },
-      {
-      "id": "beach_grading",
-      "source": "epd_beach_grading",
-      "render": "list",
-      "geom": "point",
-      "symbol": "beach",
-      "title": {
-       "tc": "泳灘水質",
-       "en": "Beach water quality"
-      },
-      "popup": "beach_popup",
-      "filters": {
-       "scope": "hk"
-      },
-      "refresh_ms": 3600000,
-      "_comment": "39 graded beaches (positions from the EPD RSS's own WGS84 cells) with the LIVE daily grading merged by the same adapter the beach_grading_list panel reads — dots and counts cannot disagree. Hourly refresh. popup beach_popup shows the grade in its band colour."
-      },
-      {
-      "id": "hiking_trails",
-      "source": "afcd_hiking_trails",
-      "render": "none",
-      "geom": "line",
-      "title": {
-       "tc": "行山徑",
-       "en": "Hiking trails"
-      },
-      "popup": "trail_popup",
-      "dash": [6, 4],
-      "_comment": "167 official AFCD hiking trails (CSDI afcd_rcd_1665568199103_4360, keyless) as simplified LineStrings — the lineLayer draws them green (per-feature color) DASHED (def.dash). Green dashed is the user's stated look. Built by scripts/build_hiking_trails.py (15.6 MB raw CSDI geometry simplified to 1.17 MB at 5 m tolerance)."
-      },
-      {
-      "id": "mtr_bus_stops",
-      "source": "mtr_bus_eta",
-      "render": "list",
-      "geom": "point",
-      "symbol": "bus",
-      "title": {
-      "tc": "港鐵接駁巴士",
-      "en": "MTR feeder buses"
-      },
-      "popup": "mtr_bus_popup",
-      "filters": {
-      "scope": "hk"
-      },
-      "refresh_ms": 300000,
-      "_comment": "855 MTR feeder-bus stops (official CSV, STATION_ID = the API's busStopId) with LIVE next-bus ETAs merged per route via POST (rt.data.gov.hk, CORS *). The adapter fetches 26 routes once per 5-min refresh. popup mtr_bus_popup shows the publisher's own arrival text + delayed/suspended flags."
-      },
-      {
-      "id": "journey_time",
-      "source": "ck_hk_td_sm_8_journey_time_indicators_v2",
-      "render": "list",
-      "geom": "point",
-      "symbol": "jt",
-      "title": {
-       "tc": "行車時間",
-       "en": "Journey time"
-      },
-      "popup": "journey_popup",
-      "text_prop": "minutes",
-      "text_size": 11,
-      "filters": {
-       "scope": "hk"
-      },
-      "refresh_ms": 120000,
-      "_comment": "80 TD journey-time indicator locations (CSDI td_rcd_1671692669689_59165) with LIVE minutes joined from Journeytimev2.xml by location|destination id. Each marker is a dark sign disc (jt glyph) with the minutes as a text label coloured by congestion (label_color: 1 red / 2 amber / 3 green, computed in the adapter). Popup shows the approach road, its destination and the minutes. OFF by default."
-      },
-      {
-      "id": "ai_cctv_speed",
-      "source": "td_ai_cctv",
-      "render": "list",
-      "geom": "point",
-      "symbol": "speed",
-      "title": {
-       "tc": "路網車速（AI 分析）",
-       "en": "Road speed (AI)"
-      },
-      "popup": "ai_cctv_popup",
-      "text_prop": "speed",
-      "text_size": 11,
-      "filters": {
-       "scope": "hk"
-      },
-      "refresh_ms": 900000,
-      "_comment": "16 TD AI Video Analytics CCTVs with LIVE per-segment speed/flow (every 15 min). Each marker is a speedometer (speed glyph) with the avg km/h as a text label coloured by band (<10 red / <30 amber / else green, computed in the adapter). Cameras with Is_valid N (PTZ moved) draw nothing. OFF by default."
-      },
-      {
-      "id": "ev_chargers",
-      "source": "epd_ev_chargers",
-      "render": "list",
-      "geom": "point",
-      "symbol": "ev",
-      "title": {
-       "tc": "充電站",
-       "en": "EV chargers"
-      },
-      "popup": "ev_popup",
-      "filters": {
-       "scope": "hk"
-      },
-      "_comment": "988 public EV chargers (EPD via CSDI epd_rcd_1631080339740_69941) with per-type counts. Bolt glyph; popup lists the site, address and std/medium/quick/fast counts. As-issued (chargers install in batches), OFF by default."
-      },
-    {
-      "id": "lcsd_facilities",
-      "source": "lcsd_facilities",
-      "render": "list",
-      "geom": "point",
-      "symbol": "facility",
-      "title": {
-        "tc": "康文署設施",
-        "en": "LCSD facilities"
-      },
-      "popup": null,
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "952 LCSD leisure points (libraries, museums, parks, courts, camps, bbq) from nine CSDI services, merged by scripts/build_lcsd.py — the official geometry, not a geocode. OFF by default. popup null → the generic attribute popup renders the Name/Name_tc/Name_en/Type/District/Address contract the script writes."
-    },
-    {
-      "id": "carpark_vacancy",
-      "source": "td_carpark_vacancy",
-      "render": "list",
-      "geom": "point",
-      "symbol": "parking",
-      "title": {
-        "tc": "停車場空位",
-        "en": "Car park vacancies"
-      },
-      "popup": "carpark_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "refresh_ms": 60000,
-      "_comment": "556 parks placed by TD's OWN basic_info_all coordinates (no geocoding — the position IS the publisher's), vacancy merged per park from vacancy_all.json by the same adapter the table panel reads, so the map and the panel cannot disagree. OFF by default; refresh_ms drives a generic 60s redraw loop in overlays.ts."
-    },
-    {
-      "id": "vessels",
-      "source": "vessel_api",
-      "render": "list",
-      "geom": "point",
-      "symbol": "vessel",
-      "title": {
-        "tc": "船位置",
-        "en": "Vessel positions"
-      },
-      "popup": "vessel_popup",
-      "filters": {
-        "scope": "hk"
-      },
-      "_comment": "AIS vessel positions from VesselAPI, a twice-daily snapshot (not live — aisstream.io went silent 2026-08 and blocks datacenter egress). Same pointLayer path as aircraft: `symbol: vessel` plus a per-feature icon-rotate on `bearing` (COG, falling back to heading). OFF by default for the same reason aircraft is: a moving layer nobody asked for is a layer on every reader's map."
-    }
-  ]
+ "_comment": "Map layer registry. geom ∈ point/polygon/line/raster/poi/none.",
+ "geoms": [
+  "point",
+  "polygon",
+  "line",
+  "raster",
+  "poi",
+  "none"
+ ],
+ "layers": [
+  {
+   "id": "control_points",
+   "source": "immd_cp_queue",
+   "render": "status_grid",
+   "geom": "poi",
+   "symbol": "cp-land",
+   "title": {
+    "tc": "出入境管制站",
+    "en": "Immigration Control Points"
+   },
+   "_comment": "The POIs 口岸模式 is ABOUT. Before this the mode drew only camera dots: three panels of queue and ferry times with nothing on the map saying which crossings they referred to — the panel-to-map link was missing in the one mode where the map should lead. Positions come from data/control_points.json (reference data with a validation trail: each coordinate checked against an official anchor and rejected beyond 1.5km, which caught four wrong lookups). The popup joins the LIVE queue reading from the trigger state, so it answers the panel's question rather than restating the name. 深圳灣 has no coordinate — it is resolved at district level instead of being given a confident wrong pin.",
+   "popup": "control_point_popup",
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "cameras_all",
+   "source": "td_camera_list",
+   "render": "image_wall",
+   "geom": "point",
+   "symbol": "cam-td",
+   "title": {
+    "tc": "交通快拍相機",
+    "en": "Traffic Cameras"
+   },
+   "popup": "camera_popup",
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "hko_cameras",
+   "source": "hko_webcam_index",
+   "render": "image_wall",
+   "geom": "point",
+   "symbol": "cam-hko",
+   "title": {
+    "tc": "天氣攝影機",
+    "en": "Weather Cameras"
+   },
+   "popup": "camera_popup",
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "rain_nowcast",
+   "source": "hko_rain_nowcast",
+   "render": "raster_map",
+   "geom": "raster",
+   "title": {
+    "tc": "降雨臨近預報",
+    "en": "Rainfall Nowcast"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "ae_hospitals",
+   "source": "ha_ae_waiting",
+   "render": "gauge_grid",
+   "geom": "none",
+   "title": {
+    "tc": "急症室",
+    "en": "A&E Departments"
+   },
+   "popup": "ae_popup",
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "water_suspension",
+   "source": "wsd_water_suspension",
+   "render": "list",
+   "geom": "none",
+   "title": {
+    "tc": "停水通知",
+    "en": "Water Suspensions"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "district"
+   }
+  },
+  {
+   "id": "water_suspension_districts",
+   "source": "wsd_water_suspension",
+   "render": "list",
+   "geom": "point",
+   "symbol": "no-water",
+   "title": {
+    "tc": "停水位置",
+    "en": "Suspension locations"
+   },
+   "_title_note": "MEASURED 2026-09-24: an earlier title 停水位置（大廈／街道）＋受影響地區 was 17 characters and the LAYERS control is 230px wide, so it ellipsised mid-word to 停水位置（大廈／街道）＋受… — a layer name the reader could not finish. Now that the district tint is gone the name is simply 停水位置, which fits with room to spare.",
+   "_comment": "WATER SUSPENSION PINS (2026-09-25 decision): a district boundary tint overstated the affected area — one building outage painted a whole 18-district polygon red. Pins show the ACTUAL claim the data supports (each notice geocoded to its own street address), and the layer title no longer mentions districts because it no longer draws any. Pins stay two-tone — alert red for 食水 (drinking water, the life-safety case) and amber for 鹹水 (flushing water). CONSEQUENCE: the CSDI 18-district source `wsd_water_suspension_districts` and its geometry are now unused, and `polygonLayer`/`normaliseDistricts` were deleted with it. If the tint ever returns, the 深水埗區 trailing-CRLF fix that `normaliseDistricts` existed for is in git history — and it is a real upstream defect, not a rumour.",
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "_comment": "WIND FLOW — a GPU particle animation over a MODELLED 22x16 lattice (Open-Meteo, 352 points), not the station barbs it used to draw. The barbs answered 'what is the wind at this instrument'; a flow animation answers 'where is the air going', which is what a reader reads off a weather map. geom is 'none' because zero MapLibre layers are created — map/wind.ts draws the whole thing through a deck.gl MapboxOverlay, so visibility belongs to that overlay, like the 3D layer, and clearVerticalLayers has nothing to clear. It used to be 'poi' with a stale 'wind-barb' symbol, which worked only by accident: 'poi' MEANS the curated border-crossing POI renderer, so listing this layer in a vertical would have handed a modelled wind field to the control-point drawer. HONESTY: this is modelled data; the weather_stations layer is the OBSERVED counterpart and both are one click apart, because conflating a model with a measurement is the dishonest option. Zero MapLibre layers are created, so nothing needs clearing.",
+   "id": "wind_field",
+   "source": "open_meteo_wind_grid",
+   "render": "status_grid",
+   "geom": "none",
+   "symbol": "wind-flow",
+   "title": {
+    "tc": "風場（模式格網）",
+    "en": "Wind flow (modelled)"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   }
+  },
+  {
+   "id": "weather_stations",
+   "source": "hko_stations_network",
+   "render": "status_grid",
+   "geom": "point",
+   "symbol": "station-wind",
+   "title": {
+    "tc": "氣象站位置",
+    "en": "Weather stations"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   },
+   "refresh_ms": 300000,
+   "_comment": "49 official HKO station positions (CSDI) with live 1-minute temperatures merged by the hko_stations_network adapter (36/39 names match, three aliased). 5-minute refresh."
+  },
+  {
+   "id": "drone_rfz",
+   "source": "drone_rfz",
+   "render": "list",
+   "geom": "polygon",
+   "title": {
+    "tc": "無人機禁飛區",
+    "en": "Drone restricted zones"
+   },
+   "popup": "rfz_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "The first polygon layer since 2026-09-25. That removal was specific to the water district tint, whose polygon asserted more than the notice said (a district outline around a water suspension reads as the whole district being cut off). Nothing about that reason applies here: CAD publishes the zone AS this boundary, so the polygon IS the data rather than a generalisation of it. OFF by default — 290 polygons at 3MB is not first paint."
+  },
+  {
+   "id": "aed_locations",
+   "source": "fsd_aed",
+   "render": "list",
+   "geom": "point",
+   "symbol": "aed",
+   "title": {
+    "tc": "公眾 AED（心臟去顫器）",
+    "en": "Public AEDs"
+   },
+   "popup": "aed_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "4,652 public defibrillators, clustered by the generic point path (clusterRadius 46, clusterMaxZoom 13) exactly like the camera layers — no bespoke clustering code, because the pattern already existed and re-writing it for one layer is how two cluster behaviours end up on one map. OFF by default: it is 707KB, and a layer that loads by default is a layer every reader pays for. The popup answers ONE question first — can the public use it — because an AED behind a locked office door and one on a street corner are the same dot otherwise."
+  },
+  {
+   "id": "hk_facility_areas",
+   "source": "hk_facility_areas",
+   "render": "list",
+   "geom": "polygon",
+   "title": {
+    "tc": "裝卸泊位及機場設施",
+    "en": "Cargo berths & airport facilities"
+   },
+   "popup": "facility_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "公眾貨物裝卸區 + 機場進場限制區. The facilities 貨運模式's panels are ABOUT: before this the mode listed flight and traffic rows with the map saying nothing about where cargo actually moves, which is the panel-to-map link missing in the one mode where the map should lead. Polygon is right here for the same reason it is right for the drone RFZ and wrong for the water district tint: the publishers draw the zone AS this boundary, so the polygon IS the data rather than a generalisation of it. OFF by default - 128 polygons is 134KB, and a layer that loads unasked is a layer every reader pays for. Popup properties follow the CSDI shape attributeHtml expects (Name as the head, Type_tc/Type_en as a labelled row) - short keys render as '未命名' plus raw unlabelled keys."
+  },
+  {
+   "id": "hk_facility_pins",
+   "source": "hk_facility_pins",
+   "render": "list",
+   "geom": "point",
+   "symbol": "oil-tank",
+   "title": {
+    "tc": "貯油裝置",
+    "en": "Oil storage installations"
+   },
+   "popup": "facility_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "23 licensed oil storage installations. A `point` layer must name a `symbol` and pointLayer throws without one (overlays.ts:347); the glyph is `oil-tank` in symbols.ts. Small enough (7,932 bytes) that size is NOT the reason it is off by default — being one mode's subject is: a layer that appears in 總覽 without being asked for is what the verticals exist to prevent."
+  },
+  {
+   "id": "aircraft",
+   "source": "adsb_lol_hk",
+   "render": "list",
+   "geom": "point",
+   "symbol": "plane",
+   "title": {
+    "tc": "航機（社群 ADS-B）",
+    "en": "Aircraft (community ADS-B)"
+   },
+   "popup": "aircraft_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "Live ADS-B traffic. Restored with the same change that restored the panel: the layer was withdrawn because adsb.lol blocks cloud egress, and the map now reads data/aircraft.json published by the PC collector instead of the upstream host. `symbol: plane` plus a per-feature icon-rotate is the existing path in overlays.ts pointLayer — the glyph and the rotation were left intact through the withdrawal, so this is a config entry and not new drawing code. ON by default: wanted back on every vertical."
+  },
+  {
+   "id": "mtr_trains",
+   "source": "mtr_trains",
+   "render": "status_grid",
+   "geom": "point",
+   "symbol": "mtr-train",
+   "title": {
+    "tc": "港鐵列車（推算位置）",
+    "en": "MTR trains (estimated)"
+   },
+   "popup": "aircraft_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "Estimated positions from next-train ETAs, NOT GPS. `symbol: mtr-train` plus a per-feature `bearing` reuse the moving-layer icon-rotate path (overlays.ts pointLayer); the popup is the aircraft one so the shared builder already reads its fields. The layer animates: a requestAnimationFrame loop re-runs estimateMtrTrains with ttnt decremented by wall-clock, so trains slide smoothly along their line between the 30s schedule re-fetches instead of jumping each poll."
+  },
+  {
+   "id": "mtr_lines",
+   "source": "mtr_lines",
+   "render": "list",
+   "geom": "line",
+   "title": {
+    "tc": "港鐵路線",
+    "en": "MTR lines"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "Reference geometry for the MTR: one LineString per heavy-rail line (plus the 落馬洲 / 康城 spurs), generated from data/mtr_stations.json by hand (see the file). `geom: line` draws through overlays.ts lineLayer with the official line colour carried per feature. OFF by default — it is a backdrop the reader turns on when they want to read the train layer against the network."
+  },
+  {
+   "id": "aqhi_stations",
+   "source": "aqhi_city_dashboard",
+   "render": "list",
+   "geom": "point",
+   "symbol": "aqhi",
+   "title": {
+    "tc": "空氣質素指數 AQHI",
+    "en": "Air Quality Health Index"
+   },
+   "popup": "aqhi_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "refresh_ms": 3600000,
+   "_comment": "18 official station positions (CSDI epd_rcd_1629267205214_40635) with LIVE hourly readings merged by the same adapter the aqhi_gauge_grid panel reads — dots and gauges cannot disagree. Hourly refresh (AQHI publishes on the hour). popup aqhi_popup shows the number + health-risk band + station type + address."
+  },
+  {
+   "id": "beach_grading",
+   "source": "epd_beach_grading",
+   "render": "list",
+   "geom": "point",
+   "symbol": "beach",
+   "title": {
+    "tc": "泳灘水質",
+    "en": "Beach water quality"
+   },
+   "popup": "beach_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "refresh_ms": 3600000,
+   "_comment": "39 graded beaches (positions from the EPD RSS's own WGS84 cells) with the LIVE daily grading merged by the same adapter the beach_grading_list panel reads — dots and counts cannot disagree. Hourly refresh. popup beach_popup shows the grade in its band colour."
+  },
+  {
+   "id": "hiking_trails",
+   "source": "afcd_hiking_trails",
+   "render": "none",
+   "geom": "line",
+   "title": {
+    "tc": "行山徑",
+    "en": "Hiking trails"
+   },
+   "popup": "trail_popup",
+   "dash": [
+    6,
+    4
+   ],
+   "_comment": "167 official AFCD hiking trails (CSDI afcd_rcd_1665568199103_4360, keyless) as simplified LineStrings — the lineLayer draws them green (per-feature color) DASHED (def.dash). Green dashed is the user's stated look. Built by scripts/build_hiking_trails.py (15.6 MB raw CSDI geometry simplified to 1.17 MB at 5 m tolerance)."
+  },
+  {
+   "id": "mtr_bus_stops",
+   "source": "mtr_bus_eta",
+   "render": "list",
+   "geom": "point",
+   "symbol": "bus",
+   "title": {
+    "tc": "港鐵接駁巴士",
+    "en": "MTR feeder buses"
+   },
+   "popup": "mtr_bus_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "refresh_ms": 300000,
+   "_comment": "855 MTR feeder-bus stops (official CSV, STATION_ID = the API's busStopId) with LIVE next-bus ETAs merged per route via POST (rt.data.gov.hk, CORS *). The adapter fetches 26 routes once per 5-min refresh. popup mtr_bus_popup shows the publisher's own arrival text + delayed/suspended flags."
+  },
+  {
+   "id": "journey_time",
+   "source": "ck_hk_td_sm_8_journey_time_indicators_v2",
+   "render": "list",
+   "geom": "point",
+   "symbol": "jt",
+   "title": {
+    "tc": "行車時間",
+    "en": "Journey time"
+   },
+   "popup": "journey_popup",
+   "text_prop": "minutes",
+   "text_size": 11,
+   "filters": {
+    "scope": "hk"
+   },
+   "refresh_ms": 120000,
+   "_comment": "80 TD journey-time indicator locations (CSDI td_rcd_1671692669689_59165) with LIVE minutes joined from Journeytimev2.xml by location|destination id. Each marker is a dark sign disc (jt glyph) with the minutes as a text label coloured by congestion (label_color: 1 red / 2 amber / 3 green, computed in the adapter). Popup shows the approach road, its destination and the minutes. OFF by default."
+  },
+  {
+   "id": "ai_cctv_speed",
+   "source": "td_ai_cctv",
+   "render": "list",
+   "geom": "point",
+   "symbol": "speed",
+   "title": {
+    "tc": "路網車速（AI 分析）",
+    "en": "Road speed (AI)"
+   },
+   "popup": "ai_cctv_popup",
+   "text_prop": "speed",
+   "text_size": 11,
+   "filters": {
+    "scope": "hk"
+   },
+   "refresh_ms": 900000,
+   "_comment": "16 TD AI Video Analytics CCTVs with LIVE per-segment speed/flow (every 15 min). Each marker is a speedometer (speed glyph) with the avg km/h as a text label coloured by band (<10 red / <30 amber / else green, computed in the adapter). Cameras with Is_valid N (PTZ moved) draw nothing. OFF by default."
+  },
+  {
+   "id": "ev_chargers",
+   "source": "epd_ev_chargers",
+   "render": "list",
+   "geom": "point",
+   "symbol": "ev",
+   "title": {
+    "tc": "充電站",
+    "en": "EV chargers"
+   },
+   "popup": "ev_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "988 public EV chargers (EPD via CSDI epd_rcd_1631080339740_69941) with per-type counts. Bolt glyph; popup lists the site, address and std/medium/quick/fast counts. As-issued (chargers install in batches), OFF by default."
+  },
+  {
+   "id": "lcsd_facilities",
+   "source": "lcsd_facilities",
+   "render": "list",
+   "geom": "point",
+   "symbol": "facility",
+   "title": {
+    "tc": "康文署設施",
+    "en": "LCSD facilities"
+   },
+   "popup": null,
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "952 LCSD leisure points (libraries, museums, parks, courts, camps, bbq) from nine CSDI services, merged by scripts/build_lcsd.py — the official geometry, not a geocode. OFF by default. popup null → the generic attribute popup renders the Name/Name_tc/Name_en/Type/District/Address contract the script writes."
+  },
+  {
+   "id": "carpark_vacancy",
+   "source": "td_carpark_vacancy",
+   "render": "list",
+   "geom": "point",
+   "symbol": "parking",
+   "title": {
+    "tc": "停車場空位",
+    "en": "Car park vacancies"
+   },
+   "popup": "carpark_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "refresh_ms": 60000,
+   "_comment": "556 parks placed by TD's OWN basic_info_all coordinates (no geocoding — the position IS the publisher's), vacancy merged per park from vacancy_all.json by the same adapter the table panel reads, so the map and the panel cannot disagree. OFF by default; refresh_ms drives a generic 60s redraw loop in overlays.ts."
+  },
+  {
+   "id": "vessels",
+   "source": "vessel_api",
+   "render": "list",
+   "geom": "point",
+   "symbol": "vessel",
+   "title": {
+    "tc": "船位置",
+    "en": "Vessel positions"
+   },
+   "popup": "vessel_popup",
+   "filters": {
+    "scope": "hk"
+   },
+   "_comment": "AIS vessel positions from VesselAPI, a twice-daily snapshot (not live — aisstream.io went silent 2026-08 and blocks datacenter egress). Same pointLayer path as aircraft: `symbol: vessel` plus a per-feature icon-rotate on `bearing` (COG, falling back to heading). OFF by default for the same reason aircraft is: a moving layer nobody asked for is a layer on every reader's map."
+  },
+  {
+   "id": "sensor_parking_spaces",
+   "title": {
+    "tc": "路邊感應車位（實時佔用）",
+    "en": "On-street sensor spaces (live)"
+   },
+   "source": "td_sensor_parking_occupancy",
+   "geom": "point",
+   "render": "list",
+   "symbol": "meter",
+   "refresh_ms": 120000,
+   "popup": "sensor_popup",
+   "_comment": "Live O/V per space: the occupancy feed joins these positions by ParkingSpaceId; the disc is red (occupied) or green (vacant)."
+  }
+ ]
 }

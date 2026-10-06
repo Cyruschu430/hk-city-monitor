@@ -200,15 +200,19 @@ export function fetchUrl(src: SourceDef): string {
     bytes and (measured) trips a content-length mismatch in local workerd. */
 const memo = new Map<string, { at: number; response: Response }>();
 const MEMO_MS = 30_000;
+// single-flight: one upstream fetch per URL at a time. The layer engine and the
+// panel engine fire the SAME source together on mode activation — without this,
+// both miss the memo simultaneously and the upstream gets two hits where one
+// would do (the rival's `pending Map<url,Promise>` pattern, browser edition).
+const pending = new Map<string, Promise<Response>>();
 
 export function clearDataCache(): void {
   memo.clear();
 }
 
-export async function fetchSource(src: SourceDef): Promise<Response> {
-  const url = fetchUrl(src);
-  const hit = memo.get(url);
-  if (hit && Date.now() - hit.at < MEMO_MS) return hit.response.clone();
+/** Fetch a source URL once, falling back to the bundled snapshot when the live
+ *  copy is unreachable. Shared by fetchSource's single-flight runner. */
+async function doFetchSource(src: SourceDef, url: string): Promise<Response> {
   // A generated file whose live copy is unreachable (offline, a network that blocks
   // raw.githubusercontent, the branch deleted) must not blank a panel that has a
   // committed snapshot behind it. The snapshot's OWN timestamp is what reports how
@@ -223,11 +227,30 @@ export async function fetchSource(src: SourceDef): Promise<Response> {
     if (!bundled) throw err;
   }
   if (!res) res = await fetch(bundled as string, { signal: AbortSignal.timeout(25_000) });
-  // The 60s worker edge cache already collapses clients; the 30s memo is only
-  // about the same-tab double-fetch (panel + layer), so ttl can be short.
-  if (res.ok && src.fetch === "proxy") memo.set(url, { at: Date.now(), response: res.clone() });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res;
+}
+
+export async function fetchSource(src: SourceDef): Promise<Response> {
+  const url = fetchUrl(src);
+  const hit = memo.get(url);
+  if (hit && Date.now() - hit.at < MEMO_MS) return hit.response.clone();
+  const inFlight = pending.get(url);
+  if (inFlight) return inFlight.then((r) => r.clone());
+  const run = doFetchSource(src, url)
+    .then((res) => {
+      // 30s memo for EVERY source, not just proxied ones: the carpark layer and
+      // the carpark panel refresh the same URL on the same tick and currently
+      // both miss. 30s is short next to the 60s+ refresh cadences, so the memo
+      // never outlives a refresh — the honesty rules are untouched.
+      memo.set(url, { at: Date.now(), response: res.clone() });
+      return res;
+    })
+    .finally(() => {
+      pending.delete(url);
+    });
+  pending.set(url, run);
+  return run.then((r) => r.clone());
 }
 
 export async function loadRegistry(): Promise<Registry> {

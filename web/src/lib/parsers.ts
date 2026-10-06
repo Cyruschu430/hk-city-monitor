@@ -870,6 +870,48 @@ export function parseBeachRss(xml: string): BeachGrade[] {
   return out;
 }
 
+/** MTR feeder-bus ETA: one getSchedule response (a whole route) → a stop-level
+ *  next-bus summary keyed by busStopId — which IS the stops file's STATION_ID,
+ *  so the adapter joins by id with zero name-matching. The 108000-second
+ *  sentinel is the publisher's "no service on this leg" placeholder (30 h);
+ *  arrivalTimeText is the publisher's own language-aware string (「8 分鐘」/
+ *  "8 minutes" / 即將開出) and is kept verbatim, never recomputed. */
+export interface MtrBusEta {
+  etaText: string;
+  minutes: number | null;
+  lineRef: string;
+  delayed: boolean;
+  suspended: boolean;
+}
+export function parseMtrBusEta(json: unknown): Map<string, MtrBusEta> {
+  const out = new Map<string, MtrBusEta>();
+  const stops = (json as { busStop?: unknown[] }).busStop ?? [];
+  for (const rawStop of stops) {
+    const s = rawStop as { busStopId?: string; isSuspended?: string; bus?: unknown[] };
+    const id = s.busStopId;
+    if (!id) continue;
+    let best: { key: number; eta: MtrBusEta } | null = null;
+    for (const rawBus of s.bus ?? []) {
+      const b = rawBus as { arrivalTimeInSecond?: string; arrivalTimeText?: string; isDelayed?: string; lineRef?: string };
+      const sec = Number(b.arrivalTimeInSecond);
+      if (Number.isFinite(sec) && sec > 108000) continue; // 30 h sentinel = no service
+      const etaText = String(b.arrivalTimeText ?? "");
+      if (!Number.isFinite(sec) && !etaText) continue;
+      const key = Number.isFinite(sec) ? sec : 1e9;
+      const eta: MtrBusEta = {
+        etaText,
+        minutes: Number.isFinite(sec) ? Math.round(sec / 60) : null,
+        lineRef: String(b.lineRef ?? ""),
+        delayed: b.isDelayed === "1",
+        suspended: s.isSuspended === "1",
+      };
+      if (!best || key < best.key) best = { key, eta };
+    }
+    if (best) out.set(id, best.eta);
+  }
+  return out;
+}
+
 /** Normalise an HKO regional-station name for the 1-minute temperature merge:
  *  strip the standard suffixes, and alias the three CSV abbreviations CSDI
  *  spells out (measured 2026-10-06: 36/39 match cleanly, these three did not).

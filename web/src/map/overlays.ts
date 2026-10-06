@@ -643,6 +643,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   else if (def.popup === "carpark_popup") carparkPopup(map, `${id}-point`);
   else if (def.popup === "aqhi_popup") aqhiPopup(map, `${id}-point`);
   else if (def.popup === "beach_popup") beachPopup(map, `${id}-point`);
+  else if (def.popup === "mtr_bus_popup") mtrBusPopup(map, `${id}-point`);
   else attributePopup(map, `${id}-point`);
 
   // Vacancy refreshes on its own cadence: positions are static, numbers are
@@ -760,6 +761,40 @@ function beachPopup(map: maplibregl.Map, layerId: string): void {
         `<div class="aed-pop"><b>${esc(p["name"] ?? "")}</b>` +
           `<div style="color:${COL[key] ?? "#fff"};font-weight:600;margin-top:6px">${esc(p["gradeTc"] ?? "")}</div>` +
           `<div style="color:var(--night-dim);font-size:11px;margin-top:4px">${tc ? "EPD 泳灘水質（採樣後 48 小時內）" : "EPD beach water quality (within 48h of sampling)"}</div></div>`,
+      )
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+
+/** MTR feeder-bus popup: stop name, route + direction, next bus (the
+ *  publisher's own text: 「8 分鐘」/ arriving), delayed/suspended flags. */
+function mtrBusPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const name = tc ? String(p["name_tc"] ?? "") : String(p["name_en"] ?? p["name_tc"] ?? "");
+    const route = String(p["route"] ?? "");
+    const dir = String(p["dir"] ?? "");
+    const etaText = String(p["etaText"] ?? "");
+    const minutes = p["minutes"] != null ? `${p["minutes"]} ${tc ? "分鐘" : "min"}` : "";
+    const delayed = p["delayed"] === true;
+    const suspended = p["suspended"] === true;
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<div class="aed-pop"><b>${esc(name)}</b>` +
+          `<div style="color:var(--night-dim);font-size:11px;margin-top:2px">${esc(route)} · ${esc(dir)}</div>` +
+          (suspended
+            ? `<div style="color:#ef4444;font-weight:600;margin-top:6px">${tc ? "暫停服務" : "Suspended"}</div>`
+            : `<div style="font-weight:600;margin-top:6px">${esc(etaText || minutes || "—")}</div>`) +
+          (delayed ? `<div style="color:#f59e0b;margin-top:2px">${tc ? "延誤" : "Delayed"}</div>` : "") +
+          `</div>`,
       )
       .addTo(map);
   });

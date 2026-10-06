@@ -156,6 +156,9 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // 167 AFCD hiking trails (CSDI, official) — green dashed linework, the look
   // Cyrus asked for. ON by default: this is the layer people come for.
   { id: "hiking_trails", label: { tc: "行山徑", en: "Hiking trails" } },
+  // 855 MTR feeder-bus stops with LIVE per-stop ETAs (POST per route, 5-min
+  // cadence). OFF by default — a dense dot field.
+  { id: "mtr_bus_stops", label: { tc: "港鐵接駁巴士", en: "MTR feeder buses" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its

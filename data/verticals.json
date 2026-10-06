@@ -181,6 +181,7 @@
     "carpark_vacancy_list",
     "sensor_parking_occupancy",
     "speed_panels_wall",
+    "mtr_bus_status",
     "crossboundary_ferry_table"
     ],
     "layers": [
@@ -196,6 +197,7 @@
     "carpark_vacancy_list",
     "sensor_parking_occupancy",
     "speed_panels_wall",
+    "mtr_bus_status",
     "crossboundary_ferry_table"
     ]
     },

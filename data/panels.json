@@ -418,6 +418,19 @@
    }
   },
   {
+   "id": "mtr_bus_status",
+   "source": "mtr_bus_eta",
+   "render": "status_grid",
+   "title": {
+    "tc": "港鐵接駁巴士 ETA",
+    "en": "MTR feeder-bus ETA"
+   },
+   "cadence_note": {
+    "tc": "約每 5 分鐘",
+    "en": "~every 5 min"
+   }
+  },
+  {
    "id": "wind_status",
    "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
    "render": "status_grid",

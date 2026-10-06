@@ -303,6 +303,23 @@
       "dash": [6, 4],
       "_comment": "167 official AFCD hiking trails (CSDI afcd_rcd_1665568199103_4360, keyless) as simplified LineStrings — the lineLayer draws them green (per-feature color) DASHED (def.dash). Green dashed is the user's stated look. Built by scripts/build_hiking_trails.py (15.6 MB raw CSDI geometry simplified to 1.17 MB at 5 m tolerance)."
       },
+      {
+      "id": "mtr_bus_stops",
+      "source": "mtr_bus_eta",
+      "render": "list",
+      "geom": "point",
+      "symbol": "bus",
+      "title": {
+      "tc": "港鐵接駁巴士",
+      "en": "MTR feeder buses"
+      },
+      "popup": "mtr_bus_popup",
+      "filters": {
+      "scope": "hk"
+      },
+      "refresh_ms": 300000,
+      "_comment": "855 MTR feeder-bus stops (official CSV, STATION_ID = the API's busStopId) with LIVE next-bus ETAs merged per route via POST (rt.data.gov.hk, CORS *). The adapter fetches 26 routes once per 5-min refresh. popup mtr_bus_popup shows the publisher's own arrival text + delayed/suspended flags."
+      },
     {
       "id": "lcsd_facilities",
       "source": "lcsd_facilities",

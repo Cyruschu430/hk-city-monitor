@@ -1100,6 +1100,55 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async mtr_bus_eta(src, _panel, ctx) {
+    // Live feeder-bus ETAs: the official 855-stop CSV carries the join key
+    // (STATION_ID = the API's busStopId), so no name matching. One POST per
+    // route; rt.data.gov.hk answers CORS `*`, so this is browser-direct.
+    // 26 POSTs per refresh (5-min cadence) is the polite rhythm.
+    const stops = (await json(await get(ctx.registry.byId.get("mtr_bus_stops")!))) as GeoJSON.FeatureCollection;
+    const routes = [...new Set((stops.features ?? []).map((f) => String((f.properties ?? {})["route"] ?? "")))].filter(Boolean);
+    const langParam = lang() === "tc" ? "zh" : "en";
+    const merged = new Map<string, P.MtrBusEta>();
+    let okRoutes = 0;
+    await Promise.allSettled(
+      routes.map(async (route) => {
+        const res = await fetch(src.url, {
+          method: "POST",
+          headers: { "content-type": "application/json; charset=utf-8" },
+          body: JSON.stringify({ language: langParam, routeName: route }),
+          signal: AbortSignal.timeout(20_000),
+        });
+        if (!res.ok) return;
+        const perStop = P.parseMtrBusEta(await res.json());
+        for (const [id, eta] of perStop) merged.set(id, eta);
+        okRoutes += 1;
+      }),
+    );
+    const tc = lang() === "tc";
+    const features: GeoJSON.Feature[] = [];
+    for (const f of stops.features ?? []) {
+      const p = (f.properties ?? {}) as Record<string, unknown>;
+      const eta = merged.get(String(p["station_id"] ?? ""));
+      features.push({ type: "Feature", geometry: f.geometry, properties: { ...(p as object), ...(eta ?? {}) } });
+    }
+    const withEta = features.filter((f) => {
+      const q = (f.properties ?? {}) as Record<string, unknown>;
+      return q["minutes"] != null || q["etaText"];
+    });
+    const cells: StatusCell[] = [
+      { label: tc ? "路線" : "Routes", value: String(routes.length), status: 0 },
+      { label: tc ? "站點" : "Stops", value: String(features.length), status: 0 },
+      { label: tc ? "有到站資料" : "Stops with ETA", value: String(withEta.length), status: withEta.length ? 0 : 2 },
+      { label: tc ? "ETA 更新成功" : "ETA routes fetched", value: `${okRoutes}/${routes.length}`, status: okRoutes === routes.length ? 0 : 1 },
+    ];
+    return {
+      data: { kind: "status_grid", cells },
+      observedAt: new Date(),
+      state: { records: withEta.length },
+      geo: { type: "FeatureCollection", features },
+    };
+  },
+
   async td_carpark_vacancy(src, panel, ctx) {
     const max = Number(panel.params?.["max_rows"] ?? 10);
     const infoSrc = ctx.registry.byId.get("td_carpark_info");

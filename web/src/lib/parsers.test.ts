@@ -385,6 +385,34 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log("✓ 泳灘: RSS DMS 座標 + 等級 mapping");
 }
 
+// 17f. MTR feeder-bus ETA: busStopId keys, 108000 sentinel skipped, earliest wins.
+{
+  const out = P.parseMtrBusEta({
+    busStop: [
+      {
+        busStopId: "K12-U010",
+        bus: [
+          { arrivalTimeInSecond: "108000", arrivalTimeText: "", isDelayed: "0", lineRef: "K12_EG" }, // sentinel
+          { arrivalTimeInSecond: "300", arrivalTimeText: "5 分鐘", isDelayed: "0", lineRef: "K12_EG" },
+          { arrivalTimeInSecond: "1800", arrivalTimeText: "30 分鐘", isDelayed: "1", lineRef: "K12_EG" },
+        ],
+      },
+      {
+        busStopId: "K12-D010",
+        isSuspended: "1",
+        bus: [{ arrivalTimeInSecond: "0", arrivalTimeText: "Arriving / Departed", isDelayed: "0", lineRef: "K12_TPMS" }],
+      },
+    ],
+  });
+  assert.equal(out.size, 2, "two stops");
+  assert.equal(out.get("K12-U010")!.etaText, "5 分鐘", "earliest non-sentinel wins");
+  assert.equal(out.get("K12-U010")!.minutes, 5, "seconds → rounded minutes");
+  assert.equal(out.get("K12-U010")!.delayed, false, "not delayed (earliest bus)");
+  assert.equal(out.get("K12-D010")!.minutes, 0, "0 = arriving");
+  assert.equal(out.get("K12-D010")!.suspended, true, "stop-level suspended flag");
+  console.log("✓ 接駁巴士: busStopId join key + sentinel + earliest-wins");
+}
+
 // 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).
 {
   const cells = P.parseImmdQueue({ HYW: { arrQueue: 0, depQueue: 0 }, LWS: { arrQueue: 25, depQueue: 18 } }, ["HYW", "LWS"]);

@@ -3420,9 +3420,9 @@
    "cadence": "real-time",
    "method": "POST",
    "body": "{\"language\":\"zh\",\"routeName\":\"K51\"}",
-   "notes": "POST, not GET — body {\"language\":\"zh\",\"routeName\":\"K51\"}. A GET on this URL returns 404, which is the trap here. Verified 200 with a 73 KB body on 2026-10-06.",
+   "notes": "POST, not GET — body {\"language\":\"zh\",\"routeName\":\"K51\"}. A GET on this URL returns 404, which is the trap here. Verified 200 with a 73 KB body on 2026-10-06. Browser-direct since 2026-10-06: rt.data.gov.hk answers CORS * (preflight POST verified). The mtr_bus_eta adapter sends one POST per route (26 routes, 5-min cadence) and joins onto mtr_bus_stops by STATION_ID.",
    "kind": "api",
-   "fetch": "proxy",
+   "fetch": "browser",
    "cost": "free",
    "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },

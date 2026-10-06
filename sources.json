@@ -3577,6 +3577,30 @@
    "notes": "16 TD AI Video Analytics CCTV cameras (CSDI td_rcd_1671693527354_28926), built to data/ai_cctv_stations.geojson by scripts/build_ai_cctv.py.",
    "todo": false,
    "fetch": "browser"
+  },
+  {
+   "id": "td_journey_time_v2",
+   "group": "transport",
+   "name": "運輸署 行車時間指示（第二代）",
+   "name_en": "TD Journey Time Indicators v2",
+   "type": "xml",
+   "url": "https://resource.data.one.gov.hk/td/jss/Journeytimev2.xml",
+   "auth": "none",
+   "cadence": "every 2 minutes",
+   "fetch": "browser",
+   "notes": "Live journey time between 80 indicator pairs across HK. Colour: 3=green, 2=amber, 1=red."
+  },
+  {
+   "id": "td_ai_video_analytics",
+   "group": "transport",
+   "name": "運輸署 AI 影像分析閉路電視（交通數據）",
+   "name_en": "TD AI Video Analytics (traffic)",
+   "type": "json",
+   "url": "https://td2132022opendata.td.gov.hk/K121F",
+   "auth": "none",
+   "cadence": "every 15 minutes",
+   "fetch": "browser",
+   "notes": "16 CCTV cameras measuring traffic speed and flow per segment. Live API: https://td2132022opendata.td.gov.hk/{key}. Positions baked to data/ai_cctv_stations.geojson."
   }
  ]
 }

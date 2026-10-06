@@ -147,6 +147,9 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // from nine CSDI services — the official geometry, not a geocode. OFF by
   // default like every reference layer; the generic attribute popup handles it.
   { id: "lcsd_facilities", label: { tc: "康文署設施", en: "LCSD facilities" } },
+  // 18 EPD air-quality stations, official CSDI positions, LIVE hourly readings
+  // merged by the gauge-grid panel's own adapter. OFF by default.
+  { id: "aqhi_stations", label: { tc: "空氣質素指數 AQHI", en: "Air Quality Health Index" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its

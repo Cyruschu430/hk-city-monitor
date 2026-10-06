@@ -641,6 +641,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // popup) was inert under the cursor.
   if (def.popup === "aed_popup") aedPopup(map, `${id}-point`);
   else if (def.popup === "carpark_popup") carparkPopup(map, `${id}-point`);
+  else if (def.popup === "aqhi_popup") aqhiPopup(map, `${id}-point`);
   else attributePopup(map, `${id}-point`);
 
   // Vacancy refreshes on its own cadence: positions are static, numbers are
@@ -708,6 +709,35 @@ function carparkPopup(map: maplibregl.Map, layerId: string): void {
           (t ? `<div><span>${tc ? "該場更新" : "Reported"}</span> ${esc(t)}</div>` : "") +
           `</div>`,
       )
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+function aqhiPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const aqhi = String(p["aqhi"] ?? "—");
+    const risk = String(p["risk"] ?? "");
+    const n = Number(aqhi);
+    // Same three-band logic as the gauge grid, so the dot and the panel read
+    // identically: 1–3 ok, 4–6 warn, 7+ alert.
+    const level = Number.isFinite(n) ? (n <= 3 ? "ok" : n <= 6 ? "warn" : "alert") : "";
+    const rows: string[] = [
+      `<b>${esc(p["Name"] ?? "")}</b>`,
+      `<div class="aqhi-val ${level}"><span>${tc ? "指數" : "Index"}</span> <b>${esc(aqhi)}</b>${risk ? ` · ${esc(risk)}` : ""}</div>`,
+      p["Type_tc"] || p["Type_en"] ? `<div><span>${tc ? "類型" : "Type"}</span> ${esc(p["Type_tc"] ?? p["Type_en"])}</div>` : "",
+      p["Address_tc"] || p["Address_en"] ? `<div><span>${tc ? "地址" : "Address"}</span> ${esc(p["Address_tc"] ?? p["Address_en"])}</div>` : "",
+      p["updated"] ? `<div><span>${tc ? "更新" : "Updated"}</span> ${esc(p["updated"])}</div>` : "",
+    ];
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
+      .setLngLat(e.lngLat)
+      .setHTML(`<div class="aed-pop">${rows.join("")}</div>`)
       .addTo(map);
   });
   map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));

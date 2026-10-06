@@ -717,7 +717,7 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   "cam-td": { draw: drawCamera, disc: "#22d3ee", off: [1, -3.5] },
   "cam-hko": { draw: drawStation, disc: "#a855f7" },
   "station-wind": { draw: drawStation, disc: "#38bdf8" },
-  aqhi: { draw: drawAqhi, disc: "#34d399" },
+  aqhi: { draw: drawAqhi, disc: "#f59e0b" },
   plane: { draw: drawPlane },
   ferry: { draw: drawFerry, disc: "#38bdf8" },
   vessel: { draw: drawVessel },

@@ -3252,6 +3252,20 @@
    "license": "Esri — ArcGIS Online public map services (subject to the Esri Terms of Use)"
   },
   {
+   "id": "aqhi_stations",
+   "group": "weather",
+   "name": "環境保護署 空氣質素監測站位置",
+   "name_en": "EPD AQHI Monitoring Station Positions",
+   "type": "geojson",
+   "url": "data/aqhi_stations.geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "18 official station positions from CSDI's Air Quality Monitoring Network (epd_rcd_1629267205214_40635), built by scripts/build_aqhi.py. The aqhi_city_dashboard adapter merges the LIVE readings onto these by name — the positions are reference geometry, the numbers are never baked here.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free"
+  },
+  {
    "id": "lcsd_facilities",
    "group": "civic",
    "name": "康文署 康體設施（CSDI 合併）",

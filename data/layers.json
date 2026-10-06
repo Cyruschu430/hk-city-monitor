@@ -255,6 +255,23 @@
       "_comment": "Reference geometry for the MTR: one LineString per heavy-rail line (plus the 落馬洲 / 康城 spurs), generated from data/mtr_stations.json by hand (see the file). `geom: line` draws through overlays.ts lineLayer with the official line colour carried per feature. OFF by default — it is a backdrop the reader turns on when they want to read the train layer against the network."
     },
     {
+      "id": "aqhi_stations",
+      "source": "aqhi_city_dashboard",
+      "render": "list",
+      "geom": "point",
+      "symbol": "aqhi",
+      "title": {
+        "tc": "空氣質素指數 AQHI",
+        "en": "Air Quality Health Index"
+      },
+      "popup": "aqhi_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "refresh_ms": 3600000,
+      "_comment": "18 official station positions (CSDI epd_rcd_1629267205214_40635) with LIVE hourly readings merged by the same adapter the aqhi_gauge_grid panel reads — dots and gauges cannot disagree. Hourly refresh (AQHI publishes on the hour). popup aqhi_popup shows the number + health-risk band + station type + address."
+    },
+    {
       "id": "lcsd_facilities",
       "source": "lcsd_facilities",
       "render": "list",

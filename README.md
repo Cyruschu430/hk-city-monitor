@@ -26,7 +26,7 @@ The goal is a *verifiable* picture of the territory: a reader should be able to 
 
 ### Ten scenario modes, each answering one question
 
-The same map and the same 191 sources, rearranged around one concrete question at a time — so the dashboard answers something instead of showing everything:
+The same map and the same 192 sources, rearranged around one concrete question at a time — so the dashboard answers something instead of showing everything:
 
 | Mode | The question it answers |
 | --- | --- |

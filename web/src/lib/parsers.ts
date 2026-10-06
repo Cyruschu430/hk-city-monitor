@@ -803,6 +803,14 @@ export function parseAqhiDashboard(json: unknown): { cells: Gauge[]; observedAt:
   return { cells, observedAt: times.length ? new Date(Math.max(...times.map((d) => d.getTime()))) : null };
 }
 
+/** Normalise a CSDI station name ("Tsuen Wan Air Quality Monitoring Station")
+ *  to the live dashboard's key ("Tsuen Wan") so the AQHI layer can merge the
+ *  two publishers by name. A station that does not strip cleanly keeps its raw
+ *  name, so a name nobody can match simply finds no geometry and is not drawn. */
+export function aqhiStationKey(name: unknown): string {
+  return String(name ?? "").replace(" Air Quality Monitoring Station", "").trim();
+}
+
 // --- Carpark vacancy (Transport Department) ---------------------------------------
 export interface CarparkRow {
   id: string;

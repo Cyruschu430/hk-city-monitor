@@ -235,6 +235,39 @@ export async function fetchMtrData(src: SourceDef): Promise<{ mtr: P.MtrStations
   return { mtr, schedules };
 }
 
+/** The AQHI layer's geometry: live readings merged onto the official CSDI
+ *  station positions by name (Tsuen Wan Air Quality Monitoring Station → the
+ *  dashboard's "Tsuen Wan"). A name nobody can match finds no geometry and is
+ *  simply not drawn — a dot in the wrong district is worse than no dot. */
+async function aqhiGeo(
+  j: { station?: string; aqhi?: number; health_risk?: string; publish_date?: string }[],
+  ctx: AdapterCtx,
+): Promise<GeoJSON.FeatureCollection> {
+  const stations = (await json(await get(ctx.registry.byId.get("aqhi_stations")!))) as GeoJSON.FeatureCollection;
+  const byKey = new Map<string, GeoJSON.Feature>();
+  for (const f of stations.features ?? []) {
+    const p = (f.properties ?? {}) as Record<string, string>;
+    const key = P.aqhiStationKey(p.Name_en ?? p.Name);
+    if (key) byKey.set(key, f as GeoJSON.Feature);
+  }
+  const features: GeoJSON.Feature[] = [];
+  for (const s of j) {
+    const st = s.station ? byKey.get(P.aqhiStationKey(s.station)) : undefined;
+    if (!st) continue;
+    features.push({
+      type: "Feature",
+      geometry: st.geometry,
+      properties: {
+        ...(st.properties ?? {}),
+        aqhi: typeof s.aqhi === "number" ? String(s.aqhi) : "—",
+        risk: String(s.health_risk ?? ""),
+        updated: String(s.publish_date ?? "").slice(0, 16).replace("T", " "),
+      },
+    });
+  }
+  return { type: "FeatureCollection", features } as GeoJSON.FeatureCollection;
+}
+
 const ADAPTERS: Record<string, Adapter> = {
   // THE AI BRIEF. It reads the SAME payload the generator wrote - live copy first, committed
   // snapshot as the fallback - so the panel's timestamp is the model's own generation time and
@@ -910,14 +943,13 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
-  async aqhi_city_dashboard(src) {
-    const j = (await json(await get(src))) as unknown;
+  async aqhi_city_dashboard(src, _panel, ctx) {
+    const j = (await json(await get(src))) as { station?: string; aqhi?: number; health_risk?: string; publish_date?: string }[];
     const { cells, observedAt } = P.parseAqhiDashboard(j);
     // Publish the worst station reading for rules. AQHI is a 1-10+ index where
     // 7+ is "high" and 10+ "very high", so the max is the number that matters
     // for a city-wide alert; the mean would hide a single bad district.
-    const list = (j as { aqhi?: number }[] | undefined) ?? [];
-    const values = list.map((s) => s.aqhi).filter((v): v is number => typeof v === "number");
+    const values = j.map((s) => s.aqhi).filter((v): v is number => typeof v === "number");
     // The scale is AQHI's own, so it belongs with the readings rather than with the renderer.
     // Three colours, five bands: 高 and above all carry the alert colour, and the numbers are
     // what separates them. Cyrus 2026-10-02 asked what 1/2/3 mean - a bare index with no key is
@@ -934,6 +966,11 @@ const ADAPTERS: Record<string, Adapter> = {
       data: { kind: "gauge_grid", cells, legend },
       observedAt,
       state: { maxAqhi: values.length ? Math.max(...values) : null, stations: values.length },
+      // The map layer draws the SAME records, merged with the official station
+      // positions by name — dots and gauge grid cannot disagree about a
+      // reading. A station the live feed names but CSDI's file does not carry
+      // simply gets no geometry and is not drawn.
+      geo: await aqhiGeo(j, ctx),
     };
   },
 

@@ -3129,7 +3129,7 @@
    "cadence": "as issued",
    "todo": false,
    "fetch": "browser",
-   "notes": "VERIFIED 200, 256×256, 4,521 bytes, only 2.4% non-transparent pixels — the signature of a real transparent label overlay with actual text, not a blank tile. URL: /xyz/label/hk/{tc|en|sc}/{WGS84|HK80}/{z}/{x}/{y}.png. This is the source of the Hong Kong feel Cyrus asked for: official Hong Kong place names in Traditional Chinese, as a separate overlay layer on the basemap. Works on top of any basemap including the imagery tiles.",
+   "notes": "VERIFIED 200, 256×256, 4,521 bytes, only 2.4% non-transparent pixels — the signature of a real transparent label overlay with actual text, not a blank tile. URL: /xyz/label/hk/{tc|en|sc}/{WGS84|HK80}/{z}/{x}/{y}.png. Official Hong Kong place names in Traditional Chinese, as a separate overlay layer on the basemap. Works on top of any basemap including the imagery tiles.",
    "cost": "free",
    "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },

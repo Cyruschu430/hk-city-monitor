@@ -36,7 +36,7 @@ import { createGroupTabs, labelFor, type GroupTab } from "./ui/grouptabs.ts";
     wall: imagery heads the column, then life-safety and civic reads. */
 const OVERVIEW = [
   // FIRST because it is the only panel that speaks: a free model reading the published
-  // figures back in two sentences. Cyrus asked for it on top and the anomaly panel gone.
+  // figures back in two sentences. Requested on top with the anomaly panel gone.
   "ai_brief",
   // The conclusion panel goes FIRST: it is the only surface that answers "so what", and every
   // other panel is evidence for it. It is FED rather than fetched (see FED_PANEL_IDS in
@@ -154,8 +154,8 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // grade merged by the beach_grading_list panel's adapter. OFF by default.
   { id: "beach_grading", label: { tc: "泳灘水質", en: "Beach water quality" } },
   // 167 AFCD hiking trails (CSDI, official) — green dashed linework, the look
-  // Cyrus asked for. OFF by default: every new layer ships OFF so a problem in
-  // one cannot touch everyone on load (Cyrus's standing rule for additions).
+  // the green-dashed look. OFF by default: every new layer ships OFF so a problem in
+  // one cannot touch everyone on load (the standing rule for additions).
   { id: "hiking_trails", label: { tc: "行山徑", en: "Hiking trails" } },
   // 855 MTR feeder-bus stops with LIVE per-stop ETAs (POST per route, 5-min
   // cadence). OFF by default — a dense dot field.
@@ -175,7 +175,7 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // config-not-code architecture the verticals exist to prove.
   { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" }, on: true },
   { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
-  // Keyless Esri bases (Cyrus 2026-10-02). A basemap is a choice, not a layer: these switch the
+  // Keyless Esri bases. A basemap is a choice, not a layer: these switch the
   // base under everything, and setBasemap() keeps them mutually exclusive.
   { id: "esri_topo", label: { tc: "Esri 地形圖", en: "Esri topographic" } },
   { id: "esri_gray", label: { tc: "Esri 淺灰底圖", en: "Esri light gray" } },
@@ -195,18 +195,18 @@ async function boot(): Promise<void> {
   const tickerEl = document.getElementById("ticker")!;
   const panelsEl = document.getElementById("panels")!;
   // The footer closes the panel column: authorship, licence, and the publishers this is built
-  // on. Wording is Cyrus's call — see footer.ts for why it credits rather than disclaims.
-  // Under the map AND the panels (Cyrus 2026-10-02). Appended to the body rather than to
+  // on. Wording is the author's call — see footer.ts for why it credits rather than disclaims.
+  // Under the map AND the panels. Appended to the body rather than to
   // #layout: #layout is the two-column grid, so a footer inside it would be a grid item sitting
   // beside the map rather than below it.
   createFooter(document.body);
   const mapEl = document.getElementById("map")!;
   const hudEl = document.getElementById("mapHud")!;
-  // The 3D switch (Cyrus 2026-10-02: "Map View 度加粒 button switch 去 Open3Dhk 攞香港個 3D tile").
+  // The 3D switch: a button in Map View that loads the territory's official 3D tileset.
   // The tileset is 12.2M triangles, so the deck.gl overlay AND the tileset URL both sit behind the
   // dynamic import inside map/overlays3d.ts - turning this on is the only thing that fetches
   // either, and measure:boot fails if a 3D chunk ever reaches the critical path.
-  // LOCKED for phase-one (Cyrus 2026-10-03): 3D is still internal testing, so the switch is
+  // LOCKED for phase-one: 3D is still internal testing, so the switch is
   // present (moved under the zoom control) but disabled — remove `disabled` to reopen it.
   const btn3d = h("button", { class: "btn-3d", type: "button", "aria-pressed": "false", disabled: true }, "3D");
   let on3d = false;
@@ -303,7 +303,7 @@ async function boot(): Promise<void> {
   hudEl.append(layerEl);
   const layerControl = createLayerControl(layerEl, (row, on) => {
     // A RAIL layer's row is now the ONLY control for it (2026-10-01: the rail's
-    // layer icons were removed — Cyrus: "堆icon panel is abundant"). So the row
+    // layer icons were removed — a crowded icon panel). So the row
     // drives the same `toggleLayer` path the rail button used to, including the
     // persisted `layerOn` set that `?layers=` is built from. It must NOT be
     // handled by the visibility-only path below: a rail layer that was never
@@ -446,7 +446,7 @@ async function boot(): Promise<void> {
   const ctx = { registry, raster: browserRasterizer };
   const triggerState: State = {};
   let currentMode = "overview";
-  // TRUE from the first paint, which is Cyrus's decision of 2026-10-01: "我想user
+  // TRUE from the first paint, per the 2026-10-01 decision: "我想user
   // 一入就set default 模式 總覽". It used to be false, and with false the trigger
   // engine switched the dashboard into 停水模式 the moment a 食水 notice was in
   // force — measured today: a fresh load opened on water_supply with 2 panels
@@ -461,7 +461,7 @@ async function boot(): Promise<void> {
   let activeDistricts = new Set<string>();
   // The geocoded locations of those same notices. Kept beside the district set
   // because the map draws BOTH: pins say WHERE, the tint says how large the
-  // affected area is. Cyrus 2026-09-24: the layer used to tint a whole district
+  // affected area is. 2026-09-24 decision: the layer used to tint a whole district
   // for an outage that was one building.
   let waterPoints: WaterPoint[] = [];
   let drawnLayers: LayerDefRaw[] = [];
@@ -913,7 +913,7 @@ async function boot(): Promise<void> {
           break;
         }
         case "wind_field": {
-          // WIND FLOW, not station barbs (Cyrus 2026-09-25).
+          // WIND FLOW, not station barbs.
           //
           // The old barb layer drew ~30 real observations with a distance
           // fade-out. Honest, but it answers "what is the wind at this
@@ -1002,7 +1002,7 @@ async function boot(): Promise<void> {
   }
 
   // --- online / offline -------------------------------------------------------
-  // The brand dot is gone (Cyrus 2026-10-02). Offline is now shown on the coverage line,
+  // The brand dot is gone. Offline is now shown on the coverage line,
   // which is always in the DOM, so this is a plain lookup instead of an asserted one.
   const pulse = document.querySelector<HTMLElement>(".coverage");
   window.addEventListener("offline", () => {
@@ -1088,7 +1088,7 @@ async function boot(): Promise<void> {
 }
 
 /**
- * Drag the panel column's left edge to size it (Cyrus 2026-10-02). The width lives in a custom
+ * Drag the panel column's left edge to size it. The width lives in a custom
  * property the grid track already reads, so this only has to write one value — there is no
  * second layout model to keep in sync. Bound to the document because the grip is a pseudo-element
  * and the column is created during boot: a listener on the element would have to race boot.

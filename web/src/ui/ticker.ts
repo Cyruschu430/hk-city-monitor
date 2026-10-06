@@ -1,6 +1,6 @@
 // ticker.ts — the breaking-news strip under the status bar, World-Monitor style.
 //
-// CLASSIFIED BY NEWS TYPE. Cyrus: "The news ticker should classify into different
+// CLASSIFIED BY NEWS TYPE. The ticker classifies into different
 // news types (public, sports, finance ... etc)."
 //
 // The taxonomy is the PUBLISHERS' OWN, not a keyword guess. RTHK publishes one

@@ -5,7 +5,7 @@
 // Verticals are DATA: this file renders whatever verticals.json contains and
 // knows nothing about typhoons or water. That is what makes Run 5 a config run.
 //
-// WHY THE LAYER ICONS ARE GONE (Cyrus, 2026-10-01: "堆icon panel is abundant").
+// WHY THE LAYER ICONS ARE GONE: a crowded icon panel.
 // This rail used to carry a second stack of toggles below a separator — cameras,
 // rain, imagery, aircraft, wind, stations, drone zones, AEDs, cargo areas: 12 more
 // 1.5px glyphs, which put 23 near-identical buttons in a 56px column where the
@@ -30,7 +30,7 @@ export interface RailCallbacks {
 }
 
 // Icons are keyed by VERTICAL ID. `leave` was removed 2026-09-24 with the
-// 請假攻略 mode (Cyrus); its calendar icon and green accent went with it. Both
+// 請假攻略 mode; its calendar icon and green accent went with it. Both
 // maps degrade gracefully for an unknown id (a generic glyph, the default
 // accent), so removing an entry here is safe — but leaving a dead one invites
 // the next reader to think the mode still exists.

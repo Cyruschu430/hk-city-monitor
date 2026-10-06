@@ -60,7 +60,7 @@ const TRAIL = 34;
  * PIXELS PER FRAME at the reference wind speed — the calibration knob.
  *
  * Screen-constant, not ground-constant: this many pixels at every zoom, so the flow reads as the same
- * wind whether the view is all of Hong Kong or one district. Cyrus, first build: "好似加速咁好唔合理
+ * wind whether the view is all of Hong Kong or one district. Early feedback: "好似加速咁好唔合理
  * 囉" — the previous version stepped in degrees with a `* 3.6` on a value that was ALREADY in km/h,
  * which put a 20km/h wind at ~21 px/frame and, with a 14-frame trail, drew 294-pixel lines that buried
  * the layers underneath.

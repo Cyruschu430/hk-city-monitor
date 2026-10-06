@@ -20,7 +20,7 @@ import type { Camera } from "../map/cameras.ts";
 import { pickWallCameras, wallImages } from "../map/cameras.ts";
 
 /** Panels the engine is FED, never fetches. The set is empty since the
- *  analysis_brief panel (and the whole Tier 0-4 engine) was withdrawn (Cyrus
+ *  analysis_brief panel (and the whole Tier 0-4 engine) was withdrawn (requested:
  *  2026-10-02). The mechanism is kept because it is how a fed panel stays out
  *  of the fetch/poll/coverage paths, and it may return. */
 const FED_PANEL_IDS = new Set<string>([]);
@@ -118,7 +118,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
   // is the reader's preference, not the vertical's. Stored as a flat list of ids, so a
   // stale entry for a panel that no longer exists is inert and a new panel simply has no
   // index yet (it keeps its configured position, after the ids the reader has placed).
-  // BUMPED 2026-10-01 when ai_brief was added. MEASURED, and it took Cyrus telling me twice:
+  // BUMPED 2026-10-01 when ai_brief was added. MEASURED, and it took being told twice:
   // the panel was rendering - the DOM held 19 panels, one more than before - and he could not
   // see it, because a stored order that predates a panel has no position for it, so the engine
   // appended it to the END of the column, below the fold. check:layout could not catch this: it

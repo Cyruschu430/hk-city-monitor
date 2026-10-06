@@ -1,7 +1,6 @@
 // i18n — Hong Kong's official languages are Traditional Chinese and English,
 // carried as two values of the SAME field ({ tc, en }), never as _zh/_en twin
-// fields which drift. Default language is 繁體中文 (Cyrus,
-// 2026-09-18). A missing translation fails the build via validate_config.py;
+// fields which drift. Default language is 繁體中文 . A missing translation fails the build via validate_config.py;
 // here a missing value is a loud fallback, never a silent empty string.
 
 export type Lang = "tc" | "en";

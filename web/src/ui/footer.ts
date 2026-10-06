@@ -1,6 +1,6 @@
 // footer.ts — who makes this, what it is built on, and what it is not.
 //
-// The wording is Cyrus's call (2026-10-01): "又唔使寫同港府無關嘅 ... 我都係想用呢個 contribute
+// "又唔使寫同港府無關嘅 ... 我都係想用呢個 contribute
 // 呢個社會". So it credits the publishers warmly instead of disclaiming them coldly. It still
 // does not claim official status — "maintained by volunteers" is true and does the same job as a
 // disclaimer without reading like a lawyer's note bolted onto a public dashboard.

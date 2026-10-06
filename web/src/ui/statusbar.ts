@@ -46,9 +46,9 @@ const LABELS = {
 
 export function createStatusBar(root: HTMLElement): StatusBar {
   clear(root);
-  // The live dot is gone (Cyrus 2026-10-02): it read as decoration. Offline is shown on the
+  // The live dot is gone: it read as decoration. Offline is shown on the
   // coverage line instead, which is always in the DOM.
-  // THE MODE CONTROL LIVES HERE NOW (Cyrus 2026-10-01: "Remove 最左個icon bar menu").
+  // THE MODE CONTROL LIVES HERE NOW .
   // The rail was a 56px column of 1.5px glyphs whose whole job was picking one of ten
   // values, next to a header that already had to print which value was active ("模式 總覽").
   // A readout and a control for the same fact, 56px apart, is one control too many — the
@@ -74,7 +74,7 @@ export function createStatusBar(root: HTMLElement): StatusBar {
   };
   syncPressed();
 
-  // ONE theme button, not four (Cyrus 2026-10-01: "改成一個THEME BUTTON比USER自己change").
+  // ONE theme button, not four .
   // Four pills spent 40px of a 40px strip on a control a reader touches twice in a
   // session, and they read as four unrelated switches rather than one choice with four
   // values. The button now shows the CURRENT theme and cycles on click, which keeps the
@@ -150,14 +150,11 @@ export function createStatusBar(root: HTMLElement): StatusBar {
   // in a panel corner. We have a large catalog and only a slice of it surfaced
   // at any moment — not saying so would be the misleading option.
   //
-  // The credits sit at the far end of the same line (Cyrus 2026-10-01: "Header Footer
-  // 加返我自己既personal branding - credits"). It is authorship, not a data claim, so it
+  // The credits sit at the far end of the same line . It is authorship, not a data claim, so it
   // belongs with the chrome rather than in a panel — and the line it joins is already the
   // one that says where everything else came from.
   const coverEl = h("span", { class: "cover-text" });
-  // Author/GitHub credits live in the PAGE FOOTER, not the header coverage line (Cyrus 2026-10-03:
-  // removed the header credits + repo button as clutter — the footer already carries authorship,
-  // licence and the source link, and saying it twice on one screen is noise).
+  // Author/GitHub credits live in the PAGE FOOTER, not the header coverage line .
   const coverWrap = h(
     "div",
     { class: "coverage", title: "" },
@@ -175,11 +172,11 @@ export function createStatusBar(root: HTMLElement): StatusBar {
         { class: "meta" },
         // ponytail: freshStat, tilesStat and camsStat are still built above and still
         // written to (setFreshness / setTiles / setCameras) — they are simply not
-        // appended any more. Cyrus 2026-10-02: seven cells in one row left "1 stale"
+        // appended any more. seven cells in one row left "1 stale"
         // with no room for its own label, so it rendered as a bare meaningless number.
         // Freshness is already said per panel and again in the coverage line below, and
         // the basemap is named by the mandatory LandsD attribution on the map face.
-        // Cyrus 2026-10-03: the camera count and the HKT clock came out too — the
+        // the camera count and the HKT clock came out too — the
         // camera-wall tab owns its own count, and the clock duplicated the placard's
         // timestamp. Removing the cells is the whole fix; deleting the elements would
         // churn the callers.

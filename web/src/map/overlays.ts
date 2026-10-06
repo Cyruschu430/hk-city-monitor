@@ -254,7 +254,7 @@ export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): v
 /**
  * Draw the geocoded suspension pins, with a popup per notice.
  *
- * Cyrus: "Layers District with water suspension should refering to Panel
+ * Requested: "Layers District with water suspension should refering to Panel
  * 水務署 臨時停水通知 showing the affected locations by geocoding."
  *
  * Before this the layer tinted a whole district polygon for an outage that was
@@ -305,7 +305,7 @@ function drawWaterPoints(map: maplibregl.Map, id: string, pts: WaterPoint[]): vo
     type: "symbol",
     source: pid,
     layout: {
-      // A SHAPE, not a dot. Cyrus 2026-09-25: "Suspension Location layer — use
+      // A SHAPE, not a dot. Requested: "Suspension Location layer — use
       // relevant symbology for them, don't use simple point symbols." These were
       // plain `circle`s, so the entire message was carried by colour: you had to
       // already know that red meant drinking water. The mark is now the map's own
@@ -480,7 +480,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // WATER SUSPENSION PINS — drawn here so the layer can be an honest `point`
   // layer, and drawn with the SAME code as before.
   //
-  // Cyrus 2026-09-25: "boundary polygon 有誤導性; 我覺得顯示 point location 就夠".
+  // 2026-09-25 decision: "boundary polygon 有誤導性; 我覺得顯示 point location 就夠".
   // The district tint is gone (see layers.json `_comment` for why he is right);
   // what is left is the pins, which were always built by a bespoke join rather
   // than fetched as GeoJSON: the collector geocodes each notice's own street
@@ -1018,7 +1018,7 @@ function attributeHtml(p: Record<string, unknown>, lngLat: maplibregl.LngLat): s
 
 /** Attach an ATTRIBUTE POPUP to a point layer.
  *
- * Cyrus 2026-09-25: "weather station layer click完冇attribute pop up". The cause
+ * Reported 2026-09-25: "weather station layer click完冇attribute pop up". The cause
  * was not a broken popup — there was NO click handler on this path at all.
  * `pointLayer()` added its layers and returned, so every layer drawn through it
  * was inert under the cursor: 氣象站 today, and the aircraft and vessel layers
@@ -1044,7 +1044,7 @@ function attributePopup(map: maplibregl.Map, layerId: string): void {
 /**
  * Official control points as map POIs, with a popup carrying their attributes.
  *
- * Cyrus: "Most layers are not refering to the panel -> layer should showing the
+ * Requested: "Most layers are not refering to the panel -> layer should showing the
  * POI with pop up attribute when Border crossing mode is on."
  *
  * Before this, 口岸模式 drew ONLY the camera dots: three panels of queue times and
@@ -1089,7 +1089,7 @@ async function controlPointLayer(map: maplibregl.Map, def: LayerDefRaw, args: La
       })),
     },
   });
-  // A GATEWAY SYMBOL, not a circle. Cyrus 2026-09-25: "Border control point layer
+  // A GATEWAY SYMBOL, not a circle. Requested 2026-09-25: "Border control point layer
   // — use relevant symbology for them, don't use simple point symbols." These were
   // plain circles, so the layer said only "something is here" — exactly what the
   // camera and station layers already say. The glyph is a portal with a traveller
@@ -1226,7 +1226,7 @@ async function polygonLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerAr
   // labels are ours and the values are theirs, verbatim. Translating a regulator's zone name
   // would invent an official name that does not exist; a reader has to be able to match what they
   // see here against the eSUA notice. The last line says so rather than leaving it to be guessed.
-  // Cyrus 2026-10-02: the note used to read 「以上為民航處原文（英文）」 — true, and useless:
+  // 2026-10-02: the note used to read 「以上為民航處原文（英文）」 — true, and useless:
   // it tells the reader that something above is in English without saying which fields, or which
   // publication to open if they want to check it. Naming the notice is the whole fix; the
   // English half stays as it was, because it already said it.
@@ -1329,7 +1329,7 @@ export async function applyVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw
           // RESTORED 2026-09-27 for the drone restricted flight zones.
           //
           // This branch threw for two days. Polygon layers were removed together with the water
-          // district tint (2026-09-25, Cyrus: "boundary polygon 有誤導性; 我覺得顯示 point
+          // district tint (2026-09-25 decision: "boundary polygon 有誤導性; 我覺得顯示 point
           // location 就夠") — and that reason was about THAT layer specifically: a district
           // outline drawn around a water suspension asserts the whole district is affected, which
           // the notice does not say. It does not generalise, and reading it as a blanket ban on

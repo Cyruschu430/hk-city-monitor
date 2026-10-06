@@ -153,8 +153,7 @@ export type PanelData =
       regions?: { id: string; label: L10n; count: number }[];
       activeRegion?: string | null;
       /** EVERY stream the adapter had, not just the `max` it drew — the tiles show six and the
-       *  reader can pick any of them from the one playing (Cyrus 2026-10-01: "Live News (allow
-       *  user to volume on, expand, switch to other live streaming)"). A picker built from the
+       *  reader can pick any of them from the one playing "). A picker built from the
        *  drawn six would only re-arrange the six already on screen; the list has to be the pool
        *  the adapter chose from, or the feature is decoration. */
       streams?: { id: string; title: string; channel?: string }[];
@@ -364,7 +363,7 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
           { ...(it.ok ? { class: "ok-line" } : {}), title: it.title },
           // The icon leads, because a warning type is recognised before it is read.
           (it.icon ? glyphSvg(it.icon) : null) ?? "",
-          // NOT a link (Cyrus 2026-10-02: "冇咩特別原因唔好比 user redirect 去其他地方"). A row's
+          // NOT a link . A row's
           // href is the SOURCE url, so a click used to leave the dashboard for a raw file. The
           // URL stays on screen in the tooltip, which is what traceability actually needs.
           it.href ? h("span", { class: "src-hold", title: it.href }, it.title) : it.title,
@@ -470,7 +469,7 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
             // prepend, not append: the label and the badge must stay clickable on top
             tile.prepend(frame);
           };
-          // SWITCH STREAM, WITHOUT A LIST (Cyrus 2026-10-01: "唔要 drop down menu 好多亂碼").
+          // SWITCH STREAM, WITHOUT A LIST .
           // The pool is still the adapter's whole region, but the control is two arrows: a
           // <select> of publisher stream names renders as a list of 40-character mixed-script
           // titles inside a tile 84px wide, which is unreadable at the one size it is used at.
@@ -679,7 +678,7 @@ export function renderPanel(
       "div",
       { class: "panel-head" },
       h("h2", {}, t(panel.title)),
-      // Reader search (Cyrus 2026-10-02), only for panels whose registry entry declares it. The box
+      // Reader search , only for panels whose registry entry declares it. The box
       // reuses the layer control's own filter class (lyr-q) rather than introducing a second look, and
       // Enter calls window.__hkcm.refreshAll() - the hook the app already exposes for QA - instead of
       // threading a new callback down from ui/panels.ts.

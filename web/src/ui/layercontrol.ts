@@ -190,7 +190,7 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
       );
     }
 
-    // QUICK SEARCH AND FILTER (Cyrus 2026-10-01: "加個功能在layer lengend (quick
+    // QUICK SEARCH AND FILTER (requested feature in the layer legend: quick
     // search and filter 仲好)"). Both were needed the moment the rail's layer icons
     // went away: the LAYERS control is now the only way to reach a layer, and a mode
     // that asks for twelve of them makes finding one a read-the-whole-list job.
@@ -287,7 +287,7 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
 
       // ✕ — REMOVE THE LAYER FROM THE LIST.
       //
-      // Cyrus 2026-09-25: "加一多個功能, user remove layer from the legend, 依家開完
+      // Requested: removing a layer from the legend removes it from the map — 開完
       // 一個 mode, layer 會 keep 住". Opening a mode fills this panel, and once a row
       // is there the only way to be rid of it was to leave the mode entirely — so a
       // reader who does not want 1,047 camera points had to give up the whole mode
@@ -326,7 +326,7 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
         "div",
         { class: "lyr-note", hidden: "true", "data-note-for": row.def.id },
         row.sourceUrl
-          // Not a link any more (Cyrus 2026-10-02): a layer's source URL took the reader off the
+          // Not a link any more : a layer's source URL took the reader off the
           // dashboard for one click. The URL stays in the tooltip via .src-hold's title-less span
           // below, because checking a claim is the point and leaving the page is not.
           ? h("span", { class: "src-hold", title: row.sourceUrl ?? "" }, row.sourceName)

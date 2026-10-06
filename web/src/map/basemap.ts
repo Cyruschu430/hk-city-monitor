@@ -62,7 +62,7 @@ export function createMap(container: HTMLElement): maplibregl.Map {
 /**
  * The always-visible LandsD attribution (licence term).
  *
- * Cyrus asked on 2026-10-02 whether this could go, since the map already credits Esri. It cannot -
+ * Considered dropping the Esri attribution line (the map already credits Esri). It cannot -
  * the terms are explicit and the Esri credit does not stand in for them. The LandsD Map API
  * disclaimer and the CSDI API docs both say: "You are required to include Lands Department logo on
  * the map face and Copyright Notice to attribute Lands Department's data in your map applications."
@@ -72,10 +72,10 @@ export function createMap(container: HTMLElement): maplibregl.Map {
  * under-compliant the whole time. The logo is now the official file, committed under
  * web/public/brand/ (its whole purpose is to be displayed for attribution). Styling is deliberately
  * bare - no background, no border - so it reads as a quiet corner line rather than a panel, which is
- * what Cyrus was actually objecting to.
+ * what the objection actually was.
  */
 export function landsdBadge(): HTMLElement {
-  // Logo + ONE notice line (Cyrus 2026-10-03): the badge used to show the notice in BOTH
+  // Logo + ONE notice line: the badge used to show the notice in BOTH
   // languages at once, which read as three redundant credits. The licence requires the logo
   // and the prescribed wording — one language is enough, and it follows the UI language.
   const badge = h("div", { class: "landsd-badge" });
@@ -101,7 +101,7 @@ export type BasemapKind = "topo" | "imagery" | "esri-topo" | "esri-gray";
 
 // One table, four kinds: each basemap is a raster layer visible only when it is the chosen one, so a
 // fifth is a row here plus a source and layer in style.json - not another branch. LandsD topographic
-// is the default; the Esri pair are the additions Cyrus asked for (2026-10-02), both keyless.
+// is the default; the Esri pair are later additions, both keyless.
 const BASEMAP_LAYERS: Record<BasemapKind, string> = {
   topo: "landsd-topo",
   imagery: "landsd-imagery",

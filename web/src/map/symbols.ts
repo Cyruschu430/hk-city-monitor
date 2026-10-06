@@ -26,7 +26,7 @@ export type GlyphId =
   | "vessel"
   | "mtr-train"
   // Buses (KMB / 龍運, and later the other operators). A bus glyph, never a light dot: the
-  // vehicle layers draw a vehicle, and Cyrus's standing rule is that a marker which only
+  // vehicle layers draw a vehicle, and the standing rule is that a marker which only
   // GLOWS is standing in for something it cannot show.
   | "bus"
   // Car parks. The glyph is a car and the DISC is the international parking blue — the disc carries
@@ -459,7 +459,7 @@ function drawBus(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** Parking: the international parking sign — a white **P** on the parking blue. Cyrus 2026-10-06:
+/** Parking: the international parking sign — a white **P** on the parking blue.
  *  「Parking 唔係應該用P咩？」 He is right, and it is the stronger symbol: a P is what a driver
  *  reads without translating, in every language, which is exactly why ISO 7001 uses it. The disc
  *  supplies the blue, the glyph supplies the P.
@@ -551,7 +551,7 @@ function drawFerry(ctx: CanvasRenderingContext2D, size: number): void {
 
 /** Border control point: a gateway with a traveller passing through it.
  *
- * Cyrus: "Border control point layer — use relevant symbology for them, don't use
+ * Requested: "Border control point layer — use relevant symbology for them, don't use
  * simple point symbols." The layer used to draw a bare `circle`, which said only
  * "something is here" — the same thing every other point layer on this map says.
  * A portal with an arrow through it reads as a CROSSING at 44px and still reads
@@ -598,7 +598,7 @@ function drawControlPoint(ctx: CanvasRenderingContext2D, size: number): void {
 
 /** Water suspension: the `water` droplet struck through.
  *
- * Cyrus: "Suspension Location layer — use relevant symbology, don't use simple
+ * Requested: "Suspension Location layer — use relevant symbology, don't use simple
  * point symbols." The pins were two-tone CIRCLES; the colour carried the whole
  * message and the shape carried none.
  *

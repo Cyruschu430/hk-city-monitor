@@ -39,7 +39,7 @@ const { cadenceSeconds, quietSeconds, degrade, live, errored, LOADING, POLL_DEFA
   assert.equal(c, 300, "the POLL rate stays 5 min — asking more often is correct");
   const q = quietSeconds("continuous");
   assert.notEqual(q, 600, "regression: 'continuous' must not be tolerated for only 2x300s");
-  assert.equal(q, 86_400, "Cyrus 2026-09-24: tolerate a full day of quiet, then go amber");
+  assert.equal(q, 86_400, "tolerate a full day of quiet, then go amber");
   console.log(`✓ 'continuous'：輪詢 ${c}s（維持）但容忍靜默 ${q / 3600}h — 唔會再 10 分鐘就報 stale`);
 }
 
@@ -96,7 +96,7 @@ const { cadenceSeconds, quietSeconds, degrade, live, errored, LOADING, POLL_DEFA
   assert.equal(degrade(live(ago(599)), 600, now).state, "live", "599s < 600s tolerance");
   assert.equal(degrade(live(ago(601)), 600, now).state, "stale", "601s > 600s tolerance");
 
-  // The observed incident, against the chosen policy (Cyrus 2026-09-24:
+  // The observed incident, against the chosen policy (2026-09-24:
   // tolerate a full day, then amber). A normal overnight gap must stay live;
   // a 27-hour silence is past the line and SHOULD read amber — that is the
   // behaviour we want, not a failure. Both halves are asserted so the

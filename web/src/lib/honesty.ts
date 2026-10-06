@@ -131,7 +131,7 @@ export function quietSeconds(cadence: string | undefined): number {
   // 治安 channel's lastBuildDate was 2 minutes old while its newest article
   // was 27 hours old — so feed freshness carries no information here).
   //
-  // 24h, chosen by Cyrus 2026-09-24: it covers a normal overnight-plus-weekend
+  // 24h, chosen 2026-09-24: it covers a normal overnight-plus-weekend
   // gap, while a full day of silence in a feed that normally publishes daily
   // IS worth flagging, because that is the shape a real outage takes.
   if (/continuous|as issued|real-time|即時|on update|irregular|varies|periodic|when necessary/i.test(c))

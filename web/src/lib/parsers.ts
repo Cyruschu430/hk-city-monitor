@@ -561,7 +561,7 @@ export function parseMtrSchedule(
       return {
         ttnt: Number.isFinite(ttnt) ? ttnt : Number.MAX_SAFE_INTEGER,
         item: {
-          // Simple readout (Cyrus 2026-10-03): destination + minutes, nothing else.
+          // Simple readout : destination + minutes, nothing else.
           // Platform and 上行/下行 are dropped — for someone tracking their own station
           // the destination already implies the direction, and a platform number is
           // noise until you are standing on the concourse.
@@ -1257,7 +1257,7 @@ export function aircraftToGeoJson(aircraft: Aircraft[]): GeoJSON.FeatureCollecti
         hex: a.hex,
         flight: a.flight || a.hex.toUpperCase(),
         // THE POPUP TITLE NEEDS A FIELD CALLED EXACTLY `Name`. MEASURED 2026-10-01
-        // (Cyrus: "點解display 未命名"): the shared popup builder takes its heading
+        // : the shared popup builder takes its heading
         // from `Name` and falls back to 未命名, so every aircraft popup opened titled
         // 未命名 while the callsign sat in the row below it, labelled 航班 — the
         // callsign was on screen the whole time, just not in the heading. The builder

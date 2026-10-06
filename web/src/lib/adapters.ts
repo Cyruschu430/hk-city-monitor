@@ -326,14 +326,14 @@ const ADAPTERS: Record<string, Adapter> = {
     const schedule = (l: string, code: string) =>
       `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=${encodeURIComponent(l)}&sta=${encodeURIComponent(code)}`;
 
-    // A reader's search overrides the pinned station (Cyrus 2026-10-02). The API accepts a line plus
+    // A reader's search overrides the pinned station . The API accepts a line plus
     // a 3-letter code and never a name, so the name is resolved against the index baked at build time
     // by scripts/build-mtr-index.mjs - stable data that costs nothing to ship and would cost a Worker
     // whitelist entry plus quota to fetch at runtime.
     const q = searchQuery(panel.id);
     // Label every row with its LINE. A station can be served by four lines and the API answers
     // per line, so a bare "往柴灣" only states the DIRECTION — at 中環 that could be 港島綫,
-    // 荃灣綫, 東鐵綫 or 南港島綫. Cyrus 2026-10-06: 「佢係只能夠往邊個方向」.
+    // 荃灣綫, 東鐵綫 or 南港島綫. 「佢係只能夠往邊個方向」.
     //
     // It was applied on the SEARCH path only, so the pinned default drifted from it and read
     // differently depending on whether the reader had typed anything. Both paths go through this
@@ -376,7 +376,7 @@ const ADAPTERS: Record<string, Adapter> = {
       throw new Error("kmb_eta panel 要有 params.stop_id");
     }
     // A reader's route search lists where that route stops, with the live ETA at the first stop
-    // (Cyrus 2026-10-02). /route-stop is keyless and CORS-open, so this is two browser-direct calls.
+    // . /route-stop is keyless and CORS-open, so this is two browser-direct calls.
     // ponytail: the first stop only. Per-stop ETAs would be one request per stop on a route - add it
     // when a reader asks, and route it through the Worker if the count ever gets near the quota.
     const q = searchQuery(panel.id);
@@ -974,7 +974,7 @@ const ADAPTERS: Record<string, Adapter> = {
     const values = j.map((s) => s.aqhi).filter((v): v is number => typeof v === "number");
     // The scale is AQHI's own, so it belongs with the readings rather than with the renderer.
     // Three colours, five bands: 高 and above all carry the alert colour, and the numbers are
-    // what separates them. Cyrus 2026-10-02 asked what 1/2/3 mean - a bare index with no key is
+    // what separates them. A bare index with no key is
     // a number a reader has to go and look up.
     const tc = lang() === "tc";
     const legend = [
@@ -1361,7 +1361,7 @@ export async function adaptPanel(panel: PanelDefRaw, ctx: AdapterCtx): Promise<A
   return result;
 }
 
-// --- reader search (Cyrus 2026-10-02) -----------------------------------------
+// --- reader search  -----------------------------------------
 
 /** MTR line codes as the API takes them, for the row label. Codes, not a station list - the station
     index is generated from the publisher's own CSV. */

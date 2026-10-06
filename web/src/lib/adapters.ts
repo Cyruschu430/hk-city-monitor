@@ -1149,6 +1149,52 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async td_ai_video_analytics(src, _panel, _ctx) {
+    // Live road speed from TD's AI Video Analytics: the 16 camera locations
+    // (CSDI td_rcd_1671693527354_28926) carry the per-camera JSON URL in
+    // `url`; every 15 minutes each returns per-segment speed/flow. 16 GETs per
+    // refresh is polite; a camera whose Is_valid is N (PTZ moved out of
+    // reference) contributes nothing — a stale speed would be a lie.
+    const cams = (await json(await get(src))) as GeoJSON.FeatureCollection;
+    const tc = lang() === "tc";
+    const results = await Promise.allSettled(
+      (cams.features ?? []).map(async (f) => {
+        const p = (f.properties ?? {}) as Record<string, unknown>;
+        const res = await fetch(String(p["url"] ?? ""), { signal: AbortSignal.timeout(15_000) });
+        if (!res.ok) return { p, geom: f.geometry, t: null };
+        return { p, geom: f.geometry, t: P.parseAiTraffic(await res.json()) };
+      }),
+    );
+    const features: GeoJSON.Feature[] = [];
+    const rows: string[][] = [];
+    for (const r of results) {
+      if (r.status !== "fulfilled") continue;
+      const { p, geom, t } = r.value;
+      const desc = String(p["description"] ?? "");
+      if (!t || !t.valid) continue; // PTZ moved / no data — nothing to say
+      const speeds = t.segments.map((s) => s.speed);
+      const avg = speeds.length ? Math.round(speeds.reduce((a, b) => a + b, 0) / speeds.length) : 0;
+      const flow = t.segments.reduce((a, s) => a + s.flow, 0);
+      const colour = avg < 10 ? "#ef4444" : avg < 30 ? "#f59e0b" : "#22c55e";
+      features.push({
+        type: "Feature",
+        geometry: geom,
+        properties: { ...(p as object), speed: String(avg), flow: String(flow), label_color: colour },
+      });
+      rows.push([desc, `${avg} km/h`, String(flow)]);
+    }
+    return {
+      data: {
+        kind: "table",
+        columns: [tc ? "位置" : "Location", tc ? "平均車速" : "Avg speed", tc ? "流量" : "Flow"],
+        rows,
+      },
+      observedAt: new Date(),
+      state: { records: features.length },
+      geo: { type: "FeatureCollection", features },
+    };
+  },
+
   async td_journey_time_v2(src, _panel, ctx) {
     // Live journey time: ONE XML for the whole territory, joined onto the CSDI
     // indicator locations by location_id|destination_id. The label colour is

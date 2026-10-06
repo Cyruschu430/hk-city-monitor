@@ -428,6 +428,26 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log("✓ 行車時間: location|destination join key + colour normalisation");
 }
 
+// 17h. AI Video Analytics: Is_valid N → valid=false; zero segments filtered.
+{
+  const ok = P.parseAiTraffic({
+    CCTV_id: "K106F",
+    generated_timestamp: "2026-10-06T22:00:00",
+    Is_valid: "Y",
+    traffic_data: [
+      { segment: 1, speed: 37.484, flow: 40 },
+      { segment: 2, speed: 0, flow: 0 },
+      { segment: 3, speed: 8.571, flow: 12 },
+    ],
+  });
+  assert.equal(ok.valid, true, "Is_valid Y");
+  assert.equal(ok.segments.length, 2, "zero speed+flow segment filtered");
+  assert.equal(ok.segments[0]!.speed, 37.484, "speed verbatim");
+  const bad = P.parseAiTraffic({ Is_valid: "N", traffic_data: [{ segment: 1, speed: 51, flow: 30 }] });
+  assert.equal(bad.valid, false, "Is_valid N = PTZ moved, no data");
+  console.log("✓ AI 影像分析: Is_valid guard + zero-segment filter");
+}
+
 // 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).
 {
   const cells = P.parseImmdQueue({ HYW: { arrQueue: 0, depQueue: 0 }, LWS: { arrQueue: 25, depQueue: 18 } }, ["HYW", "LWS"]);

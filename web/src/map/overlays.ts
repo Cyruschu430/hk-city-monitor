@@ -667,6 +667,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   else if (def.popup === "beach_popup") beachPopup(map, `${id}-point`);
   else if (def.popup === "mtr_bus_popup") mtrBusPopup(map, `${id}-point`);
   else if (def.popup === "journey_popup") journeyPopup(map, `${id}-point`);
+  else if (def.popup === "ai_cctv_popup") aiCctvPopup(map, `${id}-point`);
   else attributePopup(map, `${id}-point`);
 
   // Vacancy refreshes on its own cadence: positions are static, numbers are
@@ -784,6 +785,33 @@ function beachPopup(map: maplibregl.Map, layerId: string): void {
         `<div class="aed-pop"><b>${esc(p["name"] ?? "")}</b>` +
           `<div style="color:${COL[key] ?? "#fff"};font-weight:600;margin-top:6px">${esc(p["gradeTc"] ?? "")}</div>` +
           `<div style="color:var(--night-dim);font-size:11px;margin-top:4px">${tc ? "EPD 泳灘水質（採樣後 48 小時內）" : "EPD beach water quality (within 48h of sampling)"}</div></div>`,
+      )
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+
+/** AI Video Analytics popup: the camera's road, the average speed (the thing
+ *  this layer exists to show) and the flow. The colour is the same band the
+ *  map label uses. */
+function aiCctvPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const speed = p["speed"] != null ? String(p["speed"]) : "";
+    const colour = String(p["label_color"] ?? "#ffffff");
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "280px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<div class="aed-pop"><b>${esc(p["description"] ?? "")}</b>` +
+          (speed ? `<div style="color:${esc(colour)};font-weight:700;font-size:18px;margin-top:6px">${esc(speed)} km/h</div>` : "") +
+          `<div style="color:var(--night-dim);margin-top:2px">${tc ? "流量" : "flow"} ${esc(p["flow"] ?? "—")}</div>` +
+          `<div style="color:var(--night-dim);font-size:11px;margin-top:4px">${tc ? "AI 影像分析（運輸署，每 15 分鐘）" : "AI video analytics (TD, every 15 min)"}</div></div>`,
       )
       .addTo(map);
   });

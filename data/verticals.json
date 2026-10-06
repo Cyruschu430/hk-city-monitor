@@ -183,13 +183,15 @@
     "speed_panels_wall",
     "mtr_bus_status",
     "journey_time_table",
+    "ai_cctv_speed_table",
     "crossboundary_ferry_table"
     ],
     "layers": [
     "cameras_all",
     "journey_time",
+    "ai_cctv_speed",
     "control_points"
-   ],
+    ],
    "window": "now",
    "location_scope": "hk",
    "order": ["ai_brief", 
@@ -201,6 +203,7 @@
     "speed_panels_wall",
     "mtr_bus_status",
     "journey_time_table",
+    "ai_cctv_speed_table",
     "crossboundary_ferry_table"
     ]
     },

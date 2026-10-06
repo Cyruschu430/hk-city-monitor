@@ -912,6 +912,34 @@ export function parseMtrBusEta(json: unknown): Map<string, MtrBusEta> {
   return out;
 }
 
+/** TD AI Video Analytics: one CCTV's traffic_data → the live numbers. The
+ *  endpoint is per-camera (td2132022opendata.td.gov.hk/{key}, CORS *), one
+ *  segment each carrying speed (km/h) + flow (veh/h). Is_valid "N" means the
+ *  camera is not in its reference position (PTZ moved) and NO data is
+ *  generated — the adapter must show nothing rather than a stale speed.
+ *  Verified live 2026-10-06: 16/16 cameras, 38 segments, speed 0–51. */
+export interface AiTraffic {
+  valid: boolean;
+  generated: string;
+  segments: { speed: number; flow: number }[];
+}
+export function parseAiTraffic(json: unknown): AiTraffic {
+  const d = (json ?? {}) as { Is_valid?: string; generated_timestamp?: string; traffic_data?: unknown[] };
+  const segments = (d.traffic_data ?? [])
+    .map((t) => {
+      const s = t as { speed?: number | string; flow?: number | string };
+      const speed = Number(s.speed);
+      const flow = Number(s.flow);
+      return { speed: Number.isFinite(speed) ? speed : 0, flow: Number.isFinite(flow) ? flow : 0 };
+    })
+    .filter((s) => s.speed > 0 || s.flow > 0);
+  return {
+    valid: d.Is_valid === "Y",
+    generated: String(d.generated_timestamp ?? ""),
+    segments,
+  };
+}
+
 /** Journey Time Indicators (2nd Gen): the TD XML maps location_id +
  *  destination_id → minutes + COLOUR_ID. Verified 2026-10-06 at 22:23: 82/83
  *  readings were 3 with 4–10 min (night, free-flow) and the single 28-min leg

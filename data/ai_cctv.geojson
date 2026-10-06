@@ -1,0 +1,277 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1692661253,
+     22.2962725349
+    ]
+   },
+   "properties": {
+    "key": "K121F",
+    "region": "Kowloon",
+    "district": "Yau Tsim Mong",
+    "description": "Canton Road near Salisbury Road [K121F]",
+    "url": "https://td2132022opendata.td.gov.hk/K121F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1753701816,
+     22.2955773467
+    ]
+   },
+   "properties": {
+    "key": "K102F",
+    "region": "Kowloon",
+    "district": "Yau Tsim Mong",
+    "description": "Salisbury Road near Chatham Road [K102F]",
+    "url": "https://td2132022opendata.td.gov.hk/K102F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1772722514,
+     22.3027025095
+    ]
+   },
+   "properties": {
+    "key": "K106F",
+    "region": "Kowloon",
+    "district": "Yau Tsim Mong",
+    "description": "Chatham Road near Austin Road [K106F]",
+    "url": "https://td2132022opendata.td.gov.hk/K106F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1667908301,
+     22.3057996991
+    ]
+   },
+   "properties": {
+    "key": "K108F",
+    "region": "Kowloon",
+    "district": "Yau Tsim Mong",
+    "description": "Jordan Road near Ferry Street [K108F]",
+    "url": "https://td2132022opendata.td.gov.hk/K108F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1728075464,
+     22.3198154538
+    ]
+   },
+   "properties": {
+    "key": "K202F",
+    "region": "Kowloon",
+    "district": "Yau Tsim Mong",
+    "description": "Argyle Street near Yim Po Fong Street [K202F]",
+    "url": "https://td2132022opendata.td.gov.hk/K202F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1686338219,
+     22.32230774
+    ]
+   },
+   "properties": {
+    "key": "K205F",
+    "region": "Kowloon",
+    "district": "Yau Tsim Mong",
+    "description": "Nathan Road near Lai Chi Kok Road [K205F]",
+    "url": "https://td2132022opendata.td.gov.hk/K205F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1720599538,
+     22.3266064373
+    ]
+   },
+   "properties": {
+    "key": "K209F",
+    "region": "Kowloon",
+    "district": "Yau Tsim Mong",
+    "description": "Boundary Street near Tai Hang Tung Road [K209F]",
+    "url": "https://td2132022opendata.td.gov.hk/K209F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1518974777,
+     22.3386694437
+    ]
+   },
+   "properties": {
+    "key": "K305",
+    "region": "Kowloon",
+    "district": "Sham Shui Po",
+    "description": "Cheung Sha Wan Road near Kwong Cheung Street [K305F]",
+    "url": "https://td2132022opendata.td.gov.hk/K305"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1576521633,
+     22.2803686413
+    ]
+   },
+   "properties": {
+    "key": "H108F",
+    "region": "Hong Kong Island",
+    "district": "Central & Western",
+    "description": "Queen's Road Central near Ice House Street [H108F]",
+    "url": "https://td2132022opendata.td.gov.hk/H108F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1685005723,
+     22.2778319505
+    ]
+   },
+   "properties": {
+    "key": "H201F",
+    "region": "Hong Kong Island",
+    "district": "Wan Chai",
+    "description": "Hennessy Road near Arsenal Street [H201F]",
+    "url": "https://td2132022opendata.td.gov.hk/H201F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1846175445,
+     22.2801167288
+    ]
+   },
+   "properties": {
+    "key": "H203F",
+    "region": "Hong Kong Island",
+    "district": "Wan Chai",
+    "description": "Yee Wo Street near Hennessy Road [H203F]",
+    "url": "https://td2132022opendata.td.gov.hk/H203F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1912256287,
+     22.2817508226
+    ]
+   },
+   "properties": {
+    "key": "H305F",
+    "region": "Hong Kong Island",
+    "district": "Wan Chai",
+    "description": "Causeway Road near Hing Fat Street [H305F]",
+    "url": "https://td2132022opendata.td.gov.hk/H305F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1952730444,
+     22.2902211453
+    ]
+   },
+   "properties": {
+    "key": "H307F",
+    "region": "Hong Kong Island",
+    "district": "Eastern",
+    "description": "King's Road near Tin Chong Street [H307F]",
+    "url": "https://td2132022opendata.td.gov.hk/H307F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1315632402,
+     22.3608079684
+    ]
+   },
+   "properties": {
+    "key": "TW108F",
+    "region": "Tsuen Wan",
+    "district": "Kwai Tsing",
+    "description": "Kwai Chung Road near Kwai Hing MTR Station [TW108F]",
+    "url": "https://td2132022opendata.td.gov.hk/TW108F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0321846513,
+     22.4443629056
+    ]
+   },
+   "properties": {
+    "key": "YL106F",
+    "region": "Tin Shui Wai & Yuen Long",
+    "district": "Yuen Long",
+    "description": "Castle Peak Road nearYuen Long [YL106F]",
+    "url": "https://td2132022opendata.td.gov.hk/YL106F"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2292831252,
+     22.3101352502
+    ]
+   },
+   "properties": {
+    "key": "K602F",
+    "region": "Kowloon",
+    "district": "Kwun Tong",
+    "description": "Lei Yue Mun Road near Cha Kwo Ling Road [K602F]",
+    "url": "https://td2132022opendata.td.gov.hk/K602F"
+   }
+  }
+ ]
+}

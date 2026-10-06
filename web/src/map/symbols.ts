@@ -62,7 +62,10 @@ export type GlyphId =
   // Journey-time indicators (TD): a dark sign disc with a clock — reads "time",
   // with the live minutes drawn as a text label on top (colour = congestion,
   // computed in the adapter). The look of the tunnel signs themselves.
-  | "jt";
+  | "jt"
+  // AI Video Analytics CCTVs (TD): a speedometer gauge — the thing this layer
+  // shows is speed, so the glyph says speed, with the km/h as a text label.
+  | "speed";
 
 /** AED: the universal defibrillator mark — a heart with a bolt through it. */
 function drawAed(ctx: CanvasRenderingContext2D, size: number): void {
@@ -777,7 +780,43 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   // is kept dark so the label colour — the actual signal — stays the loudest
   // thing on the marker.
   jt: { draw: drawJt, disc: "rgba(8,14,24,.85)" },
+  // AI Video Analytics: a speedometer — ring, tick and needle. The km/h is a
+  // text label on top (coloured by speed band in the adapter), same pattern.
+  speed: { draw: drawSpeed, disc: "rgba(8,14,24,.85)" },
 };
+
+/** AI-Video-Analytics CCTV: a small speedometer gauge — dark disc, white
+ *  ring, one tick, a needle pointing up-right. The live km/h sits on top as a
+ *  text label; the gauge just says "speed" at a glance. */
+function drawSpeed(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.beginPath();
+  ctx.arc(0, 0, 11, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(8,14,24,.85)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,.9)";
+  ctx.lineWidth = 1.6;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(4, -9);
+  ctx.lineTo(8.2, -9);
+  ctx.strokeStyle = "rgba(255,255,255,.5)";
+  ctx.lineWidth = 1.4;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(5, -8);
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 0, 1.6, 0, Math.PI * 2);
+  ctx.fillStyle = "#fff";
+  ctx.fill();
+  ctx.restore();
+}
 
 /** Journey-time indicator: a dark sign disc with a small clock (two hands) so
  *  it reads "time"; the live minutes sit on top as a text label whose colour

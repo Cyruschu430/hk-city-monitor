@@ -339,6 +339,25 @@
       "refresh_ms": 120000,
       "_comment": "80 TD journey-time indicator locations (CSDI td_rcd_1671692669689_59165) with LIVE minutes joined from Journeytimev2.xml by location|destination id. Each marker is a dark sign disc (jt glyph) with the minutes as a text label coloured by congestion (label_color: 1 red / 2 amber / 3 green, computed in the adapter). Popup shows the approach road, its destination and the minutes. OFF by default."
       },
+      {
+      "id": "ai_cctv_speed",
+      "source": "td_ai_cctv",
+      "render": "list",
+      "geom": "point",
+      "symbol": "speed",
+      "title": {
+       "tc": "路網車速（AI 分析）",
+       "en": "Road speed (AI)"
+      },
+      "popup": "ai_cctv_popup",
+      "text_prop": "speed",
+      "text_size": 11,
+      "filters": {
+       "scope": "hk"
+      },
+      "refresh_ms": 900000,
+      "_comment": "16 TD AI Video Analytics CCTVs with LIVE per-segment speed/flow (every 15 min). Each marker is a speedometer (speed glyph) with the avg km/h as a text label coloured by band (<10 red / <30 amber / else green, computed in the adapter). Cameras with Is_valid N (PTZ moved) draw nothing. OFF by default."
+      },
     {
       "id": "lcsd_facilities",
       "source": "lcsd_facilities",

@@ -444,6 +444,19 @@
    }
   },
   {
+   "id": "ai_cctv_speed_table",
+   "source": "td_ai_cctv",
+   "render": "table",
+   "title": {
+    "tc": "路網車速（AI 分析）",
+    "en": "Road speed (AI)"
+   },
+   "cadence_note": {
+    "tc": "每 15 分鐘",
+    "en": "every 15 min"
+   }
+  },
+  {
    "id": "wind_status",
    "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
    "render": "status_grid",

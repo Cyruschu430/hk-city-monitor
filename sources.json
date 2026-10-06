@@ -2412,6 +2412,21 @@
    "notes": "LIVE estimated journey time of major roads and cross-harbour tunnels: 83 readings of {LOCATION_ID, DESTINATION_ID → JOURNEY_DATA minutes, COLOUR_ID 1/2/3 = red/amber/green}. Joined onto td_journey_time_locations by location|destination id. The td_journeytime entry (v1, path removed from resource.data.one.gov.hk) is superseded by this one."
   },
   {
+   "id": "td_ai_cctv",
+   "group": "transport",
+   "name": "AI 影像分析閉路電視（交通數據）",
+   "name_en": "Traffic Data from AI Video Analytics System of CCTVs",
+   "type": "geojson",
+   "url": "https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=td_rcd_1671693527354_28926&format=geojson&layer_name=Traffic_Data_from_AI_Video_Analytics_System_of_CCTVs",
+   "auth": "none",
+   "cadence": "15 minutes",
+   "notes": "CSDI td_rcd_1671693527354_28926 — 16 CCTV points whose `url` field is the live per-camera JSON (td2132022opendata.td.gov.hk/{key}): per-segment speed + flow every 15 min. Verified 2026-10-06: 16/16 up, 38 segments. Camera K305 is PTZ — Is_valid N when moved off reference, adapter shows nothing rather than stale. Built copy ships as data/ai_cctv.geojson via scripts/build_ai_cctv.py.",
+   "fetch": "browser",
+   "cors_note": "ACAO=*",
+   "cost": "free",
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
+  },
+  {
    "id": "td_journey_time_locations",
    "group": "transport",
    "name": "行車時間指示位置",

@@ -163,6 +163,8 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // 80 TD journey-time indicators with LIVE minutes per approach road,
   // coloured by congestion. OFF by default.
   { id: "journey_time", label: { tc: "行車時間", en: "Journey time" } },
+  // 16 TD AI Video Analytics CCTVs with LIVE avg speed per camera. OFF.
+  { id: "ai_cctv_speed", label: { tc: "路網車速（AI）", en: "Road speed (AI)" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its

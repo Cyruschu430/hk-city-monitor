@@ -18,7 +18,7 @@ property of your own deployment, this is stated explicitly.
 | Cloudflare Pages | To publish | Free plan, unlimited requests | Cloudflare |
 | Live collectors | Optional | Free | Any host with outbound network |
 
-The source registry declares 198 sources; the Worker proxies those that cannot be read directly by
+The source registry declares 199 sources; the Worker proxies those that cannot be read directly by
 a browser, with an allow-list of 64 hosts.
 
 ## 1. Minimal setup (no accounts, no Worker)

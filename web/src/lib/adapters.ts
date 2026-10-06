@@ -964,6 +964,10 @@ const ADAPTERS: Record<string, Adapter> = {
         columns: tc ? ["停車場", "私家車空位", "該場更新"] : ["Carpark", "Free (car)", "Reported"],
         rows: rows.map((r) => [r.name, String(r.vacancy), fmt(r.updatedAt)]),
       },
+      // The map layer draws the SAME rows through the SAME parse, so the layer
+      // and the panel cannot disagree about how many spaces are left. Parks
+      // without a coordinate pair are dropped by carparkToGeoJson itself.
+      geo: P.carparkToGeoJson(rows),
       // The NEWEST per-park report, so the panel's own clock is not older than
       // the freshest row it is showing. `null` when the feed carried no times at
       // all, which the panel renders as its no-timestamp state rather than

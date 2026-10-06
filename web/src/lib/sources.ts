@@ -88,6 +88,10 @@ export interface LayerDefRaw {
   /** Glyph id from map/symbols.ts. A point layer picks its symbology here, so
       "the camera layer uses camera symbols" is a config fact, not a code fact. */
   symbol?: string;
+  /** Live-data refresh cadence in ms (carpark vacancy: 60_000). Absent =
+      static layer drawn once. Config-not-code: the loop is generic, the
+      cadence is this field. */
+  refresh_ms?: number;
 }
 
 /** The publisher's name in the ACTIVE language, falling back to the Chinese one.

@@ -155,6 +155,46 @@ async function startMtrAnimation(
   }, 30_000);
 }
 
+/**
+ * Generic refresh loop for a point layer whose DATA changes on a cadence
+ * (the carpark vacancy layer: positions are static, vacancies are not). One
+ * global loop, mirroring mtrAnim's lifecycle — stopped in clearVerticalLayers
+ * before its source goes away, and self-stopping if the source is already gone.
+ * `refresh_ms` is the layer's own knob (config-not-code: it lives in
+ * layers.json, not as a per-layer branch here).
+ */
+let layerRefresh: { timer: number; sourceId: string } | null = null;
+
+function startLayerRefresh(
+  map: maplibregl.Map,
+  sourceId: string,
+  refreshMs: number,
+  refetch: () => Promise<GeoJSON.FeatureCollection>,
+): void {
+  stopLayerRefresh();
+  layerRefresh = { timer: 0, sourceId };
+  layerRefresh.timer = window.setInterval(async () => {
+    if (!map.getSource(sourceId)) {
+      stopLayerRefresh();
+      return;
+    }
+    try {
+      const fc = await refetch();
+      if (map.getSource(sourceId)) {
+        (map.getSource(sourceId) as unknown as { setData: (d: GeoJSON.FeatureCollection) => void }).setData(fc);
+      }
+    } catch {
+      // keep the last data; the panel's own freshness state covers staleness
+    }
+  }, refreshMs);
+}
+
+function stopLayerRefresh(): void {
+  if (!layerRefresh) return;
+  window.clearInterval(layerRefresh.timer);
+  layerRefresh = null;
+}
+
 /** Every layer id a vertical layer may create. Removal must cover all of them:
  *  a layer this list misses survives its own toggle and paints over the next
  *  mode (the same class of bug as the orphaned district mesh). `-halo` and
@@ -199,6 +239,8 @@ export function clearVerticalLayers(map: maplibregl.Map, defs: LayerDefRaw[]): v
     // The MTR train slide loop owns its source too; stop it before removal or its
     // rAF ticks keep calling setData on a source that no longer exists.
     if (mtrAnim?.sourceId === `${PREFIX}${def.id}`) stopMtrAnimation();
+    // Same for the generic refresh loop (carpark vacancy).
+    if (layerRefresh?.sourceId === `${PREFIX}${def.id}`) stopLayerRefresh();
     for (const id of layersOf(def)) if (map.getLayer(id)) map.removeLayer(id);
     if (map.getSource(`${PREFIX}${def.id}`)) map.removeSource(`${PREFIX}${def.id}`);
     // The suspension pins are a SECOND source under the same layer definition,
@@ -598,7 +640,19 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // no click handler at all, so 氣象站 (and any point layer without its own
   // popup) was inert under the cursor.
   if (def.popup === "aed_popup") aedPopup(map, `${id}-point`);
+  else if (def.popup === "carpark_popup") carparkPopup(map, `${id}-point`);
   else attributePopup(map, `${id}-point`);
+
+  // Vacancy refreshes on its own cadence: positions are static, numbers are
+  // not. The refetch goes through the SAME adapter, so the redraw and the
+  // panel keep reading one parse.
+  if (def.refresh_ms && panel && hasAdapter(def.source)) {
+    startLayerRefresh(map, id, def.refresh_ms, async () => {
+      const { geo } = await adaptPanel(panel, args.ctx);
+      if (!geo) throw new Error(`layer ${def.id}: adapter 冇提供 geo 資料`);
+      return geo;
+    });
+  }
 }
 
 /** Public defibrillators, with a popup that answers the only question that matters.
@@ -632,6 +686,28 @@ function aedPopup(map: maplibregl.Map, layerId: string): void {
     new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
       .setLngLat(e.lngLat)
       .setHTML(`<div class="aed-pop">${rows.join("")}</div>`)
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+function carparkPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const t = String(p["updated"] ?? "");
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<div class="aed-pop"><b>${esc(p["name"])}</b>` +
+          `<div><span>${tc ? "私家車空位" : "Free car spaces"}</span> <b>${esc(p["vacancy"])}</b></div>` +
+          (t ? `<div><span>${tc ? "該場更新" : "Reported"}</span> ${esc(t)}</div>` : "") +
+          `</div>`,
+      )
       .addTo(map);
   });
   map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));

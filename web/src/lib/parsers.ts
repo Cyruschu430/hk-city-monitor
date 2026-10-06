@@ -894,6 +894,32 @@ export function parseCarpark(vacancyJson: unknown, infoJson: unknown, maxRows: n
   return rows.slice(0, maxRows);
 }
 
+/** The carpark POINT layer's view of the same rows the table panel shows.
+ *
+ *  A park with no usable coordinate pair is a table row and NOT a map dot:
+ *  defaulting to 0/0 would put it in the Atlantic, and a lone latitude is not a
+ *  position. `updated` is pre-formatted as HKT "MM-DD HH:mm" so the popup stays
+ *  dumb (it just prints properties), mirroring the table adapter's formatting.
+ */
+export function carparkToGeoJson(rows: CarparkRow[]): GeoJSON.FeatureCollection {
+  const fmt = (d: Date | null) => {
+    if (!d) return "";
+    const p = (n: number) => String(n).padStart(2, "0");
+    const h = new Date(d.getTime() + 8 * 3600_000);
+    return `${p(h.getUTCMonth() + 1)}-${p(h.getUTCDate())} ${p(h.getUTCHours())}:${p(h.getUTCMinutes())}`;
+  };
+  return {
+    type: "FeatureCollection",
+    features: rows
+      .filter((r) => r.lat !== null && r.lon !== null)
+      .map((r) => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [r.lon as number, r.lat as number] },
+        properties: { id: r.id, name: r.name, vacancy: r.vacancy, updated: fmt(r.updatedAt) },
+      })),
+  } as GeoJSON.FeatureCollection;
+}
+
 interface CarparkVacancyRec {
   park_id?: string;
   vehicle_type?: { type?: string; service_category?: { vacancy?: number; lastupdate?: string }[] }[];

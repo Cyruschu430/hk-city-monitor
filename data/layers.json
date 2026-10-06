@@ -255,6 +255,23 @@
       "_comment": "Reference geometry for the MTR: one LineString per heavy-rail line (plus the 落馬洲 / 康城 spurs), generated from data/mtr_stations.json by hand (see the file). `geom: line` draws through overlays.ts lineLayer with the official line colour carried per feature. OFF by default — it is a backdrop the reader turns on when they want to read the train layer against the network."
     },
     {
+      "id": "carpark_vacancy",
+      "source": "td_carpark_vacancy",
+      "render": "list",
+      "geom": "point",
+      "symbol": "parking",
+      "title": {
+        "tc": "停車場空位",
+        "en": "Car park vacancies"
+      },
+      "popup": "carpark_popup",
+      "filters": {
+        "scope": "hk"
+      },
+      "refresh_ms": 60000,
+      "_comment": "556 parks placed by TD's OWN basic_info_all coordinates (no geocoding — the position IS the publisher's), vacancy merged per park from vacancy_all.json by the same adapter the table panel reads, so the map and the panel cannot disagree. OFF by default; refresh_ms drives a generic 60s redraw loop in overlays.ts."
+    },
+    {
       "id": "vessels",
       "source": "vessel_api",
       "render": "list",

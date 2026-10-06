@@ -138,6 +138,11 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // Vessel positions (AIS via VesselAPI, 6-hourly snapshot) — the marine counterpart to the
   // aircraft layer, and the layer that replaces the withdrawn berth-vacancy polygon.
   { id: "vessels", label: { tc: "船位置", en: "Vessel positions" } },
+  // Car park vacancies — TD's own coordinates (556 parks) joined to the live
+  // vacancy feed by the table panel's adapter, drawn as the parking P glyph.
+  // OFF by default: a reader who wants a space turns it on, a reader who does
+  // not never pays for the 60s refresh.
+  { id: "carpark_vacancy", label: { tc: "停車場空位", en: "Car park vacancies" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its

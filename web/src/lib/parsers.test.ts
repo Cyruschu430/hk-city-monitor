@@ -309,6 +309,25 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
       `多車種場 ${multiType} 個（只用 P 種）· 有時間戳 ${timed.length}/${rows.length} · ` +
       `座標: 一對先算（半對→null）`,
   );
+
+  // 17b. carparkToGeoJson — the map layer's view of the same rows.
+  const fc = P.carparkToGeoJson(rows);
+  assert.equal(fc.type, "FeatureCollection");
+  // Every located row becomes a point; the synthetic no-coord rows stay in the
+  // table and OFF the map.
+  assert.equal(fc.features.length, rows.length, "all located rows drawn");
+  const first = fc.features[0] as GeoJSON.Feature<GeoJSON.Point, { id?: string; name?: string; vacancy?: number; updated?: string }>;
+  assert.equal(first.geometry.type, "Point");
+  const [lon, lat] = first.geometry.coordinates;
+  assert.ok(lat! > 22.0 && lat! < 22.7 && lon! > 113.7 && lon! < 114.6, "feature coordinates inside HK");
+  assert.equal(typeof first.properties!.id, "string");
+  assert.equal(typeof first.properties!.vacancy, "number");
+  // No-coordinate rows produce ZERO features between them.
+  const onlyNoCoord = P.carparkToGeoJson([...none, ...half]);
+  assert.equal(onlyNoCoord.features.length, 0, "parks without a pair are not drawn");
+  console.log(
+    `✓ 停車場圖層: ${fc.features.length} 個點（一對先算）；冇座標 0 點；properties 帶 id/name/vacancy/updated`,
+  );
 }
 
 // 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).

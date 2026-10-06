@@ -1,0 +1,214 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.20461100000011,
+     22.329522000000054
+    ]
+   },
+   "properties": {
+    "id": "DF3651",
+    "location_tc": "承啟道近德朗邨",
+    "location_en": "Shing Kai Road near Tak Long Estate",
+    "district_tc": "九龍城",
+    "district_en": "Kowloon City",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.17176100000006,
+     22.294541000000038
+    ]
+   },
+   "properties": {
+    "id": "DF0563",
+    "location_tc": "香港太空館",
+    "location_en": "Hong Kong Space Museum",
+    "district_tc": "油尖旺",
+    "district_en": "Yau Tsim Mong",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.17722200000003,
+     22.296461000000022
+    ]
+   },
+   "properties": {
+    "id": "DF4539",
+    "location_tc": "星光大道近香格里拉大酒店",
+    "location_en": "Avenue of Stars near Shangri-La",
+    "district_tc": "油尖旺",
+    "district_en": "Yau Tsim Mong",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.16001900000003,
+     22.282324000000074
+    ]
+   },
+   "properties": {
+    "id": "27996",
+    "location_tc": "干諾道中",
+    "location_en": "Connaught Road Central",
+    "district_tc": "中西區",
+    "district_en": "Central and Western",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.16844500000002,
+     22.29944100000006
+    ]
+   },
+   "properties": {
+    "id": "DF1508",
+    "location_tc": "廣東道近港威大廈",
+    "location_en": "Canton Road near The Gateway Tower",
+    "district_tc": "油尖旺",
+    "district_en": "Yau Tsim Mong",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.16924600000004,
+     22.29576700000007
+    ]
+   },
+   "properties": {
+    "id": "DF2004",
+    "location_tc": "廣東道近海洋中心",
+    "location_en": "Canton Road near Ocean Centre",
+    "district_tc": "油尖旺",
+    "district_en": "Yau Tsim Mong",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.23134100000004,
+     22.32615500000003
+    ]
+   },
+   "properties": {
+    "id": "DF5091",
+    "location_tc": "安健道",
+    "location_en": "ARQ - On Kin Road",
+    "district_tc": "觀塘",
+    "district_en": "Kwun Tong",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.23333000000002,
+     22.326370000000054
+    ]
+   },
+   "properties": {
+    "id": "DF5139",
+    "location_tc": "安禧街",
+    "location_en": "ARQ - On Hei Street",
+    "district_tc": "西貢",
+    "district_en": "Sai Kung",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.23731100000009,
+     22.32189100000005
+    ]
+   },
+   "properties": {
+    "id": "DF5176",
+    "location_tc": "安愉道",
+    "location_en": "ARQ - On Yu Road",
+    "district_tc": "西貢",
+    "district_en": "Sai Kung",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.16889000000003,
+     22.280860000000075
+    ]
+   },
+   "properties": {
+    "id": "27264",
+    "location_tc": "分域碼頭街",
+    "location_en": "Fenwick Pier Street",
+    "district_tc": "灣仔",
+    "district_en": "Wan Chai",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.16626000000008,
+     22.279800000000023
+    ]
+   },
+   "properties": {
+    "id": "38560",
+    "location_tc": "夏慤道近添美道",
+    "location_en": "Harcourt Road near Tim Mei Avenue",
+    "district_tc": "灣仔",
+    "district_en": "Wan Chai",
+    "measures": "NO / NO2 / PM25",
+    "website": "https://paqs.epd-asmg.gov.hk/tc/"
+   }
+  }
+ ]
+}

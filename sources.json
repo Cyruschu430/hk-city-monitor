@@ -3294,6 +3294,34 @@
    "cost": "free"
   },
   {
+   "id": "td_speed_map_panels_v2",
+   "group": "transport",
+   "name": "運輸署 速度圖板（第二代）",
+   "name_en": "TD Speed Map Panels (2nd Generation)",
+   "type": "geojson",
+   "url": "data/speed_panels.geojson",
+   "auth": "none",
+   "cadence": "live",
+   "notes": "The v2 dataset is IMAGES, not text notifications: five boards across the New Territories, each a live PNG of the panel's current display (the board's message changes server-side; the URL does not). Built by scripts/build_speed_panels.py from the official locations CSV — https image URLs, WGS84. The panel adapter renders the five boards as a live image wall with a ?t= cache-buster.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free"
+  },
+  {
+   "id": "epd_smart_lampposts",
+   "group": "civic",
+   "name": "環保署 智慧燈柱空氣質素站",
+   "name_en": "EPD Smart Lamppost Air-Quality Stations",
+   "type": "geojson",
+   "url": "data/smart_lampposts.geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "The 11 CSDI smart-lamppost air-quality stations (epd_rcd_1631501732991_89126): official geometry, district, measured species (NO/NO2/PM2.5). Built by scripts/build_smart_lampposts.py. The per-lamppost readings API (LamppostAPI) returned no records at the documented shape on 2026-10-06, so this is a reference layer/panel — WHERE they are and WHAT they measure, never fake live values.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free"
+  },
+  {
    "id": "td_detector_avg_speed",
    "group": "transport",
    "name": "運輸署 交通探測器 平均車速",

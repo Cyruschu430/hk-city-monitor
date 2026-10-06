@@ -1018,6 +1018,52 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async td_speed_map_panels_v2(src) {
+    // The five 2nd-gen speed map panels are LIVE IMAGES, not text: the dataset
+    // ships a PNG per board of its current display (the board changes
+    // server-side, the URL does not). The build script snapshotted the https
+    // image URLs; the ?t= busts the browser cache so each refresh fetches the
+    // board as it reads NOW.
+    const fc = (await json(await get(src))) as GeoJSON.FeatureCollection;
+    const tc = lang() === "tc";
+    const images = (fc.features ?? []).map((f) => {
+      const p = (f.properties ?? {}) as Record<string, unknown>;
+      const url = tc ? String(p["url_tc"] ?? p["url_en"] ?? "") : String(p["url_en"] ?? "");
+      return { id: String(p["id"] ?? ""), name: String(p["name_en"] ?? ""), src: `${url}?t=${Date.now()}` };
+    });
+    return {
+      data: { kind: "image_wall", images },
+      observedAt: new Date(),
+    };
+  },
+
+  async epd_smart_lampposts(src) {
+    // The 11 EPD smart-lamppost air-quality stations: WHERE they are and WHAT
+    // they measure. The per-lamppost readings API returned no records on
+    // 2026-10-06, so this is reference data — never fake live values.
+    const fc = (await json(await get(src))) as GeoJSON.FeatureCollection;
+    const tc = lang() === "tc";
+    const rows: string[][] = [];
+    for (const f of fc.features ?? []) {
+      const p = (f.properties ?? {}) as Record<string, unknown>;
+      rows.push([
+        String(p["id"] ?? ""),
+        tc ? String(p["location_tc"] ?? "") : String(p["location_en"] ?? ""),
+        tc ? String(p["district_tc"] ?? "") : String(p["district_en"] ?? ""),
+        String(p["measures"] ?? ""),
+      ]);
+    }
+    return {
+      data: {
+        kind: "table",
+        columns: [tc ? "燈柱" : "Lamppost", tc ? "位置" : "Location", tc ? "地區" : "District", tc ? "監測項目" : "Measures"],
+        rows,
+      },
+      observedAt: new Date(),
+      state: { records: rows.length },
+    };
+  },
+
   async td_carpark_vacancy(src, panel, ctx) {
     const max = Number(panel.params?.["max_rows"] ?? 10);
     const infoSrc = ctx.registry.byId.get("td_carpark_info");

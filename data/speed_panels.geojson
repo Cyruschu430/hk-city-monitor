@@ -1,0 +1,90 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.207348,
+     22.40479702
+    ]
+   },
+   "properties": {
+    "id": "sj1",
+    "name_en": "Tai Po Road southbound near Sha Tin Racecourse",
+    "url_en": "https://resource.data.one.gov.hk/td/jss/sj1.en.png",
+    "url_tc": "https://resource.data.one.gov.hk/td/jss/sj1.tc.png",
+    "url_sc": "https://resource.data.one.gov.hk/td/jss/sj1.sc.png"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2105939,
+     22.38975779
+    ]
+   },
+   "properties": {
+    "id": "sj2",
+    "name_en": "Tate's Cairn Highway southbound near Shek Mun",
+    "url_en": "https://resource.data.one.gov.hk/td/jss/sj2.en.png",
+    "url_tc": "https://resource.data.one.gov.hk/td/jss/sj2.tc.png",
+    "url_sc": "https://resource.data.one.gov.hk/td/jss/sj2.sc.png"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2069726,
+     22.42697579
+    ]
+   },
+   "properties": {
+    "id": "sj3",
+    "name_en": "Tolo Highway southbound near the Science Park",
+    "url_en": "https://resource.data.one.gov.hk/td/jss/sj3.en.png",
+    "url_tc": "https://resource.data.one.gov.hk/td/jss/sj3.tc.png",
+    "url_sc": "https://resource.data.one.gov.hk/td/jss/sj3.sc.png"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0537105,
+     22.46410683
+    ]
+   },
+   "properties": {
+    "id": "sj4",
+    "name_en": "San Tin Highway near Fairview Park",
+    "url_en": "https://resource.data.one.gov.hk/td/jss/sj4.en.png",
+    "url_tc": "https://resource.data.one.gov.hk/td/jss/sj4.tc.png",
+    "url_sc": "https://resource.data.one.gov.hk/td/jss/sj4.sc.png"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.9772266,
+     22.40107577
+    ]
+   },
+   "properties": {
+    "id": "sj5",
+    "name_en": "Tuen Mun Road near Tseng Choi Street",
+    "url_en": "https://resource.data.one.gov.hk/td/jss/sj5.en.png",
+    "url_tc": "https://resource.data.one.gov.hk/td/jss/sj5.tc.png",
+    "url_sc": "https://resource.data.one.gov.hk/td/jss/sj5.sc.png"
+   }
+  }
+ ]
+}

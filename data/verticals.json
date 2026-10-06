@@ -180,6 +180,7 @@
     "mtr_trains",
     "carpark_vacancy_list",
     "sensor_parking_occupancy",
+    "speed_panels_wall",
     "crossboundary_ferry_table"
     ],
     "layers": [
@@ -194,6 +195,7 @@
     "mtr_trains",
     "carpark_vacancy_list",
     "sensor_parking_occupancy",
+    "speed_panels_wall",
     "crossboundary_ferry_table"
     ]
     },
@@ -311,9 +313,10 @@
     "stations_status",
     "aqhi_gauge_grid",
     "carpark_vacancy_list",
+    "smart_lamppost_list",
     "breaking_news_list"
-   ],
-   "layers": [
+    ],
+    "layers": [
     "water_suspension",
     "water_suspension_districts",
     "aed_locations"
@@ -325,9 +328,10 @@
     "stations_status",
     "aqhi_gauge_grid",
     "carpark_vacancy_list",
+    "smart_lamppost_list",
     "breaking_news_list"
-   ]
-  },
+    ]
+    },
   {
    "id": "live",
    "name": {

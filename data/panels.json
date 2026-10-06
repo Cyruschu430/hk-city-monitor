@@ -379,6 +379,32 @@
    }
   },
   {
+   "id": "speed_panels_wall",
+   "source": "td_speed_map_panels_v2",
+   "render": "image_wall",
+   "title": {
+    "tc": "速度圖板（即時顯示）",
+    "en": "Speed map panels (live)"
+   },
+   "cadence_note": {
+    "tc": "即時影像",
+    "en": "Live images"
+   }
+  },
+  {
+   "id": "smart_lamppost_list",
+   "source": "epd_smart_lampposts",
+   "render": "table",
+   "title": {
+    "tc": "智慧燈柱空氣質素站",
+    "en": "Smart lamppost AQ stations"
+   },
+   "cadence_note": {
+    "tc": "參考位置",
+    "en": "Reference"
+   }
+  },
+  {
    "id": "wind_status",
    "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
    "render": "status_grid",

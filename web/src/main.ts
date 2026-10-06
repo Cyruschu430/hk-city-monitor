@@ -154,7 +154,8 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // grade merged by the beach_grading_list panel's adapter. OFF by default.
   { id: "beach_grading", label: { tc: "泳灘水質", en: "Beach water quality" } },
   // 167 AFCD hiking trails (CSDI, official) — green dashed linework, the look
-  // Cyrus asked for. ON by default: this is the layer people come for.
+  // Cyrus asked for. OFF by default: every new layer ships OFF so a problem in
+  // one cannot touch everyone on load (Cyrus's standing rule for additions).
   { id: "hiking_trails", label: { tc: "行山徑", en: "Hiking trails" } },
   // 855 MTR feeder-bus stops with LIVE per-stop ETAs (POST per route, 5-min
   // cadence). OFF by default — a dense dot field.

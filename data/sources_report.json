@@ -1,5 +1,5 @@
 {
- "probed_at": "2026-10-06T08:29:10+0800",
+ "probed_at": "2026-10-06T20:18:34+0800",
  "results": [
   {
    "id": "td_camera_list",
@@ -16,7 +16,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 268098,
-   "ms": 207,
+   "ms": 113,
    "shape": "CSV ~1013 rows, cols: key, region, district, description, easting, northing",
    "tried": []
   },
@@ -34,9 +34,9 @@
    "working_url": "https://tdcctv.data.one.gov.hk/H109F.JPG",
    "http_status": 200,
    "content_type": "image/jpeg",
-   "bytes": 31770,
-   "ms": 134,
-   "shape": "image 31770B",
+   "bytes": 29599,
+   "ms": 215,
+   "shape": "image 29599B",
    "tried": []
   },
   {
@@ -53,9 +53,9 @@
    "working_url": "https://www.hko.gov.hk/wxinfo/aws/hko_mica/hko/latest_HD_HKO.jpg",
    "http_status": 200,
    "content_type": "image/jpeg",
-   "bytes": 332988,
-   "ms": 6471,
-   "shape": "image 332988B",
+   "bytes": 584624,
+   "ms": 325,
+   "shape": "image 584624B",
    "tried": []
   },
   {
@@ -73,7 +73,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 38946,
-   "ms": 1920,
+   "ms": 2163,
    "shape": "HTML page — title: Regional Weather in Hong Kong - Latest Weather Photo｜Hong Ko",
    "tried": []
   },
@@ -92,7 +92,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 2,
-   "ms": 1693,
+   "ms": 1396,
    "shape": "JSON object, keys: ",
    "tried": []
   },
@@ -111,7 +111,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 2,
-   "ms": 1234,
+   "ms": 1440,
    "shape": "JSON object, keys: ",
    "tried": []
   },
@@ -129,8 +129,8 @@
    "working_url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 2791,
-   "ms": 117,
+   "bytes": 2705,
+   "ms": 1139,
    "shape": "JSON object, keys: rainfall, warningMessage, icon, iconUpdateTime, uvindex, updateTime",
    "tried": []
   },
@@ -148,8 +148,8 @@
    "working_url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 3873,
-   "ms": 2046,
+   "bytes": 3839,
+   "ms": 120,
    "shape": "JSON object, keys: generalSituation, weatherForecast, updateTime, seaTemp, soilTemp",
    "tried": []
   },
@@ -168,7 +168,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 10,
-   "ms": 1126,
+   "ms": 1077,
    "shape": "JSON object, keys: swt",
    "tried": []
   },
@@ -187,7 +187,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 66031,
-   "ms": 1686,
+   "ms": 194,
    "shape": "JSON object, keys: fields, data",
    "tried": []
   },
@@ -206,7 +206,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 1154,
-   "ms": 117,
+   "ms": 1201,
    "shape": "JSON object, keys: HKOReadingsAccumRainfall, HKOReadingsAvgRainfall, HKOReadingsMaxRH, HKOReadingsMaxTemp, HKOReadingsMinGrassTemp, HKOReadingsMinRH",
    "tried": []
   },
@@ -225,7 +225,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 149,
-   "ms": 1519,
+   "ms": 780,
    "shape": "JSON object, keys: lat, lon, mag, region, ptime, updateTime",
    "tried": []
   },
@@ -309,7 +309,7 @@
    "working_url": "https://resource.data.one.gov.hk/td/tc/specialtrafficnews.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 31286,
+   "bytes": 33540,
    "ms": 49,
    "shape": "XML, 0 <item> entries, root tags: body, message, msgID, CurrentStatus, ChinText",
    "tried": []
@@ -329,7 +329,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 3445,
-   "ms": 14,
+   "ms": 127,
    "shape": "JSON array, 6 items",
    "tried": []
   },
@@ -347,8 +347,8 @@
    "working_url": "https://resource.data.one.gov.hk/td/carpark/vacancy_all.json",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 121072,
-   "ms": 32,
+   "bytes": 121056,
+   "ms": 65,
    "shape": "JSON object, keys: car_park",
    "tried": []
   },
@@ -367,7 +367,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 423911,
-   "ms": 745,
+   "ms": 1150,
    "shape": "JSON object, keys: results",
    "tried": []
   },
@@ -404,7 +404,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 70883,
-   "ms": 19,
+   "ms": 316,
    "shape": "HTML page — title: 口岸通",
    "tried": []
   },
@@ -423,7 +423,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 3495,
-   "ms": 331,
+   "ms": 177,
    "shape": "HTML page — title: HKeMobility",
    "tried": []
   },
@@ -442,7 +442,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 19134,
-   "ms": 18,
+   "ms": 173,
    "shape": "HTML page — title: 出入境管制站地點 | 入境事務處",
    "tried": []
   },
@@ -491,7 +491,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 903438,
-   "ms": 286,
+   "ms": 389,
    "shape": "JSON array, 629 items",
    "tried": []
   },
@@ -510,7 +510,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 13616,
-   "ms": 36,
+   "ms": 197,
    "shape": "CSV ~262 rows, cols: 年份, 設施, 場地, 使用率, 地區, 備註",
    "tried": []
   },
@@ -529,7 +529,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 301803,
-   "ms": 332,
+   "ms": 1905,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -548,7 +548,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 15520,
-   "ms": 128,
+   "ms": 162,
    "shape": "JSON object, keys: vcalendar",
    "tried": []
   },
@@ -566,8 +566,8 @@
    "working_url": "https://www.info.gov.hk/gia/rss/general_zh.xml",
    "http_status": 200,
    "content_type": "application/xml",
-   "bytes": 318402,
-   "ms": 222,
+   "bytes": 323117,
+   "ms": 47,
    "shape": "XML, 100 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -586,7 +586,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 17313,
-   "ms": 471,
+   "ms": 455,
    "shape": "HTML page — title: 新聞公報 | 香港消防處",
    "tried": []
   },
@@ -604,8 +604,8 @@
    "working_url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EHSI?interval=1d&range=1d",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 1280,
-   "ms": 25,
+   "bytes": 1283,
+   "ms": 49,
    "shape": "JSON object, keys: chart",
    "tried": []
   },
@@ -624,7 +624,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 70431,
-   "ms": 83,
+   "ms": 18,
    "shape": "JSON object, keys: version, name, metadata, sources, sprite, glyphs",
    "tried": []
   },
@@ -643,7 +643,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 58128,
-   "ms": 254,
+   "ms": 238,
    "shape": "JSON object, keys: type, name, features",
    "tried": []
   },
@@ -662,7 +662,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 683,
-   "ms": 353,
+   "ms": 339,
    "shape": "JSON object, keys: RequestAddress, SuggestedAddress",
    "tried": []
   },
@@ -681,7 +681,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 310,
-   "ms": 807,
+   "ms": 781,
    "shape": "JSON object, keys: type, metadata, features",
    "tried": []
   },
@@ -700,7 +700,7 @@
    "http_status": 200,
    "content_type": "application/rss+xml",
    "bytes": 53,
-   "ms": 952,
+   "ms": 3685,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -719,7 +719,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 1676,
-   "ms": 685,
+   "ms": 718,
    "shape": "JSON object, keys: latitude, longitude, generationtime_ms, utc_offset_seconds, timezone, timezone_abbreviation",
    "tried": []
   },
@@ -753,7 +753,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 69319,
-   "ms": 955,
+   "ms": 627,
    "shape": "HTML page — title: 今日折扣及優惠 - 消費者委員會油價資訊通",
    "tried": []
   },
@@ -772,7 +772,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 264630,
-   "ms": 444,
+   "ms": 284,
    "shape": "HTML page — title: 搜尋貨品",
    "tried": []
   },
@@ -790,8 +790,8 @@
    "working_url": "https://www.consumer.org.hk/tc/price-comparison-tools/infant-formula-price-survey",
    "http_status": 200,
    "content_type": "text/html",
-   "bytes": 94091,
-   "ms": 274,
+   "bytes": 94115,
+   "ms": 301,
    "shape": "HTML page — title: 嬰幼兒配方奶粉價格調查 | 消費者委員會",
    "tried": []
   },
@@ -810,7 +810,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 69292,
-   "ms": 1142,
+   "ms": 313,
    "shape": "CSV ~1746 rows, cols: ",
    "tried": []
   },
@@ -829,7 +829,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 1272,
-   "ms": 21,
+   "ms": 80,
    "shape": "CSV ~77 rows, cols: ROUTE_ID, ROUTE_SEQ, CHANGE",
    "tried": []
   },
@@ -848,7 +848,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 4194304,
-   "ms": 2764,
+   "ms": 3018,
    "shape": "large json response, truncated at the 4MB probe cap — reachable, payload not parsed",
    "tried": []
   },
@@ -867,7 +867,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 2086996,
-   "ms": 390,
+   "ms": 347,
    "shape": "XML, 0 <item> entries, root tags: events, event, titlec, titlee, cat1",
    "tried": []
   },
@@ -886,7 +886,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 1748835,
-   "ms": 274,
+   "ms": 339,
    "shape": "XML, 0 <item> entries, root tags: event_dates, event, indate",
    "tried": []
   },
@@ -905,7 +905,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 37767,
-   "ms": 96,
+   "ms": 273,
    "shape": "XML, 0 <item> entries, root tags: venues, venue, venuec, venuee, latitude",
    "tried": []
   },
@@ -924,7 +924,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 623110,
-   "ms": 250,
+   "ms": 344,
    "shape": "JSON array, 629 items",
    "tried": []
   },
@@ -943,7 +943,7 @@
    "http_status": 200,
    "content_type": "application/xml",
    "bytes": 548689,
-   "ms": 427,
+   "ms": 1435,
    "shape": "XML, 0 <item> entries, root tags: BATCH, SEND_DATE, SYSTEM, TOTAL, EVENTS",
    "tried": []
   },
@@ -962,7 +962,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 172149,
-   "ms": 294,
+   "ms": 290,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -981,7 +981,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 60500,
-   "ms": 1735,
+   "ms": 1624,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1000,7 +1000,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 145444,
-   "ms": 283,
+   "ms": 319,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1019,7 +1019,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 396102,
-   "ms": 1569,
+   "ms": 1345,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1038,7 +1038,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 189057,
-   "ms": 343,
+   "ms": 302,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1057,7 +1057,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 15584,
-   "ms": 1147,
+   "ms": 1964,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1076,7 +1076,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 138525,
-   "ms": 1684,
+   "ms": 1053,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1095,7 +1095,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 2573,
-   "ms": 1260,
+   "ms": 1023,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1114,7 +1114,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 53264,
-   "ms": 1616,
+   "ms": 1266,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1133,7 +1133,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 9321,
-   "ms": 182,
+   "ms": 1262,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1151,8 +1151,8 @@
    "working_url": "https://www.news.gov.hk/tc/categories/law_order/html/articlelist.rss.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 49750,
-   "ms": 329,
+   "bytes": 47831,
+   "ms": 367,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -1171,7 +1171,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 8985,
-   "ms": 1089,
+   "ms": 990,
    "shape": "JSON array, 27 items",
    "tried": []
   },
@@ -1189,8 +1189,8 @@
    "working_url": "https://www.aqhi.gov.hk/epd/ddata/html/out/aqhi_ind_rss_Eng.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 7157,
-   "ms": 120,
+   "bytes": 7242,
+   "ms": 126,
    "shape": "XML, 18 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -1208,8 +1208,8 @@
    "working_url": "https://www.aqhi.gov.hk/js/data/past_24_pollutant.js",
    "http_status": 200,
    "content_type": "application/javascript",
-   "bytes": 224062,
-   "ms": 290,
+   "bytes": 224103,
+   "ms": 264,
    "shape": "JavaScript data file, `station_24_data` = (strip the prefix, then JSON)",
    "tried": []
   },
@@ -1227,7 +1227,7 @@
    "working_url": "https://www.aqhi.gov.hk/js/data/forecast_aqhi.js",
    "http_status": 200,
    "content_type": "application/javascript",
-   "bytes": 5523,
+   "bytes": 5579,
    "ms": 127,
    "shape": "JavaScript data file, `aqhi_report` = (strip the prefix, then JSON)",
    "tried": []
@@ -1247,7 +1247,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 7384,
-   "ms": 19,
+   "ms": 220,
    "shape": "JSON object, keys: updateDate, cpInfoList, otherInfo, remark",
    "tried": []
   },
@@ -1265,8 +1265,8 @@
    "working_url": "https://data.etabus.gov.hk/v1/transport/kmb/eta/18492910339410B1/1/1",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 1818,
-   "ms": 54,
+   "bytes": 1781,
+   "ms": 56,
    "shape": "JSON object, keys: type, version, generated_timestamp, data",
    "tried": []
   },
@@ -1284,8 +1284,8 @@
    "working_url": "https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=ADM",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 1028,
-   "ms": 200,
+   "bytes": 1030,
+   "ms": 502,
    "shape": "JSON object, keys: sys_time, curr_time, data, isdelay, status, message",
    "tried": []
   },
@@ -1303,8 +1303,8 @@
    "working_url": "https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=ADM",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 1028,
-   "ms": 21,
+   "bytes": 1030,
+   "ms": 119,
    "shape": "JSON object, keys: sys_time, curr_time, data, isdelay, status, message",
    "tried": []
   },
@@ -1338,7 +1338,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 209291,
-   "ms": 625,
+   "ms": 698,
    "shape": "JSON array, 4 items",
    "tried": []
   },
@@ -1375,7 +1375,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 669,
-   "ms": 684,
+   "ms": 693,
    "shape": "JSON object, keys: response",
    "tried": []
   },
@@ -1394,7 +1394,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 2886,
-   "ms": 19,
+   "ms": 191,
    "shape": "CSV ~14 rows, cols: PRIVATE  DOMESTIC  -  AVERAGE  RENTS  BY  CLASS [ANNUAL[86-98]], , , , , ",
    "tried": []
   },
@@ -1413,7 +1413,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 9131,
-   "ms": 17,
+   "ms": 208,
    "shape": "JSON array, 44 items",
    "tried": []
   },
@@ -1432,7 +1432,7 @@
    "http_status": 200,
    "content_type": "application/xml",
    "bytes": 4655,
-   "ms": 56,
+   "ms": 64,
    "shape": "XML, 10 <item> entries, root tags: rss, channel, title, image, url",
    "tried": []
   },
@@ -1451,7 +1451,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 18767,
-   "ms": 62,
+   "ms": 61,
    "shape": "HTML page — title: 統計表",
    "tried": []
   },
@@ -1470,7 +1470,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 18335,
-   "ms": 60,
+   "ms": 70,
    "shape": "HTML page — title: 住戶",
    "tried": []
   },
@@ -1488,8 +1488,8 @@
    "working_url": "https://hk.centanet.com/info/property-news/",
    "http_status": 200,
    "content_type": "text/html",
-   "bytes": 374551,
-   "ms": 867,
+   "bytes": 365199,
+   "ms": 722,
    "shape": "HTML page — title: 地產新聞資訊 | 中原地產",
    "tried": []
   },
@@ -1508,7 +1508,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 58,
-   "ms": 120,
+   "ms": 328,
    "shape": "JSON object, keys: LunarYear, LunarDate",
    "tried": []
   },
@@ -1527,7 +1527,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 10614,
-   "ms": 1582,
+   "ms": 124,
    "shape": "CSV ~365 rows, cols: YYYY-MM-DD, RISE, TRAN., SET",
    "tried": []
   },
@@ -1546,7 +1546,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 3205,
-   "ms": 114,
+   "ms": 141,
    "shape": "CSV ~100 rows, cols: Date time, Automatic Weather Station, 60-minute mean Wet Bulb Globe Temperature (WBGT)",
    "tried": []
   },
@@ -1565,7 +1565,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 2694110,
-   "ms": 15200,
+   "ms": 373,
    "shape": "CSV ~58564 rows, cols: Updated Date and Time (in Hong Kong Time), Ending Date and Time (in Hong Kong Time), Latitude (degree), Longitude (degree), Half-hourly Nowcast Accumulated Rainfall (mm)",
    "tried": []
   },
@@ -1584,7 +1584,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 92449,
-   "ms": 1340,
+   "ms": 3385,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1603,7 +1603,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 14151,
-   "ms": 116,
+   "ms": 141,
    "shape": "JSON array, 71 items",
    "tried": []
   },
@@ -1622,7 +1622,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 84,
-   "ms": 1133,
+   "ms": 134,
    "shape": "XML, 0 <item> entries, root tags: TropicalCycloneList",
    "tried": []
   },
@@ -1641,7 +1641,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 34967,
-   "ms": 1614,
+   "ms": 194,
    "shape": "CSV ~655 rows, cols: Tropical Cyclone Best Track Data (post analysis)",
    "tried": []
   },
@@ -1660,7 +1660,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 485,
-   "ms": 19,
+   "ms": 18,
    "shape": "JSON object, keys: HYW, HZM, LMC, LSC, LWS, MKT",
    "tried": []
   },
@@ -1678,8 +1678,8 @@
    "working_url": "https://www.ha.org.hk/opendata/aed/aedwtdata2-tc.json",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 3667,
-   "ms": 218,
+   "bytes": 3721,
+   "ms": 263,
    "shape": "JSON object, keys: waitTime, updateTime",
    "tried": []
   },
@@ -1697,9 +1697,9 @@
    "working_url": "https://www.esd.wsd.gov.hk/wsms_open_data/WSMS_OPEN_DATA(all).csv",
    "http_status": 200,
    "content_type": "application/octet-stream",
-   "bytes": 29283,
-   "ms": 959,
-   "shape": "CSV ~103 rows, cols: SUSPENSION_ID|WATER_TYPE_DESCRIPTION|WATER_TYPE_DESCRIPTION_ZHT|DISTRICT_ENG|DISTRICT_ZHT|NATURE_DESCRIPTION|NATURE_DESCRIPTION_ZHT|SUSPENSION_DATE_TIME|ACTUAL_RESUMPTION_DATE_TIME|LONG_ADDRESS|LONG_ADDRESS_ZHT|CAUSE|CAUSE_ZHT|STATUS|STATUS_ZHT",
+   "bytes": 38512,
+   "ms": 962,
+   "shape": "CSV ~137 rows, cols: SUSPENSION_ID|WATER_TYPE_DESCRIPTION|WATER_TYPE_DESCRIPTION_ZHT|DISTRICT_ENG|DISTRICT_ZHT|NATURE_DESCRIPTION|NATURE_DESCRIPTION_ZHT|SUSPENSION_DATE_TIME|ACTUAL_RESUMPTION_DATE_TIME|LONG_ADDRESS|LONG_ADDRESS_ZHT|CAUSE|CAUSE_ZHT|STATUS|STATUS_ZHT",
    "tried": []
   },
   {
@@ -1717,7 +1717,7 @@
    "http_status": 200,
    "content_type": "application/geo+json",
    "bytes": 706100,
-   "ms": 1172,
+   "ms": 1729,
    "shape": "JSON object, keys: type, features",
    "tried": []
   },
@@ -1735,8 +1735,8 @@
    "working_url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EHSI?interval=1d&range=1d",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 1280,
-   "ms": 30,
+   "bytes": 1283,
+   "ms": 26,
    "shape": "JSON object, keys: chart",
    "tried": []
   },
@@ -1770,7 +1770,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 4194304,
-   "ms": 2661,
+   "ms": 3500,
    "shape": "large json response, truncated at the 4MB probe cap — reachable, payload not parsed",
    "tried": []
   },
@@ -1789,7 +1789,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 3450,
-   "ms": 20,
+   "ms": 28,
    "shape": "CSV ~57 rows, cols: 抵達時間|出發地|營運公司|碼頭|泊位|現況",
    "tried": []
   },
@@ -1808,7 +1808,7 @@
    "http_status": 200,
    "content_type": "application/xml",
    "bytes": 673830,
-   "ms": 44,
+   "ms": 96,
    "shape": "XML, 0 <item> entries, root tags: RN0010, G_SQL1, VESSEL_NAME, SHIP_TYPE_DESC, LIC_MD_REF",
    "tried": []
   },
@@ -1827,7 +1827,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 761,
-   "ms": 119,
+   "ms": 112,
    "shape": "JSON object, keys: type, version, generated_timestamp, data",
    "tried": []
   },
@@ -1864,7 +1864,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 1325,
-   "ms": 873,
+   "ms": 457,
    "shape": "JSON object, keys: type, version, generated_timestamp, data",
    "tried": []
   },
@@ -1897,8 +1897,8 @@
    "working_url": "https://dashboard.data.gov.hk/api/aqhi-individual?format=json",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 1621,
-   "ms": 176,
+   "bytes": 1706,
+   "ms": 136,
    "shape": "JSON array, 18 items",
    "tried": []
   },
@@ -1917,7 +1917,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 3192,
-   "ms": 1769,
+   "ms": 119,
    "shape": "CSV ~100 rows, cols: Date time, Automatic Weather Station, 10 minute mean Hong Kong Heat Index",
    "tried": []
   },
@@ -1935,8 +1935,8 @@
    "working_url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature.csv",
    "http_status": 200,
    "content_type": "application/octet-stream",
-   "bytes": 1256,
-   "ms": 910,
+   "bytes": 1257,
+   "ms": 256,
    "shape": "CSV ~39 rows, cols: Date time, Automatic Weather Station, Air Temperature(degree Celsius)",
    "tried": []
   },
@@ -1955,7 +1955,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 12025,
-   "ms": 44,
+   "ms": 267,
    "shape": "JSON array, 57 items",
    "tried": []
   },
@@ -1974,7 +1974,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 141381,
-   "ms": 275,
+   "ms": 1809,
    "shape": "JSON object, keys: value",
    "tried": []
   },
@@ -1993,7 +1993,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 198,
-   "ms": 110,
+   "ms": 73,
    "shape": "JSON object, keys: value",
    "tried": []
   },
@@ -2012,7 +2012,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 193,
-   "ms": 66,
+   "ms": 23,
    "shape": "JSON object, keys: value",
    "tried": []
   },
@@ -2031,7 +2031,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 18797,
-   "ms": 1097,
+   "ms": 213,
    "shape": "JSON object, keys: routes",
    "tried": []
   },
@@ -2050,7 +2050,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 18797,
-   "ms": 19,
+   "ms": 18,
    "shape": "JSON object, keys: routes",
    "tried": []
   },
@@ -2068,7 +2068,7 @@
    "working_url": "https://resource.data.one.gov.hk/td/en/specialtrafficnews.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 30214,
+   "bytes": 33540,
    "ms": 51,
    "shape": "XML, 0 <item> entries, root tags: body, message, msgID, CurrentStatus, ChinText",
    "tried": []
@@ -2087,8 +2087,8 @@
    "working_url": "https://www.td.gov.hk/tc/special_news/trafficnews.xml",
    "http_status": 200,
    "content_type": "application/xml",
-   "bytes": 1556,
-   "ms": 23,
+   "bytes": 1454,
+   "ms": 26,
    "shape": "XML, 0 <item> entries, root tags: list, message, INCIDENT_NUMBER, INCIDENT_HEADING_EN, INCIDENT_HEADING_CN",
    "tried": []
   },
@@ -2107,7 +2107,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 292,
-   "ms": 17,
+   "ms": 351,
    "shape": "JSON object, keys: type, version, generated_timestamp , data",
    "tried": []
   },
@@ -2144,7 +2144,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 2694123,
-   "ms": 18144,
+   "ms": 367,
    "shape": "2694123B of application/octet-stream",
    "tried": []
   },
@@ -2163,7 +2163,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 56,
-   "ms": 998,
+   "ms": 120,
    "shape": "56B of application/octet-stream",
    "tried": []
   },
@@ -2182,7 +2182,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 256,
-   "ms": 1142,
+   "ms": 118,
    "shape": "256B of application/octet-stream",
    "tried": []
   },
@@ -2201,7 +2201,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 6306,
-   "ms": 2209,
+   "ms": 726,
    "shape": "JSON object, keys: obsTime, hourlyRainfall",
    "tried": []
   },
@@ -2219,9 +2219,9 @@
    "working_url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_past24_temperature_diff.csv",
    "http_status": 200,
    "content_type": "application/octet-stream",
-   "bytes": 1276,
-   "ms": 807,
-   "shape": "1276B of application/octet-stream",
+   "bytes": 1275,
+   "ms": 116,
+   "shape": "1275B of application/octet-stream",
    "tried": []
   },
   {
@@ -2238,9 +2238,9 @@
    "working_url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_solar.csv",
    "http_status": 200,
    "content_type": "application/octet-stream",
-   "bytes": 240,
-   "ms": 623,
-   "shape": "240B of application/octet-stream",
+   "bytes": 232,
+   "ms": 1004,
+   "shape": "232B of application/octet-stream",
    "tried": []
   },
   {
@@ -2257,9 +2257,9 @@
    "working_url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_grass.csv",
    "http_status": 200,
    "content_type": "application/octet-stream",
-   "bytes": 148,
-   "ms": 637,
-   "shape": "148B of application/octet-stream",
+   "bytes": 160,
+   "ms": 121,
+   "shape": "160B of application/octet-stream",
    "tried": []
   },
   {
@@ -2277,7 +2277,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 792,
-   "ms": 450,
+   "ms": 768,
    "shape": "792B of application/octet-stream",
    "tried": []
   },
@@ -2296,7 +2296,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 444,
-   "ms": 598,
+   "ms": 854,
    "shape": "444B of application/octet-stream",
    "tried": []
   },
@@ -2315,7 +2315,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 197,
-   "ms": 121,
+   "ms": 1653,
    "shape": "197B of text/csv",
    "tried": []
   },
@@ -2333,9 +2333,9 @@
    "working_url": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv",
    "http_status": 200,
    "content_type": "application/octet-stream",
-   "bytes": 1286,
-   "ms": 631,
-   "shape": "1286B of application/octet-stream",
+   "bytes": 1273,
+   "ms": 116,
+   "shape": "1273B of application/octet-stream",
    "tried": []
   },
   {
@@ -2353,7 +2353,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 1526,
-   "ms": 694,
+   "ms": 757,
    "shape": "1526B of application/octet-stream",
    "tried": []
   },
@@ -2372,7 +2372,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 607719,
-   "ms": 164,
+   "ms": 304,
    "shape": "607719B of text/csv",
    "tried": []
   },
@@ -2390,8 +2390,8 @@
    "working_url": "https://sls.hkpl.gov.hk/api/cfm-admin-service/open-api/library/selectLibraryPageInfoForPSI?language=en-US",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 31033,
-   "ms": 103,
+   "bytes": 10754,
+   "ms": 283,
    "shape": "JSON array, 30 items",
    "tried": []
   },
@@ -2410,7 +2410,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 3130633,
-   "ms": 2548,
+   "ms": 2383,
    "shape": "JSON array, 4800 items",
    "tried": []
   },
@@ -2428,9 +2428,9 @@
    "working_url": "https://tide1.hydro.gov.hk/hotide/OpenData/All_tc.csv",
    "http_status": 200,
    "content_type": "text/csv",
-   "bytes": 197,
-   "ms": 1968,
-   "shape": "197B of text/csv",
+   "bytes": 193,
+   "ms": 1966,
+   "shape": "193B of text/csv",
    "tried": []
   },
   {
@@ -2447,8 +2447,8 @@
    "working_url": "https://www.mardep.gov.hk/e_files/en/opendata/RP05005i.XML",
    "http_status": 200,
    "content_type": "application/xml",
-   "bytes": 33969,
-   "ms": 16,
+   "bytes": 34900,
+   "ms": 20,
    "shape": "XML, 0 <item> entries, root tags: RP05005IXML, G_SQL1, CALL_SIGN, VESSEL_NAME, SHIP_TYPE",
    "tried": []
   },
@@ -2467,7 +2467,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 4194304,
-   "ms": 50,
+   "ms": 69,
    "shape": "large dataset response, truncated at the 4MB probe cap — reachable, payload not parsed",
    "tried": []
   },
@@ -2486,7 +2486,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 70,
-   "ms": 194,
+   "ms": 89,
    "shape": "70B of text/csv",
    "tried": []
   },
@@ -2504,8 +2504,8 @@
    "working_url": "https://resource.data.one.gov.hk/td/jss/Journeytimev2.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 27313,
-   "ms": 48,
+   "bytes": 27278,
+   "ms": 37,
    "shape": "XML, 0 <item> entries, root tags: jtis_journey_list, jtis_journey_time, LOCATION_ID, DESTINATION_ID, CAPTURE_DATE",
    "tried": []
   },
@@ -2524,7 +2524,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 43059,
-   "ms": 192,
+   "ms": 189,
    "shape": "43059B of text/csv",
    "tried": []
   },
@@ -2543,7 +2543,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 102,
-   "ms": 249,
+   "ms": 366,
    "shape": "JSON object, keys: type, version, generated_timestamp, data",
    "tried": []
   },
@@ -2562,7 +2562,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 70,
-   "ms": 17,
+   "ms": 20,
    "shape": "70B of text/csv",
    "tried": []
   },
@@ -2581,7 +2581,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 830,
-   "ms": 15,
+   "ms": 19,
    "shape": "830B of text/csv",
    "tried": []
   },
@@ -2600,7 +2600,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 4389,
-   "ms": 20,
+   "ms": 89,
    "shape": "4389B of text/csv",
    "tried": []
   },
@@ -2619,7 +2619,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 171744,
-   "ms": 29,
+   "ms": 24,
    "shape": "171744B of text/csv",
    "tried": []
   },
@@ -2638,7 +2638,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 384207,
-   "ms": 25,
+   "ms": 105,
    "shape": "XML, 0 <item> entries, root tags: image-list, image, key, region, district",
    "tried": []
   },
@@ -2657,7 +2657,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 70,
-   "ms": 17,
+   "ms": 88,
    "shape": "70B of text/csv",
    "tried": []
   },
@@ -2675,8 +2675,8 @@
    "working_url": "https://openapi.westkowloon.hk/datagovhk/carpark",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 5330,
-   "ms": 201,
+   "bytes": 5329,
+   "ms": 236,
    "shape": "JSON object, keys: carParks",
    "tried": []
   },
@@ -2694,9 +2694,9 @@
    "working_url": "https://static.data.gov.hk/opendata/dataset/aqhi/aqhi.csv",
    "http_status": 200,
    "content_type": "text/csv",
-   "bytes": 152,
-   "ms": 18,
-   "shape": "152B of text/csv",
+   "bytes": 167,
+   "ms": 13,
+   "shape": "167B of text/csv",
    "tried": []
   },
   {
@@ -2714,7 +2714,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 62712,
-   "ms": 208,
+   "ms": 206,
    "shape": "XML, 432 <item> entries, root tags: AQHI24HrReport, title, link, description, language",
    "tried": []
   },
@@ -2732,7 +2732,7 @@
    "working_url": "https://www.aqhi.gov.hk/epd/ddata/html/out/24pc_Eng.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 97882,
+   "bytes": 97905,
    "ms": 209,
    "shape": "XML, 0 <item> entries, root tags: AQHI24HrPollutantConcentration, title, link, description, language",
    "tried": []
@@ -2752,7 +2752,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 33655,
-   "ms": 168,
+   "ms": 167,
    "shape": "33655B of application/octet-stream",
    "tried": []
   },
@@ -2771,7 +2771,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 33486,
-   "ms": 168,
+   "ms": 155,
    "shape": "33486B of application/octet-stream",
    "tried": []
   },
@@ -2790,7 +2790,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 415,
-   "ms": 114,
+   "ms": 138,
    "shape": "415B of application/octet-stream",
    "tried": []
   },
@@ -2827,8 +2827,8 @@
    "working_url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=tc",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 612,
-   "ms": 115,
+   "bytes": 550,
+   "ms": 1745,
    "shape": "JSON object, keys: generalSituation, tcInfo, fireDangerWarning, forecastPeriod, forecastDesc, outlook",
    "tried": []
   },
@@ -2847,7 +2847,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 16372,
-   "ms": 16,
+   "ms": 227,
    "shape": "16372B of text/csv",
    "tried": []
   },
@@ -2866,7 +2866,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 35972,
-   "ms": 786,
+   "ms": 830,
    "shape": "XML, 40 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -2885,7 +2885,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 3085738,
-   "ms": 493,
+   "ms": 334,
    "shape": "JSON object, keys: type, crs, features",
    "tried": []
   },
@@ -2903,8 +2903,8 @@
    "working_url": "https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_clocal.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 26554,
-   "ms": 367,
+   "bytes": 23758,
+   "ms": 1377,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, description",
    "tried": []
   },
@@ -2922,8 +2922,8 @@
    "working_url": "https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_cinternational.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 22285,
-   "ms": 385,
+   "bytes": 21848,
+   "ms": 369,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, description",
    "tried": []
   },
@@ -2941,8 +2941,8 @@
    "working_url": "https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_cfinance.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 21457,
-   "ms": 345,
+   "bytes": 19093,
+   "ms": 356,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, description",
    "tried": []
   },
@@ -2960,8 +2960,8 @@
    "working_url": "https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_csport.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 26405,
-   "ms": 379,
+   "bytes": 26288,
+   "ms": 362,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, description",
    "tried": []
   },
@@ -2979,8 +2979,8 @@
    "working_url": "https://rthk9.rthk.hk/rthk/news/rss/c_expressnews_greaterchina.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 24434,
-   "ms": 359,
+   "bytes": 24085,
+   "ms": 345,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, description",
    "tried": []
   },
@@ -2998,8 +2998,8 @@
    "working_url": "https://www.news.gov.hk/tc/categories/admin/html/articlelist.rss.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 48709,
-   "ms": 289,
+   "bytes": 49931,
+   "ms": 543,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -3017,8 +3017,8 @@
    "working_url": "https://www.news.gov.hk/tc/categories/finance/html/articlelist.rss.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 58414,
-   "ms": 139,
+   "bytes": 57534,
+   "ms": 258,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -3037,7 +3037,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 43950,
-   "ms": 375,
+   "ms": 368,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -3055,8 +3055,8 @@
    "working_url": "https://www.news.gov.hk/tc/categories/health/html/articlelist.rss.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 51183,
-   "ms": 322,
+   "bytes": 52674,
+   "ms": 296,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -3074,8 +3074,8 @@
    "working_url": "https://www.news.gov.hk/tc/categories/infrastructure/html/articlelist.rss.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 45714,
-   "ms": 309,
+   "bytes": 46450,
+   "ms": 323,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -3094,7 +3094,7 @@
    "http_status": 200,
    "content_type": "text/xml",
    "bytes": 53791,
-   "ms": 201,
+   "ms": 353,
    "shape": "XML, 20 <item> entries, root tags: rss, channel, title, link, image",
    "tried": []
   },
@@ -3113,7 +3113,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 17383,
-   "ms": 206,
+   "ms": 135,
    "shape": "JSON object, keys: asset, geometricError, root",
    "tried": []
   },
@@ -3132,7 +3132,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 12792,
-   "ms": 135,
+   "ms": 179,
    "shape": "JSON object, keys: asset, geometricError, root",
    "tried": []
   },
@@ -3151,7 +3151,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 11244,
-   "ms": 110,
+   "ms": 123,
    "shape": "JSON object, keys: asset, geometricError, root",
    "tried": []
   },
@@ -3170,7 +3170,7 @@
    "http_status": 200,
    "content_type": "image/png",
    "bytes": 30360,
-   "ms": 96,
+   "ms": 86,
    "shape": "30360B of image/png",
    "tried": []
   },
@@ -3189,7 +3189,7 @@
    "http_status": 200,
    "content_type": "image/png",
    "bytes": 4521,
-   "ms": 57,
+   "ms": 59,
    "shape": "4521B of image/png",
    "tried": []
   },
@@ -3208,7 +3208,7 @@
    "http_status": 200,
    "content_type": "image/png",
    "bytes": 183355,
-   "ms": 764,
+   "ms": 130,
    "shape": "183355B of image/png",
    "tried": []
   },
@@ -3227,7 +3227,7 @@
    "http_status": 200,
    "content_type": "image/jpeg",
    "bytes": 15597,
-   "ms": 14,
+   "ms": 21,
    "shape": "15597B of image/jpeg",
    "tried": []
   },
@@ -3336,7 +3336,7 @@
    "http_status": 200,
    "content_type": "image/jpeg",
    "bytes": 43214,
-   "ms": 18,
+   "ms": 21,
    "shape": "43214B of image/jpeg",
    "tried": []
   },
@@ -3355,9 +3355,118 @@
    "http_status": 200,
    "content_type": "image/jpeg",
    "bytes": 15244,
-   "ms": 13,
+   "ms": 92,
    "shape": "15244B of image/jpeg",
    "tried": []
+  },
+  {
+   "id": "aqhi_stations",
+   "group": "weather",
+   "name": "環境保護署 空氣質素監測站位置",
+   "name_en": "EPD AQHI Monitoring Station Positions",
+   "type": "geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "18 official station positions from CSDI's Air Quality Monitoring Network (epd_rcd_1629267205214_40635), built by scripts/build_aqhi.py. The aqhi_city_dashboard adapter merges the LIVE readings onto these by name — the positions are reference geometry, the numbers are never baked here.",
+   "todo": false,
+   "status": "unprobeable",
+   "working_url": "",
+   "http_status": 0,
+   "detail": "not an HTTP endpoint (websocket or still unknown)"
+  },
+  {
+   "id": "lcsd_facilities",
+   "group": "civic",
+   "name": "康文署 康體設施（CSDI 合併）",
+   "name_en": "LCSD Leisure Facilities (CSDI merged)",
+   "type": "geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "Merge of the nine csdi_lcsd_* spatial services (sports centres, tennis, badminton, basketball, libraries, museums, parks, holiday camps, bbq) into one point file, 952 features, 302 KB, built by scripts/build_lcsd.py. OFF by default; a value feed that becomes a map dot ONLY via its own layer.",
+   "todo": false,
+   "status": "unprobeable",
+   "working_url": "",
+   "http_status": 0,
+   "detail": "not an HTTP endpoint (websocket or still unknown)"
+  },
+  {
+   "id": "td_sensor_parking_occupancy",
+   "group": "transport",
+   "name": "運輸署 路邊感應車位 實時佔用",
+   "name_en": "TD On-street Sensor Parking — Live Occupancy",
+   "type": "dataset",
+   "auth": "none",
+   "cadence": "live",
+   "notes": "Live occupancy of on-street parking spaces installed with sensors (O=occupied / V=vacant, date in the row). ~20.7k spaces. No coordinates in this feed and the ids do NOT join the nmospiot coordinate file (different schemes, measured 0 overlap) — so this powers the sensor_parking_occupancy PANEL only, never a map layer.",
+   "todo": false,
+   "status": "ok",
+   "working_url": "https://resource.data.one.gov.hk/td/psiparkingspaces/occupancystatus/occupancystatus.csv",
+   "http_status": 200,
+   "content_type": "text/csv",
+   "bytes": 716013,
+   "ms": 61,
+   "shape": "716013B of text/csv",
+   "tried": []
+  },
+  {
+   "id": "td_speed_map_panels_v2",
+   "group": "transport",
+   "name": "運輸署 速度圖板（第二代）",
+   "name_en": "TD Speed Map Panels (2nd Generation)",
+   "type": "geojson",
+   "auth": "none",
+   "cadence": "live",
+   "notes": "The v2 dataset is IMAGES, not text notifications: five boards across the New Territories, each a live PNG of the panel's current display (the board's message changes server-side; the URL does not). Built by scripts/build_speed_panels.py from the official locations CSV — https image URLs, WGS84. The panel adapter renders the five boards as a live image wall with a ?t= cache-buster.",
+   "todo": false,
+   "status": "unprobeable",
+   "working_url": "",
+   "http_status": 0,
+   "detail": "not an HTTP endpoint (websocket or still unknown)"
+  },
+  {
+   "id": "epd_smart_lampposts",
+   "group": "civic",
+   "name": "環保署 智慧燈柱空氣質素站",
+   "name_en": "EPD Smart Lamppost Air-Quality Stations",
+   "type": "geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "The 11 CSDI smart-lamppost air-quality stations (epd_rcd_1631501732991_89126): official geometry, district, measured species (NO/NO2/PM2.5). Built by scripts/build_smart_lampposts.py. The per-lamppost readings API (LamppostAPI) returned no records at the documented shape on 2026-10-06, so this is a reference layer/panel — WHERE they are and WHAT they measure, never fake live values.",
+   "todo": false,
+   "status": "unprobeable",
+   "working_url": "",
+   "http_status": 0,
+   "detail": "not an HTTP endpoint (websocket or still unknown)"
+  },
+  {
+   "id": "epd_beaches",
+   "group": "civic",
+   "name": "環保署 泳灘水質（位置）",
+   "name_en": "EPD Beach Water Quality (positions)",
+   "type": "geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "39 graded beaches, positions parsed from the EPD RSS's own WGS84 cells (HK1980 grid also present), built by scripts/build_beaches.py. Positions only — the daily GRADE is never baked here; the epd_beach_grading adapter merges the live grading onto these by beach name (the AQHI pattern).",
+   "todo": false,
+   "status": "unprobeable",
+   "working_url": "",
+   "http_status": 0,
+   "detail": "not an HTTP endpoint (websocket or still unknown)"
+  },
+  {
+   "id": "afcd_hiking_trails",
+   "group": "civic",
+   "name": "漁護署 郊野公園遠足徑",
+   "name_en": "AFCD Hiking Trails in Country Parks",
+   "type": "geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "167 official hiking trails (CSDI afcd_rcd_1665568199103_4360, keyless — unlike the token-gated closed-trails service). Built by scripts/build_hiking_trails.py: raw CSDI geometry is ~15.6 MB, simplified to 1.17 MB at 5 m Douglas-Peucker tolerance (round caps hide the rest). Each feature carries color #22c55e; the layer draws green DASHED via def.dash [6,4].",
+   "todo": false,
+   "status": "unprobeable",
+   "working_url": "",
+   "http_status": 0,
+   "detail": "not an HTTP endpoint (websocket or still unknown)"
   },
   {
    "id": "td_detector_avg_speed",
@@ -3373,8 +3482,8 @@
    "working_url": "https://resource.data.one.gov.hk/td/traffic-detectors/irnAvgSpeed-all.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 381882,
-   "ms": 132,
+   "bytes": 381964,
+   "ms": 80,
    "shape": "XML, 0 <item> entries, root tags: segment_speed_list, date, time, irn_version, segments",
    "tried": []
   },
@@ -3392,8 +3501,8 @@
    "working_url": "https://resource.data.one.gov.hk/td/traffic-detectors/rawSpeedVol-all.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 709882,
-   "ms": 51,
+   "bytes": 717843,
+   "ms": 61,
    "shape": "XML, 0 <item> entries, root tags: raw_speed_volume_list, date, periods, period, period_from",
    "tried": []
   },
@@ -3411,8 +3520,8 @@
    "working_url": "https://resource.data.one.gov.hk/td/traffic-detectors/rawSpeedVol_SLP-all.xml",
    "http_status": 200,
    "content_type": "text/xml",
-   "bytes": 12335,
-   "ms": 59,
+   "bytes": 12338,
+   "ms": 62,
    "shape": "XML, 0 <item> entries, root tags: raw_speed_volume_list, date, periods, period, period_from",
    "tried": []
   },
@@ -3431,7 +3540,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 95,
-   "ms": 15,
+   "ms": 155,
    "shape": "CSV ~1 rows, cols: 數據修正截止日期 / 数据修正截止日期 / Data revision cut-off date",
    "tried": []
   },
@@ -3443,14 +3552,14 @@
    "type": "json",
    "auth": "none",
    "cadence": "real-time",
-   "notes": "POST, not GET — body {\"language\":\"zh\",\"routeName\":\"K51\"}. A GET on this URL returns 404, which is the trap here. Verified 200 with a 73 KB body on 2026-10-06.",
+   "notes": "POST, not GET — body {\"language\":\"zh\",\"routeName\":\"K51\"}. A GET on this URL returns 404, which is the trap here. Verified 200 with a 73 KB body on 2026-10-06. Browser-direct since 2026-10-06: rt.data.gov.hk answers CORS * (preflight POST verified). The mtr_bus_eta adapter sends one POST per route (26 routes, 5-min cadence) and joins onto mtr_bus_stops by STATION_ID.",
    "todo": false,
    "status": "ok",
    "working_url": "https://rt.data.gov.hk/v1/transport/mtr/bus/getSchedule",
    "http_status": 200,
    "content_type": "application/json",
-   "bytes": 70276,
-   "ms": 265,
+   "bytes": 52934,
+   "ms": 83,
    "shape": "JSON object, keys: appRefreshTimeInSecond, busStop, caseNumber, caseNumberDetail, footerRemarks, routeColour",
    "tried": []
   },
@@ -3469,7 +3578,7 @@
    "http_status": 200,
    "content_type": "text/csv",
    "bytes": 69924,
-   "ms": 25,
+   "ms": 68,
    "shape": "CSV ~855 rows, cols: ROUTE_ID, DIRECTION, STATION_SEQNO, STATION_ID, STATION_LATITUDE, STATION_LONGITUDE",
    "tried": []
   },
@@ -3488,7 +3597,7 @@
    "http_status": 200,
    "content_type": "application/octet-stream",
    "bytes": 1502,
-   "ms": 186,
+   "ms": 173,
    "shape": "CSV ~20 rows, cols: Ferry Service Details - Central / Tsim Sha Tsui Service, , , ",
    "tried": []
   },
@@ -3507,7 +3616,7 @@
    "http_status": 200,
    "content_type": "text/html",
    "bytes": 25893,
-   "ms": 266,
+   "ms": 281,
    "shape": "HTML page — title: Route | FORTUNE FERRY",
    "tried": []
   },
@@ -3541,7 +3650,7 @@
    "http_status": 200,
    "content_type": "application/json",
    "bytes": 48713,
-   "ms": 23,
+   "ms": 35,
    "shape": "JSON object, keys: version, sources, sprite, glyphs, layers",
    "tried": []
   }

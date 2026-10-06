@@ -444,52 +444,32 @@ function drawBus(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** Parking: a top-down car on the international parking blue.
+/** Parking: the international parking sign — a white **P** on the parking blue. Cyrus 2026-10-06:
+ *  「Parking 唔係應該用P咩？」 He is right, and it is the stronger symbol: a P is what a driver
+ *  reads without translating, in every language, which is exactly why ISO 7001 uses it. The disc
+ *  supplies the blue, the glyph supplies the P.
  *
- *  The DISC carries the meaning — blue is the one colour a driver already reads as "parking" — and
- *  the glyph says what kind of place it marks, the same split the border-control points use. Nose
- *  points to −Y like every other vehicle glyph, so one rotation convention covers the family.
+ *  Drawn as a PATH, not with fillText: the box is 44px and a font-dependent glyph would render
+ *  differently in every browser, which is the same reason the AED heart and the oil tank are paths.
  *
- *  A car is SHORTER and rounder than the bus (~1:2.2 against ~1:2.7), with a tapered nose and a
- *  cabin inset from both ends. At 44px that taper plus the disc colour is all that separates the two
- *  at a glance, because both are light bodies with dark glass. */
+ *  One path, filled evenodd: the stem, the bowl's outline, and the bowl's counter as a hole. The
+ *  counter sits entirely to the RIGHT of the stem (x 1.5..8.5) on purpose — overlapping it would
+ *  punch a hole through the stem itself, because evenodd toggles every enclosed region. `off` nudges
+ *  the ink left, since a P's mass sits right of its stem. */
 function drawParking(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();
   ctx.translate(c, c);
-  // body — tapered at both ends
   ctx.beginPath();
-  ctx.moveTo(-4.4, -12);
-  ctx.quadraticCurveTo(0, -15.5, 4.4, -12);
-  ctx.lineTo(5.2, -2);
-  ctx.lineTo(4.6, 11);
-  ctx.quadraticCurveTo(0, 13.6, -4.6, 11);
-  ctx.lineTo(-5.2, -2);
+  ctx.rect(-4.5, -13, 6, 26);                                  // stem
+  ctx.moveTo(1.5, -13);
+  ctx.arc(1.5, -5.5, 7.5, -Math.PI / 2, Math.PI / 2, false);   // bowl, outer
   ctx.closePath();
-  ctx.fillStyle = "#cdd5dc";
-  ctx.fill();
-  ctx.strokeStyle = "rgba(5,7,13,.85)";
-  ctx.lineWidth = 1.1;
-  ctx.lineJoin = "round";
-  ctx.stroke();
-  // windscreen, set back from the nose
-  ctx.beginPath();
-  ctx.moveTo(-3.6, -9.6);
-  ctx.quadraticCurveTo(0, -11.6, 3.6, -9.6);
-  ctx.lineTo(3.6, -6.4);
-  ctx.lineTo(-3.6, -6.4);
+  ctx.moveTo(5, -5.5);
+  ctx.arc(5, -5.5, 3.5, -Math.PI / 2, Math.PI / 2, false);     // bowl, counter → a hole
   ctx.closePath();
-  ctx.fillStyle = "rgba(10,14,22,.85)";
-  ctx.fill();
-  // rear window
-  ctx.beginPath();
-  ctx.moveTo(-3.2, 6.4);
-  ctx.lineTo(3.2, 6.4);
-  ctx.lineTo(3.2, 9.2);
-  ctx.quadraticCurveTo(0, 10.4, -3.2, 9.2);
-  ctx.closePath();
-  ctx.fillStyle = "rgba(10,14,22,.7)";
-  ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  ctx.fill("evenodd");
   ctx.restore();
 }
 
@@ -726,7 +706,7 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   vessel: { draw: drawVessel },
   "mtr-train": { draw: drawTrain },
   bus: { draw: drawBus },
-  parking: { draw: drawParking, disc: "#2563eb" },
+  parking: { draw: drawParking, disc: "#2563eb", off: [-1.4, 0] },
   water: { draw: drawWater, disc: "#22d3ee" },
   "cp-land": { draw: drawControlPoint, disc: "#a855f7" },
   "cp-sea": { draw: drawControlPoint, disc: "#22d3ee" },

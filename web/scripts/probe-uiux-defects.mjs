@@ -10,7 +10,7 @@
 // calling a two-column grid single-column and a fixed build still broken.
 import { chromium } from "playwright-core";
 
-const exe = "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 const url = process.argv[2] ?? "http://localhost:4173/";
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 

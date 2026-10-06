@@ -13,7 +13,7 @@
 // diffs it against what the mode says it drew, so an orphan names itself.
 import { chromium } from "playwright-core";
 
-const exe = "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 const url = process.argv[2] ?? "http://localhost:4173/";
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1200 }, locale: "zh-HK" });

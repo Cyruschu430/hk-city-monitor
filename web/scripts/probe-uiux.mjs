@@ -5,7 +5,7 @@
 import { chromium } from "playwright-core";
 
 const URL_UNDER_TEST = process.argv[2] ?? "https://hk-city-monitor.pages.dev/";
-const exe = "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, locale: "zh-HK" });
 await page.goto(URL_UNDER_TEST, { waitUntil: "domcontentloaded" });

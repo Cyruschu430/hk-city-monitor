@@ -28,7 +28,7 @@ const SETTLE_MS = 35_000; // long enough for the below-the-fold panels to fire
 // executablePath fails outright (measured: "Executable doesn't exist at
 // ...chromium_headless_shell-1243..."). CHROME_PATH overrides it for a different machine.
 const exe = process.env.CHROME_PATH
-  ?? "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+  ?? "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, locale: "zh-HK" });
 

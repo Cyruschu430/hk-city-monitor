@@ -13,7 +13,7 @@
 import { chromium } from "playwright-core";
 
 const exe = process.env.CHROME_PATH ?? process.env.HKCM_CHROME
-  ?? "C:\\Users\\cyrus\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+  ?? "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 const BASE = process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/";
 const kind = process.argv[2] ?? "topo";
 

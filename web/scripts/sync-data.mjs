@@ -21,10 +21,10 @@ mkdirSync(DST, { recursive: true });
 for (const f of ["../data/panels.json", "../data/layers.json", "../data/verticals.json", "../sources.json"]) {
   if (existsSync(f)) cpSync(f, `${DST}/${f.split("/").pop()}`);
 }
-// every data/*.json that exists at the repo root (except the internal ones)
+// every data/*.json AND *.geojson that exists at the repo root (except the internal ones)
 import { readdirSync } from "node:fs";
 for (const f of readdirSync("../data")) {
-  if (!f.endsWith(".json")) continue;
+  if (!f.endsWith(".json") && !f.endsWith(".geojson")) continue;
   if (["baselines.json", "dataset_candidates.json", "geocode_cache.json", "sources_report.json", "leave_plan.json"].includes(f)) continue;
   cpSync(`../data/${f}`, `${DST}/${f}`);
 }

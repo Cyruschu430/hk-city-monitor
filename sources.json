@@ -2447,7 +2447,7 @@
    "name": "行車時間指示位置",
    "name_en": "Journey Time Indicator Locations",
    "type": "geojson",
-   "url": "https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=td_rcd_1671692669689_59165&format=geojson&layer_name=Locations_of_Journey_Time_Indicators",
+   "url": "data/journey_time_locations.geojson",
    "auth": "none",
    "cadence": "as issued",
    "notes": "CSDI td_rcd_1671692669689_59165 — 80 indicator locations (approach roads / corridors), each tagged location_id + destination_id so the live XML joins by id. Built copy also ships as data/journey_time_locations.geojson via scripts/build_journey_time.py.",
@@ -3562,7 +3562,8 @@
    "auth": "none",
    "cadence": "as issued",
    "notes": "855 stops from MTR CSV (opendata.mtr.com.hk/mtr_bus_stops.csv), built to data/mtr_bus_stops.geojson by scripts/build_mtr_bus_stops.py.",
-   "todo": false
+   "todo": false,
+   "fetch": "browser"
   },
   {
    "id": "td_ai_cctv_stations",
@@ -3574,7 +3575,8 @@
    "auth": "none",
    "cadence": "as issued",
    "notes": "16 TD AI Video Analytics CCTV cameras (CSDI td_rcd_1671693527354_28926), built to data/ai_cctv_stations.geojson by scripts/build_ai_cctv.py.",
-   "todo": false
+   "todo": false,
+   "fetch": "browser"
   }
  ]
 }

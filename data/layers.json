@@ -358,6 +358,22 @@
       "refresh_ms": 900000,
       "_comment": "16 TD AI Video Analytics CCTVs with LIVE per-segment speed/flow (every 15 min). Each marker is a speedometer (speed glyph) with the avg km/h as a text label coloured by band (<10 red / <30 amber / else green, computed in the adapter). Cameras with Is_valid N (PTZ moved) draw nothing. OFF by default."
       },
+      {
+      "id": "ev_chargers",
+      "source": "epd_ev_chargers",
+      "render": "list",
+      "geom": "point",
+      "symbol": "ev",
+      "title": {
+       "tc": "充電站",
+       "en": "EV chargers"
+      },
+      "popup": "ev_popup",
+      "filters": {
+       "scope": "hk"
+      },
+      "_comment": "988 public EV chargers (EPD via CSDI epd_rcd_1631080339740_69941) with per-type counts. Bolt glyph; popup lists the site, address and std/medium/quick/fast counts. As-issued (chargers install in batches), OFF by default."
+      },
     {
       "id": "lcsd_facilities",
       "source": "lcsd_facilities",

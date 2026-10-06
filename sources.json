@@ -2412,6 +2412,21 @@
    "notes": "LIVE estimated journey time of major roads and cross-harbour tunnels: 83 readings of {LOCATION_ID, DESTINATION_ID → JOURNEY_DATA minutes, COLOUR_ID 1/2/3 = red/amber/green}. Joined onto td_journey_time_locations by location|destination id. The td_journeytime entry (v1, path removed from resource.data.one.gov.hk) is superseded by this one."
   },
   {
+   "id": "epd_ev_chargers",
+   "group": "transport",
+   "name": "公眾充電站",
+   "name_en": "Electric Vehicle Chargers for Public Access",
+   "type": "geojson",
+   "url": "https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=epd_rcd_1631080339740_69941&format=geojson&layer_name=geotagging",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "EPD hk-epd-evcpateam-evc-1 via CSDI epd_rcd_1631080339740_69941 — 988 public charger locations with per-type counts (standard BS1363 / medium / quick / fast), built to data/ev_chargers.geojson by scripts/build_ev_chargers.py. Counts change in batches, not per minute — the panel says as-issued, never live.",
+   "fetch": "browser",
+   "cors_note": "ACAO=*",
+   "cost": "free",
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
+  },
+  {
    "id": "td_ai_cctv",
    "group": "transport",
    "name": "AI 影像分析閉路電視（交通數據）",

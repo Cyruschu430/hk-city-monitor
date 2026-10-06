@@ -668,6 +668,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   else if (def.popup === "mtr_bus_popup") mtrBusPopup(map, `${id}-point`);
   else if (def.popup === "journey_popup") journeyPopup(map, `${id}-point`);
   else if (def.popup === "ai_cctv_popup") aiCctvPopup(map, `${id}-point`);
+  else if (def.popup === "ev_popup") evPopup(map, `${id}-point`);
   else attributePopup(map, `${id}-point`);
 
   // Vacancy refreshes on its own cadence: positions are static, numbers are
@@ -785,6 +786,37 @@ function beachPopup(map: maplibregl.Map, layerId: string): void {
         `<div class="aed-pop"><b>${esc(p["name"] ?? "")}</b>` +
           `<div style="color:${COL[key] ?? "#fff"};font-weight:600;margin-top:6px">${esc(p["gradeTc"] ?? "")}</div>` +
           `<div style="color:var(--night-dim);font-size:11px;margin-top:4px">${tc ? "EPD 泳灘水質（採樣後 48 小時內）" : "EPD beach water quality (within 48h of sampling)"}</div></div>`,
+      )
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+
+/** EV charger popup: the site name, address, and the per-type charger counts
+ *  (the only numbers worth showing — how many of each speed). */
+function evPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const name = tc ? String(p["location_tc"] ?? "") : String(p["location_en"] ?? p["location_tc"] ?? "");
+    const row = (label: string, v: unknown) =>
+      v ? `<div style="margin-top:2px">${esc(label)} ${esc(v)}</div>` : "";
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<div class="aed-pop"><b>${esc(name)}</b>` +
+          `<div style="color:var(--night-dim);font-size:11px;margin-top:2px">${esc(p["district_tc"] ?? p["district_en"] ?? "")}</div>` +
+          `<div style="color:var(--night-dim);margin-top:4px">${esc(p["address_en"] ?? "")}</div>` +
+          row(tc ? "充電器" : "Chargers", p["total"]) +
+          row(tc ? "中速" : "Medium", p["medium"]) +
+          row(tc ? "快速" : "Quick", p["quick"]) +
+          row(tc ? "標準" : "Standard", p["std"]) +
+          `</div>`,
       )
       .addTo(map);
   });

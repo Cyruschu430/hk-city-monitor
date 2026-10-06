@@ -457,6 +457,19 @@
    }
   },
   {
+   "id": "ev_chargers_summary",
+   "source": "epd_ev_chargers",
+   "render": "status_grid",
+   "title": {
+    "tc": "充電站",
+    "en": "EV chargers"
+   },
+   "cadence_note": {
+    "tc": "按發佈",
+    "en": "as issued"
+   }
+  },
+  {
    "id": "wind_status",
    "source": "ck_hk_hko_rss_latest_ten_minute_wind_info",
    "render": "status_grid",

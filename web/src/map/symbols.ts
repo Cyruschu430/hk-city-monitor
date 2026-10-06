@@ -65,7 +65,10 @@ export type GlyphId =
   | "jt"
   // AI Video Analytics CCTVs (TD): a speedometer gauge — the thing this layer
   // shows is speed, so the glyph says speed, with the km/h as a text label.
-  | "speed";
+  | "speed"
+  // Public EV chargers (EPD): a lightning bolt — "plug in here", the one thing
+  // a charger layer needs to say at a glance.
+  | "ev";
 
 /** AED: the universal defibrillator mark — a heart with a bolt through it. */
 function drawAed(ctx: CanvasRenderingContext2D, size: number): void {
@@ -783,7 +786,40 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   // AI Video Analytics: a speedometer — ring, tick and needle. The km/h is a
   // text label on top (coloured by speed band in the adapter), same pattern.
   speed: { draw: drawSpeed, disc: "rgba(8,14,24,.85)" },
+  // Public EV chargers: a lightning bolt on the same dark sign disc — the bolt
+  // is the meaning, the disc keeps it a place rather than a bare glyph.
+  ev: { draw: drawEv, disc: "rgba(8,14,24,.85)" },
 };
+
+/** Public EV charger: a lightning bolt — dark disc + white ring, bolt in the
+ *  international charging yellow. At legend size it is a yellow tick inside a
+ *  ring, which is exactly the "plug in here" signal. */
+function drawEv(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.beginPath();
+  ctx.arc(0, 0, 11, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(8,14,24,.85)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,.9)";
+  ctx.lineWidth = 1.6;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(1.6, -10);
+  ctx.lineTo(-4.4, 1);
+  ctx.lineTo(0.2, 1);
+  ctx.lineTo(-1.6, 10);
+  ctx.lineTo(4.6, -1.5);
+  ctx.lineTo(0.2, -1.5);
+  ctx.closePath();
+  ctx.fillStyle = "#facc15";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(5,7,13,.85)";
+  ctx.lineWidth = 0.8;
+  ctx.stroke();
+  ctx.restore();
+}
 
 /** AI-Video-Analytics CCTV: a small speedometer gauge — dark disc, white
  *  ring, one tick, a needle pointing up-right. The live km/h sits on top as a

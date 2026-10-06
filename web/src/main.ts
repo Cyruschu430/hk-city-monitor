@@ -165,6 +165,8 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   { id: "journey_time", label: { tc: "行車時間", en: "Journey time" } },
   // 16 TD AI Video Analytics CCTVs with LIVE avg speed per camera. OFF.
   { id: "ai_cctv_speed", label: { tc: "路網車速（AI）", en: "Road speed (AI)" } },
+  // 988 public EV chargers (EPD), as-issued counts. OFF by default.
+  { id: "ev_chargers", label: { tc: "充電站", en: "EV chargers" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its

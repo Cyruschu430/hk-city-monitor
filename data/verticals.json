@@ -184,12 +184,14 @@
     "mtr_bus_status",
     "journey_time_table",
     "ai_cctv_speed_table",
+    "ev_chargers_summary",
     "crossboundary_ferry_table"
     ],
     "layers": [
     "cameras_all",
     "journey_time",
     "ai_cctv_speed",
+    "ev_chargers",
     "control_points"
     ],
    "window": "now",
@@ -204,6 +206,7 @@
     "mtr_bus_status",
     "journey_time_table",
     "ai_cctv_speed_table",
+    "ev_chargers_summary",
     "crossboundary_ferry_table"
     ]
     },

@@ -1195,6 +1195,30 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async epd_ev_chargers(src) {
+    // Public EV chargers (EPD): 988 locations with per-type counts, as-issued
+    // (chargers get installed in batches, not per minute). No live merge — the
+    // map and the panel read the same official file, and the panel is a honest
+    // summary count, not a live number.
+    const fc = (await json(await get(src))) as GeoJSON.FeatureCollection;
+    const tc = lang() === "tc";
+    const sum = (k: string) =>
+      (fc.features ?? []).reduce((a, f) => a + Number((f.properties ?? {})[k] ?? 0), 0);
+    const total = sum("total");
+    const cells: StatusCell[] = [
+      { label: tc ? "充電站" : "Stations", value: String((fc.features ?? []).length), status: 0 },
+      { label: tc ? "充電器" : "Chargers", value: String(total), status: 0 },
+      { label: tc ? "中速" : "Medium", value: String(sum("medium")), status: 0 },
+      { label: tc ? "快速" : "Quick", value: String(sum("quick")), status: 0 },
+    ];
+    return {
+      data: { kind: "status_grid", cells },
+      observedAt: new Date(),
+      state: { records: (fc.features ?? []).length },
+      geo: fc,
+    };
+  },
+
   async td_journey_time_v2(src, _panel, ctx) {
     // Live journey time: ONE XML for the whole territory, joined onto the CSDI
     // indicator locations by location_id|destination_id. The label colour is

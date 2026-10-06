@@ -3252,6 +3252,20 @@
    "license": "Esri — ArcGIS Online public map services (subject to the Esri Terms of Use)"
   },
   {
+   "id": "lcsd_facilities",
+   "group": "civic",
+   "name": "康文署 康體設施（CSDI 合併）",
+   "name_en": "LCSD Leisure Facilities (CSDI merged)",
+   "type": "geojson",
+   "url": "data/lcsd_facilities.geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "Merge of the nine csdi_lcsd_* spatial services (sports centres, tennis, badminton, basketball, libraries, museums, parks, holiday camps, bbq) into one point file, 952 features, 302 KB, built by scripts/build_lcsd.py. OFF by default; a value feed that becomes a map dot ONLY via its own layer.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free"
+  },
+  {
    "id": "td_detector_avg_speed",
    "group": "transport",
    "name": "運輸署 交通探測器 平均車速",

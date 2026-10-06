@@ -16,6 +16,7 @@ export type GlyphId =
   | "cam-hko"
   | "station-wind"
   | "aqhi"
+  | "facility"
   | "plane"
   | "ferry"
   | "vessel"
@@ -456,6 +457,22 @@ function drawBus(ctx: CanvasRenderingContext2D, size: number): void {
  *  counter sits entirely to the RIGHT of the stem (x 1.5..8.5) on purpose — overlapping it would
  *  punch a hole through the stem itself, because evenodd toggles every enclosed region. `off` nudges
  *  the ink left, since a P's mass sits right of its stem. */
+
+/** LCSD leisure facilities (libraries, museums, parks, courts, camps, bbq): a
+ *  classic POI dot — green disc, white ring, dark centre — so it reads as a
+ *  PLACE, not a weather glow-orb (measured: a bare disc read as a glow). */
+function drawFacility(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.beginPath();
+  ctx.arc(c, c, size * 0.30, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(c, c, size * 0.17, 0, Math.PI * 2);
+  ctx.fillStyle = "#0f172a";
+  ctx.fill();
+}
+
 function drawParking(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();
@@ -717,6 +734,10 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   // the only layer whose glyph colour also matches its rail accent.
   "oil-tank": { draw: drawOilTank, disc: "#c87619" },
   "no-water-salt": { draw: drawNoWater, disc: "#fbbf24" },
+  // Green, not an agency colour: leisure facilities are the public's, not a
+  // department's. The disc carries the meaning; the centre dot keeps it from
+  // reading as a glow orb (a facility is a place, not a light).
+  facility: { draw: drawFacility, disc: "#34d399" },
   "wind-flow": { draw: drawWindFlow },
   blocks: { draw: drawBlocks },
   aerial: { draw: drawAerial },

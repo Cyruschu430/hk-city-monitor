@@ -255,6 +255,22 @@
       "_comment": "Reference geometry for the MTR: one LineString per heavy-rail line (plus the 落馬洲 / 康城 spurs), generated from data/mtr_stations.json by hand (see the file). `geom: line` draws through overlays.ts lineLayer with the official line colour carried per feature. OFF by default — it is a backdrop the reader turns on when they want to read the train layer against the network."
     },
     {
+      "id": "lcsd_facilities",
+      "source": "lcsd_facilities",
+      "render": "list",
+      "geom": "point",
+      "symbol": "facility",
+      "title": {
+        "tc": "康文署設施",
+        "en": "LCSD facilities"
+      },
+      "popup": null,
+      "filters": {
+        "scope": "hk"
+      },
+      "_comment": "952 LCSD leisure points (libraries, museums, parks, courts, camps, bbq) from nine CSDI services, merged by scripts/build_lcsd.py — the official geometry, not a geocode. OFF by default. popup null → the generic attribute popup renders the Name/Name_tc/Name_en/Type/District/Address contract the script writes."
+    },
+    {
       "id": "carpark_vacancy",
       "source": "td_carpark_vacancy",
       "render": "list",

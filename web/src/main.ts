@@ -143,6 +143,10 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // OFF by default: a reader who wants a space turns it on, a reader who does
   // not never pays for the 60s refresh.
   { id: "carpark_vacancy", label: { tc: "停車場空位", en: "Car park vacancies" } },
+  // 952 LCSD leisure facilities (libraries, museums, parks, courts, camps, bbq)
+  // from nine CSDI services — the official geometry, not a geocode. OFF by
+  // default like every reference layer; the generic attribute popup handles it.
+  { id: "lcsd_facilities", label: { tc: "康文署設施", en: "LCSD facilities" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its

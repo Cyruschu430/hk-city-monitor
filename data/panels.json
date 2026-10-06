@@ -357,7 +357,8 @@
     "en": "Carpark Vacancy"
    },
    "params": {
-    "max_rows": 60
+    "max_rows": 60,
+    "search": true
    },
    "wide": true,
    "cadence_note": {
@@ -432,7 +433,7 @@
   },
   {
    "id": "journey_time_table",
-   "source": "ck_hk_td_sm_8_journey_time_indicators_v2",
+   "source": "td_journey_time_v2",
    "render": "table",
    "title": {
     "tc": "隧道行車時間",
@@ -445,7 +446,7 @@
   },
   {
    "id": "ai_cctv_speed_table",
-   "source": "td_ai_cctv",
+   "source": "td_ai_video_analytics",
    "render": "table",
    "title": {
     "tc": "路網車速（AI 分析）",

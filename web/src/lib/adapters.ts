@@ -1275,6 +1275,10 @@ const ADAPTERS: Record<string, Adapter> = {
     if (!infoSrc) throw new Error("sources.json 冇 td_carpark_info");
     const [v, info] = await Promise.all([json(await get(src)), json(await get(infoSrc))]);
     const rows = P.parseCarpark(v, info, max);
+    // The reader's search box (panels.json params.search) filters by park name.
+    // Max_rows still caps the UNSEARCHED list, so a typed query can out-limit it.
+    const q = searchQuery(panel.id);
+    const shown = q ? rows.filter((r) => r.name.toLowerCase().includes(q.toLowerCase())) : rows;
     const tc = lang() === "tc";
     // THREE columns, not four. The 總數 column this panel used to show read "—"
     // for all 12 rows because `basic_info_all.json` has NO capacity field at all
@@ -1294,12 +1298,12 @@ const ADAPTERS: Record<string, Adapter> = {
       data: {
         kind: "table",
         columns: tc ? ["停車場", "私家車空位", "該場更新"] : ["Carpark", "Free (car)", "Reported"],
-        rows: rows.map((r) => [r.name, String(r.vacancy), fmt(r.updatedAt)]),
+        rows: shown.map((r) => [r.name, String(r.vacancy), fmt(r.updatedAt)]),
       },
       // The map layer draws the SAME rows through the SAME parse, so the layer
       // and the panel cannot disagree about how many spaces are left. Parks
       // without a coordinate pair are dropped by carparkToGeoJson itself.
-      geo: P.carparkToGeoJson(rows),
+      geo: P.carparkToGeoJson(shown),
       // The NEWEST per-park report, so the panel's own clock is not older than
       // the freshest row it is showing. `null` when the feed carried no times at
       // all, which the panel renders as its no-timestamp state rather than

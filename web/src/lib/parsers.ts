@@ -811,6 +811,41 @@ export function aqhiStationKey(name: unknown): string {
   return String(name ?? "").replace(" Air Quality Monitoring Station", "").trim();
 }
 
+/** Normalise an HKO regional-station name for the 1-minute temperature merge:
+ *  strip the standard suffixes, and alias the three CSV abbreviations CSDI
+ *  spells out (measured 2026-10-06: 36/39 match cleanly, these three did not).
+ *  The alias key is the CSDI-side name; the map looks up the CSV-side key. */
+export function hkoStationKey(name: unknown): string {
+  const ALIAS: Record<string, string> = {
+    "HK Observatory": "Hong Kong Observatory",
+    "HK Park": "Hong Kong Park",
+    "Chek Lap Kok": "Hong Kong International Airport",
+  };
+  const raw = String(name ?? "").trim();
+  return (ALIAS[raw] ?? raw)
+    .replace(/ (Automatic Weather Station|Weather Station|AWS)$/i, "")
+    .toLowerCase();
+}
+
+/** Parse HKO's latest_1min_temperature.csv into station-key → "24.6 12:30".
+ *  The timestamp column is "202610061330" (no separator, HKT); the value is
+ *  kept with the reading so the popup can say when it was taken. */
+export function parse1MinTemp(csv: string): Map<string, string> {
+  const out = new Map<string, string>();
+  const lines = csv.split(/\r?\n/);
+  for (const line of lines.slice(1)) {
+    if (!line.trim()) continue;
+    const [ts, name, temp] = line.split(",");
+    if (!name || !temp) continue;
+    const key = hkoStationKey(name);
+    if (!key) continue;
+    const t = String(ts ?? "").trim();
+    const hh = t.length >= 12 ? `${t.slice(8, 10)}:${t.slice(10, 12)}` : "";
+    out.set(key, `${String(temp).trim()} ${hh}`);
+  }
+  return out;
+}
+
 // --- Carpark vacancy (Transport Department) ---------------------------------------
 export interface CarparkRow {
   id: string;

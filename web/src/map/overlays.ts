@@ -755,6 +755,7 @@ const POPUP_LABELS: Record<string, { tc: string; en: string }> = {
   Telephone: { tc: "電話", en: "Telephone" },
   Website: { tc: "網站", en: "Website" },
   LastUpdate: { tc: "資料更新", en: "Data updated" },
+  tempC: { tc: "氣溫（℃）", en: "Temp (°C)" },
   // Aircraft / vessel fields, ready for the layers that will use this path.
   flight: { tc: "航班", en: "Flight" },
   hex: { tc: "ICAO 24-bit", en: "ICAO 24-bit" },

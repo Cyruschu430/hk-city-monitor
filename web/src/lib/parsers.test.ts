@@ -330,6 +330,27 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   );
 }
 
+// 17c. 1-minute regional temperatures: CSV → station key → "26.8 13:30".
+{
+  const m = P.parse1MinTemp(
+    "Date time,Automatic Weather Station,Air Temperature(degree Celsius)\n" +
+      "202610061330,Cheung Chau,26.2\n" +
+      "202610061330,Chek Lap Kok,26.8\n" +
+      "202610061330,HK Observatory,26.7\n" +
+      "202610061330,HK Park,26.9\n",
+  );
+  assert.equal(m.get(P.hkoStationKey("Cheung Chau")), "26.2 13:30", "plain name");
+  assert.equal(m.get(P.hkoStationKey("HK Observatory")), "26.7 13:30", "HK Observatory → Hong Kong Observatory");
+  assert.equal(m.get(P.hkoStationKey("HK Park")), "26.9 13:30", "HK Park → Hong Kong Park");
+  assert.equal(m.get(P.hkoStationKey("Chek Lap Kok")), "26.8 13:30", "Chek Lap Kok → Hong Kong International Airport");
+  assert.equal(
+    P.hkoStationKey("Cheung Chau Automatic Weather Station"),
+    P.hkoStationKey("Cheung Chau"),
+    "suffix stripped",
+  );
+  console.log("✓ 1 分鐘氣溫: CSV 入 key（3 個縮寫 alias 對到 CSDI 官方名）");
+}
+
 // 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).
 {
   const cells = P.parseImmdQueue({ HYW: { arrQueue: 0, depQueue: 0 }, LWS: { arrQueue: 25, depQueue: 18 } }, ["HYW", "LWS"]);

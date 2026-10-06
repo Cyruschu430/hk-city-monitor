@@ -912,7 +912,7 @@ const ADAPTERS: Record<string, Adapter> = {
     return { data: { kind: "list", items }, observedAt: fetchedAt };
   },
 
-  async hko_stations_network(src) {
+  async hko_stations_network(src, _panel, ctx) {
     // CSDI FeatureServer GeoJSON: 49 official weather stations with coordinates.
     // This is a STATIC reference layer (cadence: snapshot), not a live feed —
     // it says WHERE the instruments are, which is what makes the wind barbs
@@ -935,8 +935,30 @@ const ADAPTERS: Record<string, Adapter> = {
     const other = features.length - auto;
     if (other > 0) cells.push({ label: lang() === "tc" ? "其他類型" : "Other types", value: String(other), status: 1 });
 
+    // 微氣候: live 1-minute regional temperatures merged onto the same station
+    // positions, so a station dot can carry its own current temperature. The
+    // CSV names mostly match CSDI's (36/39); the three abbreviations are
+    // aliased. A name nobody can match simply shows no temperature.
+    let tempByKey: Map<string, string> = new Map();
+    try {
+      const tempSrc = ctx.registry.byId.get("hko_1min_temperature");
+      if (tempSrc) {
+        const csv = await text(await get(tempSrc));
+        tempByKey = P.parse1MinTemp(csv);
+      }
+    } catch {
+      // no temperatures today: the layer keeps showing positions, honestly
+    }
+    for (const f of features) {
+      const p = f.properties ?? {};
+      const key = P.hkoStationKey(String(p["Name_en"] ?? p["Name"] ?? ""));
+      const t = key ? tempByKey.get(key) : undefined;
+      if (t) (p as Record<string, unknown>)["tempC"] = t;
+    }
+
     return {
       data: { kind: "status_grid", cells },
+      // the CSV is the "latest 1-minute" feed; now is honest for freshness
       observedAt: new Date(),
       state: { records: features.length },
       geo: { type: "FeatureCollection", features },

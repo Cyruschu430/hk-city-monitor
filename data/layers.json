@@ -143,7 +143,9 @@
       "popup": null,
       "filters": {
         "scope": "hk"
-      }
+      },
+      "refresh_ms": 300000,
+      "_comment": "49 official HKO station positions (CSDI) with live 1-minute temperatures merged by the hko_stations_network adapter (36/39 names match, three aliased). 5-minute refresh."
     },
     {
       "id": "drone_rfz",

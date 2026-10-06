@@ -1,0 +1,1525 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1721016624,
+     22.279311621
+    ]
+   },
+   "properties": {
+    "location_id": "H1",
+    "destination_id": "CH",
+    "name_tc": "告士打道東行近稅務大樓",
+    "name_en": "Gloucester Road eastbound near the Revenue Tower",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "H1|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1721016624,
+     22.279311621
+    ]
+   },
+   "properties": {
+    "location_id": "H1",
+    "destination_id": "EH",
+    "name_tc": "告士打道東行近稅務大樓",
+    "name_en": "Gloucester Road eastbound near the Revenue Tower",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "H1|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1801852818,
+     22.271587755
+    ]
+   },
+   "properties": {
+    "location_id": "H2",
+    "destination_id": "CH",
+    "name_tc": "堅拿道天橋北行近香港仔隧道出口",
+    "name_en": "Canal Road Flyover northbound near exit of Aberdeen Tunnel",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "H2|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1801852818,
+     22.271587755
+    ]
+   },
+   "properties": {
+    "location_id": "H2",
+    "destination_id": "EH",
+    "name_tc": "堅拿道天橋北行近香港仔隧道出口",
+    "name_en": "Canal Road Flyover northbound near exit of Aberdeen Tunnel",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "H2|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1801852818,
+     22.271587755
+    ]
+   },
+   "properties": {
+    "location_id": "H2",
+    "destination_id": "WH",
+    "name_tc": "堅拿道天橋北行近香港仔隧道出口",
+    "name_en": "Canal Road Flyover northbound near exit of Aberdeen Tunnel",
+    "dest_tc": "西區海底隧道",
+    "dest_en": "Western Harbour Crossing",
+    "key": "H2|WH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1938696147,
+     22.2920188177
+    ]
+   },
+   "properties": {
+    "location_id": "H3",
+    "destination_id": "CH",
+    "name_tc": "東區走廊西行近城市花園",
+    "name_en": "Island Eastern Corridor westbound near City Garden",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "H3|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1938696147,
+     22.2920188177
+    ]
+   },
+   "properties": {
+    "location_id": "H3",
+    "destination_id": "WH",
+    "name_tc": "東區走廊西行近城市花園",
+    "name_en": "Island Eastern Corridor westbound near City Garden",
+    "dest_tc": "西區海底隧道",
+    "dest_en": "Western Harbour Crossing",
+    "key": "H3|WH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1794800074,
+     22.2748199987
+    ]
+   },
+   "properties": {
+    "location_id": "H4",
+    "destination_id": "CH",
+    "name_tc": "黃泥涌道北行近皇后大道東",
+    "name_en": "Wong Nai Chung Road northbound near Queen's Road East",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "H4|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1794800074,
+     22.2748199987
+    ]
+   },
+   "properties": {
+    "location_id": "H4",
+    "destination_id": "EH",
+    "name_tc": "黃泥涌道北行近皇后大道東",
+    "name_en": "Wong Nai Chung Road northbound near Queen's Road East",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "H4|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1794800074,
+     22.2748199987
+    ]
+   },
+   "properties": {
+    "location_id": "H4",
+    "destination_id": "WH",
+    "name_tc": "黃泥涌道北行近皇后大道東",
+    "name_en": "Wong Nai Chung Road northbound near Queen's Road East",
+    "dest_tc": "西區海底隧道",
+    "dest_en": "Western Harbour Crossing",
+    "key": "H4|WH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1911700041,
+     22.2831300042
+    ]
+   },
+   "properties": {
+    "location_id": "H5",
+    "destination_id": "CH",
+    "name_tc": "興發街北行近維多利亞公園",
+    "name_en": "Hing Fat Street northbound near Victoria Park",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "H5|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1911700041,
+     22.2831300042
+    ]
+   },
+   "properties": {
+    "location_id": "H5",
+    "destination_id": "EH",
+    "name_tc": "興發街北行近維多利亞公園",
+    "name_en": "Hing Fat Street northbound near Victoria Park",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "H5|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1911700041,
+     22.2831300042
+    ]
+   },
+   "properties": {
+    "location_id": "H5",
+    "destination_id": "WH",
+    "name_tc": "興發街北行近維多利亞公園",
+    "name_en": "Hing Fat Street northbound near Victoria Park",
+    "dest_tc": "西區海底隧道",
+    "dest_en": "Western Harbour Crossing",
+    "key": "H5|WH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1907999993,
+     22.2367800014
+    ]
+   },
+   "properties": {
+    "location_id": "H6",
+    "destination_id": "ABT",
+    "name_tc": "淺水灣道北行近香島道",
+    "name_en": "Repulse Bay Road northbound near Island Road",
+    "dest_tc": "灣仔經香港仔隧道",
+    "dest_en": "Wan Chai via Aberdeen Tunnel",
+    "key": "H6|ABT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1907999993,
+     22.2367800014
+    ]
+   },
+   "properties": {
+    "location_id": "H6",
+    "destination_id": "WNCG",
+    "name_tc": "淺水灣道北行近香島道",
+    "name_en": "Repulse Bay Road northbound near Island Road",
+    "dest_tc": "灣仔經黃泥涌峽道",
+    "dest_en": "Wan Chai via Wong Nai Chung Gap Road",
+    "key": "H6|WNCG"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1784200065,
+     22.2457800018
+    ]
+   },
+   "properties": {
+    "location_id": "H7",
+    "destination_id": "ABT",
+    "name_tc": "黃竹坑道北行近香港鄉村俱樂部",
+    "name_en": "Wong Chuk Hang Road northbound near the Hong Kong Country Club",
+    "dest_tc": "灣仔經香港仔隧道",
+    "dest_en": "Wan Chai via Aberdeen Tunnel",
+    "key": "H7|ABT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1784200065,
+     22.2457800018
+    ]
+   },
+   "properties": {
+    "location_id": "H7",
+    "destination_id": "WNCG",
+    "name_tc": "黃竹坑道北行近香港鄉村俱樂部",
+    "name_en": "Wong Chuk Hang Road northbound near the Hong Kong Country Club",
+    "dest_tc": "灣仔經黃泥涌峽道",
+    "dest_en": "Wan Chai via Wong Nai Chung Gap Road",
+    "key": "H7|WNCG"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1784200065,
+     22.2457800018
+    ]
+   },
+   "properties": {
+    "location_id": "H7",
+    "destination_id": "PFL",
+    "name_tc": "黃竹坑道北行近香港鄉村俱樂部",
+    "name_en": "Wong Chuk Hang Road northbound near the Hong Kong Country Club",
+    "dest_tc": "中區經薄扶林道",
+    "dest_en": "Central via Pok Fu Lam Road",
+    "key": "H7|PFL"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1710800051,
+     22.2505000063
+    ]
+   },
+   "properties": {
+    "location_id": "H8",
+    "destination_id": "ABT",
+    "name_tc": "黃竹坑道東行近香港仔運動場",
+    "name_en": "Wong Chuk Hang Road eastbound near Aberdeen Sports Ground",
+    "dest_tc": "灣仔經香港仔隧道",
+    "dest_en": "Wan Chai via Aberdeen Tunnel",
+    "key": "H8|ABT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1710800051,
+     22.2505000063
+    ]
+   },
+   "properties": {
+    "location_id": "H8",
+    "destination_id": "WNCG",
+    "name_tc": "黃竹坑道東行近香港仔運動場",
+    "name_en": "Wong Chuk Hang Road eastbound near Aberdeen Sports Ground",
+    "dest_tc": "灣仔經黃泥涌峽道",
+    "dest_en": "Wan Chai via Wong Nai Chung Gap Road",
+    "key": "H8|WNCG"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1601700033,
+     22.2461300073
+    ]
+   },
+   "properties": {
+    "location_id": "H9",
+    "destination_id": "ABT",
+    "name_tc": "鴨脷洲橋道北行近黃竹坑道",
+    "name_en": "Ap Lei Chau Bridge Road northbound near Wong Chuk Hang Road",
+    "dest_tc": "灣仔經香港仔隧道",
+    "dest_en": "Wan Chai via Aberdeen Tunnel",
+    "key": "H9|ABT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1601700033,
+     22.2461300073
+    ]
+   },
+   "properties": {
+    "location_id": "H9",
+    "destination_id": "PFL",
+    "name_tc": "鴨脷洲橋道北行近黃竹坑道",
+    "name_en": "Ap Lei Chau Bridge Road northbound near Wong Chuk Hang Road",
+    "dest_tc": "中區經薄扶林道",
+    "dest_en": "Central via Pok Fu Lam Road",
+    "key": "H9|PFL"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2213465474,
+     22.2852358865
+    ]
+   },
+   "properties": {
+    "location_id": "H11",
+    "destination_id": "CH",
+    "name_tc": "東區走廊西行近鯉景灣",
+    "name_en": "Island Eastern Corridor westbound near Lei King Wan",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "H11|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2213465474,
+     22.2852358865
+    ]
+   },
+   "properties": {
+    "location_id": "H11",
+    "destination_id": "EH",
+    "name_tc": "東區走廊西行近鯉景灣",
+    "name_en": "Island Eastern Corridor westbound near Lei King Wan",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "H11|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1667863451,
+     22.3150449154
+    ]
+   },
+   "properties": {
+    "location_id": "K01",
+    "destination_id": "CH",
+    "name_tc": "渡船街南行近富榮花園",
+    "name_en": "Ferry Street southbound near Charming Garden",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "K01|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1667863451,
+     22.3150449154
+    ]
+   },
+   "properties": {
+    "location_id": "K01",
+    "destination_id": "WH",
+    "name_tc": "渡船街南行近富榮花園",
+    "name_en": "Ferry Street southbound near Charming Garden",
+    "dest_tc": "西區海底隧道",
+    "dest_en": "Western Harbour Crossing",
+    "key": "K01|WH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1784747445,
+     22.3058964934
+    ]
+   },
+   "properties": {
+    "location_id": "K02",
+    "destination_id": "CH",
+    "name_tc": "加士居道東行近香港理工大學",
+    "name_en": "Gascoigne Road eastbound near the Hong Kong Polytechnic University",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "K02|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1784747445,
+     22.3058964934
+    ]
+   },
+   "properties": {
+    "location_id": "K02",
+    "destination_id": "EH",
+    "name_tc": "加士居道東行近香港理工大學",
+    "name_en": "Gascoigne Road eastbound near the Hong Kong Polytechnic University",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "K02|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1783782646,
+     22.3241822027
+    ]
+   },
+   "properties": {
+    "location_id": "K03",
+    "destination_id": "CH",
+    "name_tc": "窩打老道南行近九龍醫院",
+    "name_en": "Waterloo Road southbound near Kowloon Hospital",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "K03|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1783782646,
+     22.3241822027
+    ]
+   },
+   "properties": {
+    "location_id": "K03",
+    "destination_id": "EH",
+    "name_tc": "窩打老道南行近九龍醫院",
+    "name_en": "Waterloo Road southbound near Kowloon Hospital",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "K03|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1783782646,
+     22.3241822027
+    ]
+   },
+   "properties": {
+    "location_id": "K03",
+    "destination_id": "WH",
+    "name_tc": "窩打老道南行近九龍醫院",
+    "name_en": "Waterloo Road southbound near Kowloon Hospital",
+    "dest_tc": "西區海底隧道",
+    "dest_en": "Western Harbour Crossing",
+    "key": "K03|WH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1769319016,
+     22.3133106287
+    ]
+   },
+   "properties": {
+    "location_id": "K04",
+    "destination_id": "CH",
+    "name_tc": "公主道南行近愛民邨",
+    "name_en": "Princess Margaret Road southbound near Oi Man Estate",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "K04|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1769319016,
+     22.3133106287
+    ]
+   },
+   "properties": {
+    "location_id": "K04",
+    "destination_id": "WH",
+    "name_tc": "公主道南行近愛民邨",
+    "name_en": "Princess Margaret Road southbound near Oi Man Estate",
+    "dest_tc": "西區海底隧道",
+    "dest_en": "Western Harbour Crossing",
+    "key": "K04|WH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2067320545,
+     22.3199027273
+    ]
+   },
+   "properties": {
+    "location_id": "K05",
+    "destination_id": "CH",
+    "name_tc": "啟福道北行近油站",
+    "name_en": "Kai Fuk Road northbound near the petrol stations",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "K05|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2067320545,
+     22.3199027273
+    ]
+   },
+   "properties": {
+    "location_id": "K05",
+    "destination_id": "EH",
+    "name_tc": "啟福道北行近油站",
+    "name_en": "Kai Fuk Road northbound near the petrol stations",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "K05|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1840841333,
+     22.3091774844
+    ]
+   },
+   "properties": {
+    "location_id": "K06",
+    "destination_id": "CH",
+    "name_tc": "漆咸道北南行近佛光街遊樂場",
+    "name_en": "Chatham Road North southbound near Fat Kwong Street Playground",
+    "dest_tc": "紅磡海底隧道",
+    "dest_en": "Cross Harbour Tunnel",
+    "key": "K06|CH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1840841333,
+     22.3091774844
+    ]
+   },
+   "properties": {
+    "location_id": "K06",
+    "destination_id": "WH",
+    "name_tc": "漆咸道北南行近佛光街遊樂場",
+    "name_en": "Chatham Road North southbound near Fat Kwong Street Playground",
+    "dest_tc": "西區海底隧道",
+    "dest_en": "Western Harbour Crossing",
+    "key": "K06|WH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1525485135,
+     22.3270282865
+    ]
+   },
+   "properties": {
+    "location_id": "K07",
+    "destination_id": "ACTT",
+    "name_tc": "西九龍公路西行近港鐵南昌站",
+    "name_en": "West Kowloon Highway westbound near MTR Nam Cheong Station",
+    "dest_tc": "機場經三號幹線",
+    "dest_en": "Airport via Route 3",
+    "key": "K07|ACTT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1525485135,
+     22.3270282865
+    ]
+   },
+   "properties": {
+    "location_id": "K07",
+    "destination_id": "ATSCA",
+    "name_tc": "西九龍公路西行近港鐵南昌站",
+    "name_en": "West Kowloon Highway westbound near MTR Nam Cheong Station",
+    "dest_tc": "機場經八號幹線",
+    "dest_en": "Airport via Route 8",
+    "key": "K07|ATSCA"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1443492701,
+     22.3021572958
+    ]
+   },
+   "properties": {
+    "location_id": "N01",
+    "destination_id": "ATL",
+    "name_tc": "洪天路南行近洪志路",
+    "name_en": "Hung Tin Road southbound near junction with Hung Chi Road",
+    "dest_tc": "機場經大欖隧道",
+    "dest_en": "Airport via Tai Lam Tunnel",
+    "key": "N01|ATL"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1443492701,
+     22.3021572958
+    ]
+   },
+   "properties": {
+    "location_id": "N01",
+    "destination_id": "TMCLK",
+    "name_tc": "洪天路南行近洪志路",
+    "name_en": "Hung Tin Road southbound near junction with Hung Chi Road",
+    "dest_tc": "機場經屯門赤鱲角隧道",
+    "dest_en": "Airport via Tuen Mun Chek Lap Kok Tunnel",
+    "key": "N01|TMCLK"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0161400045,
+     22.4404900032
+    ]
+   },
+   "properties": {
+    "location_id": "N02",
+    "destination_id": "ATL",
+    "name_tc": "朗天路南行近柏麗豪園",
+    "name_en": "Long Tin Road southbound near Parkside Villa",
+    "dest_tc": "機場經大欖隧道",
+    "dest_en": "Airport via Tai Lam Tunnel",
+    "key": "N02|ATL"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0161400045,
+     22.4404900032
+    ]
+   },
+   "properties": {
+    "location_id": "N02",
+    "destination_id": "TMCLK",
+    "name_tc": "朗天路南行近柏麗豪園",
+    "name_en": "Long Tin Road southbound near Parkside Villa",
+    "dest_tc": "機場經屯門赤鱲角隧道",
+    "dest_en": "Airport via Tuen Mun Chek Lap Kok Tunnel",
+    "key": "N02|TMCLK"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0309259942,
+     22.434100123
+    ]
+   },
+   "properties": {
+    "location_id": "N03",
+    "destination_id": "SSYLH",
+    "name_tc": "元朗公路東行近十八鄉交匯處",
+    "name_en": "Yuen Long Highway eastbound near Shap Pat Heung Interchange",
+    "dest_tc": "上水經九號幹線",
+    "dest_en": "Sheung Shui via Route 9",
+    "key": "N03|SSYLH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0309259942,
+     22.434100123
+    ]
+   },
+   "properties": {
+    "location_id": "N03",
+    "destination_id": "SSCPR",
+    "name_tc": "元朗公路東行近十八鄉交匯處",
+    "name_en": "Yuen Long Highway eastbound near Shap Pat Heung Interchange",
+    "dest_tc": "上水經青山公路",
+    "dest_en": "Sheung Shui via Castle Peak Road",
+    "key": "N03|SSCPR"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1747800077,
+     22.4462200031
+    ]
+   },
+   "properties": {
+    "location_id": "N05",
+    "destination_id": "TLH",
+    "name_tc": "大埔公路東行近廣福邨",
+    "name_en": "Tai Po Road eastbound near Kwong Fuk Estate",
+    "dest_tc": "沙田經吐露港公路",
+    "dest_en": "Shatin via Tolo Highway",
+    "key": "N05|TLH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1747800077,
+     22.4462200031
+    ]
+   },
+   "properties": {
+    "location_id": "N05",
+    "destination_id": "TPR",
+    "name_tc": "大埔公路東行近廣福邨",
+    "name_en": "Tai Po Road eastbound near Kwong Fuk Estate",
+    "dest_tc": "沙田經大埔公路",
+    "dest_en": "Shatin via Tai Po Road",
+    "key": "N05|TPR"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1779600076,
+     22.3769100018
+    ]
+   },
+   "properties": {
+    "location_id": "N06",
+    "destination_id": "TSCA",
+    "name_tc": "青沙公路西行近城門河道",
+    "name_en": "Tsing Sha Highway westbound near Shing Mun River Channel",
+    "dest_tc": "九龍(西)經八號幹線",
+    "dest_en": "Kowloon (W) via Route 8",
+    "key": "N06|TSCA"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1779600076,
+     22.3769100018
+    ]
+   },
+   "properties": {
+    "location_id": "N06",
+    "destination_id": "KTPR",
+    "name_tc": "青沙公路西行近城門河道",
+    "name_en": "Tsing Sha Highway westbound near Shing Mun River Channel",
+    "dest_tc": "九龍經大埔公路",
+    "dest_en": "Kowloon via Tai Po Road",
+    "key": "N06|KTPR"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2714000417,
+     22.3835041817
+    ]
+   },
+   "properties": {
+    "location_id": "N07",
+    "destination_id": "CWBR",
+    "name_tc": "福民路北行近普通道",
+    "name_en": "Fuk Man Road northbound near Po Tung Road",
+    "dest_tc": "九龍經清水灣道",
+    "dest_en": "Kowloon via Clear Water Bay Road",
+    "key": "N07|CWBR"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2714000417,
+     22.3835041817
+    ]
+   },
+   "properties": {
+    "location_id": "N07",
+    "destination_id": "MOS",
+    "name_tc": "福民路北行近普通道",
+    "name_en": "Fuk Man Road northbound near Po Tung Road",
+    "dest_tc": "九龍經二號幹線",
+    "dest_en": "Kowloon via Route 2",
+    "key": "N07|MOS"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.262658144,
+     22.3190464547
+    ]
+   },
+   "properties": {
+    "location_id": "N08",
+    "destination_id": "TKOLTT",
+    "name_tc": "寶順路南行近頌明苑",
+    "name_en": "Po Shun Road southbound near Chung Ming Court",
+    "dest_tc": "九龍經將軍澳藍田隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Lam Tin Tunnel",
+    "key": "N08|TKOLTT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.262658144,
+     22.3190464547
+    ]
+   },
+   "properties": {
+    "location_id": "N08",
+    "destination_id": "TKOT",
+    "name_tc": "寶順路南行近頌明苑",
+    "name_en": "Po Shun Road southbound near Chung Ming Court",
+    "dest_tc": "九龍經將軍澳隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Tunnel",
+    "key": "N08|TKOT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2626800051,
+     22.3141000003
+    ]
+   },
+   "properties": {
+    "location_id": "N09",
+    "destination_id": "TKOLTT",
+    "name_tc": "環保大道西行近香港單車館",
+    "name_en": "Wan Po Road westbound near Hong Kong Velodrome",
+    "dest_tc": "九龍經將軍澳藍田隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Lam Tin Tunnel",
+    "key": "N09|TKOLTT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2626800051,
+     22.3141000003
+    ]
+   },
+   "properties": {
+    "location_id": "N09",
+    "destination_id": "TKOT",
+    "name_tc": "環保大道西行近香港單車館",
+    "name_en": "Wan Po Road westbound near Hong Kong Velodrome",
+    "dest_tc": "九龍經將軍澳隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Tunnel",
+    "key": "N09|TKOT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2579800036,
+     22.3161000055
+    ]
+   },
+   "properties": {
+    "location_id": "N10",
+    "destination_id": "TKOLTT",
+    "name_tc": "寶康路南行近九巴將軍澳車廠",
+    "name_en": "Po Hong Road southbound near KMB Tseung Kwan O Depot",
+    "dest_tc": "九龍經將軍澳藍田隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Lam Tin Tunnel",
+    "key": "N10|TKOLTT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2579800036,
+     22.3161000055
+    ]
+   },
+   "properties": {
+    "location_id": "N10",
+    "destination_id": "TKOT",
+    "name_tc": "寶康路南行近九巴將軍澳車廠",
+    "name_en": "Po Hong Road southbound near KMB Tseung Kwan O Depot",
+    "dest_tc": "九龍經將軍澳隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Tunnel",
+    "key": "N10|TKOT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2567900026,
+     22.3058900068
+    ]
+   },
+   "properties": {
+    "location_id": "N11",
+    "destination_id": "TKOLTT",
+    "name_tc": "寶邑路西行近調景嶺體育館",
+    "name_en": "Po Yap Road westbound near Tiu Keng Leng Sports Centre",
+    "dest_tc": "九龍經將軍澳藍田隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Lam Tin Tunnel",
+    "key": "N11|TKOLTT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2567900026,
+     22.3058900068
+    ]
+   },
+   "properties": {
+    "location_id": "N11",
+    "destination_id": "TKOT",
+    "name_tc": "寶邑路西行近調景嶺體育館",
+    "name_en": "Po Yap Road westbound near Tiu Keng Leng Sports Centre",
+    "dest_tc": "九龍經將軍澳隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Tunnel",
+    "key": "N11|TKOT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2567900026,
+     22.3058900068
+    ]
+   },
+   "properties": {
+    "location_id": "N11",
+    "destination_id": "EH",
+    "name_tc": "寶邑路西行近調景嶺體育館",
+    "name_en": "Po Yap Road westbound near Tiu Keng Leng Sports Centre",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "N11|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.255840005,
+     22.3067500051
+    ]
+   },
+   "properties": {
+    "location_id": "N12",
+    "destination_id": "TKOLTT",
+    "name_tc": "寶順路南行近調景嶺體育館",
+    "name_en": "Po Shun Road southbound near Tiu Keng Leng Sports Centre",
+    "dest_tc": "九龍經將軍澳藍田隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Lam Tin Tunnel",
+    "key": "N12|TKOLTT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.255840005,
+     22.3067500051
+    ]
+   },
+   "properties": {
+    "location_id": "N12",
+    "destination_id": "EH",
+    "name_tc": "寶順路南行近調景嶺體育館",
+    "name_en": "Po Shun Road southbound near Tiu Keng Leng Sports Centre",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "N12|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2549800044,
+     22.3055400047
+    ]
+   },
+   "properties": {
+    "location_id": "N13",
+    "destination_id": "TKOLTT",
+    "name_tc": "翠嶺路東行近調景嶺體育館",
+    "name_en": "Chui Ling Road eastbound near Tiu Keng Leng Sports Centre",
+    "dest_tc": "九龍經將軍澳藍田隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Lam Tin Tunnel",
+    "key": "N13|TKOLTT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2549800044,
+     22.3055400047
+    ]
+   },
+   "properties": {
+    "location_id": "N13",
+    "destination_id": "TKOT",
+    "name_tc": "翠嶺路東行近調景嶺體育館",
+    "name_en": "Chui Ling Road eastbound near Tiu Keng Leng Sports Centre",
+    "dest_tc": "九龍經將軍澳隧道",
+    "dest_en": "Kowloon via Tseung Kwan O Tunnel",
+    "key": "N13|TKOT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2549800044,
+     22.3055400047
+    ]
+   },
+   "properties": {
+    "location_id": "N13",
+    "destination_id": "EH",
+    "name_tc": "翠嶺路東行近調景嶺體育館",
+    "name_en": "Chui Ling Road eastbound near Tiu Keng Leng Sports Centre",
+    "dest_tc": "東區海底隧道",
+    "dest_en": "Eastern Harbour Crossing",
+    "key": "N13|EH"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2073479585,
+     22.4047970232
+    ]
+   },
+   "properties": {
+    "location_id": "SJ1",
+    "destination_id": "LRT",
+    "name_tc": "大埔公路南行近沙田馬場",
+    "name_en": "Tai Po Road southbound near Sha Tin Racecourse",
+    "dest_tc": "九龍(中)獅子山隧道",
+    "dest_en": "Kowloon (C) via Lion Rock Tunnel",
+    "key": "SJ1|LRT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2073479585,
+     22.4047970232
+    ]
+   },
+   "properties": {
+    "location_id": "SJ1",
+    "destination_id": "TSCA",
+    "name_tc": "大埔公路南行近沙田馬場",
+    "name_en": "Tai Po Road southbound near Sha Tin Racecourse",
+    "dest_tc": "九龍(西)經八號幹線",
+    "dest_en": "Kowloon (W) via Route 8",
+    "key": "SJ1|TSCA"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2073479585,
+     22.4047970232
+    ]
+   },
+   "properties": {
+    "location_id": "SJ1",
+    "destination_id": "SMT",
+    "name_tc": "大埔公路南行近沙田馬場",
+    "name_en": "Tai Po Road southbound near Sha Tin Racecourse",
+    "dest_tc": "荃灣經城門隧道",
+    "dest_en": "Tsuen Wan via Shing Mun Tunnel",
+    "key": "SJ1|SMT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2105939247,
+     22.3897577844
+    ]
+   },
+   "properties": {
+    "location_id": "SJ2",
+    "destination_id": "LRT",
+    "name_tc": "大老山隧道公路南行近石門",
+    "name_en": "Tate's Cairn Highway southbound near Shek Mun",
+    "dest_tc": "九龍(中)獅子山隧道",
+    "dest_en": "Kowloon (C) via Lion Rock Tunnel",
+    "key": "SJ2|LRT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2105939247,
+     22.3897577844
+    ]
+   },
+   "properties": {
+    "location_id": "SJ2",
+    "destination_id": "TCT",
+    "name_tc": "大老山隧道公路南行近石門",
+    "name_en": "Tate's Cairn Highway southbound near Shek Mun",
+    "dest_tc": "九龍(東)經大老山隧道",
+    "dest_en": "Kowloon (E) via Tate's Cairn Tunnel",
+    "key": "SJ2|TCT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2105939247,
+     22.3897577844
+    ]
+   },
+   "properties": {
+    "location_id": "SJ2",
+    "destination_id": "TSCA",
+    "name_tc": "大老山隧道公路南行近石門",
+    "name_en": "Tate's Cairn Highway southbound near Shek Mun",
+    "dest_tc": "九龍(西)經八號幹線",
+    "dest_en": "Kowloon (W) via Route 8",
+    "key": "SJ2|TSCA"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2069726194,
+     22.4269757877
+    ]
+   },
+   "properties": {
+    "location_id": "SJ3",
+    "destination_id": "LRT",
+    "name_tc": "吐露港公路南行近科學園",
+    "name_en": "Tolo Highway southbound near the Science Park",
+    "dest_tc": "九龍(中)獅子山隧道",
+    "dest_en": "Kowloon (C) via Lion Rock Tunnel",
+    "key": "SJ3|LRT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2069726194,
+     22.4269757877
+    ]
+   },
+   "properties": {
+    "location_id": "SJ3",
+    "destination_id": "TCT",
+    "name_tc": "吐露港公路南行近科學園",
+    "name_en": "Tolo Highway southbound near the Science Park",
+    "dest_tc": "九龍(東)經大老山隧道",
+    "dest_en": "Kowloon (E) via Tate's Cairn Tunnel",
+    "key": "SJ3|TCT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2069726194,
+     22.4269757877
+    ]
+   },
+   "properties": {
+    "location_id": "SJ3",
+    "destination_id": "TSCA",
+    "name_tc": "吐露港公路南行近科學園",
+    "name_en": "Tolo Highway southbound near the Science Park",
+    "dest_tc": "九龍(西)經八號幹線",
+    "dest_en": "Kowloon (W) via Route 8",
+    "key": "SJ3|TSCA"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0537104576,
+     22.4641068283
+    ]
+   },
+   "properties": {
+    "location_id": "SJ4",
+    "destination_id": "TKTL",
+    "name_tc": "新田公路南行近錦綉花園",
+    "name_en": "San Tin Highway southbound near Fairview Park",
+    "dest_tc": "汀九經大欖隧道",
+    "dest_en": "Ting Kau via Tai Lam Tunnel",
+    "key": "SJ4|TKTL"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0537104576,
+     22.4641068283
+    ]
+   },
+   "properties": {
+    "location_id": "SJ4",
+    "destination_id": "TKTM",
+    "name_tc": "新田公路南行近錦綉花園",
+    "name_en": "San Tin Highway southbound near Fairview Park",
+    "dest_tc": "汀九經屯門公路",
+    "dest_en": "Ting Kau via Tuen Mun Road",
+    "key": "SJ4|TKTM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0537104576,
+     22.4641068283
+    ]
+   },
+   "properties": {
+    "location_id": "SJ4",
+    "destination_id": "ATL",
+    "name_tc": "新田公路南行近錦綉花園",
+    "name_en": "San Tin Highway southbound near Fairview Park",
+    "dest_tc": "機場經大欖隧道",
+    "dest_en": "Airport via Tai Lam Tunnel",
+    "key": "SJ4|ATL"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0537104576,
+     22.4641068283
+    ]
+   },
+   "properties": {
+    "location_id": "SJ4",
+    "destination_id": "TMCLK",
+    "name_tc": "新田公路南行近錦綉花園",
+    "name_en": "San Tin Highway southbound near Fairview Park",
+    "dest_tc": "機場經屯門赤鱲角隧道",
+    "dest_en": "Airport via Tuen Mun Chek Lap Kok Tunnel",
+    "key": "SJ4|TMCLK"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.9772265887,
+     22.4010757707
+    ]
+   },
+   "properties": {
+    "location_id": "SJ5",
+    "destination_id": "TWTM",
+    "name_tc": "屯門公路南行近井財街",
+    "name_en": "Tuen Mun Road southbound near Tseng Choi Street",
+    "dest_tc": "荃灣(西)經屯門公路",
+    "dest_en": "Tsuen Wan (W) via Tuen Mun Road",
+    "key": "SJ5|TWTM"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.9772265887,
+     22.4010757707
+    ]
+   },
+   "properties": {
+    "location_id": "SJ5",
+    "destination_id": "TWCP",
+    "name_tc": "屯門公路南行近井財街",
+    "name_en": "Tuen Mun Road southbound near Tseng Choi Street",
+    "dest_tc": "荃灣(西)經青山公路",
+    "dest_en": "Tsuen Wan (W) via Castle Peak Road",
+    "key": "SJ5|TWCP"
+   }
+  }
+ ]
+}

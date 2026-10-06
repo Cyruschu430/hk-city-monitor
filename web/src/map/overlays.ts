@@ -636,6 +636,28 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     filter: ["!", ["has", "point_count"]],
     layout: { "icon-image": glyph, "icon-size": size as never, "icon-allow-overlap": true },
   });
+  // Per-feature text label (e.g. journey-time minutes): the adapter writes the
+  // text in `text_prop` and the colour in `label_color` — a "coloured circle +
+  // number" like the tunnel signs' own look, with zero expressions in config.
+  if (def.text_prop) {
+    map.addLayer({
+      id: `${id}-label`,
+      type: "symbol",
+      source: id,
+      filter: ["!", ["has", "point_count"]],
+      layout: {
+        "text-field": ["get", def.text_prop],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": def.text_size ?? 10,
+        "text-allow-overlap": true,
+      },
+      paint: {
+        "text-color": ["coalesce", ["get", "label_color"], "#ffffff"] as never,
+        "text-halo-color": "rgba(8,14,24,.9)",
+        "text-halo-width": 1.2,
+      },
+    });
+  }
   // THE fix for "weather station layer click完冇attribute pop up": this path had
   // no click handler at all, so 氣象站 (and any point layer without its own
   // popup) was inert under the cursor.
@@ -644,6 +666,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   else if (def.popup === "aqhi_popup") aqhiPopup(map, `${id}-point`);
   else if (def.popup === "beach_popup") beachPopup(map, `${id}-point`);
   else if (def.popup === "mtr_bus_popup") mtrBusPopup(map, `${id}-point`);
+  else if (def.popup === "journey_popup") journeyPopup(map, `${id}-point`);
   else attributePopup(map, `${id}-point`);
 
   // Vacancy refreshes on its own cadence: positions are static, numbers are
@@ -761,6 +784,34 @@ function beachPopup(map: maplibregl.Map, layerId: string): void {
         `<div class="aed-pop"><b>${esc(p["name"] ?? "")}</b>` +
           `<div style="color:${COL[key] ?? "#fff"};font-weight:600;margin-top:6px">${esc(p["gradeTc"] ?? "")}</div>` +
           `<div style="color:var(--night-dim);font-size:11px;margin-top:4px">${tc ? "EPD 泳灘水質（採樣後 48 小時內）" : "EPD beach water quality (within 48h of sampling)"}</div></div>`,
+      )
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+
+/** Journey-time popup: the approach road, its destination, and the publisher's
+ *  own minutes, coloured by the same congestion signal the map label uses. */
+function journeyPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const name = tc ? String(p["name_tc"] ?? "") : String(p["name_en"] ?? p["name_tc"] ?? "");
+    const dest = tc ? String(p["dest_tc"] ?? "") : String(p["dest_en"] ?? p["dest_tc"] ?? "");
+    const minutes = p["minutes"] != null ? String(p["minutes"]) : "";
+    const colour = String(p["label_color"] ?? "#ffffff");
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "280px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<div class="aed-pop"><b>${esc(name)}</b>` +
+          `<div style="color:var(--night-dim);font-size:11px;margin-top:2px">${tc ? "前往" : "to"} ${esc(dest)}</div>` +
+          (minutes ? `<div style="color:${esc(colour)};font-weight:700;font-size:18px;margin-top:6px">${esc(minutes)} ${tc ? "分鐘" : "min"}</div>` : "") +
+          `<div style="color:var(--night-dim);font-size:11px;margin-top:4px">${tc ? "行車時間指示（運輸署）" : "Journey time indicator (TD)"}</div></div>`,
       )
       .addTo(map);
   });

@@ -912,6 +912,37 @@ export function parseMtrBusEta(json: unknown): Map<string, MtrBusEta> {
   return out;
 }
 
+/** Journey Time Indicators (2nd Gen): the TD XML maps location_id +
+ *  destination_id → minutes + COLOUR_ID. Verified 2026-10-06 at 22:23: 82/83
+ *  readings were 3 with 4–10 min (night, free-flow) and the single 28-min leg
+ *  was 2 → 3 = green, 2 = amber, 1 = red. JOURNEY_DATA is the publisher's own
+ *  number — displayed verbatim, never recomputed. Key: `${loc}|${dest}` joins
+ *  the CSDI indicator-locations file by id with zero name matching. */
+export interface JourneyTimeReading {
+  minutes: number;
+  colour: 1 | 2 | 3;
+}
+export function parseJourneyTime(xml: string): Map<string, JourneyTimeReading> {
+  const out = new Map<string, JourneyTimeReading>();
+  const re = /<jtis_journey_time>([\s\S]*?)<\/jtis_journey_time>/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(xml))) {
+    const block = m[1] ?? "";
+    const field = (name: string) => {
+      const f = block.match(new RegExp(`<${name}>([^<]*)</${name}>`));
+      return f ? f[1]!.trim() : "";
+    };
+    const loc = field("LOCATION_ID");
+    const dest = field("DESTINATION_ID");
+    if (!loc || !dest) continue;
+    const minutes = Number(field("JOURNEY_DATA"));
+    if (!Number.isFinite(minutes)) continue;
+    const colour = Number(field("COLOUR_ID"));
+    out.set(`${loc}|${dest}`, { minutes, colour: colour === 1 || colour === 2 ? colour : 3 });
+  }
+  return out;
+}
+
 /** Normalise an HKO regional-station name for the 1-minute temperature merge:
  *  strip the standard suffixes, and alias the three CSV abbreviations CSDI
  *  spells out (measured 2026-10-06: 36/39 match cleanly, these three did not).

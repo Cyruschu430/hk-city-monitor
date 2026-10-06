@@ -160,6 +160,9 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // 855 MTR feeder-bus stops with LIVE per-stop ETAs (POST per route, 5-min
   // cadence). OFF by default — a dense dot field.
   { id: "mtr_bus_stops", label: { tc: "港鐵接駁巴士", en: "MTR feeder buses" } },
+  // 80 TD journey-time indicators with LIVE minutes per approach road,
+  // coloured by congestion. OFF by default.
+  { id: "journey_time", label: { tc: "行車時間", en: "Journey time" } },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its

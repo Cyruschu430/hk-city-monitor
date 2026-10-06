@@ -182,10 +182,12 @@
     "sensor_parking_occupancy",
     "speed_panels_wall",
     "mtr_bus_status",
+    "journey_time_table",
     "crossboundary_ferry_table"
     ],
     "layers": [
     "cameras_all",
+    "journey_time",
     "control_points"
    ],
    "window": "now",
@@ -198,6 +200,7 @@
     "sensor_parking_occupancy",
     "speed_panels_wall",
     "mtr_bus_status",
+    "journey_time_table",
     "crossboundary_ferry_table"
     ]
     },

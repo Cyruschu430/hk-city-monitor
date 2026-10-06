@@ -26,7 +26,7 @@ The goal is a *verifiable* picture of the territory: a reader should be able to 
 
 ### Ten scenario modes, each answering one question
 
-The same map and the same 197 sources, rearranged around one concrete question at a time — so the dashboard answers something instead of showing everything:
+The same map and the same 198 sources, rearranged around one concrete question at a time — so the dashboard answers something instead of showing everything:
 
 | Mode | The question it answers |
 | --- | --- |
@@ -82,7 +82,7 @@ The project is built around a single principle: **OSINT depends on breadth, open
 
 ## Features
 
-Data is organised into **panels** (individual readouts) that appear in context-specific **verticals** (pre-arranged views for a scenario, such as typhoon mode). The current build ships 30 panels.
+Data is organised into **panels** (individual readouts) that appear in context-specific **verticals** (pre-arranged views for a scenario, such as typhoon mode). The current build ships 31 panels.
 
 **Live imagery**
 - Transport Department traffic snapshots (1,013 cameras, ~2-minute cadence)

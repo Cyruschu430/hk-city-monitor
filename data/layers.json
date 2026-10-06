@@ -320,6 +320,25 @@
       "refresh_ms": 300000,
       "_comment": "855 MTR feeder-bus stops (official CSV, STATION_ID = the API's busStopId) with LIVE next-bus ETAs merged per route via POST (rt.data.gov.hk, CORS *). The adapter fetches 26 routes once per 5-min refresh. popup mtr_bus_popup shows the publisher's own arrival text + delayed/suspended flags."
       },
+      {
+      "id": "journey_time",
+      "source": "ck_hk_td_sm_8_journey_time_indicators_v2",
+      "render": "list",
+      "geom": "point",
+      "symbol": "jt",
+      "title": {
+       "tc": "行車時間",
+       "en": "Journey time"
+      },
+      "popup": "journey_popup",
+      "text_prop": "minutes",
+      "text_size": 11,
+      "filters": {
+       "scope": "hk"
+      },
+      "refresh_ms": 120000,
+      "_comment": "80 TD journey-time indicator locations (CSDI td_rcd_1671692669689_59165) with LIVE minutes joined from Journeytimev2.xml by location|destination id. Each marker is a dark sign disc (jt glyph) with the minutes as a text label coloured by congestion (label_color: 1 red / 2 amber / 3 green, computed in the adapter). Popup shows the approach road, its destination and the minutes. OFF by default."
+      },
     {
       "id": "lcsd_facilities",
       "source": "lcsd_facilities",

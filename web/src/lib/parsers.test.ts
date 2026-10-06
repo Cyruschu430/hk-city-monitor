@@ -413,6 +413,21 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log("✓ 接駁巴士: busStopId join key + sentinel + earliest-wins");
 }
 
+// 17g. Journey time: TD XML → location|destination keyed minutes + colour.
+{
+  const out = P.parseJourneyTime(
+    `<jtis_journey_list><jtis_journey_time><LOCATION_ID>H1</LOCATION_ID><DESTINATION_ID>CH</DESTINATION_ID><CAPTURE_DATE>2026-10-06T22:23:00</CAPTURE_DATE><JOURNEY_TYPE>1</JOURNEY_TYPE><JOURNEY_DATA>5</JOURNEY_DATA><COLOUR_ID>3</COLOUR_ID></jtis_journey_time>` +
+      `<jtis_journey_time><LOCATION_ID>K01</LOCATION_ID><DESTINATION_ID>CH</DESTINATION_ID><JOURNEY_DATA>28</JOURNEY_DATA><COLOUR_ID>2</COLOUR_ID></jtis_journey_time>` +
+      `<jtis_journey_time><LOCATION_ID>K02</LOCATION_ID><DESTINATION_ID>CH</DESTINATION_ID><JOURNEY_DATA>9</JOURNEY_DATA><COLOUR_ID>9</COLOUR_ID></jtis_journey_time></jtis_journey_list>`,
+  );
+  assert.equal(out.size, 3, "three readings");
+  assert.equal(out.get("H1|CH")!.minutes, 5, "minutes verbatim");
+  assert.equal(out.get("H1|CH")!.colour, 3, "colour 3 = green");
+  assert.equal(out.get("K01|CH")!.colour, 2, "colour 2 = amber");
+  assert.equal(out.get("K02|CH")!.colour, 3, "unknown colour normalises to green");
+  console.log("✓ 行車時間: location|destination join key + colour normalisation");
+}
+
 // 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).
 {
   const cells = P.parseImmdQueue({ HYW: { arrQueue: 0, depQueue: 0 }, LWS: { arrQueue: 25, depQueue: 18 } }, ["HYW", "LWS"]);

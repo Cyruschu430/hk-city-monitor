@@ -96,6 +96,12 @@ export interface LayerDefRaw {
       Absent = solid. Config-not-code; the builder is shared with the MTR
       network, which stays solid. */
   dash?: number[];
+  /** Per-feature text label on a point layer (journey-time minutes). The
+      adapter writes the value into this property and the colour into
+      `label_color` — no expressions in config, the colour logic lives with
+      the data. */
+  text_prop?: string;
+  text_size?: number;
 }
 
 /** The publisher's name in the ACTIVE language, falling back to the Chinese one.

@@ -58,7 +58,11 @@ export type GlyphId =
   | "aed"
   // 貯油裝置 (oil storage installations). A tank rather than a generic pin: on this map the
   // difference between an oil installation and every other point layer IS the layer.
-  | "oil-tank";
+  | "oil-tank"
+  // Journey-time indicators (TD): a dark sign disc with a clock — reads "time",
+  // with the live minutes drawn as a text label on top (colour = congestion,
+  // computed in the adapter). The look of the tunnel signs themselves.
+  | "jt";
 
 /** AED: the universal defibrillator mark — a heart with a bolt through it. */
 function drawAed(ctx: CanvasRenderingContext2D, size: number): void {
@@ -768,7 +772,43 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   "wind-flow": { draw: drawWindFlow },
   blocks: { draw: drawBlocks },
   aerial: { draw: drawAerial },
+  // Journey-time indicators: a dark sign disc with a clock; the live minutes
+  // are a text label on top (coloured by congestion in the adapter). The disc
+  // is kept dark so the label colour — the actual signal — stays the loudest
+  // thing on the marker.
+  jt: { draw: drawJt, disc: "rgba(8,14,24,.85)" },
 };
+
+/** Journey-time indicator: a dark sign disc with a small clock (two hands) so
+ *  it reads "time"; the live minutes sit on top as a text label whose colour
+ *  is the congestion level (computed in the adapter, never here). At the 14px
+ *  legend size it is a ringed dot, which is all it needs to be. */
+function drawJt(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.beginPath();
+  ctx.arc(0, 0, 11, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(8,14,24,.85)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,.9)";
+  ctx.lineWidth = 1.6;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 0, 7, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(255,255,255,.55)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, -4.4); // minute hand
+  ctx.moveTo(0, 0);
+  ctx.lineTo(2.6, 1.4); // hour hand
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 1.1;
+  ctx.stroke();
+  ctx.restore();
+}
 
 /** Is this string a glyph this build can actually draw?
  *

@@ -1149,6 +1149,56 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async td_journey_time_v2(src, _panel, ctx) {
+    // Live journey time: ONE XML for the whole territory, joined onto the CSDI
+    // indicator locations by location_id|destination_id. The label colour is
+    // computed HERE (TD COLOUR_ID → hex) so the point layer needs no colour
+    // expressions — the "coloured circle + minutes" look (the tunnel signs'
+    // own look) is just a text layer reading per-feature `label_color`.
+    const [xmlRes, locRes] = await Promise.all([
+      fetch(src.url, { signal: AbortSignal.timeout(25_000) }),
+      get(ctx.registry.byId.get("td_journey_time_locations")!),
+    ]);
+    if (!xmlRes.ok) throw new Error(`HTTP ${xmlRes.status}`);
+    const readings = P.parseJourneyTime(await xmlRes.text());
+    const locs = (await json(locRes)) as GeoJSON.FeatureCollection;
+    const tc = lang() === "tc";
+    const COLOUR_HEX: Record<number, string> = { 1: "#ef4444", 2: "#f59e0b", 3: "#22c55e" };
+    const features: GeoJSON.Feature[] = [];
+    const tunnelRows: { loc: string; dest: string; min: number }[] = [];
+    for (const f of locs.features ?? []) {
+      const p = (f.properties ?? {}) as Record<string, unknown>;
+      const r = readings.get(String(p["key"] ?? ""));
+      const dest = String(p["destination_id"] ?? "");
+      if (r && ["CH", "EH", "WH"].includes(dest)) {
+        tunnelRows.push({ loc: String(p["name_tc"] ?? p["name_en"] ?? ""), dest, min: r.minutes });
+      }
+      features.push({
+        type: "Feature",
+        geometry: f.geometry,
+        properties: { ...(p as object), ...(r ? { minutes: String(r.minutes), label_color: COLOUR_HEX[r.colour] } : {}) },
+      });
+    }
+    const destNames: Record<string, string> = {
+      CH: tc ? "紅磡海底隧道" : "Cross-Harbour Tunnel",
+      EH: tc ? "東區海底隧道" : "Eastern Harbour Crossing",
+      WH: tc ? "西區海底隧道" : "Western Harbour Crossing",
+    };
+    const rows = tunnelRows
+      .sort((a, b) => (a.dest < b.dest ? -1 : a.dest > b.dest ? 1 : a.min - b.min))
+      .map((t) => [destNames[t.dest] ?? t.dest, t.loc, `${t.min} ${tc ? "分鐘" : "min"}`]);
+    return {
+      data: {
+        kind: "table",
+        columns: [tc ? "隧道" : "Tunnel", tc ? "起點" : "From", tc ? "預計" : "ETA"],
+        rows,
+      },
+      observedAt: new Date(),
+      state: { records: features.filter((f) => (f.properties as Record<string, unknown>)["minutes"] != null).length },
+      geo: { type: "FeatureCollection", features },
+    };
+  },
+
   async td_carpark_vacancy(src, panel, ctx) {
     const max = Number(panel.params?.["max_rows"] ?? 10);
     const infoSrc = ctx.registry.byId.get("td_carpark_info");

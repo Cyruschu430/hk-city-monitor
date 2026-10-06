@@ -1064,6 +1064,42 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async epd_beach_grading(src, _panel, ctx) {
+    // Live daily grading merged onto the 39 static beach positions by name —
+    // the same adapter feeds the panel counts and the layer dots, so they can
+    // never disagree (the AQHI pattern).
+    const xml = await text(await get(src));
+    const grades = P.parseBeachRss(xml);
+    const tc = lang() === "tc";
+    const counts: Record<string, number> = { good: 0, fair: 0, poor: 0, verypoor: 0, unknown: 0 };
+    for (const g of grades) counts[g.gradeKey] = (counts[g.gradeKey] ?? 0) + 1;
+    const cells: StatusCell[] = [
+      { label: tc ? "良好（一級）" : "Good (1)", value: String(counts.good), status: 0 },
+      { label: tc ? "一般（二級）" : "Fair (2)", value: String(counts.fair), status: 1 },
+      { label: tc ? "欠佳（三級）" : "Poor (3)", value: String(counts.poor), status: 2 },
+      { label: tc ? "極差（四級）" : "Very poor (4)", value: String(counts.verypoor), status: 2 },
+    ];
+    const beaches = (await json(await get(ctx.registry.byId.get("epd_beaches")!))) as GeoJSON.FeatureCollection;
+    const byName = new Map<string, GeoJSON.Feature>();
+    for (const f of beaches.features ?? []) byName.set(String((f.properties ?? {})["name"] ?? ""), f);
+    const features: GeoJSON.Feature[] = [];
+    for (const g of grades) {
+      const st = byName.get(g.name);
+      if (!st || g.lat === null || g.lon === null) continue;
+      features.push({
+        type: "Feature",
+        geometry: st.geometry,
+        properties: { ...(st.properties as object), gradeTc: g.gradeTc, gradeKey: g.gradeKey },
+      });
+    }
+    return {
+      data: { kind: "status_grid", cells },
+      observedAt: new Date(),
+      state: { records: features.length },
+      geo: { type: "FeatureCollection", features },
+    };
+  },
+
   async td_carpark_vacancy(src, panel, ctx) {
     const max = Number(panel.params?.["max_rows"] ?? 10);
     const infoSrc = ctx.registry.byId.get("td_carpark_info");

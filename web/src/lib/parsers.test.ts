@@ -368,6 +368,23 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log("✓ 感應車位: O/V 計數（欄位索引釘死）");
 }
 
+// 17e. Beach RSS: html-escaped DMS cells + grade mapping.
+{
+  const xml =
+    "<rss><channel><item><title>釣魚灣泳灘的水質被評為一般(二級)</title>" +
+    "<description>&lt;table&gt;&lt;td&gt;緯度 (北):&lt;/td&gt;&lt;td&gt;22° 21' 53&quot;&lt;/td&gt;&lt;td&gt;經度 (東):&lt;/td&gt;&lt;td&gt;114° 3' 21&quot;&lt;/td&gt;&lt;/table&gt;</description>" +
+    "</item><item><title>大浪灣泳灘的水質被評為極差(四級)</title>" +
+    "<description>&lt;table&gt;&lt;td&gt;緯度 (北):&lt;/td&gt;&lt;td&gt;22° 14' 47&quot;&lt;/td&gt;&lt;td&gt;經度 (東):&lt;/td&gt;&lt;td&gt;114° 14' 49&quot;&lt;/td&gt;&lt;/table&gt;</description>" +
+    "</item></channel></rss>";
+  const out = P.parseBeachRss(xml);
+  assert.equal(out.length, 2, "two items parsed");
+  assert.equal(out[0]!.gradeKey, "fair", "一般(二級) → fair");
+  assert.ok(out[0]!.lat !== null && Math.abs(out[0]!.lat! - (22 + 21 / 60 + 53 / 3600)) < 1e-9, "DMS lat");
+  assert.ok(out[0]!.lon !== null && Math.abs(out[0]!.lon! - (114 + 3 / 60 + 21 / 3600)) < 1e-9, "DMS lon");
+  assert.equal(out[1]!.gradeKey, "verypoor", "極差(四級) → verypoor");
+  console.log("✓ 泳灘: RSS DMS 座標 + 等級 mapping");
+}
+
 // 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).
 {
   const cells = P.parseImmdQueue({ HYW: { arrQueue: 0, depQueue: 0 }, LWS: { arrQueue: 25, depQueue: 18 } }, ["HYW", "LWS"]);

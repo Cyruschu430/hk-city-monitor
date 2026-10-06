@@ -272,7 +272,24 @@
       },
       "refresh_ms": 3600000,
       "_comment": "18 official station positions (CSDI epd_rcd_1629267205214_40635) with LIVE hourly readings merged by the same adapter the aqhi_gauge_grid panel reads — dots and gauges cannot disagree. Hourly refresh (AQHI publishes on the hour). popup aqhi_popup shows the number + health-risk band + station type + address."
-    },
+      },
+      {
+      "id": "beach_grading",
+      "source": "epd_beach_grading",
+      "render": "list",
+      "geom": "point",
+      "symbol": "beach",
+      "title": {
+       "tc": "泳灘水質",
+       "en": "Beach water quality"
+      },
+      "popup": "beach_popup",
+      "filters": {
+       "scope": "hk"
+      },
+      "refresh_ms": 3600000,
+      "_comment": "39 graded beaches (positions from the EPD RSS's own WGS84 cells) with the LIVE daily grading merged by the same adapter the beach_grading_list panel reads — dots and counts cannot disagree. Hourly refresh. popup beach_popup shows the grade in its band colour."
+      },
     {
       "id": "lcsd_facilities",
       "source": "lcsd_facilities",

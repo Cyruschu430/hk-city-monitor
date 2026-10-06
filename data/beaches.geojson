@@ -1,0 +1,551 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.05583333333333,
+     22.364722222222223
+    ]
+   },
+   "properties": {
+    "name": "釣魚灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.08638888888889,
+     22.3675
+    ]
+   },
+   "properties": {
+    "name": "近水灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.24694444444445,
+     22.24638888888889
+    ]
+   },
+   "properties": {
+    "name": "大浪灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.9563888888889,
+     22.372777777777777
+    ]
+   },
+   "properties": {
+    "name": "蝴蝶灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.98694444444445,
+     22.37361111111111
+    ]
+   },
+   "properties": {
+    "name": "新咖啡灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.98333333333333,
+     22.375833333333333
+    ]
+   },
+   "properties": {
+    "name": "舊咖啡灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.07444444444444,
+     22.3675
+    ]
+   },
+   "properties": {
+    "name": "更生灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.98,
+     22.379444444444445
+    ]
+   },
+   "properties": {
+    "name": "青山灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.03083333333333,
+     22.209444444444443
+    ]
+   },
+   "properties": {
+    "name": "長洲東灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.20222222222222,
+     22.217777777777776
+    ]
+   },
+   "properties": {
+    "name": "舂坎角泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.2911111111111,
+     22.291111111111114
+    ]
+   },
+   "properties": {
+    "name": "清水灣第一灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.28777777777778,
+     22.287222222222223
+    ]
+   },
+   "properties": {
+    "name": "清水灣第二灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.01555555555555,
+     22.298611111111114
+    ]
+   },
+   "properties": {
+    "name": "愉景灣大白灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.98805555555556,
+     22.372222222222224
+    ]
+   },
+   "properties": {
+    "name": "黃金泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.29583333333333,
+     22.356944444444444
+    ]
+   },
+   "properties": {
+    "name": "廈門灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.07083333333333,
+     22.364722222222223
+    ]
+   },
+   "properties": {
+    "name": "海美灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.11972222222222,
+     22.218888888888888
+    ]
+   },
+   "properties": {
+    "name": "洪聖爺灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.98138888888889,
+     22.37666666666667
+    ]
+   },
+   "properties": {
+    "name": "加多利灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.28833333333333,
+     22.36777777777778
+    ]
+   },
+   "properties": {
+    "name": "橋咀泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.03444444444445,
+     22.20722222222222
+    ]
+   },
+   "properties": {
+    "name": "觀音灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.0761111111111,
+     22.36777777777778
+    ]
+   },
+   "properties": {
+    "name": "麗都灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.12277777777777,
+     22.204444444444444
+    ]
+   },
+   "properties": {
+    "name": "蘆鬚城泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.95527777777778,
+     22.234166666666667
+    ]
+   },
+   "properties": {
+    "name": "下長沙泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.06166666666667,
+     22.35027777777778
+    ]
+   },
+   "properties": {
+    "name": "馬灣東灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.19833333333334,
+     22.22972222222222
+    ]
+   },
+   "properties": {
+    "name": "中灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.97583333333334,
+     22.240000000000002
+    ]
+   },
+   "properties": {
+    "name": "貝澳泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.19611111111111,
+     22.236944444444447
+    ]
+   },
+   "properties": {
+    "name": "淺水灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.25055555555555,
+     22.22861111111111
+    ]
+   },
+   "properties": {
+    "name": "石澳泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.99888888888889,
+     22.27027777777778
+    ]
+   },
+   "properties": {
+    "name": "銀礦灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.27194444444444,
+     22.322777777777777
+    ]
+   },
+   "properties": {
+    "name": "銀線灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.1975,
+     22.224999999999998
+    ]
+   },
+   "properties": {
+    "name": "南灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.215,
+     22.21333333333333
+    ]
+   },
+   "properties": {
+    "name": "聖士提反灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.21388888888889,
+     22.22111111111111
+    ]
+   },
+   "properties": {
+    "name": "赤柱正灘泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.22722222222222,
+     22.47138888888889
+    ]
+   },
+   "properties": {
+    "name": "大埔龍尾泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.07972222222222,
+     22.36916666666667
+    ]
+   },
+   "properties": {
+    "name": "汀九灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.93527777777778,
+     22.228055555555553
+    ]
+   },
+   "properties": {
+    "name": "塘福泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.26777777777778,
+     22.35777777777778
+    ]
+   },
+   "properties": {
+    "name": "三星灣泳灘",
+    "grade": "良好(一級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.22333333333333,
+     22.233055555555556
+    ]
+   },
+   "properties": {
+    "name": "龜背灣泳灘",
+    "grade": "一般(二級)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.9413888888889,
+     22.230555555555554
+    ]
+   },
+   "properties": {
+    "name": "上長沙泳灘",
+    "grade": "良好(一級)"
+   }
+  }
+ ]
+}

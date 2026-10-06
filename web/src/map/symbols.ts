@@ -17,6 +17,10 @@ export type GlyphId =
   | "station-wind"
   | "aqhi"
   | "facility"
+  // Graded beaches (EPD water quality): a teal disc with white wave crests —
+  // the sea, and deliberately neither the amber aqhi plume nor the green
+  // facility disc. The crests keep it from reading as a bare glow orb.
+  | "beach"
   | "plane"
   | "ferry"
   | "vessel"
@@ -473,6 +477,26 @@ function drawFacility(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.fill();
 }
 
+/** Graded beach: a teal disc with two white wave crests — the sea, and
+ *  deliberately neither the amber aqhi plume nor the green facility disc. */
+function drawBeach(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.beginPath();
+  ctx.arc(c, c, size * 0.30, 0, Math.PI * 2);
+  ctx.fillStyle = "#14b8a6";
+  ctx.fill();
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = Math.max(1.4, size * 0.055);
+  ctx.lineCap = "round";
+  // 兩條白色波紋：一條左上、一條右下，全部喺 disc 入面
+  ctx.beginPath();
+  ctx.arc(c - size * 0.11, c - size * 0.16, size * 0.16, -Math.PI * 0.70, Math.PI * 0.30);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(c + size * 0.11, c + size * 0.16, size * 0.16, Math.PI * 0.70, Math.PI * 1.30);
+  ctx.stroke();
+}
+
 function drawParking(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
   ctx.save();
@@ -738,6 +762,9 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   // department's. The disc carries the meaning; the centre dot keeps it from
   // reading as a glow orb (a facility is a place, not a light).
   facility: { draw: drawFacility, disc: "#34d399" },
+  // Teal, not an agency colour: beaches are the public's (same reasoning as
+  // facility). The white crests are the meaning; the disc keeps it a place.
+  beach: { draw: drawBeach, disc: "#14b8a6" },
   "wind-flow": { draw: drawWindFlow },
   blocks: { draw: drawBlocks },
   aerial: { draw: drawAerial },

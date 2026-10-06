@@ -3322,6 +3322,20 @@
    "cost": "free"
   },
   {
+   "id": "epd_beaches",
+   "group": "civic",
+   "name": "環保署 泳灘水質（位置）",
+   "name_en": "EPD Beach Water Quality (positions)",
+   "type": "geojson",
+   "url": "data/beaches.geojson",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "39 graded beaches, positions parsed from the EPD RSS's own WGS84 cells (HK1980 grid also present), built by scripts/build_beaches.py. Positions only — the daily GRADE is never baked here; the epd_beach_grading adapter merges the live grading onto these by beach name (the AQHI pattern).",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free"
+  },
+  {
    "id": "td_detector_avg_speed",
    "group": "transport",
    "name": "運輸署 交通探測器 平均車速",

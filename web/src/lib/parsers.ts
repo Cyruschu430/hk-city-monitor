@@ -831,6 +831,45 @@ export function parseSensorOccupancy(csv: string): { total: number; occupied: nu
   return { total: occupied + vacant, occupied, vacant, updated };
 }
 
+/** EPD beach water-quality RSS → per-beach grade + position. The RSS carries
+ *  its own WGS84 cells (DMS, html-escaped); scripts/build_beaches.py snapshots
+ *  the same positions so the map has geometry, but the GRADE here is always
+ *  the live RSS one. A beach the RSS stops publishing simply drops out. */
+export interface BeachGrade {
+  name: string;
+  gradeTc: string;
+  gradeKey: "good" | "fair" | "poor" | "verypoor" | "unknown";
+  lat: number | null;
+  lon: number | null;
+}
+export function parseBeachRss(xml: string): BeachGrade[] {
+  const out: BeachGrade[] = [];
+  for (const it of xml.matchAll(/<item>([\s\S]*?)<\/item>/g)) {
+    const body = it[1]!;
+    const t = body.match(/<title>([\s\S]*?)<\/title>/);
+    if (!t) continue;
+    const m = t[1]!.trim().match(/^(.*?泳灘)的水質被評為(.*)$/);
+    if (!m) continue;
+    const gradeTc = m[2]!;
+    const gradeKey = gradeTc.includes("良好") ? "good" : gradeTc.includes("一般") ? "fair" : gradeTc.includes("欠佳") ? "poor" : gradeTc.includes("極差") ? "verypoor" : "unknown";
+    const d = body.match(/<description>([\s\S]*?)<\/description>/);
+    let lat: number | null = null;
+    let lon: number | null = null;
+    if (d) {
+      const desc = d[1]!.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+      const latM = desc.match(/緯度 \(北\):.*?(\d+)°\s*(\d+)'\s*([\d.]+)"/);
+      const lonM = desc.match(/經度 \(東\):.*?(\d+)°\s*(\d+)'\s*([\d.]+)"/);
+      if (latM && lonM) {
+        const dm = (d0: number, m0: number, s0: number) => d0 + m0 / 60 + s0 / 3600;
+        lat = dm(+latM[1]!, +latM[2]!, +latM[3]!);
+        lon = dm(+lonM[1]!, +lonM[2]!, +lonM[3]!);
+      }
+    }
+    out.push({ name: m[1]!, gradeTc, gradeKey, lat, lon });
+  }
+  return out;
+}
+
 /** Normalise an HKO regional-station name for the 1-minute temperature merge:
  *  strip the standard suffixes, and alias the three CSV abbreviations CSDI
  *  spells out (measured 2026-10-06: 36/39 match cleanly, these three did not).

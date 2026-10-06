@@ -642,6 +642,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   if (def.popup === "aed_popup") aedPopup(map, `${id}-point`);
   else if (def.popup === "carpark_popup") carparkPopup(map, `${id}-point`);
   else if (def.popup === "aqhi_popup") aqhiPopup(map, `${id}-point`);
+  else if (def.popup === "beach_popup") beachPopup(map, `${id}-point`);
   else attributePopup(map, `${id}-point`);
 
   // Vacancy refreshes on its own cadence: positions are static, numbers are
@@ -743,6 +744,29 @@ function aqhiPopup(map: maplibregl.Map, layerId: string): void {
   map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
   map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
 }
+function beachPopup(map: maplibregl.Map, layerId: string): void {
+  const esc = (s: unknown) =>
+    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
+  const COL: Record<string, string> = { good: "#22c55e", fair: "#f59e0b", poor: "#f97316", verypoor: "#ef4444" };
+  map.on("click", layerId, (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const p = (f.properties ?? {}) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const key = String(p["gradeKey"] ?? "unknown");
+    new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "300px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        `<div class="aed-pop"><b>${esc(p["name"] ?? "")}</b>` +
+          `<div style="color:${COL[key] ?? "#fff"};font-weight:600;margin-top:6px">${esc(p["gradeTc"] ?? "")}</div>` +
+          `<div style="color:var(--night-dim);font-size:11px;margin-top:4px">${tc ? "EPD 泳灘水質（採樣後 48 小時內）" : "EPD beach water quality (within 48h of sampling)"}</div></div>`,
+      )
+      .addTo(map);
+  });
+  map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+}
+
 /** Field labels for the attribute popup. A key with no entry falls back to the
  *  raw key, which is honest ("you are seeing an unlabelled field") rather than
  *  inventing a translation. */

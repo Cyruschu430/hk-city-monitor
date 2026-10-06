@@ -314,6 +314,7 @@
     "aqhi_gauge_grid",
     "carpark_vacancy_list",
     "smart_lamppost_list",
+    "beach_grading_list",
     "breaking_news_list"
     ],
     "layers": [
@@ -329,6 +330,7 @@
     "aqhi_gauge_grid",
     "carpark_vacancy_list",
     "smart_lamppost_list",
+    "beach_grading_list",
     "breaking_news_list"
     ]
     },

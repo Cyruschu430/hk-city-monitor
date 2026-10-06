@@ -159,6 +159,7 @@ function stroke(ctx: CanvasRenderingContext2D) {
 
 // --- colour helpers (hex → rgb / rgba / lighten) -------------------------------
 function hexRgb(hex: string): [number, number, number] {
+  if (!/^#[0-9a-f]{6}$/i.test(hex)) throw new Error(`color must be 6-digit hex, got "${hex}"`);
   const h = hex.replace("#", "");
   return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
 }
@@ -782,13 +783,13 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   // are a text label on top (coloured by congestion in the adapter). The disc
   // is kept dark so the label colour — the actual signal — stays the loudest
   // thing on the marker.
-  jt: { draw: drawJt, disc: "rgba(8,14,24,.85)" },
+  jt: { draw: drawJt, disc: "#080e18" },
   // AI Video Analytics: a speedometer — ring, tick and needle. The km/h is a
   // text label on top (coloured by speed band in the adapter), same pattern.
-  speed: { draw: drawSpeed, disc: "rgba(8,14,24,.85)" },
+  speed: { draw: drawSpeed, disc: "#080e18" },
   // Public EV chargers: a lightning bolt on the same dark sign disc — the bolt
   // is the meaning, the disc keeps it a place rather than a bare glyph.
-  ev: { draw: drawEv, disc: "rgba(8,14,24,.85)" },
+  ev: { draw: drawEv, disc: "#080e18" },
 };
 
 /** Public EV charger: a lightning bolt — dark disc + white ring, bolt in the

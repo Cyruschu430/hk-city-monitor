@@ -471,7 +471,6 @@
    "license": "VesselAPI free tier — see the service terms",
    "todo": false
   },
-
   {
    "id": "lcsd_leisure_prog",
    "group": "civic",
@@ -599,7 +598,6 @@
    "cost": "free",
    "license": "Yahoo Finance — unofficial endpoint, personal reference only"
   },
-
   {
    "id": "carto_dark_style",
    "group": "geospatial",
@@ -3252,6 +3250,157 @@
    "notes": "VERIFIED 200, image/jpeg, ACAO=* — Esri's World Imagery tile service is publicly readable with no key and no billing, which is why projects like gods-eye-view boot keyless on it. NOTE the tile order is {z}/{y}/{x}, not {z}/{x}/{y} — the opposite of the LandsD tiles, and the classic source of a blank or wrong-place map. Immediate source of a global satellite basemap around Hong Kong's edges, where LandsD coverage stops.",
    "cost": "free",
    "license": "Esri — ArcGIS Online public map services (subject to the Esri Terms of Use)"
+  },
+  {
+   "id": "td_detector_avg_speed",
+   "group": "transport",
+   "name": "運輸署 交通探測器 平均車速",
+   "name_en": "TD Traffic Detectors — Average Speed",
+   "type": "xml",
+   "url": "https://resource.data.one.gov.hk/td/traffic-detectors/irnAvgSpeed-all.xml",
+   "auth": "none",
+   "cadence": "2 minutes",
+   "notes": "Per-detector average speed across the strategic road network — the same family as td_traffic_speed_city but raw, detector by detector. 382 KB measured 2026-10-06.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free",
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
+  },
+  {
+   "id": "td_detector_raw_speed_vol",
+   "group": "transport",
+   "name": "運輸署 交通探測器 原始車速及流量",
+   "name_en": "TD Traffic Detectors — Raw Speed and Volume",
+   "type": "xml",
+   "url": "https://resource.data.one.gov.hk/td/traffic-detectors/rawSpeedVol-all.xml",
+   "auth": "none",
+   "cadence": "2 minutes",
+   "notes": "Raw speed plus traffic volume per detector. 712 KB measured 2026-10-06 — the heaviest single TD file we know of, so fetch it only when a speed layer is actually on.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free",
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
+  },
+  {
+   "id": "td_detector_slp_speed_vol",
+   "group": "transport",
+   "name": "運輸署 智慧燈柱探測器 車速及流量",
+   "name_en": "TD Smart Lamppost Detectors — Speed and Volume",
+   "type": "xml",
+   "url": "https://resource.data.one.gov.hk/td/traffic-detectors/rawSpeedVol_SLP-all.xml",
+   "auth": "none",
+   "cadence": "2 minutes",
+   "notes": "The smart-lamppost subset of the detector feed. 12 KB, i.e. the cheap way to show street-level speed without pulling the 712 KB full file.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free",
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
+  },
+  {
+   "id": "td_road_network_v2_updated",
+   "group": "transport",
+   "name": "運輸署 路網 v2 更新日期",
+   "name_en": "TD Road Network v2 — Last Updated",
+   "type": "csv",
+   "url": "https://static.data.gov.hk/td/road-network-v2/DATA_LAST_UPDATED_DATE.csv",
+   "auth": "none",
+   "cadence": "daily",
+   "notes": "A 95-byte version stamp for the road-network v2 release — not the geometry itself. Useful as a freshness marker for any road layer built from that release.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free",
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
+  },
+  {
+   "id": "mtr_bus_eta",
+   "group": "transport",
+   "name": "港鐵 接駁巴士 到站時間",
+   "name_en": "MTR Feeder Bus — Next Bus",
+   "type": "json",
+   "url": "https://rt.data.gov.hk/v1/transport/mtr/bus/getSchedule",
+   "auth": "none",
+   "cadence": "real-time",
+   "notes": "POST, not GET — body {\"language\":\"zh\",\"routeName\":\"K51\"}. A GET on this URL returns 404, which is the trap here. Verified 200 with a 73 KB body on 2026-10-06.",
+   "kind": "api",
+   "fetch": "proxy",
+   "cost": "free",
+   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
+  },
+  {
+   "id": "mtr_bus_stops",
+   "group": "transport",
+   "name": "港鐵 接駁巴士 站點",
+   "name_en": "MTR Feeder Bus Stops",
+   "type": "csv",
+   "url": "https://opendata.mtr.com.hk/data/mtr_bus_stops.csv",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "The feeder-bus stop list (70 KB, verified 200 on 2026-10-06) — the geometry that pairs with mtr_bus_eta.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free"
+  },
+  {
+   "id": "star_ferry_timetable",
+   "group": "transport",
+   "name": "天星小輪 班次時間表",
+   "name_en": "Star Ferry Timetable",
+   "type": "csv",
+   "url": "https://www.starferry.com.hk/sites/default/files/upload/open_data/csv/ferry_sf_central_tsimshatsui_timetable_eng.csv",
+   "candidates": [
+    "https://www.starferry.com.hk/sites/default/files/upload/open_data/csv/ferry_sf_wanchai_tsimshatsui_timetable_eng.csv"
+   ],
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "The operator's own open-data CSVs, two routes. A UA-less request is REFUSED — with a self-identifying User-Agent both return 200 (1.5 KB Central, 2.1 KB Wan Chai), measured 2026-10-06.",
+   "kind": "api",
+   "fetch": "proxy",
+   "cost": "free"
+  },
+  {
+   "id": "fortune_ferry_timetable",
+   "group": "transport",
+   "name": "珊瑚海船務 時間表（北角–觀塘）",
+   "name_en": "Fortune Ferry Timetable",
+   "type": "html",
+   "url": "https://www.fortuneferry.com.hk/en/route-and-fare",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "No open-data file exists for this operator, so this is their fare-table page and it needs HTML parsing, hence the proxy. 26 KB, verified 200 on 2026-10-06.",
+   "kind": "document",
+   "fetch": "proxy",
+   "cost": "free"
+  },
+  {
+   "id": "terrarium_dem_tiles",
+   "group": "geospatial",
+   "name": "Mapzen Terrarium 地形高程圖磚",
+   "name_en": "Mapzen Terrarium Terrain Tiles",
+   "type": "tiles",
+   "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+   "auth": "none",
+   "cadence": "snapshot",
+   "notes": "Keyless terrain-RGB tiles, height = R*256 + G + B/256 - 32768, which is EXACTLY MapLibre's raster-dem encoding \"terrarium\". z0-15; verified 200 at z12 (56 KB). Hong Kong's land in these tiles is the SRTM surface from 2000 at ~30 m, so smooth before using as terrain — see references/3d-and-open3dhk.md.",
+   "kind": "api",
+   "fetch": "proxy",
+   "cost": "free"
+  },
+  {
+   "id": "openfreemap_basemap",
+   "group": "geospatial",
+   "name": "OpenFreeMap 底圖樣式（免 key）",
+   "name_en": "OpenFreeMap Basemap Styles (keyless)",
+   "type": "tiles",
+   "url": "https://tiles.openfreemap.org/styles/bright",
+   "candidates": [
+    "https://tiles.openfreemap.org/styles/liberty"
+   ],
+   "auth": "none",
+   "cadence": "snapshot",
+   "notes": "Keyless vector basemap styles — style JSON verified 200 at 48 KB on 2026-10-06. An alternative to the Carto styles already registered, from the same family as the OSM Bright/Liberty look.",
+   "kind": "api",
+   "fetch": "browser",
+   "cost": "free"
   }
  ]
 }

@@ -58,9 +58,13 @@ ICONS = {"ok": OK, "fail": BAD, "unprobeable": WARN,
          "wrong-payload": BAD, "needs-params": WARN}
 
 
-def fetch(url: str) -> dict:
+def fetch(url: str, method: str = "GET", req_body: str | None = None) -> dict:
     started = time.time()
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json, text/xml, text/csv, image/*, */*"})
+    data = req_body.encode() if req_body is not None else None
+    headers = {"User-Agent": UA, "Accept": "application/json, text/xml, text/csv, image/*, */*"}
+    if data is not None:
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT, context=CTX) as r:
             body = r.read(MAX_BYTES)
@@ -134,7 +138,10 @@ def shape(kind: str, body: bytes, ctype: str) -> str:
 
 
 def is_probeable(url: str) -> bool:
-    return url.startswith(("http://", "https://"))
+    """A URL template is not fetchable as-is. Probing `.../terrarium/{z}/{x}/{y}.png`
+    literally fetches the braces and reports a perfectly good tile service as a 404,
+    which is a lie in SOURCES.md — so only concrete URLs get probed."""
+    return url.startswith(("http://", "https://")) and "{" not in url
 
 
 def classify(kind: str, ctype: str, shape_text: str) -> tuple[bool, str]:
@@ -168,13 +175,19 @@ def probe(src: dict) -> dict:
     probeable = [u for u in urls if is_probeable(u)]
 
     if not probeable:
-        out.update(status="unprobeable", working_url="", http_status=0,
-                   detail="not an HTTP endpoint (websocket or still unknown)")
+        why = ("URL template — not fetchable as-is, so not probed"
+               if any("{" in u for u in urls)
+               else "not an HTTP endpoint (websocket or still unknown)")
+        out.update(status="unprobeable", working_url="", http_status=0, detail=why)
         return out
 
+    # Some real endpoints are POST-only (MTR feeder-bus ETA answers GET with a 404,
+    # not a 405, so the needs-params branch below never fires). A source declares
+    # `method` + `body` and the probe then calls it the way the app will.
+    method = (src.get("method") or "GET").upper()
     tried = []
     for u in probeable:
-        r = fetch(u)
+        r = fetch(u, method, src.get("body"))
         if r["ok"]:
             truncated = r["bytes"] >= MAX_BYTES
             sh = (f"large {out['type']} response, truncated at the {MAX_BYTES // 1024 // 1024}MB probe cap "

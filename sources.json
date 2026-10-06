@@ -3320,6 +3320,8 @@
    "url": "https://rt.data.gov.hk/v1/transport/mtr/bus/getSchedule",
    "auth": "none",
    "cadence": "real-time",
+   "method": "POST",
+   "body": "{\"language\":\"zh\",\"routeName\":\"K51\"}",
    "notes": "POST, not GET — body {\"language\":\"zh\",\"routeName\":\"K51\"}. A GET on this URL returns 404, which is the trap here. Verified 200 with a 73 KB body on 2026-10-06.",
    "kind": "api",
    "fetch": "proxy",

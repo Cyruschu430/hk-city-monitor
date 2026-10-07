@@ -72,11 +72,9 @@ const OVERVIEW = [
   "water_suspension_list",
   // --- second half: everything the first half does not already say ---
   "radar_image",
-  "satellite_image",
   "tc_track_image",
   "rain_nowcast_map",
   "flight_table",
-  "crossboundary_ferry_table",
   "mtr_bus_status",
   "mtr_trains",
   "journey_time_table",

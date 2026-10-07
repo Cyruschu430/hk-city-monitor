@@ -687,9 +687,9 @@ async function boot(): Promise<void> {
       const raw = localStorage.getItem(LAYER_KEY);
       const version = localStorage.getItem(LAYER_VERSION_KEY);
       if (raw && version === LAYER_VERSION) return new Set((JSON.parse(raw) as string[]).filter(isRailLayer));
-      // Stale version → wipe and fall through to the defaults.
+      // Stale version → wipe BOTH keys and fall through to the defaults.
       localStorage.removeItem(LAYER_KEY);
-      localStorage.setItem(LAYER_VERSION_KEY, LAYER_VERSION);
+      localStorage.removeItem(LAYER_VERSION_KEY);
     } catch {
       /* private mode — fall through to the defaults */
     }

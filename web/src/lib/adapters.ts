@@ -1098,7 +1098,7 @@ const ADAPTERS: Record<string, Adapter> = {
       if (st === "O" || st === "V") occ.set((c[0] ?? "").trim(), st === "O");
     }
     let geo: GeoJSON.FeatureCollection | null = null;
-    const posSrc = ctx.registry.byId.get("td_parking_meters");
+    const posSrc = ctx.registry.byId.get("td_parking_grid");
     if (posSrc) {
       try {
         const fc = (await json(await get(posSrc))) as GeoJSON.FeatureCollection;
@@ -1106,15 +1106,14 @@ const ADAPTERS: Record<string, Adapter> = {
           type: "FeatureCollection",
           features: (fc.features ?? []).map((f) => {
             const p = (f.properties ?? {}) as Record<string, unknown>;
-            const id = String(p["id"] ?? "");
-            const isOcc = occ.get(id);
+            const count = Number(p["count"] ?? 0);
+            // Grid cells don't carry a live occupancy state (the occupancy feed
+            // is per-space, the grid is aggregated) — the layer shows the
+            // density of sensor spaces, not their live status. Colour by count.
+            const color = count > 20 ? "#ef3d5b" : count > 10 ? "#f59e0b" : count > 5 ? "#34d399" : "#5b6472";
             return {
               ...f,
-              properties: {
-                ...p,
-                occupied: isOcc === undefined ? null : isOcc ? 1 : 0,
-                color: isOcc === undefined ? "#5b6472" : isOcc ? "#ef3d5b" : "#34d399",
-              },
+              properties: { ...p, occupied: null, color },
             } as GeoJSON.Feature;
           }),
         };

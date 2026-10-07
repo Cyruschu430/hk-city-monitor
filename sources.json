@@ -3601,6 +3601,19 @@
    "cadence": "every 15 minutes",
    "fetch": "browser",
    "notes": "16 CCTV cameras measuring traffic speed and flow per segment. Live API: https://td2132022opendata.td.gov.hk/{key}. Positions baked to data/ai_cctv_stations.geojson."
+  },
+  {
+   "id": "td_parking_grid",
+   "group": "transport",
+   "name": "運輸署 路邊泊車位網格（聚合顯示）",
+   "name_en": "TD On-street Parking Grid (aggregated for map display)",
+   "type": "geojson",
+   "url": "data/parking_grid.json",
+   "auth": "none",
+   "cadence": "as issued",
+   "notes": "Aggregated grid of 20,712 sensor parking spaces (0.001° cells) for efficient map rendering. Built by scripts/build_parking_grid.py.",
+   "fetch": "browser",
+   "cost": "free"
   }
  ]
 }

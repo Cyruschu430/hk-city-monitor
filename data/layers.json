@@ -411,7 +411,15 @@
    "_comment": "556 parks placed by TD's OWN basic_info_all coordinates (no geocoding — the position IS the publisher's), vacancy merged per park from vacancy_all.json by the same adapter the table panel reads, so the map and the panel cannot disagree. OFF by default; refresh_ms drives a generic 60s redraw loop in overlays.ts."
   },
   {
-   "id": "vessels",
+    "id": "sensor_parking_spaces",
+    "source": "td_parking_grid",
+    "kind": "point",
+    "symbol": "meter",
+    "title": { "tc": "路邊感應車位", "en": "On-street sensor spaces" },
+    "on": false
+  },
+  {
+    "id": "vessels",
    "source": "vessel_api",
    "render": "list",
    "geom": "point",

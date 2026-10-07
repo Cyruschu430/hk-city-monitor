@@ -492,6 +492,20 @@ const ADAPTERS: Record<string, Adapter> = {
     return { data: { kind: "big_number", value: level, unit: tc ? "微希/小時" : "µSv/h", sub: tc ? "環境伽馬輻射" : "Gamma radiation" }, observedAt: new Date() };
   },
 
+  async cc_fuel_price(_src, _panel) {
+    // The Consumer Council site is HTML (no API); scripts/build_fuel.py scrapes
+    // the retail + discounted price per product and bakes it to data/fuel_prices.json.
+    const items = (await fetchDataFile("data/fuel_prices.json", { cache: "no-store" }).then((r) => r.json())) as { name: string; retail: number; discounted: number; discount: number }[];
+    const tc = lang() === "tc";
+    const rows = items.map((f) => [
+      f.name,
+      `$${f.retail}`,
+      f.discounted ? `$${f.discounted}` : "—",
+      f.discount ? `-$${f.discount}` : "—",
+    ]);
+    return { data: { kind: "table", columns: tc ? ["油品", "零售價", "折後價", "折扣"] : ["Product", "Retail", "Discounted", "Save"], rows }, observedAt: new Date() };
+  },
+
   async lcsd_smartplay_prog(_src, panel) {
     // The full feed is ~17MB; the collector (scripts/build_smartplay.py) already
     // slimmed it to upcoming activities only, so the panel just reads the baked file.

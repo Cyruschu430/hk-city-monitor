@@ -94,6 +94,8 @@ const OVERVIEW = [
   "hko_radiation_big",
   // --- Phase 1b batch 2: LCSD SmartPLAY activities ---
   "smartplay_activities",
+  // --- Phase 1b batch 3: Consumer Council fuel prices ---
+  "fuel_price_table",
 ];
 
 /** Trigger polling: 3 minutes. This interval is the REAL cadence for the two

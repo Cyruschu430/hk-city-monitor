@@ -654,6 +654,24 @@
     "tc": "活動資料來自 SmartPLAY 公開數據，每日更新。",
     "en": "Activity data from LCSD SmartPLAY open data, updated daily."
    }
+  },
+  {
+   "id": "fuel_price_table",
+   "source": "cc_fuel_price",
+   "render": "table",
+   "title": {
+    "tc": "油價",
+    "en": "Fuel Prices"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每日",
+    "en": "Daily"
+   },
+   "honesty": {
+    "tc": "價格來自消委會油價資訊通，每日更新。",
+    "en": "Prices from Consumer Council Fuel Price Watch, updated daily."
+   }
   }
  ]
 }

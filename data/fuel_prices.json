@@ -1,0 +1,62 @@
+[
+ {
+  "name": "中石化-中石化汽油",
+  "retail": 34.62,
+  "discounted": 28.62,
+  "discount": 6.0
+ },
+ {
+  "name": "中石化-中石化超級汽油",
+  "retail": 36.42,
+  "discounted": 25.05,
+  "discount": 11.37
+ },
+ {
+  "name": "中國石油-清新汽油",
+  "retail": 34.62,
+  "discounted": 27.62,
+  "discount": 7.0
+ },
+ {
+  "name": "中國石油-超級汽油",
+  "retail": 36.42,
+  "discounted": 29.42,
+  "discount": 7.0
+ },
+ {
+  "name": "加德士-特配Techron®黃金汽油",
+  "retail": 34.62,
+  "discounted": 24.42,
+  "discount": 10.2
+ },
+ {
+  "name": "加德士-特配Techron®白金汽油",
+  "retail": 36.42,
+  "discounted": 24.42,
+  "discount": 12.0
+ },
+ {
+  "name": "埃索-Synergy Extra 汽油",
+  "retail": 34.62,
+  "discounted": 33.02,
+  "discount": 1.6
+ },
+ {
+  "name": "埃索-Synergy Supreme+特級汽油",
+  "retail": 36.42,
+  "discounted": 34.82,
+  "discount": 1.6
+ },
+ {
+  "name": "蜆殼-Shell FuelSave 無鉛汽油",
+  "retail": 34.62,
+  "discounted": 27.62,
+  "discount": 7.0
+ },
+ {
+  "name": "蜆殼-Shell V-Power Racing",
+  "retail": 34.62,
+  "discounted": 27.62,
+  "discount": 7.0
+ }
+]

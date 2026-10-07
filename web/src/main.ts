@@ -104,10 +104,10 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // Estimated, not GPS: MTR publishes no vehicle positions, so these dots are
   // interpolated from next-train ETAs. OFF by default so a reader turns it on
   // deliberately rather than mistaking an estimate for a fix.
-  { id: "mtr_trains", label: { tc: "港鐵列車（推算）", en: "MTR trains (estimated)" } },
+  { id: "mtr_trains", label: { tc: "港鐵列車（推算）", en: "MTR trains (estimated)" }, on: false },
   // Reference network under the train layer — the reader turns this on to read the
   // moving trains against the lines they run on. OFF by default.
-  { id: "mtr_lines", label: { tc: "港鐵路線", en: "MTR lines" } },
+  { id: "mtr_lines", label: { tc: "港鐵路線", en: "MTR lines" }, on: false },
   // 「（模式格網）」 is not decoration. This layer is Open-Meteo MODEL output, and
   // `weather_stations` one row below is the OBSERVED counterpart — two layers with
   // the same subject and different epistemics, one click apart. The rail label is
@@ -116,58 +116,58 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // says "this is a model, not a measurement" — which is the whole honesty rule for
   // this layer. 風場 stays as the prefix so the label still reads as wind at a
   // glance and every existing `includes("風場")` selector keeps working.
-  { id: "wind_field", label: { tc: "風場（模式格網）", en: "Wind flow (modelled)" } },
-  { id: "weather_stations", label: { tc: "氣象站", en: "Weather stations" } },
+  { id: "wind_field", label: { tc: "風場（模式格網）", en: "Wind flow (modelled)" }, on: false },
+  { id: "weather_stations", label: { tc: "氣象站", en: "Weather stations" }, on: false },
   // OFF by default, and it stays that way: 290 polygons is 3MB, which is more than the entire
   // first paint of this app. It needs a `case` in toggleLayer() like every other layer — that
   // switch has no generic default, it THROWS, and an earlier draft of this change assumed
   // otherwise and shipped a toggle that answered `unknown layer drone_rfz`.
-  { id: "drone_rfz", label: { tc: "無人機禁飛區", en: "Drone restricted zones" } },
+  { id: "drone_rfz", label: { tc: "無人機禁飛區", en: "Drone restricted zones" }, on: false },
   // Life-safety, and the only layer here that does not come from a feed about the city — it is
   // about the reader. OFF by default at 707KB, so a reader who needs it turns it on and a reader
   // who does not never pays for it.
-  { id: "aed_locations", label: { tc: "公眾 AED", en: "Public AEDs" } },
+  { id: "aed_locations", label: { tc: "公眾 AED", en: "Public AEDs" }, on: false },
   // 公眾貨物裝卸區（海事處）＋機場進場限制區（民航處）. 128 polygons from CSDI, 134KB, OFF by default.
   // These are the facilities 貨運模式's panels are ABOUT — before this the mode listed flight and
   // traffic rows with nothing on the map saying where the cargo actually moves.
-  { id: "hk_facility_areas", label: { tc: "裝卸泊位及機場設施", en: "Cargo berths & airport facilities" } },
+  { id: "hk_facility_areas", label: { tc: "裝卸泊位及機場設施", en: "Cargo berths & airport facilities" }, on: false },
   // 23 貯油裝置（屋宇署牌照名單）, 8KB. Small enough to be on by default, but it stays off: it is
   // one mode's subject, and a layer that appears in 總覽 without being asked for is the thing the
   // verticals exist to prevent.
-  { id: "hk_facility_pins", label: { tc: "貯油裝置", en: "Oil storage installations" } },
+  { id: "hk_facility_pins", label: { tc: "貯油裝置", en: "Oil storage installations" }, on: false },
   // Vessel positions (AIS via VesselAPI, 6-hourly snapshot) — the marine counterpart to the
   // aircraft layer, and the layer that replaces the withdrawn berth-vacancy polygon.
-  { id: "vessels", label: { tc: "船位置", en: "Vessel positions" } },
+  { id: "vessels", label: { tc: "船位置", en: "Vessel positions" }, on: false },
   // Car park vacancies — TD's own coordinates (556 parks) joined to the live
   // vacancy feed by the table panel's adapter, drawn as the parking P glyph.
   // OFF by default: a reader who wants a space turns it on, a reader who does
   // not never pays for the 60s refresh.
-  { id: "carpark_vacancy", label: { tc: "停車場空位", en: "Car park vacancies" } },
+  { id: "carpark_vacancy", label: { tc: "停車場空位", en: "Car park vacancies" }, on: false },
   { id: "sensor_parking_spaces", label: { tc: "路邊感應車位", en: "On-street sensor spaces" }, on: false },
   // 952 LCSD leisure facilities (libraries, museums, parks, courts, camps, bbq)
   // from nine CSDI services — the official geometry, not a geocode. OFF by
   // default like every reference layer; the generic attribute popup handles it.
-  { id: "lcsd_facilities", label: { tc: "康文署設施", en: "LCSD facilities" } },
+  { id: "lcsd_facilities", label: { tc: "康文署設施", en: "LCSD facilities" }, on: false },
   // 18 EPD air-quality stations, official CSDI positions, LIVE hourly readings
   // merged by the gauge-grid panel's own adapter. OFF by default.
-  { id: "aqhi_stations", label: { tc: "空氣質素指數 AQHI", en: "Air Quality Health Index" } },
+  { id: "aqhi_stations", label: { tc: "空氣質素指數 AQHI", en: "Air Quality Health Index" }, on: false },
   // 39 EPD-graded beaches, positions from the RSS's own WGS84 cells, LIVE daily
   // grade merged by the beach_grading_list panel's adapter. OFF by default.
-  { id: "beach_grading", label: { tc: "泳灘水質", en: "Beach water quality" } },
+  { id: "beach_grading", label: { tc: "泳灘水質", en: "Beach water quality" }, on: false },
   // 167 AFCD hiking trails (CSDI, official) — green dashed linework, the look
   // the green-dashed look. OFF by default: every new layer ships OFF so a problem in
   // one cannot touch everyone on load (the standing rule for additions).
-  { id: "hiking_trails", label: { tc: "行山徑", en: "Hiking trails" } },
+  { id: "hiking_trails", label: { tc: "行山徑", en: "Hiking trails" }, on: false },
   // 855 MTR feeder-bus stops with LIVE per-stop ETAs (POST per route, 5-min
   // cadence). OFF by default — a dense dot field.
-  { id: "mtr_bus_stops", label: { tc: "港鐵接駁巴士", en: "MTR feeder buses" } },
+  { id: "mtr_bus_stops", label: { tc: "港鐵接駁巴士", en: "MTR feeder buses" }, on: false },
   // 80 TD journey-time indicators with LIVE minutes per approach road,
   // coloured by congestion. OFF by default.
-  { id: "journey_time", label: { tc: "行車時間", en: "Journey time" } },
+  { id: "journey_time", label: { tc: "行車時間", en: "Journey time" }, on: false },
   // 16 TD AI Video Analytics CCTVs with LIVE avg speed per camera. OFF.
-  { id: "ai_cctv_speed", label: { tc: "路網車速（AI）", en: "Road speed (AI)" } },
+  { id: "ai_cctv_speed", label: { tc: "路網車速（AI）", en: "Road speed (AI)" }, on: false },
   // 988 public EV chargers (EPD), as-issued counts. OFF by default.
-  { id: "ev_chargers", label: { tc: "充電站", en: "EV chargers" } },
+  { id: "ev_chargers", label: { tc: "充電站", en: "EV chargers" }, on: false },
   // ON BY DEFAULT. "Is it raining right now" is the first situational question in Hong Kong, and
   // this is HKO's own gridded nowcast — a measurement, not a model, which is why it is a better
   // default than wind_field one row up (that one is Open-Meteo MODEL output and says so in its
@@ -175,11 +175,11 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // control_points are VERTICAL-driven by design, and turning them on here would fight the
   // config-not-code architecture the verticals exist to prove.
   { id: "rain_nowcast", label: { tc: "降雨臨近預報", en: "Rain nowcast" }, on: false },
-  { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" } },
+  { id: "imagery", label: { tc: "航拍底圖", en: "Aerial basemap" }, on: false },
   // Keyless Esri bases. A basemap is a choice, not a layer: these switch the
   // base under everything, and setBasemap() keeps them mutually exclusive.
-  { id: "esri_topo", label: { tc: "Esri 地形圖", en: "Esri topographic" } },
-  { id: "esri_gray", label: { tc: "Esri 淺灰底圖", en: "Esri light gray" } },
+  { id: "esri_topo", label: { tc: "Esri 地形圖", en: "Esri topographic" }, on: false },
+  { id: "esri_gray", label: { tc: "Esri 淺灰底圖", en: "Esri light gray" }, on: false },
 ];
 
 async function boot(): Promise<void> {

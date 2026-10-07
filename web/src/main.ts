@@ -70,6 +70,22 @@ const OVERVIEW = [
   "carpark_vacancy_list",
   "ae_waiting_grid",
   "water_suspension_list",
+  // --- second half: everything the first half does not already say ---
+  "radar_image",
+  "satellite_image",
+  "tc_track_image",
+  "rain_nowcast_map",
+  "flight_table",
+  "crossboundary_ferry_table",
+  "mtr_bus_status",
+  "mtr_trains",
+  "journey_time_table",
+  "ai_cctv_speed_table",
+  "speed_panels_wall",
+  "ev_chargers_summary",
+  "sensor_parking_occupancy",
+  "smart_lamppost_list",
+  "beach_grading_list",
 ];
 
 /** Trigger polling: 3 minutes. This interval is the REAL cadence for the two
@@ -655,6 +671,10 @@ async function boot(): Promise<void> {
   // Precedence URL > localStorage > the RAIL_LAYERS defaults, so a shared link
   // always beats the recipient's own saved settings.
   const LAYER_KEY = "hkcm.layers";
+  const LAYER_VERSION_KEY = "hkcm.layers.version";
+  /** Bump this whenever the default layer set changes — stale localStorage state
+      gets wiped instead of overriding the new defaults. */
+  const LAYER_VERSION = "2026-10-07-all-off";
   const DEFAULT_ON = RAIL_LAYERS.filter((l) => l.on).map((l) => l.id).sort().join(",");
   const isRailLayer = (id: string): boolean => RAIL_LAYERS.some((l) => l.id === id);
 
@@ -665,7 +685,11 @@ async function boot(): Promise<void> {
     if (fromUrl !== null) return new Set(fromUrl.split(",").filter(isRailLayer));
     try {
       const raw = localStorage.getItem(LAYER_KEY);
-      if (raw) return new Set((JSON.parse(raw) as string[]).filter(isRailLayer));
+      const version = localStorage.getItem(LAYER_VERSION_KEY);
+      if (raw && version === LAYER_VERSION) return new Set((JSON.parse(raw) as string[]).filter(isRailLayer));
+      // Stale version → wipe and fall through to the defaults.
+      localStorage.removeItem(LAYER_KEY);
+      localStorage.setItem(LAYER_VERSION_KEY, LAYER_VERSION);
     } catch {
       /* private mode — fall through to the defaults */
     }

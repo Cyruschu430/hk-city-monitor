@@ -1140,7 +1140,7 @@ const ADAPTERS: Record<string, Adapter> = {
     // (STATION_ID = the API's busStopId), so no name matching. One POST per
     // route; rt.data.gov.hk answers CORS `*`, so this is browser-direct.
     // 26 POSTs per refresh (5-min cadence) is the polite rhythm.
-    const stops = (await json(await get(ctx.registry.byId.get("mtr_bus_stops")!))) as GeoJSON.FeatureCollection;
+    const stops = (await json(await get(ctx.registry.byId.get("mtr_bus_stops_geojson")!))) as GeoJSON.FeatureCollection;
     const routes = [...new Set((stops.features ?? []).map((f) => String((f.properties ?? {})["route"] ?? "")))].filter(Boolean);
     const langParam = lang() === "tc" ? "zh" : "en";
     const merged = new Map<string, P.MtrBusEta>();
@@ -1184,13 +1184,13 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
-  async td_ai_video_analytics(src, _panel, _ctx) {
+  async td_ai_video_analytics(_src, _panel, ctx) {
     // Live road speed from TD's AI Video Analytics: the 16 camera locations
     // (CSDI td_rcd_1671693527354_28926) carry the per-camera JSON URL in
     // `url`; every 15 minutes each returns per-segment speed/flow. 16 GETs per
     // refresh is polite; a camera whose Is_valid is N (PTZ moved out of
     // reference) contributes nothing — a stale speed would be a lie.
-    const cams = (await json(await get(src))) as GeoJSON.FeatureCollection;
+    const cams = (await json(await get(ctx.registry.byId.get("td_ai_cctv_stations")!))) as GeoJSON.FeatureCollection;
     const tc = lang() === "tc";
     const results = await Promise.allSettled(
       (cams.features ?? []).map(async (f) => {

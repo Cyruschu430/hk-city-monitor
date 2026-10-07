@@ -682,7 +682,10 @@ async function boot(): Promise<void> {
     const fromUrl = new URLSearchParams(location.search).get("layers");
     // A URL is a trust boundary: unknown ids are dropped here rather than
     // reaching toggleLayer and raising a banner about a layer that cannot exist.
-    if (fromUrl !== null) return new Set(fromUrl.split(",").filter(isRailLayer));
+    // A shared link is honoured, but the default URL never carries layers —
+    // a reader who opens the root path gets the all-off default, not a stale
+    // bookmark's set.
+    if (fromUrl !== null && fromUrl !== "") return new Set(fromUrl.split(",").filter(isRailLayer));
     try {
       const raw = localStorage.getItem(LAYER_KEY);
       const version = localStorage.getItem(LAYER_VERSION_KEY);

@@ -633,6 +633,27 @@
     "tc": "每小時",
     "en": "Hourly"
    }
+  },
+  {
+   "id": "smartplay_activities",
+   "source": "lcsd_smartplay_prog",
+   "render": "table",
+   "title": {
+    "tc": "康文署活動",
+    "en": "LCSD Activities"
+   },
+   "params": {
+    "max_rows": 20,
+    "search": true
+   },
+   "cadence_note": {
+    "tc": "每日",
+    "en": "Daily"
+   },
+   "honesty": {
+    "tc": "活動資料來自 SmartPLAY 公開數據，每日更新。",
+    "en": "Activity data from LCSD SmartPLAY open data, updated daily."
+   }
   }
  ]
 }

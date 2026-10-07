@@ -92,6 +92,8 @@ const OVERVIEW = [
   "hko_swt_list",
   "hko_tide_grid",
   "hko_radiation_big",
+  // --- Phase 1b batch 2: LCSD SmartPLAY activities ---
+  "smartplay_activities",
 ];
 
 /** Trigger polling: 3 minutes. This interval is the REAL cadence for the two

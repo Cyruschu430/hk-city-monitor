@@ -492,6 +492,24 @@ const ADAPTERS: Record<string, Adapter> = {
     return { data: { kind: "big_number", value: level, unit: tc ? "微希/小時" : "µSv/h", sub: tc ? "環境伽馬輻射" : "Gamma radiation" }, observedAt: new Date() };
   },
 
+  async lcsd_smartplay_prog(_src, panel) {
+    // The full feed is ~17MB; the collector (scripts/build_smartplay.py) already
+    // slimmed it to upcoming activities only, so the panel just reads the baked file.
+    const acts = (await fetchDataFile("data/smartplay_activities.json", { cache: "no-store" }).then((r) => r.json())) as { name_tc?: string; name_en?: string; venue_tc?: string; venue_en?: string; start?: string; time?: string; left?: string; quota?: string }[];
+    const tc = lang() === "tc";
+    const q = searchQuery(panel.id);
+    const filtered = q
+      ? acts.filter((a) => ((a.name_tc ?? "") + (a.name_en ?? "") + (a.venue_tc ?? "") + (a.venue_en ?? "")).toLowerCase().includes(q.toLowerCase()))
+      : acts;
+    const rows = filtered.slice(0, 20).map((a) => [
+      tc ? (a.name_tc ?? "") : (a.name_en ?? ""),
+      tc ? (a.venue_tc ?? "") : (a.venue_en ?? ""),
+      `${a.start?.slice(5) ?? ""} ${a.time ?? ""}`,
+      a.left ? `${a.left}/${a.quota ?? ""}` : "—",
+    ]);
+    return { data: { kind: "table", columns: tc ? ["活動", "場地", "日期時間", "餘額"] : ["Activity", "Venue", "Date/Time", "Left"], rows }, observedAt: new Date() };
+  },
+
   async td_specialtrafficnews(src) {
     const { items, observedAt } = P.parseSpecialTraffic(await text(await get(src)));
     return { data: { kind: "list", items }, observedAt };

@@ -86,6 +86,12 @@ const OVERVIEW = [
   "sensor_parking_occupancy",
   "smart_lamppost_list",
   "beach_grading_list",
+  // --- Phase 1b batch 1: HKO current conditions + forecast + tides ---
+  "hko_rhrread_grid",
+  "hko_fnd_table",
+  "hko_swt_list",
+  "hko_tide_grid",
+  "hko_radiation_big",
 ];
 
 /** Trigger polling: 3 minutes. This interval is the REAL cadence for the two

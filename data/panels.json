@@ -563,6 +563,76 @@
     "tc": "陸基 AIS 接收數據，離岸約 40 海里外嘅船隻可能收唔到；12 小時快照，唔可以當導航用。",
     "en": "Terrestrial AIS; coverage drops off ~40nm offshore. A twice-daily snapshot, not for navigation."
    }
+  },
+  {
+   "id": "hko_rhrread_grid",
+   "source": "hko_rhrread",
+   "render": "status_grid",
+   "title": {
+    "tc": "本港現況",
+    "en": "Current Conditions"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每 10 分鐘",
+    "en": "Every 10 min"
+   }
+  },
+  {
+   "id": "hko_fnd_table",
+   "source": "hko_fnd",
+   "render": "table",
+   "title": {
+    "tc": "九天預報",
+    "en": "9-Day Forecast"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每日兩次",
+    "en": "Twice daily"
+   }
+  },
+  {
+   "id": "hko_swt_list",
+   "source": "hko_swt",
+   "render": "list",
+   "title": {
+    "tc": "特別天氣提示",
+    "en": "Special Weather Tips"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "按發佈",
+    "en": "As issued"
+   }
+  },
+  {
+   "id": "hko_tide_grid",
+   "source": "hko_tide",
+   "render": "status_grid",
+   "title": {
+    "tc": "潮汐",
+    "en": "Tides"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每日",
+    "en": "Daily"
+   }
+  },
+  {
+   "id": "hko_radiation_big",
+   "source": "hko_radiation",
+   "render": "big_number",
+   "title": {
+    "tc": "環境輻射",
+    "en": "Radiation"
+   },
+   "params": {},
+   "cadence_note": {
+    "tc": "每小時",
+    "en": "Hourly"
+   }
   }
  ]
 }

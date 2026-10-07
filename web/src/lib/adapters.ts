@@ -439,6 +439,59 @@ const ADAPTERS: Record<string, Adapter> = {
     return { data: { kind: "list", items }, observedAt, state: payload };
   },
 
+  async hko_rhrread(src) {
+    const d = (await json(await get(src))) as Record<string, unknown>;
+    const tc = lang() === "tc";
+    const temps = (d.temperature as { data?: { place: string; value: number }[] })?.data ?? [];
+    const hum = (d.humidity as { data?: { value: number }[] })?.data?.[0]?.value;
+    const rain = (d.rainfall as { data?: { max: number }[] })?.data ?? [];
+    const maxRain = rain.length ? Math.max(...rain.map((r) => r.max ?? 0)) : 0;
+    const uv = String(d.uvindex ?? "");
+    const cells: StatusCell[] = [
+      { label: tc ? "氣溫" : "Temperature", value: temps.length ? `${Math.round(temps.reduce((a, t) => a + (t.value ?? 0), 0) / temps.length)}°C` : "—", status: 0 },
+      { label: tc ? "濕度" : "Humidity", value: hum != null ? `${hum}%` : "—", status: 0 },
+      { label: tc ? "最高雨量" : "Max rainfall", value: `${maxRain}mm`, status: maxRain > 10 ? 1 : 0 },
+      { label: tc ? "紫外線" : "UV index", value: uv || "—", status: 0 },
+    ];
+    return { data: { kind: "status_grid", cells }, observedAt: new Date(String(d.updateTime ?? "")) };
+  },
+
+  async hko_fnd(src) {
+    const d = (await json(await get(src))) as { weatherForecast?: { forecastDate: string; forecastWeather: string; forecastMaxtemp: { value: number }; forecastMintemp: { value: number } }[] };
+    const tc = lang() === "tc";
+    const rows = (d.weatherForecast ?? []).slice(0, 3).map((f) => [
+      (f.forecastDate?.slice(4, 6) ?? "") + "/" + (f.forecastDate?.slice(6, 8) ?? ""),
+      f.forecastWeather ?? "",
+      `${f.forecastMintemp?.value ?? "?"}–${f.forecastMaxtemp?.value ?? "?"}°`,
+    ]);
+    return { data: { kind: "table", columns: tc ? ["日期", "天氣", "氣溫"] : ["Date", "Weather", "Temp"], rows }, observedAt: new Date() };
+  },
+
+  async hko_swt(src) {
+    const d = (await json(await get(src))) as { swt?: { desc: string }[] };
+    const items = (d.swt ?? []).map((s) => ({ title: s.desc ?? "", icon: "info" }));
+    return { data: { kind: "list", items }, observedAt: new Date() };
+  },
+
+  async hko_tide(src) {
+    const d = (await json(await get(src))) as { tide?: { data?: { height: number; time: string }[] } };
+    const tc = lang() === "tc";
+    const tides = d.tide?.data ?? [];
+    const next = tides[0];
+    const cells: StatusCell[] = [
+      { label: tc ? "下一個潮" : "Next tide", value: next ? `${next.height}m @ ${next.time?.slice(11, 16)}` : "—", status: 0 },
+      { label: tc ? "今日潮汐數" : "Tides today", value: String(tides.length), status: 0 },
+    ];
+    return { data: { kind: "status_grid", cells }, observedAt: new Date() };
+  },
+
+  async hko_radiation(src) {
+    const d = (await json(await get(src))) as { hko_radiation?: { level?: string } };
+    const tc = lang() === "tc";
+    const level = d.hko_radiation?.level ?? "—";
+    return { data: { kind: "big_number", value: level, unit: tc ? "微希/小時" : "µSv/h", sub: tc ? "環境伽馬輻射" : "Gamma radiation" }, observedAt: new Date() };
+  },
+
   async td_specialtrafficnews(src) {
     const { items, observedAt } = P.parseSpecialTraffic(await text(await get(src)));
     return { data: { kind: "list", items }, observedAt };

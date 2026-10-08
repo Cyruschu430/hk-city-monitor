@@ -172,6 +172,8 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // not never pays for the 60s refresh.
   { id: "carpark_vacancy", label: { tc: "停車場空位", en: "Car park vacancies" }, on: false },
   { id: "sensor_parking_spaces", label: { tc: "路邊感應車位", en: "On-street sensor spaces" }, on: false },
+  // Bus live positions — estimated from ETA data (KMB/LWB/CTB/NLB/GMB)
+  { id: "bus_live", label: { tc: "巴士實時位置", en: "Bus Live Positions" }, on: false },
   // 952 LCSD leisure facilities (libraries, museums, parks, courts, camps, bbq)
   // from nine CSDI services — the official geometry, not a geocode. OFF by
   // default like every reference layer; the generic attribute popup handles it.

@@ -60,13 +60,44 @@ export async function loadBusData(): Promise<BusData> {
 
 // ---------- ETA fetching ----------
 export async function fetchStopETA(stopId: string): Promise<BusETA[]> {
-  // KMB/LWB/CTB share the same ETA endpoint structure
-  const res = await fetch(
-    `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${stopId}`
-  );
-  if (!res.ok) throw new Error(`ETA fetch failed: ${res.status}`);
-  const data = await res.json();
-  return data.data ?? [];
+  // Try KMB/LWB/CTB first (same API), then NLB
+  try {
+    const res = await fetch(
+      `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${stopId}`
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (data.data && data.data.length > 0) return data.data;
+    }
+  } catch {
+    // fall through to NLB
+  }
+
+  // NLB uses a different API
+  try {
+    const res = await fetch(
+      `https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=eta&stopId=${stopId}`
+    );
+    if (res.ok) {
+      const data = await res.json();
+      // NLB returns a different shape — map to common BusETA
+      return (data.eta ?? []).map((e: Record<string, unknown>) => ({
+        co: "NLB",
+        route: String(e.routeNo ?? ""),
+        dir: "O",
+        service_type: 1,
+        seq: Number(e.seq ?? 0),
+        dest_tc: String(e.dest_tc ?? ""),
+        eta: typeof e.eta === "string" ? e.eta : null,
+        rmk_tc: String(e.rmk_tc ?? ""),
+        data_timestamp: String(e.data_timestamp ?? ""),
+      }));
+    }
+  } catch {
+    // ignore
+  }
+
+  return [];
 }
 
 // ---------- live tracking (ETA → estimated position) ----------

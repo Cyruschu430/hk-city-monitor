@@ -763,11 +763,16 @@ const ADAPTERS: Record<string, Adapter> = {
     // In production this would be the worker's job; here we use a fixed set
     // of high-traffic stops to get representative coverage.
     const majorStops = [
-      "18492910339410B1", // 竹園邨總站
-      "001027", // 中環(港澳碼頭)
-      "001629", // 銅鑼灣(摩頓台)
-      "001860", // 東涌站
-      "003540", // 機場/港珠澳大橋
+      "18492910339410B1", // 竹園邨總站 (KMB)
+      "001027", // 中環(港澳碼頭) (CTB)
+      "001629", // 銅鑼灣(摩頓台) (CTB)
+      "001860", // 東涌站 (CTB)
+      "003540", // 機場/港珠澳大橋 (CTB)
+      "000001", // NLB 梅窩碼頭
+      "000002", // NLB 大澳
+      "000003", // NLB 昂坪
+      "000004", // NLB 塘福
+      "000005", // NLB 水口
     ];
 
     const allEtas: Bus.BusETA[] = [];

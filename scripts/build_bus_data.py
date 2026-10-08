@@ -78,21 +78,22 @@ def fetch_ctb_stops(route):
         return []
 
 def fetch_nlb():
-    """New Lantao Bus"""
+    """New Lantao Bus — route.php?action=list"""
     print("NLB routes...")
     try:
-        routes = get("https://rt.data.gov.hk/v2/transport/nlb/route")["data"]
+        data = get("https://rt.data.gov.hk/v2/transport/nlb/route.php?action=list")
         out = {}
-        for r in routes:
-            key = f"NLB_{r['route']}_O"
+        for r in data["routes"]:
+            key = f"NLB_{r['routeNo']}_O"
             out[key] = {
                 "co": "NLB",
-                "route": r["route"],
-                "orig": r.get("orig_tc", ""),
-                "dest": r.get("dest_tc", ""),
+                "route": r["routeNo"],
+                "orig": r.get("routeName_c", "").split(" > ")[0] if " > " in r.get("routeName_c", "") else r.get("routeName_c", ""),
+                "dest": r.get("routeName_c", "").split(" > ")[-1] if " > " in r.get("routeName_c", "") else "",
                 "bound": "O",
                 "service_type": "1",
                 "stops": [],
+                "routeId": r["routeId"],
             }
         print(f"  {len(out)} routes")
         return out
@@ -101,29 +102,45 @@ def fetch_nlb():
         return {}
 
 def fetch_gmb():
-    """Green Minibus — different API structure"""
+    """Green Minibus — data.etagmb.gov.hk"""
     print("GMB routes...")
     try:
-        # GMB has region-based routes
         out = {}
         for region in ["HKI", "KLN", "NT"]:
-            data = get(f"https://data.etagmb.gov.hk/v2/route/{region}")
-            for r in data.get("data", {}).get("routes", []):
-                key = f"GMB_{region}_{r['route_id']}"
+            data = get(f"https://data.etagmb.gov.hk/route/{region}")
+            for route_no in data.get("data", {}).get("routes", []):
+                key = f"GMB_{region}_{route_no}"
                 out[key] = {
                     "co": "GMB",
-                    "route": r["route_id"],
-                    "orig": r.get("description_tc", ""),
+                    "route": route_no,
+                    "orig": "",
                     "dest": "",
                     "bound": "O",
                     "service_type": "1",
                     "stops": [],
+                    "region": region,
                 }
         print(f"  {len(out)} routes")
         return out
     except Exception as e:
         print(f"  GMB failed: {e}")
         return {}
+
+def fetch_nlb_stops(route_id):
+    """Get stops for one NLB route."""
+    try:
+        data = get(f"https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=list&routeId={route_id}")
+        return [{"seq": s["seq"], "stop": s["stopId"]} for s in data.get("stops", [])]
+    except Exception:
+        return []
+
+def fetch_gmb_stops(route_no, region):
+    """Get stops for one GMB route."""
+    try:
+        data = get(f"https://data.etagmb.gov.hk/route-stop/{route_no}/1")
+        return [{"seq": s["stop_seq"], "stop": s["stop_id"]} for s in data.get("data", {}).get("route_stops", [])]
+    except Exception:
+        return []
 
 def fetch_all_stops():
     """Fetch ALL stops with coordinates from KMB API (has full list)."""
@@ -159,6 +176,10 @@ def main():
             route["stops"] = fetch_kmb_stops(route["route"], route["service_type"], route["bound"])
         elif route["co"] == "CTB":
             route["stops"] = fetch_ctb_stops(route["route"])
+        elif route["co"] == "NLB":
+            route["stops"] = fetch_nlb_stops(route["routeId"])
+        elif route["co"] == "GMB":
+            route["stops"] = fetch_gmb_stops(route["route"], route["region"])
         # NLB/GMB stop sequences need their own APIs — skip for now
 
     # 4. Save

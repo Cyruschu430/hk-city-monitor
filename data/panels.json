@@ -672,6 +672,19 @@
     "tc": "價格來自消委會油價資訊通，每日更新。",
     "en": "Prices from Consumer Council Fuel Price Watch, updated daily."
    }
+  },
+  {
+   "id": "sb_bwt_status",
+   "source": "sb_bwt_json",
+   "render": "table",
+   "title": {
+    "tc": "口岸通 管制站即時狀況",
+    "en": "SB Easy Boundary — Real-time Status"
+   },
+   "cadence_note": {
+    "tc": "每 15 分鐘",
+    "en": "Every 15 minutes"
+   }
   }
  ]
 }

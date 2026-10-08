@@ -82,7 +82,7 @@ The project is built around a single principle: **OSINT depends on breadth, open
 
 ## Features
 
-Data is organised into **panels** (individual readouts) that appear in context-specific **verticals** (pre-arranged views for a scenario, such as typhoon mode). The current build ships 40 panels.
+Data is organised into **panels** (individual readouts) that appear in context-specific **verticals** (pre-arranged views for a scenario, such as typhoon mode). The current build ships 41 panels.
 
 **Live imagery**
 - Transport Department traffic snapshots (1,013 cameras, ~2-minute cadence)

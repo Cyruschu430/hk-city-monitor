@@ -94,6 +94,8 @@ const OVERVIEW = [
   "smartplay_activities",
   // --- Phase 1b batch 3: Consumer Council fuel prices ---
   "fuel_price_table",
+  // --- Border ---
+  "sb_bwt_status",
 ];
 
 /** Trigger polling: 3 minutes. This interval is the REAL cadence for the two

@@ -723,6 +723,39 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  async sb_bwt_status(src, _panel) {
+    const payload = (await json(await get(src))) as {
+      updateDate: string;
+      cpInfoList: Array<{
+        code: string;
+        cpName: string;
+        openTimeLabel: string;
+        openFrom: string;
+        openTo: string;
+        arrival: { resident: { status: number; name: string }; visitor: { status: number; name: string }; car: { status: number; name: string }; transport: { status: number; name: string } };
+        departure: { resident: { status: number; name: string }; visitor: { status: number; name: string }; car: { status: number; name: string }; transport: { status: number; name: string } };
+      }>;
+    };
+    const tc = lang() === "tc";
+    const statusMap = { 0: { tc: "暢通", en: "Normal" }, 1: { tc: "繁忙", en: "Busy" }, 2: { tc: "非常繁忙", en: "Very Busy" }, 3: { tc: "已關閉", en: "Closed" } };
+    const rows: string[][] = [];
+    for (const cp of payload.cpInfoList ?? []) {
+      const arr = cp.arrival ?? {};
+      const dep = cp.departure ?? {};
+      const statusOf = (s: { status: number; name: string } | undefined) => s ? (statusMap[s.status as keyof typeof statusMap]?.tc ?? "?") : "-";
+      rows.push([
+        cp.cpName ?? cp.code,
+        cp.openTimeLabel ?? "",
+        statusOf(arr.resident), statusOf(arr.visitor), statusOf(arr.car), statusOf(arr.transport),
+        statusOf(dep.resident), statusOf(dep.visitor), statusOf(dep.car), statusOf(dep.transport),
+      ]);
+    }
+    const columns = tc
+      ? ["管制站", "開放時間", "入境居民", "入境旅客", "入境車輛", "入境穿梭巴", "出境居民", "出境旅客", "出境車輛", "出境穿梭巴"]
+      : ["Control Point", "Opening Hours", "Arr. Resident", "Arr. Visitor", "Arr. Car", "Arr. Shuttle", "Dep. Resident", "Dep. Visitor", "Dep. Car", "Dep. Shuttle"];
+    return { data: { kind: "table", columns, rows }, observedAt: payload.updateDate ? new Date(payload.updateDate) : null };
+  },
+
   async mardep_crossboundary_ferry(src, panel) {
     const max = Number(panel.params?.["max_rows"] ?? 20);
     // Honesty from the ROW dates, not the fetch time (the feed famously lags):

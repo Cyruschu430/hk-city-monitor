@@ -685,6 +685,23 @@
     "tc": "每 15 分鐘",
     "en": "Every 15 minutes"
    }
+  },
+  {
+   "id": "bus_eta_search",
+   "source": "bus_eta",
+   "render": "search_table",
+   "title": {
+    "tc": "巴士到站時間",
+    "en": "Bus ETA"
+   },
+   "search_placeholder": {
+    "tc": "搜尋路線 / 起點 / 終點（如：1A, 竹園, 尖沙咀）",
+    "en": "Search route / origin / destination"
+   },
+   "cadence_note": {
+    "tc": "即時",
+    "en": "Live"
+   }
   }
  ]
 }

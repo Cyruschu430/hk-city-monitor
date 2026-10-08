@@ -96,6 +96,8 @@ const OVERVIEW = [
   "fuel_price_table",
   // --- Border ---
   "sb_bwt_status",
+  // --- Transport ---
+  "bus_eta_search",
 ];
 
 /** Trigger polling: 3 minutes. This interval is the REAL cadence for the two

@@ -3614,6 +3614,19 @@
    "notes": "Aggregated grid of 20,712 sensor parking spaces (0.001° cells) for efficient map rendering. Built by scripts/build_parking_grid.py.",
    "fetch": "browser",
    "cost": "free"
+  },
+  {
+   "id": "bus_eta",
+   "group": "transport",
+   "name": "巴士到站時間（全港）",
+   "name_en": "Bus ETA — All Hong Kong",
+   "type": "json",
+   "url": "https://data.etabus.gov.hk/v1/transport/kmb/stop-eta",
+   "auth": "none",
+   "cadence": "live",
+   "notes": "KMB/LWB/CTB ETA API. Search by route or stop. Live tracking layer estimated from ETA.",
+   "fetch": "browser",
+   "cost": "free"
   }
  ]
 }

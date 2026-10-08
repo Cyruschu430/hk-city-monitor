@@ -411,6 +411,14 @@
    "_comment": "556 parks placed by TD's OWN basic_info_all coordinates (no geocoding — the position IS the publisher's), vacancy merged per park from vacancy_all.json by the same adapter the table panel reads, so the map and the panel cannot disagree. OFF by default; refresh_ms drives a generic 60s redraw loop in overlays.ts."
   },
   {
+    "id": "bus_live",
+    "source": "bus_eta",
+    "kind": "point",
+    "symbol": "bus",
+    "title": { "tc": "巴士實時位置", "en": "Bus Live Positions" },
+    "on": false
+  },
+  {
     "id": "sensor_parking_spaces",
     "source": "td_parking_grid",
     "kind": "point",

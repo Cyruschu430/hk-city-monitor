@@ -17,6 +17,7 @@ import { lang } from "./i18n.ts";
 import { liveThumb, probeLive } from "./live.ts";
 import { hkToday } from "./format.ts";
 import type { PanelData, StatusCell } from "./render.ts";
+import * as Bus from "./bus.ts";
 
 export interface AdapterResult {
   data: PanelData;
@@ -720,6 +721,83 @@ const ADAPTERS: Record<string, Adapter> = {
       data: { kind: "status_grid", cells: P.parseImmdQueue(payload, stations) },
       observedAt: null,
       state: { queues, records: queues, maxQueueMin },
+    };
+  },
+
+  async bus_eta(_src, panel, _ctx) {
+    void _src; void _ctx;
+    const q = searchQuery(panel.id);
+    const data = await Bus.loadBusData();
+
+    // Search mode: find routes matching query
+    if (q) {
+      const matches = Bus.searchRoutes(data, q);
+      const columns = ["路線", "起點", "終點", "公司"];
+      const rows = matches.slice(0, 50).map((r) => [
+        r.route,
+        r.orig,
+        r.dest,
+        r.co,
+      ]);
+      return { data: { kind: "table", columns, rows }, observedAt: null };
+    }
+
+    // Default: show company list
+    const companies = Bus.COMPANIES.map((c) => ({
+      label: c.name,
+      value: String(Bus.getCompanyRoutes(data, c.id).length),
+      status: 0 as const,
+    }));
+    return {
+      data: { kind: "status_grid", cells: companies },
+      observedAt: null,
+    };
+  },
+
+  async bus_live(_src, _panel, _ctx) {
+    void _src; void _ctx;
+    const data = await Bus.loadBusData();
+
+    // For live tracking, we need ETAs from multiple stops.
+    // Strategy: fetch ETAs from a sample of major stops across HK.
+    // In production this would be the worker's job; here we use a fixed set
+    // of high-traffic stops to get representative coverage.
+    const majorStops = [
+      "18492910339410B1", // 竹園邨總站
+      "001027", // 中環(港澳碼頭)
+      "001629", // 銅鑼灣(摩頓台)
+      "001860", // 東涌站
+      "003540", // 機場/港珠澳大橋
+    ];
+
+    const allEtas: Bus.BusETA[] = [];
+    for (const stopId of majorStops) {
+      try {
+        const etas = await Bus.fetchStopETA(stopId);
+        allEtas.push(...etas);
+      } catch {
+        // skip failed stops
+      }
+    }
+
+    const positions = Bus.estimatePositions(allEtas, data);
+    const features = positions.map((p) => ({
+      type: "Feature" as const,
+      geometry: { type: "Point" as const, coordinates: [p.lng, p.lat] },
+      properties: {
+        route: p.route,
+        co: p.co,
+        nextStop: p.nextStop,
+        etaMin: p.etaMin,
+        bearing: p.bearing,
+        color: Bus.COMPANIES.find((c) => c.id === p.co)?.color ?? "#666666",
+      },
+    }));
+
+    return {
+      data: { kind: "status_grid", cells: [{ label: "巴士位置", value: String(positions.length), status: 0 as const }] },
+      observedAt: new Date(),
+      geo: { type: "FeatureCollection", features },
     };
   },
 

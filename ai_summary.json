@@ -1,0 +1,70 @@
+{
+ "generated": "2026-10-11T12:46:36+08:00",
+ "model": "ca/gpt-4o-mini",
+ "provenance": {
+  "generator": "LLM summary of published open data",
+  "inputs": [
+   {
+    "file": "aircraft.json",
+    "from": "live-data",
+    "observed": 1791678477501
+   },
+   {
+    "file": "berth_vacancy.json",
+    "from": "live-data",
+    "observed": "2026-10-11 08:28"
+   },
+   {
+    "file": "water_suspension.json",
+    "from": "live-data",
+    "observed": "2026-10-11T08:30:01+08:00"
+   },
+   {
+    "file": "carpark_info.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "baselines.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "ae_waiting",
+    "from": "live-api",
+    "observed": "2026年10月11日 下午12時30分"
+   },
+   {
+    "file": "cp_queue",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "aqhi",
+    "from": "live-api",
+    "observed": "2026-10-11T11:30:00"
+   },
+   {
+    "file": "wind_10min",
+    "from": "live-api",
+    "observed": "202610111230"
+   },
+   {
+    "file": "warnsum",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "special_traffic",
+    "from": "live-api",
+    "observed": null
+   }
+  ],
+  "frequency": "2x daily (08:00, 20:00 HKT)",
+  "disclaimer": "AI-generated from the figures above. It is not analysis, not advice, and not an official notice."
+ },
+ "brief": {
+  "tc": "目前有一個活躍的水務暫停，影響中西區、九龍城區、元朗區、北區、南區和大埔區。醫院的等待時間中，廣華醫院、北區醫院和將軍澳醫院的等待時間均為4.5小時。空氣質素指數風險為中等，最大風速為35公里每小時。現時有51架飛機在空中，9架在地面。 ",
+  "en": "There is currently one active water suspension affecting Central and Western District, Kowloon City District, Yuen Long District, North District, Southern District, and Tai Po District. The waiting time at hospitals shows that the longest wait is 4.5 hours at Kwong Wah Hospital, North District Hospital, and Tseung Kwan O Hospital. The air quality index risk is moderate, with a maximum wind speed of 35 kilometers per hour. There are 51 aircraft airborne and 9 on the ground."
+ }
+}

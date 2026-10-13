@@ -57,6 +57,80 @@ const r = await page.evaluate(() => {
       (el) => el.closest(".panel")?.getAttribute("data-panel") ?? "?").sort().join(","),
   };
 });
+
+// ── 無人機助手: the embedded SUA assistant ─────────────────────────────────────────────
+// Three ways this breaks silently, so all three are asserted: the button is never created;
+// it shows in every mode; or the frame is blocked by our own frame-src and renders as an
+// empty box. The last one is proved by the network, not by the DOM — a blocked frame leaves
+// a perfectly normal-looking <iframe> behind.
+const assistHits = [];
+const assistFailed = [];
+page.on("response", (res) => { if (res.url().includes("sua-assistant.pages.dev")) assistHits.push(res.status()); });
+page.on("requestfailed", (req) => { if (req.url().includes("sua-assistant.pages.dev")) assistFailed.push(req.failure()?.errorText ?? "failed"); });
+
+const assistBefore = await page.evaluate(() => {
+  const el = document.querySelector(".drone-assist");
+  return {
+    exists: !!el,
+    visible: !!el && getComputedStyle(el).display !== "none",
+    frames: document.querySelectorAll(".drone-assist iframe").length,
+  };
+});
+const enteredDrone = await page.evaluate(async () => {
+  const b = [...document.querySelectorAll(".rail-btn")].find((x) => (x.textContent || "").includes("無人機"));
+  if (!(b instanceof HTMLElement)) return false;
+  b.click();
+  await new Promise((r) => setTimeout(r, 1500));
+  return true;
+});
+const assistInMode = await page.evaluate(() => {
+  const el = document.querySelector(".drone-assist");
+  return { visible: !!el && getComputedStyle(el).display !== "none", frames: document.querySelectorAll(".drone-assist iframe").length };
+});
+await page.evaluate(async () => {
+  const head = document.querySelector(".drone-assist-head");
+  if (head instanceof HTMLElement) head.click();
+  await new Promise((r) => setTimeout(r, 6000));
+});
+const assistOpen = await page.evaluate(() => {
+  const f = document.querySelector(".drone-assist iframe");
+  const box = f?.getBoundingClientRect();
+  const band = document.querySelector("#mapWrap")?.getBoundingClientRect();
+  const head = document.querySelector(".drone-assist-head")?.getBoundingClientRect();
+  return {
+    frames: document.querySelectorAll(".drone-assist iframe").length,
+    src: f?.getAttribute("src") ?? null,
+    height: box ? Math.round(box.height) : 0,
+    headInside: head && band ? head.top >= band.top - 1 && head.bottom <= band.bottom + 1 : null,
+    badgeTop: document.querySelector(".landsd-badge")?.getBoundingClientRect().top ?? null,
+    headTop: head ? Math.round(head.top) : null,
+  };
+});
+// Leave the mode again: the button must go away with it, and take the frame with it.
+const leftDrone = await page.evaluate(async () => {
+  const b = [...document.querySelectorAll(".rail-btn")].find((x) => (x.textContent || "").includes("總覽"));
+  if (!(b instanceof HTMLElement)) return null;
+  b.click();
+  await new Promise((r) => setTimeout(r, 900));
+  const el = document.querySelector(".drone-assist");
+  return { visible: !!el && getComputedStyle(el).display !== "none", open: !!document.querySelector(".drone-assist.is-open") };
+});
+
+ok(assistBefore.exists, "the drone assistant button is created with the shell");
+ok(!assistBefore.visible, "the drone assistant stays out of the way outside drone mode");
+ok(assistBefore.frames === 0, "the drone assistant fetches nothing until it is opened (no third-party frame at boot)");
+ok(enteredDrone, "drone mode is reachable from the rail");
+ok(assistInMode.visible, "the drone assistant appears in 無人機模式");
+ok(assistInMode.frames === 0, "the assistant still fetched nothing when its mode opened it");
+ok(assistOpen.frames === 1 && (assistOpen.src ?? "").includes("sua-assistant.pages.dev"),
+  `the assistant frame points at the published embed page (${assistOpen.src})`);
+ok(assistOpen.height > 120, `the assistant frame has a usable height (${assistOpen.height}px)`);
+ok(assistHits.length > 0 && assistHits.every((s) => s < 400),
+  `the assistant page actually loaded inside the frame (status ${assistHits.join(",") || "none"}; no response at all means our own frame-src blocked it)`);
+ok(assistFailed.length === 0, `no blocked or failed request to the assistant (${assistFailed.join(",") || "none"})`);
+ok(assistOpen.headInside !== false, `the assistant's button stays inside the map band (button top ${assistOpen.headTop}, LandsD notice top ${assistOpen.badgeTop})`);
+ok(leftDrone && !leftDrone.visible && !leftDrone.open, "leaving drone mode puts the assistant and its frame away");
+
 await browser.close();
 
 ok(r.livePulse === 0, "the brand dot is gone");

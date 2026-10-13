@@ -17,6 +17,7 @@ import { h, clear } from "./lib/dom.ts";
 import { lang, onLangChange, t } from "./lib/i18n.ts";
 import { loadRegistry, clearDataCache, sourceLabel, type VerticalDefRaw } from "./lib/sources.ts";
 import { createMap, landsdBadge, setBasemap } from "./map/basemap.ts";
+import { droneAssist } from "./ui/droneassist.ts";
 import { addCameraLayers, loadCameras, TD_SRC, HKO_SRC, type Camera } from "./map/cameras.ts";
 import { applyVerticalLayers, clearVerticalLayers, type WaterPoint } from "./map/overlays.ts";
 import { createLayerControl, relabelLayerControl, type LayerRow } from "./ui/layercontrol.ts";
@@ -315,6 +316,10 @@ async function boot(): Promise<void> {
     },
   });
   hudEl.append(landsdBadge());
+  // 無人機模式的 SUA assistant: same corner, one line above the LandsD notice, and only
+  // while that mode is active (activateMode toggles it — one place, all callers).
+  const assistEl = droneAssist();
+  hudEl.append(assistEl);
 
   // GEV-style constant readout: the pointer's position on the map, bottom-left
   // above the scale bar. Provably the mouse's true coordinates, never a guess.
@@ -831,6 +836,11 @@ async function boot(): Promise<void> {
       v ? (lang() === "tc" ? v.name.tc : v.name.en) : lang() === "tc" ? "總覽" : "Overview",
     );
     mapHead.setScope(v ? v.name.tc : "香港實時情況", v ? v.name.en : "HONG KONG LIVE");
+    // The SUA assistant belongs to the mode whose subject it is; leaving the mode puts it
+    // away, and closing it also happens when it is put away, so the reader never comes
+    // back to a frame they did not ask for.
+    assistEl.classList.toggle("is-on", id === "drone");
+    if (id !== "drone") assistEl.classList.remove("is-open");
     engine.setPanels(v ? v.order : OVERVIEW);
     refreshTabs();
     void applyModeLayers(v ? v.layers : []);

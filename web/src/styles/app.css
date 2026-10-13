@@ -560,6 +560,27 @@ a:hover{color:var(--cyan)}
 .landsd-logo{height:16px;width:auto;opacity:1}
 .landsd-badge a{color:var(--map-face)}
 .landsd-badge a:hover{color:var(--map-face)}
+
+/* ── 無人機助手 — the SUA assistant, one line above the LandsD notice ─────────────────
+   Shown only in 無人機模式 (`main.ts` toggles .is-on inside activateMode, so every route
+   into a mode goes through the same place). The frame is a third-party page: it is created
+   on first open rather than at boot, and its origin has to be listed in _headers frame-src
+   or the browser blocks it and draws an empty box with no error anywhere.
+   Column-reverse because the head — the button, and the only way to close — belongs at the
+   bottom, where the finger already is, with the frame unfolding above it. */
+.drone-assist{position:absolute;right:10px;bottom:83px;z-index:6;
+  display:none;flex-direction:column-reverse;align-items:flex-end;gap:6px;pointer-events:auto}
+.drone-assist.is-on{display:flex}
+.drone-assist-head{display:flex;align-items:center;gap:7px;cursor:pointer;font:inherit;
+  padding:5px 10px;color:var(--map-face);background:var(--map-face-bg);
+  border:1px solid var(--map-face-line);border-radius:7px}
+.drone-assist-head:hover{border-color:var(--cyan)}
+.drone-assist-caret{font-size:10px;line-height:1;transition:rotate .15s ease}
+.drone-assist.is-open .drone-assist-caret{rotate:180deg}
+.drone-assist-body{display:none}
+.drone-assist.is-open .drone-assist-body{display:block}
+.drone-assist-frame{display:block;width:380px;height:min(58vh,520px);border-radius:10px;
+  border:1px solid var(--map-face-line);background:var(--map-face-bg)}
 /* The `.view3d` rules stood here. Removed with the 3D button 2026-09-27, but only the SELECTOR line
    was deleted, leaving eight declarations with no selector. A CSS parser cannot recover from that: it
    consumes the following rules, and the rule it consumed was `#panelCol`.
@@ -1088,6 +1109,15 @@ a:hover{color:var(--cyan)}
      the gap above the credit and the head's clearance below the band top. */
   .layer-control{bottom:62px;max-height:calc(100% - 120px)}
   .landsd-badge{bottom:60px}
+  /* The assistant sits above the LandsD notice, and on a phone it is anchored to BOTH
+     edges of the map band: the frame takes whatever height is left between the band's top
+     and the button, so no viewport height can push the button off the screen. (A fixed
+     height cannot do this — 46vh of band minus a 97px anchor left 22px of slack at 640px
+     and none at all in landscape.) */
+  .drone-assist{top:12px;bottom:97px;left:10px;right:10px;align-items:stretch}
+  .drone-assist-head{justify-content:center;min-height:40px}
+  .drone-assist-body{flex:1 1 auto;min-height:0}
+  .drone-assist-frame{width:100%;height:100%;min-height:120px}
   .lyr-body{flex:1 1 auto;min-height:0;max-height:none}
   /* One tap target for the whole row: the head is 32px on a desktop pointer and needs
      the touch minimum on a phone. */

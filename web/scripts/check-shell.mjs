@@ -77,9 +77,13 @@ const assistBefore = await page.evaluate(() => {
   };
 });
 const enteredDrone = await page.evaluate(async () => {
-  const b = [...document.querySelectorAll(".rail-btn")].find((x) => (x.textContent || "").includes("無人機"));
-  if (!(b instanceof HTMLElement)) return false;
-  b.click();
+  // The mode control is a <select> in the status bar, not a rail button (probe-modes.mjs
+  // found no .rail-btn carrying a mode name at all). Drive it the way the reader does —
+  // set the value, fire change — and identify it by the option rather than by position.
+  const sel = [...document.querySelectorAll("select")].find((s) => [...s.options].some((o) => o.value === "drone"));
+  if (!(sel instanceof HTMLSelectElement)) return false;
+  sel.value = "drone";
+  sel.dispatchEvent(new Event("change", { bubbles: true }));
   await new Promise((r) => setTimeout(r, 1500));
   return true;
 });
@@ -108,9 +112,10 @@ const assistOpen = await page.evaluate(() => {
 });
 // Leave the mode again: the button must go away with it, and take the frame with it.
 const leftDrone = await page.evaluate(async () => {
-  const b = [...document.querySelectorAll(".rail-btn")].find((x) => (x.textContent || "").includes("總覽"));
-  if (!(b instanceof HTMLElement)) return null;
-  b.click();
+  const sel = [...document.querySelectorAll("select")].find((s) => [...s.options].some((o) => o.value === "overview"));
+  if (!(sel instanceof HTMLSelectElement)) return null;
+  sel.value = "overview";
+  sel.dispatchEvent(new Event("change", { bubbles: true }));
   await new Promise((r) => setTimeout(r, 900));
   const el = document.querySelector(".drone-assist");
   return { visible: !!el && getComputedStyle(el).display !== "none", open: !!document.querySelector(".drone-assist.is-open") };

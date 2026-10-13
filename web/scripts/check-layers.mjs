@@ -366,12 +366,22 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
       for (const id of ids) {
         const img = window.__map?.getImage(id);
         if (!img) continue;
-        const off = document.createElement("canvas");
-        off.width = img.width;
-        off.height = img.height;
-        off.getContext("2d").putImageData(new ImageData(new Uint8ClampedArray(img.data), img.width, img.height), 0, 0);
         const size = Math.round(44 * row.scale);
-        ctx.drawImage(off, x, row.y, size, size);
+        // StyleImage.data is an ImageData in some MapLibre builds and an ImageBitmap in others.
+        // Assuming the first is how this sheet failed with "source width is zero".
+        const d = img.data;
+        if (typeof ImageData !== "undefined" && d instanceof ImageData && d.width) {
+          const off = document.createElement("canvas");
+          off.width = d.width;
+          off.height = d.height;
+          off.getContext("2d").putImageData(d, 0, 0);
+          ctx.drawImage(off, x, row.y, size, size);
+        } else if (d) {
+          ctx.drawImage(d, x, row.y, size, size);
+        } else {
+          console.log("glyph sheet: no drawable data for", id);
+          continue;
+        }
         if (row.scale > 1) {
           ctx.fillStyle = "#64748b";
           ctx.font = "12px system-ui, sans-serif";

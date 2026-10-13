@@ -257,6 +257,10 @@ for (const size of SIZES) {
       const straddles = (a, b) => overlaps(a, b) && !covers(a, b);
       const placard = document.querySelector(".mh-scope").getBoundingClientRect();
       const clock = document.querySelector(".mh-clock").getBoundingClientRect();
+      // Measure the card BEFORE asking for the enlarged shape: a frame height read after the
+      // dispatch is the enlarged one, and printing it beside the card's panel height reads as a
+      // frame taller than the box it is in.
+      const cardFrameH = f ? Math.round(f.getBoundingClientRect().height) : 0;
       // The frame's ⤢ asks for room. On a phone that can only come from height, so the
       // enlarged panel takes the band outright — assert it is taller and still never straddles.
       window.dispatchEvent(new MessageEvent("message", { data: { type: "sua:expand" }, origin: "https://sua-assistant.pages.dev" }));
@@ -276,7 +280,7 @@ for (const size of SIZES) {
         straddlesClock: straddles(panel, clock),
         placardBottom: Math.round(placard.bottom),
         badgeBelow: badge.top >= panel.bottom - 2,
-        frameH: f ? Math.round(f.getBoundingClientRect().height) : 0,
+        frameH: cardFrameH,
       };
     });
     if (!assist || !assist.found) {
@@ -293,6 +297,9 @@ for (const size of SIZES) {
       if (assist.widthOfBand > 0.88) problems.push(`${size.name}: the open assistant is nearly as wide as the band (${assist.widthOfBand} of it) — it reads as cramped, and a strip of map should show beside it`);
       if (!assist.badgeBelow) problems.push(`${size.name}: the open assistant hides the LandsD credit (panel bottom ${assist.panelBottom} vs notice top ${assist.badgeTop})`);
       if (assist.frameH < 90) problems.push(`${size.name}: the assistant frame has no usable height (${assist.frameH}px)`);
+      // A frame taller than its own panel is clipped by overflow:hidden: the reader sees the top
+      // of the chat and never the input box, with nothing in the console to say so.
+      if (assist.frameH > assist.panelBottom - assist.panelTop + 2) problems.push(`${size.name}: the assistant frame overflows the panel it sits in (frame ${assist.frameH}px vs panel ${assist.panelBottom - assist.panelTop}px)`);
       if (!(assist.bigHeight > assist.cardHeight)) problems.push(`${size.name}: the ⤢ in the frame does not make the panel taller (${assist.cardHeight} → ${assist.bigHeight}px)`);
       if (assist.bigStraddles) problems.push(`${size.name}: the enlarged panel half-covers a label (${assist.bigHeight}px tall)`);
     }

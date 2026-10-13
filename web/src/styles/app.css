@@ -571,12 +571,13 @@ a:hover{color:var(--cyan)}
 .drone-assist{position:absolute;right:10px;bottom:83px;z-index:6;
   display:none;flex-direction:column-reverse;align-items:flex-end;gap:6px;pointer-events:auto}
 .drone-assist.is-on{display:flex}
-.drone-assist-head{display:flex;align-items:center;gap:7px;cursor:pointer;font:inherit;
-  padding:5px 10px;color:var(--map-face);background:var(--map-face-bg);
-  border:1px solid var(--map-face-line);border-radius:7px}
-.drone-assist-head:hover{border-color:var(--cyan)}
-.drone-assist-caret{font-size:10px;line-height:1;transition:rotate .15s ease}
-.drone-assist.is-open .drone-assist-caret{rotate:180deg}
+.drone-assist-head{display:grid;place-items:center;cursor:pointer;font:inherit;
+  width:44px;height:44px;padding:0;border-radius:50%;color:var(--map-face);
+  background:var(--map-face-bg);border:1px solid var(--map-face-line)}
+.drone-assist-head:hover{border-color:var(--cyan);color:var(--cyan)}
+.drone-assist-close{display:none}
+.drone-assist.is-open .drone-assist-bot{display:none}
+.drone-assist.is-open .drone-assist-close{display:block}
 .drone-assist-body{display:none}
 .drone-assist.is-open .drone-assist-body{display:block}
 .drone-assist-frame{display:block;width:380px;height:min(58vh,520px);border-radius:10px;
@@ -1115,7 +1116,8 @@ a:hover{color:var(--cyan)}
      height cannot do this — 46vh of band minus a 97px anchor left 22px of slack at 640px
      and none at all in landscape.) */
   .drone-assist{top:12px;bottom:97px;left:10px;right:10px;align-items:stretch}
-  .drone-assist-head{justify-content:center;min-height:40px}
+  /* The button stays a circle in the corner — the panel stretches, it does not. */
+  .drone-assist-head{align-self:flex-end}
   .drone-assist-body{flex:1 1 auto;min-height:0}
   .drone-assist-frame{width:100%;height:100%;min-height:120px}
   .lyr-body{flex:1 1 auto;min-height:0;max-height:none}

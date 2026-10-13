@@ -100,7 +100,9 @@ const assistOpen = await page.evaluate(() => {
   const f = document.querySelector(".drone-assist iframe");
   const box = f?.getBoundingClientRect();
   const band = document.querySelector("#mapWrap")?.getBoundingClientRect();
-  const head = document.querySelector(".drone-assist-head")?.getBoundingClientRect();
+  const headEl = document.querySelector(".drone-assist-head");
+  const head = headEl?.getBoundingClientRect();
+  const cs = headEl ? getComputedStyle(headEl) : null;
   return {
     frames: document.querySelectorAll(".drone-assist iframe").length,
     src: f?.getAttribute("src") ?? null,
@@ -108,6 +110,14 @@ const assistOpen = await page.evaluate(() => {
     headInside: head && band ? head.top >= band.top - 1 && head.bottom <= band.bottom + 1 : null,
     badgeTop: document.querySelector(".landsd-badge")?.getBoundingClientRect().top ?? null,
     headTop: head ? Math.round(head.top) : null,
+    // The shape was the request: one round button, chat-widget style. An icon-only control
+    // also has to keep a name, or a screen reader announces an unlabelled button.
+    round: head ? Math.abs(head.width - head.height) <= 2 && (cs?.borderRadius ?? "").startsWith("50%") : false,
+    headW: head ? Math.round(head.width) : 0,
+    name: headEl?.getAttribute("aria-label") ?? null,
+    // The bot glyph shows when closed, the close glyph when open — swapping them is the
+    // only affordance an icon button has.
+    glyph: cs ? (document.querySelector(".drone-assist-close") ? getComputedStyle(document.querySelector(".drone-assist-close")).display : "missing") : "missing",
   };
 });
 // Leave the mode again: the button must go away with it, and take the frame with it.
@@ -134,6 +144,9 @@ ok(assistHits.length > 0 && assistHits.every((s) => s < 400),
   `the assistant page actually loaded inside the frame (status ${assistHits.join(",") || "none"}; no response at all means our own frame-src blocked it)`);
 ok(assistFailed.length === 0, `no blocked or failed request to the assistant (${assistFailed.join(",") || "none"})`);
 ok(assistOpen.headInside !== false, `the assistant's button stays inside the map band (button top ${assistOpen.headTop}, LandsD notice top ${assistOpen.badgeTop})`);
+ok(assistOpen.round, `the assistant button is the round widget button it was asked to be (${assistOpen.headW}px)`);
+ok(!!assistOpen.name && assistOpen.name.length > 4, `the icon-only button keeps an accessible name (${assistOpen.name})`);
+ok(assistOpen.glyph === "block", `the button shows its close glyph while the frame is open (${assistOpen.glyph})`);
 ok(leftDrone && !leftDrone.visible && !leftDrone.open, "leaving drone mode puts the assistant and its frame away");
 
 await browser.close();

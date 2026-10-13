@@ -15,6 +15,8 @@ const exe = process.env.CHROME_PATH ?? "C:\\Users\\<user>\\AppData\\Local\\ms-pl
 const SIZES = [
   { name: "iPhone 12 (390x844, browser chrome shown)", w: 390, h: 700 },
   { name: "small Android (360x640)", w: 360, h: 600 },
+  // A phone fix must not quietly break the desktop shell, so the same report runs there.
+  { name: "desktop baseline (1440x900)", w: 1440, h: 900 },
 ];
 
 const browser = await chromium.launch({ executablePath: exe, headless: true });

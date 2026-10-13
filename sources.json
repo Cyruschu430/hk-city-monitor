@@ -2442,21 +2442,6 @@
    "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
   },
   {
-   "id": "td_journey_time_locations",
-   "group": "transport",
-   "name": "行車時間指示位置",
-   "name_en": "Journey Time Indicator Locations",
-   "type": "geojson",
-   "url": "data/journey_time_locations.geojson",
-   "auth": "none",
-   "cadence": "as issued",
-   "notes": "CSDI td_rcd_1671692669689_59165 — 80 indicator locations (approach roads / corridors), each tagged location_id + destination_id so the live XML joins by id. Built copy also ships as data/journey_time_locations.geojson via scripts/build_journey_time.py.",
-   "fetch": "browser",
-   "cors_note": "ACAO=*",
-   "cost": "free",
-   "license": "HKSAR Government open data (data.gov.hk terms) — attribution required"
-  },
-  {
    "id": "ck_hk_td_msd_2_non_metered_parking_spaces_data",
    "group": "transport",
    "name": "Location and occupancy status of non-metered on-street parking spaces installed with sensors",
@@ -3550,7 +3535,8 @@
    "auth": "none",
    "cadence": "as issued",
    "notes": "TD psi space-info CSV — 20,712 metered spaces with sensor, each with ParkingSpaceId (the join key the occupancy feed shares), street, district and coordinates. Built by scripts/build_meters.py.",
-   "todo": false
+   "todo": false,
+   "fetch": "browser"
   },
   {
    "id": "mtr_bus_stops_geojson",
@@ -3571,10 +3557,10 @@
    "name": "運輸署 AI 影像分析閉路電視（位置）",
    "name_en": "TD AI Video Analytics CCTV (positions)",
    "type": "geojson",
-   "url": "data/ai_cctv_stations.geojson",
+   "url": "data/ai_cctv.geojson",
    "auth": "none",
    "cadence": "as issued",
-   "notes": "16 TD AI Video Analytics CCTV cameras (CSDI td_rcd_1671693527354_28926), built to data/ai_cctv_stations.geojson by scripts/build_ai_cctv.py.",
+   "notes": "16 TD AI Video Analytics CCTV cameras (CSDI td_rcd_1671693527354_28926), built to data/ai_cctv.geojson by scripts/build_ai_cctv.py.",
    "todo": false,
    "fetch": "browser"
   },

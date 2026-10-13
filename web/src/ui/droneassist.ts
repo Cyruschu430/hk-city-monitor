@@ -25,6 +25,8 @@ import { lang, onLangChange } from "../lib/i18n.ts";
 
 /** Where the assistant lives. Keep this origin in step with frame-src in _headers. */
 export const DRONE_ASSIST_SRC = "https://sua-assistant.pages.dev/embed";
+/** The assistant's origin, and the only origin whose messages may resize this panel. */
+const ASSIST_ORIGIN = new URL(DRONE_ASSIST_SRC).origin;
 /** The chosen crop of the project's own mark: robot head + AI badge, 88px for a 44px button. */
 const MARK = "brand/drone-assist.png";
 
@@ -61,6 +63,8 @@ export function droneAssist(): HTMLElement {
 
   const setOpen = (open: boolean) => {
     wrap.classList.toggle("is-open", open);
+    // A fresh open starts as the card; the enlarged shape is one tap away inside the frame.
+    if (!open) wrap.classList.remove("is-large");
     head.setAttribute("aria-expanded", String(open));
     if (open && !body.querySelector("iframe")) {
       // Loading it here, not in the markup: see the header comment.
@@ -80,6 +84,15 @@ export function droneAssist(): HTMLElement {
   };
 
   head.addEventListener("click", () => setOpen(!wrap.classList.contains("is-open")));
+
+  // The frame's own ⤢ asks to be enlarged rather than opening the full app, which its footer
+  // link covers. Only the assistant's origin counts: any other frame on this page could
+  // otherwise resize the panel, and the check is the whole reason this is a listener and not
+  // a plain class toggle.
+  window.addEventListener("message", (e: MessageEvent) => {
+    if (e.origin !== ASSIST_ORIGIN) return;
+    if ((e.data as { type?: string } | null)?.type === "sua:expand") wrap.classList.toggle("is-large");
+  });
 
   render();
   onLangChange(render);

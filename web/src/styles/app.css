@@ -579,6 +579,10 @@ a:hover{color:var(--cyan)}
    Straddling is the thing that looks broken — a label half under a panel edge. A label beside
    a panel is just a label. */
 .drone-assist.is-open{top:0;bottom:100px;left:auto;right:0;width:min(520px,46%);align-items:stretch}
+/* Enlarged. The ⤢ inside the frame asks for more room — it used to open the full app in a new
+   tab, which its own footer link already does. On a desktop that only means wider, because the
+   card there is already the full height of the band. */
+.drone-assist.is-open.is-large{width:min(760px,62%)}
 .drone-assist-head{display:grid;place-items:center;cursor:pointer;font:inherit;
   width:44px;height:44px;padding:0;border-radius:50%;color:var(--map-face);
   background:var(--map-face-bg);border:1px solid var(--map-face-line);
@@ -1133,6 +1137,11 @@ a:hover{color:var(--cyan)}
      above it — below that row's bottom edge, not level with it. */
   .drone-assist.is-open{top:72px;right:10px;width:min(340px,calc(100% - 64px))}
   .drone-assist-body{border-radius:14px}
+  /* On a phone room can only come from height, and the band's height is spoken for by the
+     placard row — so the enlarged card takes the band outright, placard and clock included,
+     which is the one shape that adds height without leaving a label half-cut. */
+  .drone-assist.is-open.is-large{top:0;left:0;right:0;width:auto}
+  .drone-assist.is-open.is-large .drone-assist-body{border-radius:0 0 14px 14px}
   .drone-assist-frame{min-height:90px}
   .lyr-body{flex:1 1 auto;min-height:0;max-height:none}
   /* One tap target for the whole row: the head is 32px on a desktop pointer and needs

@@ -147,6 +147,56 @@ const assistOpen = await page.evaluate(() => {
     loadingGone: !document.querySelector(".drone-assist-load"),
   };
 });
+// The frame's ⤢ asks us to enlarge it. Three things matter: the request has to arrive, it has
+// to be refused from any other origin, and it has to be a toggle rather than a one-way trip.
+const expandTest = await page.evaluate(async () => {
+  const rect = () => document.querySelector(".drone-assist-body").getBoundingClientRect();
+  const fire = (origin) =>
+    window.dispatchEvent(new MessageEvent("message", { data: { type: "sua:expand" }, origin }));
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const before = rect();
+  // A message from a frame that is not the assistant must not resize our panel.
+  fire("https://example.com");
+  await wait(150);
+  const afterHostile = rect();
+  // And the assistant's own request must, from the real origin it would carry.
+  fire("https://sua-assistant.pages.dev");
+  await wait(250);
+  const enlarged = rect();
+  const band = document.querySelector("#mapWrap").getBoundingClientRect();
+  const placard = document.querySelector(".mh-scope").getBoundingClientRect();
+  const overlaps = (a, b) => !(a.left >= b.right || a.right <= b.left || a.top >= b.bottom || a.bottom <= b.top);
+  const covers = (a, b) => a.top <= b.top && a.left <= b.left && a.bottom >= b.bottom && a.right >= b.right;
+  fire("https://sua-assistant.pages.dev");
+  await wait(250);
+  const back = rect();
+  return {
+    before: Math.round(before.width), afterHostile: Math.round(afterHostile.width),
+    enlarged: Math.round(enlarged.width), bandW: Math.round(band.width),
+    enlargedStraddles: overlaps(enlarged, placard) && !covers(enlarged, placard),
+    back: Math.round(back.width),
+  };
+});
+
+// The synthetic event above proves the handler; this proves the whole path — a real click on
+// the real ⤢ inside the third-party frame, crossing the origin boundary for real.
+const assistFrame = page.frames().find((f) => f.url().includes("sua-assistant.pages.dev"));
+let realExpand = null;
+if (assistFrame) {
+  const width = () => page.evaluate(() => Math.round(document.querySelector(".drone-assist-body").getBoundingClientRect().width));
+  const before = await width();
+  try {
+    await assistFrame.click('button[title="Expand"]');
+    await new Promise((r) => setTimeout(r, 600));
+    const after = await width();
+    await assistFrame.click('button[title="Expand"]');
+    await new Promise((r) => setTimeout(r, 600));
+    realExpand = { before, after, back: await width() };
+  } catch (err) {
+    realExpand = { failed: String(err) };
+  }
+}
+
 // It also has to work: a close control that does not close is worse than none.
 const closedByLauncher = await page.evaluate(async () => {
   const head = document.querySelector(".drone-assist-head");
@@ -192,6 +242,12 @@ ok(assistOpen.widthOfBand !== null && assistOpen.widthOfBand <= 0.6, `the open a
 ok(assistOpen.badgeVisibleBelow, "the LandsD credit stays visible under the open assistant");
 ok(assistOpen.markLoaded, `the button carries the project mark, and it loaded (${assistOpen.markSrc})`);
 ok(assistOpen.launcherVisible && assistOpen.launcherGlyph === "block", `the launcher stays put as the way out, showing the close mark (${assistOpen.launcherGlyph})`);
+ok(expandTest.afterHostile === expandTest.before, `a resize request from another origin is refused (${expandTest.before}px panel)`);
+ok(expandTest.enlarged > expandTest.before + 100, `the assistant's own ⤢ enlarges the panel rather than opening the full app (${expandTest.before} → ${expandTest.enlarged}px of a ${expandTest.bandW}px band)`);
+ok(expandTest.enlargedStraddles === false, "the enlarged panel still does not half-cover the placard");
+ok(expandTest.back === expandTest.before, `the same control shrinks it back (${expandTest.back}px)`);
+ok(!!realExpand && !realExpand.failed && realExpand.after > realExpand.before && realExpand.back === realExpand.before,
+  `the ⤢ inside the frame really resizes the panel across the origin boundary (${JSON.stringify(realExpand)})`);
 ok(closedByLauncher && !closedByLauncher.open && !closedByLauncher.body, "the launcher closes the panel it opened");
 ok(leftDrone && !leftDrone.visible && !leftDrone.open, "leaving drone mode puts the assistant and its frame away");
 

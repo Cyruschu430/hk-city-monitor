@@ -257,6 +257,11 @@ for (const size of SIZES) {
       const straddles = (a, b) => overlaps(a, b) && !covers(a, b);
       const placard = document.querySelector(".mh-scope").getBoundingClientRect();
       const clock = document.querySelector(".mh-clock").getBoundingClientRect();
+      // The frame's ⤢ asks for room. On a phone that can only come from height, so the
+      // enlarged panel takes the band outright — assert it is taller and still never straddles.
+      window.dispatchEvent(new MessageEvent("message", { data: { type: "sua:expand" }, origin: "https://sua-assistant.pages.dev" }));
+      await new Promise((r) => setTimeout(r, 350));
+      const big = document.querySelector(".drone-assist-body").getBoundingClientRect();
       return {
         found: true,
         visible: beforeOpen.visible,
@@ -265,6 +270,8 @@ for (const size of SIZES) {
         panelLeft: Math.round(panel.left), panelRight: Math.round(panel.right),
         bandLeft: Math.round(band.left), bandRight: Math.round(band.right),
         widthOfBand: +(panel.width / band.width).toFixed(2),
+        bigHeight: Math.round(big.height), cardHeight: Math.round(panel.height),
+        bigStraddles: straddles(big, placard) || straddles(big, clock),
         straddlesPlacard: straddles(panel, placard),
         straddlesClock: straddles(panel, clock),
         placardBottom: Math.round(placard.bottom),
@@ -286,6 +293,8 @@ for (const size of SIZES) {
       if (assist.widthOfBand > 0.88) problems.push(`${size.name}: the open assistant is nearly as wide as the band (${assist.widthOfBand} of it) — it reads as cramped, and a strip of map should show beside it`);
       if (!assist.badgeBelow) problems.push(`${size.name}: the open assistant hides the LandsD credit (panel bottom ${assist.panelBottom} vs notice top ${assist.badgeTop})`);
       if (assist.frameH < 90) problems.push(`${size.name}: the assistant frame has no usable height (${assist.frameH}px)`);
+      if (!(assist.bigHeight > assist.cardHeight)) problems.push(`${size.name}: the ⤢ in the frame does not make the panel taller (${assist.cardHeight} → ${assist.bigHeight}px)`);
+      if (assist.bigStraddles) problems.push(`${size.name}: the enlarged panel half-covers a label (${assist.bigHeight}px tall)`);
     }
     await page.evaluate(async () => {
       const sel = [...document.querySelectorAll("select")].find((s) => [...s.options].some((o) => o.value === "overview"));

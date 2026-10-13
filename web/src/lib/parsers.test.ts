@@ -228,17 +228,26 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   assert.ok(!infoKeys.has("capacity"), "basic_info_all.json still has no capacity field (the 總數 column's premise)");
 
   // 2. Expected private-car vacancy, per park, from the raw records.
-  const expected = new Map<string, number>();
+  // -1 is TD's "no figure" sentinel (the live feed publishes no other negative), so the
+  // expectation sums only real counts and is null when the park has none. Computing it here
+  // from the raw records, not from the parser, is the whole point of this block.
+  const expected = new Map<string, number | null>();
   let multiType = 0;
+  let noFigure = 0;
   for (const p of v.car_park) {
     if ((p.vehicle_type ?? []).length > 1) multiType++;
-    let sum = 0;
+    let sum: number | null = null;
     for (const vt of p.vehicle_type ?? []) {
       if (vt.type !== "P") continue;
-      for (const sc of vt.service_category ?? []) sum += Number(sc.vacancy) || 0;
+      for (const sc of vt.service_category ?? []) {
+        const n = Number(sc.vacancy);
+        if (Number.isFinite(n) && n >= 0) sum = (sum ?? 0) + n;
+      }
     }
+    if (sum === null) noFigure++;
     expected.set(p.park_id, sum);
   }
+  assert.ok(noFigure > 0, `${noFigure} parks report no private-car figure at all (the -1 sentinel), so this rule is testable`);
   // The summing bug needs more than one vehicle type to be observable at all.
   assert.ok(multiType > 0, `${multiType} car parks carry >1 vehicle_type, so the P-only rule is testable`);
 
@@ -258,21 +267,27 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   assert.equal(rows.length, MAX, `${MAX} rows`);
 
   // 4. Every row's vacancy is the value derived above, and every row is private-car.
-  const wrong = rows.filter((r) => r.vacancy !== (expected.get(r.id) ?? -1));
+  const wrong = rows.filter((r) => r.vacancy !== (expected.get(r.id) ?? null));
   assert.equal(wrong.length, 0, `vacancy must be the private-car sum (mismatches: ${wrong.map((r) => r.id).join(",")})`);
+  // 4b. TD's sentinel must never reach the screen: a row either has a real count or no figure,
+  //     never a negative one (the panel printed 「-1」 for 92 parks before this).
+  assert.ok(rows.every((r) => r.vacancy === null || r.vacancy >= 0), "no row carries a negative vacancy");
 
   // 5. The panel claims "most free spaces first". Prove the sort ran: take the
   //    top-12 by vacancy straight from the raw data and require the same ids.
   const topExpected = i.car_park
     .filter((p) => expected.has(p.park_id))
-    .map((p) => ({ id: p.park_id, name: (p.name_tc ?? p.name_en)!, vacancy: expected.get(p.park_id)! }))
+    .map((p) => ({ id: p.park_id, name: (p.name_tc ?? p.name_en)!, vacancy: expected.get(p.park_id) ?? -1 }))
     .sort((a, b) => b.vacancy - a.vacancy || a.name.localeCompare(b.name, "zh-Hant"))
     .slice(0, MAX)
     .map((r) => r.id);
   assert.deepEqual(rows.map((r) => r.id), topExpected, "rows are the top-N by private-car vacancy");
 
   // 6. Descending, and no row carries capacity any more.
-  assert.ok(rows.every((r, n) => n === 0 || rows[n - 1]!.vacancy >= r.vacancy), "vacancy descending");
+  assert.ok(
+    rows.every((r, n) => n === 0 || (rows[n - 1]!.vacancy ?? -1) >= (r.vacancy ?? -1)),
+    "vacancy descending, with the no-figure rows last",
+  );
   assert.ok(!("capacity" in rows[0]!), "CarparkRow no longer carries capacity");
 
   // 7. Per-park report times parsed (the panel shows them per row).
@@ -321,7 +336,12 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   const [lon, lat] = first.geometry.coordinates;
   assert.ok(lat! > 22.0 && lat! < 22.7 && lon! > 113.7 && lon! < 114.6, "feature coordinates inside HK");
   assert.equal(typeof first.properties!.id, "string");
-  assert.equal(typeof first.properties!.vacancy, "number");
+  // The map's own copy of the number, sentinel-free: a number, or null for "no figure" (the
+  // popup prints 無數據 for it rather than TD's -1).
+  assert.ok(
+    first.properties!.vacancy === null || typeof first.properties!.vacancy === "number",
+    "the layer's vacancy is a number or null, never TD's sentinel",
+  );
   // No-coordinate rows produce ZERO features between them.
   const onlyNoCoord = P.carparkToGeoJson([...none, ...half]);
   assert.equal(onlyNoCoord.features.length, 0, "parks without a pair are not drawn");
@@ -428,25 +448,10 @@ const jx = (name: string) => JSON.parse(fx(name).toString("utf8").replace(/^\uFE
   console.log("✓ 行車時間: location|destination join key + colour normalisation");
 }
 
-// 17h. AI Video Analytics: Is_valid N → valid=false; zero segments filtered.
-{
-  const ok = P.parseAiTraffic({
-    CCTV_id: "K106F",
-    generated_timestamp: "2026-10-06T22:00:00",
-    Is_valid: "Y",
-    traffic_data: [
-      { segment: 1, speed: 37.484, flow: 40 },
-      { segment: 2, speed: 0, flow: 0 },
-      { segment: 3, speed: 8.571, flow: 12 },
-    ],
-  });
-  assert.equal(ok.valid, true, "Is_valid Y");
-  assert.equal(ok.segments.length, 2, "zero speed+flow segment filtered");
-  assert.equal(ok.segments[0]!.speed, 37.484, "speed verbatim");
-  const bad = P.parseAiTraffic({ Is_valid: "N", traffic_data: [{ segment: 1, speed: 51, flow: 30 }] });
-  assert.equal(bad.valid, false, "Is_valid N = PTZ moved, no data");
-  console.log("✓ AI 影像分析: Is_valid guard + zero-segment filter");
-}
+// 17h. AI Video Analytics moved out of this file: the per-camera endpoint sends no CORS
+// header, so the guards (Is_valid "N", 0/0 segments) now run server-side in
+// scripts/build_ai_cctv.py, which asserts them on every build and refuses to publish a run in
+// which no camera answered. check-layers asserts the numbers that reach the layer.
 
 // 18. ImmD queue: 0-minute sentinel displays as the 少於 15 分鐘 band (bug #2).
 {

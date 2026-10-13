@@ -561,6 +561,13 @@ a:hover{color:var(--cyan)}
 .landsd-badge a{color:var(--map-face)}
 .landsd-badge a:hover{color:var(--map-face)}
 
+/* The AI-analytics popup's speed bar: the km/h is a fact, the bar is the reading of it (a road
+   at 8 km/h looks almost empty; the number alone does not say that at a glance). 70 km/h is the
+   top of the scale because it is the highest posted limit in Hong Kong — above that the bar is
+   full, which is the honest reading. */
+.spd-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.14);margin-top:5px;overflow:hidden}
+.spd-bar i{display:block;height:100%;border-radius:3px}
+
 /* ── 無人機助手 — the SUA assistant, over the map, above the LandsD notice ────────────
    Shown only in 無人機模式 (`main.ts` toggles .is-on inside activateMode, so every route into
    a mode goes through the same place). The frame is a third-party page: created on first open

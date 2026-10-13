@@ -25,10 +25,10 @@ set -u
 DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$DIR" || exit 1
 PY=${PYTHON:-python3}
-FILES="data/aircraft.json data/berth_vacancy.json data/water_suspension.json"
+FILES="data/aircraft.json data/berth_vacancy.json data/water_suspension.json data/ai_cctv.geojson"
 rc=0
 
-for c in collect_aircraft collect_berths build_water_suspension; do
+for c in collect_aircraft collect_berths build_water_suspension build_ai_cctv; do
   if ! "$PY" "scripts/$c.py"; then
     echo "FAIL $c — it kept its previous file; publishing it anyway, its own timestamp says how old it is"
     rc=1

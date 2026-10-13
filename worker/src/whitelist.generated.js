@@ -35,6 +35,7 @@ export default [
   "services.arcgisonline.com",
   "sls.hkpl.gov.hk",
   "static.data.gov.hk",
+  "td2132022opendata.td.gov.hk",
   "tdcctv.data.one.gov.hk",
   "tide1.hydro.gov.hk",
   "tiles.openfreemap.org",

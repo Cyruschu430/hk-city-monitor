@@ -170,6 +170,11 @@ const LIVE_FILES = new Set([
   // Twice-daily LLM brief, published by .github/workflows/ai-brief.yml. A live file like any
   // other: the bundle copy is a fallback that shows its age, never the thing a reader sees first.
   "ai_summary.json",
+  // TD's AI Video Analytics readings. The publisher's per-camera feed sends no CORS header, so
+  // it is read server-side by scripts/build_ai_cctv.py during the live cycle and lands here like
+  // every other live file: the layer and its panel read the published copy, and the bundle
+  // snapshot is the fallback that shows how old it is.
+  "ai_cctv.geojson",
 ]);
 
 /** The live copy of a bundled `data/<file>` path, or null when there is none. */

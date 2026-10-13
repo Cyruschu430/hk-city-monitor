@@ -311,7 +311,7 @@
       "source": "mtr_bus_stops_geojson",
       "render": "list",
       "geom": "point",
-      "symbol": "bus",
+      "symbol": "bus-stop",
       "title": {
         "tc": "港鐵接駁巴士",
         "en": "MTR feeder buses"
@@ -326,6 +326,7 @@
     {
       "id": "ai_cctv_speed",
       "source": "td_ai_cctv_stations",
+      "adapter": "td_ai_video_analytics",
       "render": "list",
       "geom": "point",
       "symbol": "speed",
@@ -340,7 +341,7 @@
         "scope": "hk"
       },
       "refresh_ms": 900000,
-      "_comment": "16 TD AI Video Analytics CCTVs with LIVE per-segment speed/flow (every 15 min). Each marker is a speedometer (speed glyph) with the avg km/h as a text label coloured by band (<10 red / <30 amber / else green, computed in the adapter). Cameras with Is_valid N (PTZ moved) draw nothing. OFF by default."
+      "_comment": "16 TD AI Video Analytics CCTVs. The per-camera feed they carry has NO CORS header at all (measured), so the numbers are read server-side by scripts/build_ai_cctv.py and published to live-data by live_cycle.sh every ~10 minutes; this layer and its panel read that file, one parse for both. Each marker is a speedometer with the avg km/h as a text label coloured by band (<10 red / <30 amber / else green); the popup adds a speed bar and the feed\u2019s own analysis time. A camera with no figure (PTZ moved, or every segment 0/0) is not drawn. OFF by default."
     },
     {
       "id": "ev_chargers",

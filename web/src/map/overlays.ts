@@ -173,7 +173,7 @@ function startLayerRefresh(
 ): void {
   stopLayerRefresh();
   layerRefresh = { timer: 0, sourceId };
-  layerRefresh.timer = window.setInterval(async () => {
+  const tick = async () => {
     if (!map.getSource(sourceId)) {
       stopLayerRefresh();
       return;
@@ -186,7 +186,12 @@ function startLayerRefresh(
     } catch {
       // keep the last data; the panel's own freshness state covers staleness
     }
-  }, refreshMs);
+  };
+  layerRefresh.timer = window.setInterval(() => void tick(), refreshMs);
+  // And once NOW, not only after the first interval: the layer is added with the snapshot baked
+  // into the build, and waiting 15 minutes for the first real number is what left the AI-analytics
+  // popups printing 「流量 —」 on every camera — a field that only ever fills on a refresh.
+  void tick();
 }
 
 function stopLayerRefresh(): void {
@@ -600,7 +605,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     // vessel one is coming and it draws exactly here — leaving this branch without
     // a popup would recreate the weather-station bug on a brand new layer.
     if (glyph === "mtr-train") mtrTrainPopup(map, `${id}-point`);
-    else attributePopup(map, `${id}-point`);
+    else attributePopup(map, `${id}-point`, def.title?.[lang()] ?? def.title?.en);
     // Trains keep sliding between the 30s schedule refetches (see startMtrAnimation).
     if (glyph === "mtr-train") void startMtrAnimation(map, id, () => fetchMtrData(src));
     return;
@@ -734,7 +739,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   else if (def.popup === "journey_popup") journeyPopup(map, `${id}-point`);
   else if (def.popup === "ai_cctv_popup") aiCctvPopup(map, `${id}-point`);
   else if (def.popup === "ev_popup") evPopup(map, `${id}-point`);
-  else attributePopup(map, `${id}-point`);
+  else attributePopup(map, `${id}-point`, def.title?.[lang()] ?? def.title?.en);
 
   // Vacancy refreshes on its own cadence: positions are static, numbers are
   // not. The refetch goes through the SAME adapter, so the redraw and the
@@ -822,7 +827,8 @@ function carparkPopup(map: maplibregl.Map, layerId: string): void {
       .setLngLat(e.lngLat)
       .setHTML(
         `<div class="aed-pop"><b>${esc(p["name"])}</b>` +
-          `<div><span>${tc ? "私家車空位" : "Free car spaces"}</span> <b>${esc(p["vacancy"])}</b></div>` +
+          // A park TD has no figure for says so. It used to print TD's own sentinel, -1.
+          `<div><span>${tc ? "私家車空位" : "Free car spaces"}</span> <b>${p["vacancy"] === null || p["vacancy"] === "" || p["vacancy"] === undefined ? (tc ? "無數據" : "No figure") : esc(p["vacancy"])}</b></div>` +
           (t ? `<div><span>${tc ? "該場更新" : "Reported"}</span> ${esc(t)}</div>` : "") +
           `</div>`,
       )
@@ -925,15 +931,29 @@ function aiCctvPopup(map: maplibregl.Map, layerId: string): void {
     if (!f) return;
     const p = (f.properties ?? {}) as Record<string, unknown>;
     const tc = lang() === "tc";
-    const speed = p["speed"] != null ? String(p["speed"]) : "";
+    const speedN = p["speed"] != null && p["speed"] !== "" ? Number(p["speed"]) : null;
+    const flowText = p["flow"] != null && p["flow"] !== "" ? String(p["flow"]) : "";
     const colour = String(p["label_color"] ?? "#ffffff");
+    // The camera has a speed or it has nothing: this layer only draws the cameras whose feed
+    // came back valid, so "流量 —" printed a field that could never be filled. The speed is
+    // drawn as a NUMBER AND A BAR — the bar is the insight (how close to a standstill this road
+    // is), which a bare km/h never gives at a glance — and a camera with no live figure says so
+    // rather than showing a dash.
+    const bar =
+      speedN === null
+        ? `<div style="color:var(--night-dim);margin-top:6px">${tc ? "暫無實時數據（每 15 分鐘更新）" : "No live figure yet (updates every 15 min)"}</div>`
+        : `<div style="color:${esc(colour)};font-weight:700;font-size:18px;margin-top:6px">${speedN} km/h</div>` +
+          `<div class="spd-bar"><i style="width:${Math.max(3, Math.min(100, Math.round((speedN / 70) * 100)))}%;background:${esc(colour)}"></i></div>` +
+          (flowText ? `<div style="color:var(--night-dim);margin-top:6px">${tc ? "流量" : "flow"} ${esc(flowText)}</div>` : "");
+    // The analysis time is the feed's own, so a reader can see whether they are looking at this
+    // minute or at the last quarter hour.
+    const observed = String(p["observed"] ?? "");
     new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "280px" })
       .setLngLat(e.lngLat)
       .setHTML(
         `<div class="aed-pop"><b>${esc(p["description"] ?? "")}</b>` +
-          (speed ? `<div style="color:${esc(colour)};font-weight:700;font-size:18px;margin-top:6px">${esc(speed)} km/h</div>` : "") +
-          `<div style="color:var(--night-dim);margin-top:2px">${tc ? "流量" : "flow"} ${esc(p["flow"] ?? "—")}</div>` +
-          `<div style="color:var(--night-dim);font-size:11px;margin-top:4px">${tc ? "AI 影像分析（運輸署，每 15 分鐘）" : "AI video analytics (TD, every 15 min)"}</div></div>`,
+          bar +
+          `<div style="color:var(--night-dim);font-size:11px;margin-top:6px">${tc ? "AI 影像分析（運輸署，每 15 分鐘）" : "AI video analytics (TD, every 15 min)"}${observed ? ` · ${tc ? "分析時間" : "analysed"} ${esc(observed)}` : ""}</div></div>`,
       )
       .addTo(map);
   });
@@ -979,7 +999,14 @@ function mtrBusPopup(map: maplibregl.Map, layerId: string): void {
     if (!f) return;
     const p = (f.properties ?? {}) as Record<string, unknown>;
     const tc = lang() === "tc";
-    const name = tc ? String(p["name_tc"] ?? "") : String(p["name_en"] ?? p["name_tc"] ?? "");
+    // The official CSV carries a name for every stop, but the heading must never be an empty
+    // bold line if one ever arrives nameless: fall back to the stop id the feed uses, then the
+    // route, then the layer's own words.
+    const name =
+      (tc ? String(p["name_tc"] ?? "") : String(p["name_en"] ?? p["name_tc"] ?? "")) ||
+      String(p["station_id"] ?? "") ||
+      String(p["ref"] ?? "") ||
+      (tc ? "港鐵接駁巴士站" : "MTR feeder bus stop");
     const route = String(p["route"] ?? "");
     const dir = String(p["dir"] ?? "");
     const etaText = String(p["etaText"] ?? "");
@@ -1062,7 +1089,7 @@ function esc(v: unknown): string {
 }
 
 /** One feature's attributes as popup HTML, or null when it has nothing to say. */
-function attributeHtml(p: Record<string, unknown>, lngLat: maplibregl.LngLat): string | null {
+function attributeHtml(p: Record<string, unknown>, lngLat: maplibregl.LngLat, fallbackName?: string): string | null {
   const tc = lang() === "tc";
   // CSDI publishes every field as a `Foo_tc` / `Foo_en` / `Foo_sc` triple. Group
   // them back into one logical field so the popup shows 地址 once, not three
@@ -1104,7 +1131,13 @@ function attributeHtml(p: Record<string, unknown>, lngLat: maplibregl.LngLat): s
     );
   }
 
-  const head = `<b class="attr-title">${esc(title ?? (tc ? "未命名" : "Unnamed"))}</b>`;
+  // A nameless feature used to be headed 「未命名」, which tells a reader nothing and looks like
+  // the app lost the data. It has not: the feature IS a thing of a known kind, so the heading
+  // becomes the layer's own name (「康文署設施」, 「巴士位置（推算）」...) and the rows below carry
+  // whatever it does have, coordinates included.
+  const head = `<b class="attr-title">${esc(
+    title ?? fallbackName ?? (tc ? "位置" : "Location"),
+  )}</b>`;
   const coords = `<div class="attr-coords">${esc(lngLat.lat.toFixed(5))}, ${esc(lngLat.lng.toFixed(5))}</div>`;
   // A feature with a name and nothing else still gets a popup — the name plus its
   // position IS an answer, and silently doing nothing on click reads as broken,
@@ -1122,11 +1155,11 @@ function attributeHtml(p: Record<string, unknown>, lngLat: maplibregl.LngLat): s
  *
  * Wired here rather than per-layer so a new point layer cannot be born without
  * attributes, which is exactly how this one was. */
-function attributePopup(map: maplibregl.Map, layerId: string): void {
+function attributePopup(map: maplibregl.Map, layerId: string, fallbackName?: string): void {
   map.on("click", layerId, (e) => {
     const f = e.features?.[0];
     if (!f) return;
-    const html = attributeHtml((f.properties ?? {}) as Record<string, unknown>, e.lngLat);
+    const html = attributeHtml((f.properties ?? {}) as Record<string, unknown>, e.lngLat, fallbackName);
     if (!html) return;
     new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "310px" })
       .setLngLat(e.lngLat)

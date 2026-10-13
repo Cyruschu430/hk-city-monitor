@@ -1,5 +1,6 @@
 {
  "type": "FeatureCollection",
+ "generated": "2026-10-14T00:54:55.657035",
  "features": [
   {
    "type": "Feature",
@@ -15,7 +16,11 @@
     "region": "Kowloon",
     "district": "Yau Tsim Mong",
     "description": "Canton Road near Salisbury Road [K121F]",
-    "url": "https://td2132022opendata.td.gov.hk/K121F"
+    "url": "https://td2132022opendata.td.gov.hk/K121F",
+    "speed": "0",
+    "flow": "57",
+    "observed": "00:54",
+    "generated": "2026-10-14T00:54:40.098794"
    }
   },
   {
@@ -49,7 +54,11 @@
     "region": "Kowloon",
     "district": "Yau Tsim Mong",
     "description": "Chatham Road near Austin Road [K106F]",
-    "url": "https://td2132022opendata.td.gov.hk/K106F"
+    "url": "https://td2132022opendata.td.gov.hk/K106F",
+    "speed": "18",
+    "flow": "85",
+    "observed": "00:51",
+    "generated": "2026-10-14T00:51:23.619345"
    }
   },
   {
@@ -66,7 +75,11 @@
     "region": "Kowloon",
     "district": "Yau Tsim Mong",
     "description": "Jordan Road near Ferry Street [K108F]",
-    "url": "https://td2132022opendata.td.gov.hk/K108F"
+    "url": "https://td2132022opendata.td.gov.hk/K108F",
+    "speed": "30",
+    "flow": "36",
+    "observed": "00:54",
+    "generated": "2026-10-14T00:54:00.329981"
    }
   },
   {
@@ -100,7 +113,11 @@
     "region": "Kowloon",
     "district": "Yau Tsim Mong",
     "description": "Nathan Road near Lai Chi Kok Road [K205F]",
-    "url": "https://td2132022opendata.td.gov.hk/K205F"
+    "url": "https://td2132022opendata.td.gov.hk/K205F",
+    "speed": "47",
+    "flow": "78",
+    "observed": "00:43",
+    "generated": "2026-10-14T00:43:25.846337"
    }
   },
   {
@@ -117,7 +134,11 @@
     "region": "Kowloon",
     "district": "Yau Tsim Mong",
     "description": "Boundary Street near Tai Hang Tung Road [K209F]",
-    "url": "https://td2132022opendata.td.gov.hk/K209F"
+    "url": "https://td2132022opendata.td.gov.hk/K209F",
+    "speed": "25",
+    "flow": "29",
+    "observed": "00:49",
+    "generated": "2026-10-14T00:49:31.069182"
    }
   },
   {
@@ -185,7 +206,11 @@
     "region": "Hong Kong Island",
     "district": "Wan Chai",
     "description": "Yee Wo Street near Hennessy Road [H203F]",
-    "url": "https://td2132022opendata.td.gov.hk/H203F"
+    "url": "https://td2132022opendata.td.gov.hk/H203F",
+    "speed": "16",
+    "flow": "42",
+    "observed": "00:53",
+    "generated": "2026-10-14T00:53:40.192359"
    }
   },
   {
@@ -219,7 +244,11 @@
     "region": "Hong Kong Island",
     "district": "Eastern",
     "description": "King's Road near Tin Chong Street [H307F]",
-    "url": "https://td2132022opendata.td.gov.hk/H307F"
+    "url": "https://td2132022opendata.td.gov.hk/H307F",
+    "speed": "31",
+    "flow": "22",
+    "observed": "00:54",
+    "generated": "2026-10-14T00:54:20.119760"
    }
   },
   {
@@ -253,7 +282,11 @@
     "region": "Tin Shui Wai & Yuen Long",
     "district": "Yuen Long",
     "description": "Castle Peak Road nearYuen Long [YL106F]",
-    "url": "https://td2132022opendata.td.gov.hk/YL106F"
+    "url": "https://td2132022opendata.td.gov.hk/YL106F",
+    "speed": "30",
+    "flow": "194",
+    "observed": "00:54",
+    "generated": "2026-10-14T00:54:55.657035"
    }
   },
   {

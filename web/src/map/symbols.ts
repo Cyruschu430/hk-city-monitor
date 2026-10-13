@@ -38,6 +38,10 @@ export type GlyphId =
   | "bus-ctb"
   | "bus-nlb"
   | "bus-gmb"
+  // Stops, not vehicles. A bus glyph on a stop tells the reader a bus IS there, which is the
+  // one thing a stop cannot tell them; the pole and panel say "wait here" instead, and the
+  // layer keeps the bus glyph for the vehicles it draws.
+  | "bus-stop"
   // Car parks. The glyph is a car and the DISC is the international parking blue — the disc carries
   // the meaning; see the layer 「停車場空位」. Placed on a point, never a glowing dot, for the same
   // reason as the bus.
@@ -490,19 +494,101 @@ function drawBus(ctx: CanvasRenderingContext2D, size: number, body = "#e60012"):
  *  punch a hole through the stem itself, because evenodd toggles every enclosed region. `off` nudges
  *  the ink left, since a P's mass sits right of its stem. */
 
-/** LCSD leisure facilities (libraries, museums, parks, courts, camps, bbq): a
- *  classic POI dot — green disc, white ring, dark centre — so it reads as a
- *  PLACE, not a weather glow-orb (measured: a bare disc read as a glow). */
+/** LCSD leisure facilities (sports centres, courts, pools, parks, camps, bbq): a dumbbell.
+ *
+ *  This used to be a white ring with a dark centre — a classic POI dot, and the review called
+ *  it out as the ugliest marker on the map (「icon 好肉酸」). A dumbbell is the one shape that
+ *  says 康體 without a legend, which is what a symbol is for; the disc carries the colour, as
+ *  it does for the beach and the car parks.
+ *
+ *  Drawn from primitives like everything else here: a bar, two inner plates, two outer plates.
+ *  The outer pair is taller than the inner pair — that silhouette is what makes a barbell read
+ *  as a barbell rather than as a hyphen with blocks (a real one has the big plates outside). */
 function drawFacility(ctx: CanvasRenderingContext2D, size: number): void {
   const c = size / 2;
-  ctx.beginPath();
-  ctx.arc(c, c, size * 0.30, 0, Math.PI * 2);
+  ctx.save();
+  ctx.translate(c, c);
+  const plate = (x0: number, y0: number, x1: number, y1: number) => {
+    ctx.beginPath();
+    ctx.moveTo(x0 + 1, y0);
+    ctx.lineTo(x1 - 1, y0);
+    ctx.quadraticCurveTo(x1, y0, x1, y0 + 1);
+    ctx.lineTo(x1, y1 - 1);
+    ctx.quadraticCurveTo(x1, y1, x1 - 1, y1);
+    ctx.lineTo(x0 + 1, y1);
+    ctx.quadraticCurveTo(x0, y1, x0, y1 - 1);
+    ctx.lineTo(x0, y0 + 1);
+    ctx.quadraticCurveTo(x0, y0, x0 + 1, y0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
   ctx.fillStyle = "#ffffff";
-  ctx.fill();
+  ctx.strokeStyle = "rgba(6,10,18,.55)";
+  ctx.lineWidth = 1;
+  plate(-8, -2.4, 8, 2.4);        // bar
+  plate(-12.5, -6.5, -8, 6.5);    // inner plate
+  plate(8, -6.5, 12.5, 6.5);
+  plate(-16, -9, -12.5, 9);       // outer plate
+  plate(12.5, -9, 16, 9);
+  ctx.restore();
+}
+
+/** A bus STOP: the pole and the panel, never the bus itself.
+ *
+ *  The panel carries a small bus front because that is what is printed on the sign in the
+ *  street, and the pole is what makes it read as standing beside the road rather than driving
+ *  on it. No disc: the vehicle family (bus, plane, vessel) draws its shape on the map and the
+ *  stop belongs to that family visually, so a stop and the buses that call at it look like the
+ *  same kind of thing. */
+function drawBusStop(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  // pole, planted: a thin post with a foot
   ctx.beginPath();
-  ctx.arc(c, c, size * 0.17, 0, Math.PI * 2);
-  ctx.fillStyle = "#0f172a";
+  ctx.moveTo(-1.7, -3);
+  ctx.lineTo(1.7, -3);
+  ctx.lineTo(1.7, 13);
+  ctx.lineTo(-1.7, 13);
+  ctx.closePath();
+  ctx.fillStyle = "#e8eef7";
   ctx.fill();
+  ctx.strokeStyle = "rgba(6,10,18,.75)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(0, 13.6, 4.6, 1.6, 0, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(6,10,18,.55)";
+  ctx.fill();
+  // sign panel
+  ctx.beginPath();
+  ctx.moveTo(-10, -16);
+  ctx.lineTo(10, -16);
+  ctx.quadraticCurveTo(11.2, -16, 11.2, -14.8);
+  ctx.lineTo(11.2, -5.2);
+  ctx.quadraticCurveTo(11.2, -4, 10, -4);
+  ctx.lineTo(-10, -4);
+  ctx.quadraticCurveTo(-11.2, -4, -11.2, -5.2);
+  ctx.lineTo(-11.2, -14.8);
+  ctx.quadraticCurveTo(-11.2, -16, -10, -16);
+  ctx.closePath();
+  ctx.fillStyle = "#f8fbff";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(6,10,18,.85)";
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+  // the bus front printed on it — windscreen band, two side windows, two wheels
+  ctx.fillStyle = "rgba(10,14,22,.82)";
+  ctx.fillRect(-7.4, -13.6, 6.2, 3);
+  ctx.fillRect(1.8, -13.6, 5.2, 3);
+  ctx.beginPath();
+  ctx.arc(-5.2, -5.4, 1.7, 0, Math.PI * 2);
+  ctx.arc(5.2, -5.4, 1.7, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#e60012";
+  ctx.fillRect(-8.6, -9.4, 17.2, 2.4);
+  ctx.restore();
 }
 
 /** Graded beach: a teal disc with two white wave crests — the sea, and
@@ -800,6 +886,7 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   "bus-ctb": { draw: (ctx, size) => drawBus(ctx, size, "#0066cc") },
   "bus-nlb": { draw: (ctx, size) => drawBus(ctx, size, "#00aa44") },
   "bus-gmb": { draw: (ctx, size) => drawBus(ctx, size, "#8844aa") },
+  "bus-stop": { draw: drawBusStop },
   parking: { draw: drawParking, disc: "#2563eb", off: [-1.4, 0] },
   water: { draw: drawWater, disc: "#22d3ee" },
   "cp-land": { draw: drawControlPoint, disc: "#a855f7" },

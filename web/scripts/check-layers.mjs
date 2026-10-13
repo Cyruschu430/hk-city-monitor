@@ -264,6 +264,92 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   console.log(`sensor parking: features=${sp.features} cluster=${sp.cluster} coloured=${sp.coloured} rotate=${sp.rotate} icons=${sp.icon}`);
 }
 
+// ── 5d. SYMBOLS AND LIVE NUMBERS ON THE LAYERS THE REVIEW CALLED OUT ─────────────────
+//
+// Four complaints, four ways to be silently wrong: a layer can draw the WRONG glyph (or a dot
+// where a glyph was asked for), a live layer can draw its snapshot and never fetch (the
+// AI-analytics popups printed 「流量 —」 for every camera because the per-camera feed was never
+// wired), and a feed's own sentinel can reach the screen (TD writes -1 for "no figure").
+//
+// The AI-analytics numbers are asserted from the LAYER's own feature properties, which is the
+// only place the proxy round-trip and the rate/flow merge become visible.
+{
+  const wants = [
+    ["ai_cctv_speed", "speed"],
+    ["mtr_bus_stops", "bus-stop"],
+    ["lcsd_facilities", "facility"],
+    ["beach_grading", "beach"],
+    ["carpark_vacancy", "parking"],
+  ];
+  for (const [id] of wants) await clickRow(id);
+  // The CCTV layer fetches 16 per-camera JSONs through the Worker proxy on its first tick.
+  await page.waitForTimeout(20000);
+  const s = await page.evaluate((ids) => {
+    const out = {};
+    for (const [id, glyph] of ids) {
+      const layer = `vl-${id}-point`;
+      const src = window.__map?.getSource(`vl-${id}`);
+      const feats = src?._data?.features ?? [];
+      let icon = null;
+      try {
+        icon = window.__map.getLayoutProperty(layer, "icon-image");
+      } catch {
+        /* layer absent — reported through the icon string below */
+      }
+      out[id] = {
+        glyph,
+        hasSource: !!src,
+        features: feats.length,
+        icon: Array.isArray(icon) ? icon.join(",") : String(icon),
+        imageRegistered: window.__map?.hasImage(glyph) ?? false,
+      };
+    }
+    return out;
+  }, wants);
+
+  for (const [id, glyph] of wants) {
+    const r = s[id];
+    ok(r.hasSource, `${id}: the layer created no source`);
+    ok(r.imageRegistered, `${id}: the ${glyph} glyph is not registered — that layer draws nothing`);
+    ok(String(r.icon).includes(glyph), `${id} must draw the ${glyph} glyph: icon-image=${r.icon}`);
+    console.log(`symbol check  ${id}: ${r.features} features · icon=${r.icon} · ${glyph} registered=${r.imageRegistered}`);
+  }
+
+  // The AI-analytics layer's live merge, asserted where it shows: speed present on every drawn
+  // camera, and the feed's own analysis time carried with it.
+  const cctv = await page.evaluate(() => {
+    const feats = window.__map?.getSource("vl-ai_cctv_speed")?._data?.features ?? [];
+    return {
+      features: feats.length,
+      withSpeed: feats.filter((f) => f.properties?.speed !== undefined && f.properties.speed !== "").length,
+      withObserved: feats.filter((f) => String(f.properties?.observed ?? "").length === 5).length,
+      speeds: feats.slice(0, 4).map((f) => f.properties?.speed),
+    };
+  });
+  ok(cctv.features > 0, "the AI-analytics layer drew nothing — the per-camera proxy fetch failed");
+  ok(
+    cctv.withSpeed === cctv.features,
+    `every drawn AI-analytics camera must carry a speed (${cctv.withSpeed}/${cctv.features} do) — the popup prints 「流量 —」 otherwise`,
+  );
+  ok(cctv.withObserved > 0, "the AI-analytics features must carry the feed's own analysis time");
+  console.log(`ai analytics: ${cctv.features} cameras · speeds=${cctv.speeds.join("/")} · with observed time=${cctv.withObserved}`);
+
+  // TD's -1 sentinel must never reach the map.
+  const carpark = await page.evaluate(() => {
+    const feats = window.__map?.getSource("vl-carpark_vacancy")?._data?.features ?? [];
+    const vac = feats.map((f) => f.properties?.vacancy);
+    return { features: feats.length, negative: vac.filter((v) => typeof v === "number" && v < 0).length, blank: vac.filter((v) => v === null || v === "").length };
+  });
+  ok(carpark.features > 0, "the carpark layer drew nothing");
+  ok(carpark.negative === 0, `${carpark.negative} car parks carry a negative vacancy — that is TD's "no figure" sentinel, not a count`);
+  console.log(`carpark layer: ${carpark.features} parks · negative vacancies=${carpark.negative} · no-figure rows=${carpark.blank}`);
+
+  for (const [id] of wants) {
+    await clickRow(id);
+    await page.waitForTimeout(500);
+  }
+}
+
 // ── 6. 3D IS GONE, and this asserts it stays gone.
 //
 // This used to toggle `buildings3d` and assert it switched on. There is no `buildings3d` any more:

@@ -453,8 +453,8 @@
     "en": "Road speed (AI)"
    },
    "cadence_note": {
-    "tc": "每 15 分鐘",
-    "en": "every 15 min"
+    "tc": "來源每 15 分鐘",
+    "en": "source every 15 min"
    }
   },
   {

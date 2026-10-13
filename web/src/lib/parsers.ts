@@ -912,33 +912,12 @@ export function parseMtrBusEta(json: unknown): Map<string, MtrBusEta> {
   return out;
 }
 
-/** TD AI Video Analytics: one CCTV's traffic_data → the live numbers. The
- *  endpoint is per-camera (td2132022opendata.td.gov.hk/{key}, CORS *), one
- *  segment each carrying speed (km/h) + flow (veh/h). Is_valid "N" means the
- *  camera is not in its reference position (PTZ moved) and NO data is
- *  generated — the adapter must show nothing rather than a stale speed.
- *  Verified live 2026-10-06: 16/16 cameras, 38 segments, speed 0–51. */
-export interface AiTraffic {
-  valid: boolean;
-  generated: string;
-  segments: { speed: number; flow: number }[];
-}
-export function parseAiTraffic(json: unknown): AiTraffic {
-  const d = (json ?? {}) as { Is_valid?: string; generated_timestamp?: string; traffic_data?: unknown[] };
-  const segments = (d.traffic_data ?? [])
-    .map((t) => {
-      const s = t as { speed?: number | string; flow?: number | string };
-      const speed = Number(s.speed);
-      const flow = Number(s.flow);
-      return { speed: Number.isFinite(speed) ? speed : 0, flow: Number.isFinite(flow) ? flow : 0 };
-    })
-    .filter((s) => s.speed > 0 || s.flow > 0);
-  return {
-    valid: d.Is_valid === "Y",
-    generated: String(d.generated_timestamp ?? ""),
-    segments,
-  };
-}
+// The TD AI Video Analytics per-camera parse used to live here. It moved to
+// `scripts/build_ai_cctv.py` because the endpoint sends NO CORS header at all (measured
+// 2026-10-13 — the "CORS *" this comment used to claim was never true), so no browser could
+// ever have run it: the guards it encoded (Is_valid "N" → no data; a 0/0 segment is not a
+// stopped road) are asserted in that script's own run, and check-layers asserts the numbers
+// reaching the layer. Two implementations of one rule is how they drift.
 
 /** Journey Time Indicators (2nd Gen): the TD XML maps location_id +
  *  destination_id → minutes + COLOUR_ID. Verified 2026-10-06 at 22:23: 82/83
@@ -1010,8 +989,14 @@ export function parse1MinTemp(csv: string): Map<string, string> {
 export interface CarparkRow {
   id: string;
   name: string;
-  /** Free PRIVATE-CAR spaces (vehicle_type "P"). */
-  vacancy: number;
+  /** Free PRIVATE-CAR spaces (vehicle_type "P"), or **null when TD reports no figure**.
+   *
+   *  TD writes `vacancy: -1` for a category it has no number for — measured on the live feed,
+   *  -1 is the ONLY negative value it ever publishes, so it is a sentinel and not a count.
+   *  92 of 556 parks have nothing but -1 for the private car, and summing them printed
+   *  「-1」 spaces for all 92: a number that is not wrong-looking enough to be reported but is
+   *  certainly not a car park with minus one space. Those rows are now "no figure". */
+  vacancy: number | null;
   /** Last time THIS car park reported, from the feed's own `lastupdate`.
    *
    *  Per-park, not per-feed, and that matters: TD updates each car park
@@ -1070,12 +1055,15 @@ export function parseCarpark(vacancyJson: unknown, infoJson: unknown, maxRows: n
     if (!p.park_id) continue;
     const base = byId.get(p.park_id);
     if (!base?.name_tc && !base?.name_en) continue;
-    let vacancy = 0;
+    let vacancy: number | null = null;
     let latest = 0;
     for (const vt of p.vehicle_type ?? []) {
       if (vt.type !== "P") continue;
       for (const sc of vt.service_category ?? []) {
-        vacancy += Number(sc.vacancy) || 0;
+        const n = Number(sc.vacancy);
+        // Negative is TD's "no figure" (see the interface): it must not enter the sum, and a
+        // park whose every category is negative has no figure at all rather than zero.
+        if (Number.isFinite(n) && n >= 0) vacancy = (vacancy ?? 0) + n;
         const t = Date.parse((sc.lastupdate ?? "").replace(" ", "T") + "+08:00");
         if (Number.isFinite(t) && t > latest) latest = t;
       }
@@ -1093,7 +1081,12 @@ export function parseCarpark(vacancyJson: unknown, infoJson: unknown, maxRows: n
   // Most free spaces first. `name` as tie-break so the order is stable between
   // requests — without it, rows with equal vacancy shuffle on every poll and the
   // panel looks like it is animating.
-  rows.sort((a, b) => b.vacancy - a.vacancy || a.name.localeCompare(b.name, "zh-Hant"));
+  // Parks with a figure first, most free first; parks with no figure last, in name order, so a
+  // reader scrolling the table reads real numbers before the unknowns.
+  rows.sort(
+    (a, b) =>
+      (b.vacancy ?? -1) - (a.vacancy ?? -1) || a.name.localeCompare(b.name, "zh-Hant"),
+  );
   return rows.slice(0, maxRows);
 }
 

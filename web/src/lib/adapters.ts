@@ -1434,46 +1434,49 @@ const ADAPTERS: Record<string, Adapter> = {
   },
 
   async td_ai_video_analytics(_src, _panel, ctx) {
-    // Live road speed from TD's AI Video Analytics: the 16 camera locations
-    // (CSDI td_rcd_1671693527354_28926) carry the per-camera JSON URL in
-    // `url`; every 15 minutes each returns per-segment speed/flow. 16 GETs per
-    // refresh is polite; a camera whose Is_valid is N (PTZ moved out of
-    // reference) contributes nothing — a stale speed would be a lie.
-    const cams = (await json(await get(ctx.registry.byId.get("td_ai_cctv_stations")!))) as GeoJSON.FeatureCollection;
+    // Road speed from TD's AI Video Analytics, read from the BUILT file — not from the cameras.
+    //
+    // The per-camera endpoint sends no CORS header at all (measured 2026-10-13: no ACAO even
+    // with an Origin, OPTIONS answers 405), so no browser fetch can ever fill these numbers;
+    // that is why every popup read 「流量 —」. `scripts/build_ai_cctv.py` reads the cameras
+    // server-side and bakes speed / flow / observed into the file, which live_cycle.sh publishes
+    // to the `live-data` branch every ~10 minutes — so this path is one cycle behind the
+    // publisher's own 15-minute cadence, and the file's own timestamp says which cycle.
+    //
+    // A camera with no figure (PTZ moved, or every segment 0/0) is not drawn and not listed:
+    // a marker that cannot show the one thing this layer exists to show is noise.
+    const src = ctx.registry.byId.get("td_ai_cctv_stations");
+    if (!src) throw new Error("sources.json 冇 td_ai_cctv_stations");
+    const fc = (await json(await get(src))) as GeoJSON.FeatureCollection & { generated?: string };
     const tc = lang() === "tc";
-    const results = await Promise.allSettled(
-      (cams.features ?? []).map(async (f) => {
-        const p = (f.properties ?? {}) as Record<string, unknown>;
-        const res = await fetch(String(p["url"] ?? ""), { signal: AbortSignal.timeout(15_000) });
-        if (!res.ok) return { p, geom: f.geometry, t: null };
-        return { p, geom: f.geometry, t: P.parseAiTraffic(await res.json()) };
-      }),
-    );
     const features: GeoJSON.Feature[] = [];
     const rows: string[][] = [];
-    for (const r of results) {
-      if (r.status !== "fulfilled") continue;
-      const { p, geom, t } = r.value;
-      const desc = String(p["description"] ?? "");
-      if (!t || !t.valid) continue; // PTZ moved / no data — nothing to say
-      const speeds = t.segments.map((s) => s.speed);
-      const avg = speeds.length ? Math.round(speeds.reduce((a, b) => a + b, 0) / speeds.length) : 0;
-      const flow = t.segments.reduce((a, s) => a + s.flow, 0);
-      const colour = avg < 10 ? "#ef4444" : avg < 30 ? "#f59e0b" : "#22c55e";
+    for (const f of fc.features ?? []) {
+      const p = (f.properties ?? {}) as Record<string, unknown>;
+      const speed = p["speed"] === undefined || p["speed"] === "" ? null : Number(p["speed"]);
+      if (speed === null || !Number.isFinite(speed)) continue;
+      const colour = speed < 10 ? "#ef4444" : speed < 30 ? "#f59e0b" : "#22c55e";
       features.push({
         type: "Feature",
-        geometry: geom,
-        properties: { ...(p as object), speed: String(avg), flow: String(flow), label_color: colour },
+        geometry: f.geometry,
+        properties: { ...(p as object), speed: String(speed), label_color: colour },
       });
-      rows.push([desc, `${avg} km/h`, String(flow)]);
+      rows.push([
+        String(p["description"] ?? ""),
+        `${speed} km/h`,
+        String(p["flow"] ?? "—"),
+        String(p["observed"] ?? "—"),
+      ]);
     }
     return {
       data: {
         kind: "table",
-        columns: [tc ? "位置" : "Location", tc ? "平均車速" : "Avg speed", tc ? "流量" : "Flow"],
+        columns: [tc ? "位置" : "Location", tc ? "平均車速" : "Avg speed", tc ? "流量" : "Flow", tc ? "分析時間" : "Analysed"],
         rows,
       },
-      observedAt: new Date(),
+      // The FEED's own analysis time, not the moment we happened to fetch the file: the panel's
+      // clock must go amber when the publisher goes quiet.
+      observedAt: fc.generated ? new Date(fc.generated) : null,
       state: { records: features.length },
       geo: { type: "FeatureCollection", features },
     };
@@ -1584,7 +1587,7 @@ const ADAPTERS: Record<string, Adapter> = {
       data: {
         kind: "table",
         columns: tc ? ["停車場", "私家車空位", "該場更新"] : ["Carpark", "Free (car)", "Reported"],
-        rows: rows.map((r) => [r.name, String(r.vacancy), fmt(r.updatedAt)]),
+        rows: rows.map((r) => [r.name, r.vacancy === null ? "—" : String(r.vacancy), fmt(r.updatedAt)]),
       },
       // The map layer draws the SAME rows through the SAME parse, so the layer
       // and the panel cannot disagree about how many spaces are left. Parks

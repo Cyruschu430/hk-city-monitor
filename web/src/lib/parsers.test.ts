@@ -866,7 +866,7 @@ console.log("\nparsers.test.ts: ALL PASS");
 }
 
 // --- sensor parking occupancy: the half of the join that carries no geometry --------
-// The layer colours 20,712 metered spaces from this feed. If the parse reads the wrong
+// The layer colours 20,700-odd metered spaces from this feed. If the parse reads the wrong
 // column the discs are all wrong and nothing throws, so the column mapping is asserted
 // against the publisher's real header, in the real order, plus the case that must fail.
 {

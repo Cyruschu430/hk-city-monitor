@@ -496,7 +496,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // The adapter that will actually RUN, which is not always the source's. A layer that
   // names its own (bus_live, sensor_live) must not fall through to the plain fetch just
   // because its SOURCE has no adapter of its own: that check used to be
-  // `hasAdapter(def.source)` and it is why the sensor-parking layer drew 20,712 discs
+  // `hasAdapter(def.source)` and it is why the sensor-parking layer drew 20,700-odd discs
   // with no colours — the layer's adapter was never called, and a missing `color` falls
   // back to grey rather than erroring.
   const adapterKey = def.adapter ?? def.source;
@@ -504,7 +504,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // panel-SHAPED — id, source, search params — and the refresh loop at the end of this
   // function needs the SAME object, so there is one lookup and one fallback here rather
   // than two that drift. (The sensor-parking layer has no panel reading its source; with
-  // the old `panel &&` test its 20,712 bays drew grey AND never refreshed.)
+  // the old `panel &&` test its 20,700-odd bays drew grey AND never refreshed.)
   const panel: PanelDefRaw = args.registry.panels.find((p) => p.source === def.source) ?? {
     id: def.id,
     source: def.source,
@@ -539,7 +539,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // individual tracks this layer exists to show. Camera points are static and
   // stay clustered.
   //
-  // Sensor parking bays are STATIC, and there are 20,712 of them, so they cluster
+  // Sensor parking bays are STATIC, and there are 20,700-odd of them, so they cluster
   // too — at city zoom the reader gets a count instead of a solid smear of colour,
   // and the individual bays appear as they zoom in.
   const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel" || glyph === "mtr-train" || glyph === "bus";
@@ -687,10 +687,16 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
           ]
         : glyph) as never,
       // A bay is a small upright rectangle, not a dot: it takes its own size curve so
-      // 20,712 of them read as parking bays rather than as a field of pebbles.
+      // 20,700-odd of them read as parking bays rather than as a field of pebbles.
       "icon-size": (def.symbol === "meter"
         ? ["interpolate", ["linear"], ["zoom"], 12, 0.3, 15, 0.44, 18, 0.62]
         : size) as never,
+      // A bay LIES ALONG its street. `bearing` is baked per space from the principal axis
+      // of its local cluster of the same street (see scripts/build_meters.py) — one angle
+      // per street name would stand bays across their own kerb on a curved road, and the
+      // nearest-neighbour alternative picks the bay across the road and points 90° out.
+      "icon-rotate": (def.symbol === "meter" ? ["get", "bearing"] : 0) as never,
+      "icon-rotation-alignment": (def.symbol === "meter" ? "map" : "auto") as never,
       "icon-allow-overlap": true,
     },
   });

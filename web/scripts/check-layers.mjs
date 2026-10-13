@@ -212,7 +212,7 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   console.log(`bus live: default=off features=${b.features} glyph=${iconExpr}`);
 }
 
-// ── 5c. SENSOR PARKING: 20,712 STATIC BAYS, CLUSTERED, DRAWN AS RECTANGLES ──────
+// ── 5c. SENSOR PARKING: 20,700-ODD STATIC BAYS, CLUSTERED, DRAWN AS RECTANGLES ──────
 //
 // This layer has three ways to be silently wrong: it can draw nothing (its adapter threw),
 // it can draw grey everywhere (the colour never reached the features), or it can draw a
@@ -238,17 +238,30 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
       missingImages: missing,
       icon: Array.isArray(layout) ? layout.join(",") : String(layout),
       coloured: feats.slice(0, 200).filter((f) => f.properties?.color).length,
+      // Bays lie along their street: the angle has to reach the map, and the layer has to
+      // read it, or every bay stands upright on a horizontal street again.
+      rotate: (() => {
+        try {
+          const r = window.__map.getLayoutProperty("vl-sensor_parking_spaces-point", "icon-rotate");
+          return Array.isArray(r) ? r.join(",") : String(r);
+        } catch {
+          return null;
+        }
+      })(),
+      angles: feats.slice(0, 400).filter((f) => typeof f.properties?.bearing === "number").length,
     };
   });
   ok(sp.hasSource, "the sensor parking layer created no source — its adapter threw");
   ok(sp.features > 20000, `the sensor parking layer placed ${sp.features} bays`);
-  ok(sp.cluster, "the sensor parking layer must cluster: 20,712 bays unclustered is a colour smear");
+  ok(sp.cluster, "the sensor parking layer must cluster: 20,700-odd bays unclustered is a colour smear");
   ok(sp.missingImages.length === 0, `bay images missing from the map: ${sp.missingImages.join(", ")} — those bays draw nothing`);
   ok(sp.icon.includes("meter-"), `the sensor parking layer must draw bay shapes: icon-image=${sp.icon}`);
   ok(sp.coloured > 0, "the sensor parking layer carries its live colour per bay (grey everywhere = the adapter never ran)");
+  ok(sp.angles > 0, "the bays carry a baked street bearing — without it every bay stands upright");
+  ok(String(sp.rotate).includes("bearing"), `the bays must be rotated by their bearing: icon-rotate=${sp.rotate}`);
   await clickRow("sensor_parking_spaces");
   await page.waitForTimeout(900);
-  console.log(`sensor parking: features=${sp.features} cluster=${sp.cluster} coloured=${sp.coloured} icons=${sp.icon}`);
+  console.log(`sensor parking: features=${sp.features} cluster=${sp.cluster} coloured=${sp.coloured} rotate=${sp.rotate} icons=${sp.icon}`);
 }
 
 // ── 6. 3D IS GONE, and this asserts it stays gone.

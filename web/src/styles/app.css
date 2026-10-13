@@ -636,7 +636,12 @@ a:hover{color:var(--cyan)}
 .ptab:hover{color:var(--txt);border-color:var(--hairline-hi)}
 .ptab[aria-selected="true"]{color:var(--on-cyan);background:var(--cyan);border-color:var(--cyan)}
 .ptab .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
-#panels{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+/* `flex:1 1 0`, NOT `1 1 auto`: with an auto basis this scroller's hypothetical height is its
+   CONTENT (9,000px of panels), so the flex line overflows and every item on it is squeezed —
+   measured 2026-10-13 on a phone, the 37px category strip above was compressed to 14px and its
+   25px chips were clipped to a sliver. A basis of 0 asks for "whatever is left" instead, which is
+   what a scroller means, and then nothing above it needs protecting. */
+#panels{flex:1 1 0;min-height:0;overflow-y:auto;overscroll-behavior:contain;
    padding:8px;min-height:0;display:grid;
    /* auto-fill rather than a fixed 2: the band is 1864px wide now, and a hand-picked count would
       have to be re-picked at every width. 400px floor keeps a card at least as wide as the 411px

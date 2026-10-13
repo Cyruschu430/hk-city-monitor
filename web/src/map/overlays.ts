@@ -493,16 +493,35 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   }
 
   const gen = args.gen ?? 0;
+  // The adapter that will actually RUN, which is not always the source's. A layer that
+  // names its own (bus_live, sensor_live) must not fall through to the plain fetch just
+  // because its SOURCE has no adapter of its own: that check used to be
+  // `hasAdapter(def.source)` and it is why the sensor-parking layer drew 20,712 discs
+  // with no colours — the layer's adapter was never called, and a missing `color` falls
+  // back to grey rather than erroring.
+  const adapterKey = def.adapter ?? def.source;
   const panel = args.registry.panels.find((p) => p.source === def.source);
   let fc: GeoJSON.FeatureCollection;
 
-  if (panel && hasAdapter(def.source)) {
+  if (hasAdapter(adapterKey)) {
     // Feed source (ADS-B): reuse the panel's adapter so the map and the panel
     // read the SAME parse of the SAME fetch — they cannot disagree about what
     // is aloft. A layer whose own adapter differs (bus_live) names it in
-    // layers.json; `hasAdapter(def.source)` still has to be true so a source
-    // with no adapter at all takes the plain-fetch branch below.
-    const { geo } = await adaptPanel(panel, args.ctx, def.adapter);
+    // layers.json.
+    //
+    // A layer whose source no panel reads — the sensor-parking one — has no panel to
+    // borrow, and adaptPanel is only panel-SHAPED: it takes the id, the source and the
+    // search params. So it gets a stand-in built from the layer, rather than a second
+    // adapter call path that would drift from this one.
+    const p: PanelDefRaw = panel ?? {
+      id: def.id,
+      source: def.source,
+      render: "list",
+      title: { tc: def.title?.tc ?? def.id, en: def.title?.en ?? def.id },
+      params: {},
+      cadence_note: { tc: "", en: "" },
+    };
+    const { geo } = await adaptPanel(p, args.ctx, def.adapter);
     if (stale(args, gen)) throw new Error("obsolete layer request");
     if (!geo) throw new Error(`layer ${def.id}: adapter 冇提供 geo 資料`);
     fc = geo;

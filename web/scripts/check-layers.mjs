@@ -344,6 +344,48 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   ok(carpark.negative === 0, `${carpark.negative} car parks carry a negative vacancy — that is TD's "no figure" sentinel, not a count`);
   console.log(`carpark layer: ${carpark.features} parks · negative vacancies=${carpark.negative} · no-figure rows=${carpark.blank}`);
 
+  // The sheet: reviewing a canvas glyph means looking at it, and at the size a reader sees. The
+  // images come from the map's own registry, never re-drawn from source — a copy of a draw
+  // function drifts, and one missing helper fails silently into a blank picture.
+  const sheet = await page.evaluate((ids) => {
+    const cv = document.createElement("canvas");
+    cv.width = 980;
+    cv.height = 360;
+    const ctx = cv.getContext("2d");
+    ctx.fillStyle = "#0b0f17";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    const rows = [
+      { y: 30, scale: 132 / 44, cap: "132px — as drawn" },
+      { y: 210, scale: 20 / 44, cap: "20px — on the map" },
+    ];
+    for (const row of rows) {
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "600 13px system-ui, sans-serif";
+      ctx.fillText(row.cap, 16, row.y - 10);
+      let x = 16;
+      for (const id of ids) {
+        const img = window.__map?.getImage(id);
+        if (!img) continue;
+        const off = document.createElement("canvas");
+        off.width = img.width;
+        off.height = img.height;
+        off.getContext("2d").putImageData(new ImageData(new Uint8ClampedArray(img.data), img.width, img.height), 0, 0);
+        const size = Math.round(44 * row.scale);
+        ctx.drawImage(off, x, row.y, size, size);
+        if (row.scale > 1) {
+          ctx.fillStyle = "#64748b";
+          ctx.font = "12px system-ui, sans-serif";
+          ctx.fillText(id, x, row.y + size + 16);
+        }
+        x += size + 18;
+      }
+    }
+    return cv.toDataURL("image/png");
+  }, [...new Set([...wants.map(([, g]) => g), "facility", "beach", "bus", "meter-occupied"])]);
+  const { writeFile } = await import("node:fs/promises");
+  await writeFile("glyph-sheet.png", Buffer.from(String(sheet).split(",")[1], "base64"));
+  console.log("glyph sheet written: glyph-sheet.png");
+
   for (const [id] of wants) {
     await clickRow(id);
     await page.waitForTimeout(500);

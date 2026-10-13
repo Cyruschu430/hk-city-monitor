@@ -358,6 +358,7 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
       { y: 30, scale: 132 / 44, cap: "132px — as drawn" },
       { y: 210, scale: 20 / 44, cap: "20px — on the map" },
     ];
+    const status = {};
     for (const row of rows) {
       ctx.fillStyle = "#94a3b8";
       ctx.font = "600 13px system-ui, sans-serif";
@@ -365,7 +366,10 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
       let x = 16;
       for (const id of ids) {
         const img = window.__map?.getImage(id);
-        if (!img) continue;
+        if (!img) {
+          status[id] = "not registered";
+          continue;
+        }
         const size = Math.round(44 * row.scale);
         // StyleImage.data is an ImageData in some MapLibre builds and an ImageBitmap in others.
         // Assuming the first is how this sheet failed with "source width is zero".
@@ -386,10 +390,11 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
           drawable = off;
         }
         if (!drawable) {
-          console.log("glyph sheet: no drawable data for", id, "— data is", Object.prototype.toString.call(d));
+          status[id] = `no drawable data (${Object.prototype.toString.call(d)})`;
           continue;
         }
         ctx.drawImage(drawable, x, row.y, size, size);
+        status[id] = "drawn";
         if (row.scale > 1) {
           ctx.fillStyle = "#64748b";
           ctx.font = "12px system-ui, sans-serif";
@@ -398,11 +403,15 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
         x += size + 18;
       }
     }
-    return cv.toDataURL("image/png");
+    return { png: cv.toDataURL("image/png"), status };
   }, [...new Set([...wants.map(([, g]) => g), "facility", "beach", "bus", "meter-occupied"])]);
   const { writeFile } = await import("node:fs/promises");
-  await writeFile("glyph-sheet.png", Buffer.from(String(sheet).split(",")[1], "base64"));
-  console.log("glyph sheet written: glyph-sheet.png");
+  await writeFile("glyph-sheet.png", Buffer.from(String(sheet.png).split(",")[1], "base64"));
+  // Report what actually reached the picture: a sheet of row labels with no glyphs in it is the
+  // failure mode this whole thing had twice, and it is silent unless the draw says so.
+  const missing = Object.entries(sheet.status).filter(([, v]) => v !== "drawn").map(([k, v]) => `${k}:${v}`);
+  ok(missing.length === 0, `every glyph reached the sheet (${missing.join(", ") || "all drawn"})`);
+  console.log(`glyph sheet written: glyph-sheet.png — ${JSON.stringify(sheet.status)}`);
 
   for (const [id] of wants) {
     await clickRow(id);

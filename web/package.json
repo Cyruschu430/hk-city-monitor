@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.2.0",
   "type": "module",
-  "description": "HK City Monitor v0.2 front end — Vite + TypeScript (strict), MapLibre + deck.gl, config-driven panels.",
+  "description": "HK City Monitor v0.2 front end \u2014 Vite + TypeScript (strict), MapLibre + deck.gl, config-driven panels.",
   "scripts": {
     "sync:data": "node scripts/sync-data.mjs",
     "predev": "node scripts/sync-data.mjs",
@@ -23,7 +23,8 @@
     "measure:boot": "node scripts/measure-boot.mjs",
     "check:carpark": "node scripts/verify-carpark.mjs",
     "check:quota": "node scripts/check-quota.mjs",
-    "check:layers": "node scripts/check-layers.mjs"
+    "check:layers": "node scripts/check-layers.mjs",
+    "check:mobile": "node scripts/measure-mobile.mjs"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.1",

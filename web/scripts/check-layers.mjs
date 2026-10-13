@@ -189,14 +189,27 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   });
   ok(b.hasSource, "switching the bus layer on created no vl-bus_live source — the adapter threw or returned no geometry");
   ok(b.layer === "visible", `the bus point layer is not visible after the toggle: ${b.layer}`);
-  ok(b.icon === "bus", `the bus layer must draw the bus glyph, not a dot: icon-image=${b.icon}`);
+  // The bus layer draws its OPERATOR's livery, so icon-image is a `match` on the
+  // company rather than one fixed id. What this must still catch is the layer drawing
+  // a bare dot — or drawing nothing, which is what a match with an unregistered image
+  // id does silently. So: every id the match can return is registered AND is a bus.
+  const busIcons = await page.evaluate(() => {
+    const ids = ["bus", "bus-ctb", "bus-lwb", "bus-nlb", "bus-gmb"];
+    return { missing: ids.filter((i) => !window.__map.hasImage(i)), all: ids };
+  });
+  ok(busIcons.missing.length === 0, `the map has no image for: ${busIcons.missing.join(", ")} — those buses draw nothing`);
+  const iconExpr = Array.isArray(b.icon) ? b.icon.join(",") : String(b.icon);
+  ok(
+    iconExpr.includes("bus") && (Array.isArray(b.icon) ? iconExpr.includes("match") : b.icon.startsWith("bus")),
+    `the bus layer must draw bus glyphs, not a dot: icon-image=${iconExpr}`,
+  );
   ok(!b.banner, `a banner appeared while drawing the bus layer: "${b.banner}"`);
   if (b.features === 0) console.log("NOTE  bus layer drew 0 positions right now (no live ETAs at the sampled stops)");
   await clickRow("bus_live");
   await page.waitForTimeout(1200);
   const busOff = await page.evaluate(() => !!window.__map?.getSource("vl-bus_live"));
   ok(!busOff, "switching the bus layer off left its source on the map");
-  console.log(`bus live: default=off features=${b.features} glyph=${b.icon}`);
+  console.log(`bus live: default=off features=${b.features} glyph=${iconExpr}`);
 }
 
 // ── 6. 3D IS GONE, and this asserts it stays gone.

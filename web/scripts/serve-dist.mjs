@@ -27,19 +27,19 @@ createServer(async (req, res) => {
     const path = decodeURIComponent((req.url ?? "/").split("?")[0]);
     let file = join(root, path);
     const s = await stat(file).catch(() => null);
-    if (!s || s.isDirectory()) file = join(file, "index.html");
+    if (!s || s.isDirectory()) {
+      // Only a NAVIGATION falls back to index.html. Handing an HTML document to a request for a
+      // .js chunk is how the app "never boots" with nothing in the console but a MIME error.
+      if (extname(path)) throw new Error(`404 ${path}`);
+      file = join(file, "index.html");
+    }
     // Read FIRST: writing headers then failing to read them is how a 500 became a crash loop.
     body = await readFile(file);
     type = MIME[extname(file).toLowerCase()] ?? type;
   } catch {
-    try {
-      body = await readFile(join(root, "index.html")); // SPA fallback, like Pages does
-      type = MIME[".html"];
-    } catch {
-      res.writeHead(404, { "content-type": "text/plain" });
-      res.end("not found");
-      return;
-    }
+    res.writeHead(404, { "content-type": "text/plain" });
+    res.end("not found");
+    return;
   }
   res.writeHead(200, { "content-type": type, "cache-control": "no-store" });
   res.end(body);

@@ -279,6 +279,7 @@ for (const size of SIZES) {
         straddlesPlacard: straddles(panel, placard),
         straddlesClock: straddles(panel, clock),
         placardBottom: Math.round(placard.bottom),
+        clockBottom: Math.round(clock.bottom),
         badgeBelow: badge.top >= panel.bottom - 2,
         frameH: cardFrameH,
       };
@@ -288,7 +289,7 @@ for (const size of SIZES) {
     } else {
       console.log(`assistant   closed: button ${assist.headTop}..${assist.headBottom} in band ${assist.bandTop}..${assist.bandBottom} (badge top ${assist.badgeTop})`);
       console.log(`            open: panel ${assist.panelTop}..${assist.panelBottom} x ${assist.panelLeft}..${assist.panelRight} in band x ${assist.bandLeft}..${assist.bandRight}  frame ${assist.frameH}px`);
-      console.log(`            placard bottom ${assist.placardBottom}  enlarged ${assist.bigHeight}px tall`);
+      console.log(`            placard bottom ${assist.placardBottom}  clock bottom ${assist.clockBottom}  enlarged ${assist.bigHeight}px tall`);
       if (!assist.visible) problems.push(`${size.name}: the drone assistant did not appear in drone mode`);
       if (assist.headTop < assist.bandTop) problems.push(`${size.name}: the assistant's button is above the map band (button top ${assist.headTop} vs band top ${assist.bandTop}) — it is the only way to close it`);
       if (!assist.aboveBadge) problems.push(`${size.name}: the assistant button overlaps the LandsD notice (button bottom ${assist.headBottom} vs notice top ${assist.badgeTop})`);

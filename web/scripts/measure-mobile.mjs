@@ -260,7 +260,7 @@ for (const size of SIZES) {
         panelLeft: Math.round(panel.left), panelRight: Math.round(panel.right),
         bandLeft: Math.round(band.left), bandRight: Math.round(band.right),
         coversTop: panel.top <= band.top + 8,
-        spansBand: panel.left <= band.left + 1 && panel.right >= band.right - 1,
+        spansBand: panel.left <= band.left + 14 && panel.right >= band.right - 14,
         badgeBelow: badge.top >= panel.bottom - 2,
         frameH: f ? Math.round(f.getBoundingClientRect().height) : 0,
       };

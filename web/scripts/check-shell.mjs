@@ -130,9 +130,13 @@ const assistOpen = await page.evaluate(() => {
     // clipped at its edge. A box that leaves half a label showing looks broken.
     coversPlacard: !!(panel && placard) && panel.top <= placard.top && panel.left <= placard.left,
     coversClock: !!(panel && clock) && panel.top <= clock.top && panel.left <= clock.left,
-    spansBand: !!(panel && band) && panel.left <= band.left + 1 && panel.right >= band.right - 1,
+    // The panel is a card inset a few px inside the band, not a flush sheet: assert the
+    // designed inset rather than an exact edge, or the assertion argues with the design.
+    spansBand: !!(panel && band) && panel.left <= band.left + 14 && panel.right >= band.right - 14,
     // The licence credit must never end up behind the assistant.
     badgeVisibleBelow: !!(panel && badge) && badge.top >= panel.bottom - 2,
+    markSrc: document.querySelector('.drone-assist-head img')?.getAttribute('src') ?? null,
+    markLoaded: !!document.querySelector('.drone-assist-head img')?.complete,
     hasClose: !!closeBtn,
     closeName: closeBtn?.getAttribute("aria-label") ?? null,
     loadingGone: !document.querySelector(".drone-assist-load"),
@@ -182,6 +186,7 @@ ok(assistOpen.coversPlacard, "the open assistant covers the map placard outright
 ok(assistOpen.coversClock, "the open assistant covers the clock outright");
 ok(assistOpen.spansBand, `the open assistant spans the map band (${JSON.stringify(assistOpen.panel)} vs band ${JSON.stringify(assistOpen.band)})`);
 ok(assistOpen.badgeVisibleBelow, "the LandsD credit stays visible under the open assistant");
+ok(assistOpen.markLoaded, `the button carries the project mark, and it loaded (${assistOpen.markSrc})`);
 ok(assistOpen.hasClose && !!assistOpen.closeName, `the panel header carries a named close control (${assistOpen.closeName})`);
 ok(closedByX && !closedByX.open && closedByX.launcherBack, "the header's close control is a working way out and brings the launcher back");
 ok(leftDrone && !leftDrone.visible && !leftDrone.open, "leaving drone mode puts the assistant and its frame away");

@@ -1016,7 +1016,13 @@ a:hover{color:var(--cyan)}
 /* Narrow: back to stacked rows (map band, then the panel band), which is what a phone wants and what this
    rule already did. Only the base layout moved. */
 @media (max-width:880px){
-  #layout{grid-template-columns:1fr;grid-template-rows:58vh 1fr}
+  /* MEASURED 2026-10-13 at 390x700 and 360x600, before this block changed: the map band was 58vh
+     OF THE VIEWPORT while the layout box was only 477px of 700, so the map row alone overran the
+     space and the panel row was left 71px (29px on the 360px screen) — and inside that band the
+     100px wrapped tab bar pushed the panel list entirely outside its own container, leaving a
+     16px scroll window for 9,130px of content. Hence: the map takes a share of what is actually
+     left (46vh, under the chrome), and everything below is allowed to shrink. */
+  #layout{grid-template-columns:1fr;grid-template-rows:minmax(0,46vh) minmax(0,1fr)}
   #mapWrap,#panelCol{grid-column:1;grid-row:auto}
   #panelCol{border-left:0}
   #rail{position:fixed;left:0;right:0;bottom:0;top:auto;flex-direction:row;justify-content:flex-start;
@@ -1050,6 +1056,19 @@ a:hover{color:var(--cyan)}
      override the theme. Upgrade path if that ever matters — accept ?theme= in
      the URL, the same way ?tab= and ?layers= already work, and drop this rule. */
   #themeSwitch{display:none}
+  /* The category chips must NOT wrap on a phone: 18 of them wrapped to 100px inside a panel band
+     that is shorter than that, and the list below them was pushed out of the column. One row that
+     scrolls sideways costs ~34px and can never grow. */
+  #panelTabs{flex-wrap:nowrap;overflow-x:auto;padding:6px 8px;gap:6px;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  #panelTabs::-webkit-scrollbar{display:none}
+  #panelTabs .ptab{flex:0 0 auto}
+  /* The footer is a fixed strip here (it is a body child, see ui/footer.ts), so on a phone it is
+     17% of the screen unless it is told to be small: compact type, and the lowest-information line
+     goes. Attribution, the licence and the data-source note all stay — they just stop shouting. */
+  .app-foot{padding:5px 8px 6px;font-size:10px;line-height:1.35}
+  .foot-data{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0}
+  .foot-note{display:none}
 }
 
 /* ---------- reduced motion: required, not optional ---------- */

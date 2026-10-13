@@ -5,9 +5,12 @@
 // does not claim official status — "maintained by volunteers" is true and does the same job as a
 // disclaimer without reading like a lawyer's note bolted onto a public dashboard.
 //
-// It lives at the end of the panel column, not fixed to the viewport: a permanent strip costs
-// map height on every screen for something a reader checks once, and the column already has a
-// bottom to put it at.
+// It is a strip at the end of the page, after the layout — NOT inside the panel column, which is
+// where the first draft said it should go. Measured 2026-10-13: as a body child it shares the
+// leftover height between the map and the panels; inside the panel column it would take its height
+// out of the panel band alone, which is the band a phone has least of. On narrow screens the
+// stylesheet also compacts it to a couple of small lines, because an untrimmed strip is 17% of a
+// 700px phone viewport.
 import { h } from "../lib/dom.ts";
 import { lang, onLangChange } from "../lib/i18n.ts";
 
@@ -51,20 +54,19 @@ export function createFooter(parent: HTMLElement): void {
   const foot = h("footer", { class: "app-foot" });
   const build = () => {
     const tc = lang() === "tc";
+    // The rows go HERE. The first version nested a second <footer class="app-foot"> inside this
+    // one, so every padding in the stylesheet applied twice and the strip measured 123px of a
+    // 700px phone screen — 17% of the viewport spent on double gutters.
     foot.replaceChildren(
       h(
-        "footer",
-        { class: "app-foot" },
-        h(
         "div",
         { class: "foot-row" },
         h("span", { class: "foot-author" }, T.author[tc ? "tc" : "en"]),
         h("a", { class: "foot-gh", href: REPO, target: "_blank", rel: "noopener noreferrer", title: T.source[tc ? "tc" : "en"], "aria-label": T.source[tc ? "tc" : "en"] }, ghIcon()),
         h("a", { class: "foot-link", href: LICENSE, target: "_blank", rel: "noopener noreferrer" }, T.licence[tc ? "tc" : "en"]),
       ),
-        h("p", { class: "foot-data" }, T.data[tc ? "tc" : "en"]),
-        h("p", { class: "foot-note" }, T.built[tc ? "tc" : "en"]),
-      ),
+      h("p", { class: "foot-data" }, T.data[tc ? "tc" : "en"]),
+      h("p", { class: "foot-note" }, T.built[tc ? "tc" : "en"]),
     );
   };
   build();

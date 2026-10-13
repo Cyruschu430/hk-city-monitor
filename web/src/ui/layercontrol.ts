@@ -102,7 +102,14 @@ let onOnly = false;
 
 let collapsed = ((): boolean => {
   try {
-    return localStorage.getItem(COLLAPSE_KEY) === "1";
+    const stored = localStorage.getItem(COLLAPSE_KEY);
+    if (stored !== null) return stored === "1";
+    // No stored preference: a NARROW screen opens collapsed.
+    // MEASURED 2026-10-13 at 390x700: expanded, this control is 230x396px and covers 51% of the
+    // map — a reader who opens the page on a phone sees the layer list instead of the city. The
+    // breakpoint is the same 880px the shell's own media query uses, so the two agree by
+    // construction. A deliberate toggle still wins, because it is stored above.
+    return globalThis.matchMedia?.("(max-width:880px)").matches ?? false;
   } catch {
     /* private mode — start expanded, which is the safe default */
     return false;

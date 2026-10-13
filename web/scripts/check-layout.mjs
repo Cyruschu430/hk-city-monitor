@@ -21,7 +21,11 @@ const BASE = process.env.HKCM_URL ?? (process.env.HKCM_URL ?? process.env.BASE ?
 const exe = process.env.HKCM_CHROME ?? "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
 
 const browser = await chromium.launch({ executablePath: exe, headless: true });
-const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, locale: "zh-HK" });
+// The viewport is an env var so the SAME assertions can be pointed at a phone
+// (HKCM_VP=390x844 > the shell at 1920x1080). The mobile pass is not a second
+// harness: the geometry complaints are identical, only the numbers differ.
+const VP = (process.env.HKCM_VP ?? "1920x1080").split("x").map(Number);
+await browser.newPage({ viewport: { width: VP[0] ?? 1920, height: VP[1] ?? 1080 }, locale: "zh-HK" });
 await page.goto(BASE, { waitUntil: "domcontentloaded" });
 // A swallowed readiness timeout measures an EMPTY shell and then reports LAYOUT OK. MEASURED
 // 2026-09-27: a cold preview start produced "panels 0/0 ... LAYOUT OK" while the same server

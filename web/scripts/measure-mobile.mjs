@@ -235,30 +235,48 @@ for (const size of SIZES) {
       const head = document.querySelector(".drone-assist-head");
       if (!(head instanceof HTMLElement)) return { found: false };
       const beforeOpen = { visible: getComputedStyle(document.querySelector(".drone-assist")).display !== "none" };
+      const hr = head.getBoundingClientRect();
+      const bandEarly = document.querySelector("#mapWrap").getBoundingClientRect();
+      const badgeEarly = document.querySelector(".landsd-badge").getBoundingClientRect();
+      const closed = {
+        headTop: Math.round(hr.top), headBottom: Math.round(hr.bottom),
+        bandTop: Math.round(bandEarly.top), bandBottom: Math.round(bandEarly.bottom),
+        aboveBadge: hr.bottom <= badgeEarly.top + 1,
+        badgeTop: Math.round(badgeEarly.top),
+      };
       head.click();
       await new Promise((r) => setTimeout(r, 2500));
-      const hr = head.getBoundingClientRect();
       const band = document.querySelector("#mapWrap").getBoundingClientRect();
       const badge = document.querySelector(".landsd-badge").getBoundingClientRect();
+      const panel = document.querySelector(".drone-assist-body").getBoundingClientRect();
       const f = document.querySelector(".drone-assist iframe");
       return {
         found: true,
         visible: beforeOpen.visible,
-        headTop: Math.round(hr.top), headBottom: Math.round(hr.bottom),
-        bandTop: Math.round(band.top), bandBottom: Math.round(band.bottom),
+        ...closed,
+        // Open: the panel covers the band outright (that is the tidy version), and the
+        // licence credit underneath it must still be visible.
+        panelTop: Math.round(panel.top), panelBottom: Math.round(panel.bottom),
+        panelLeft: Math.round(panel.left), panelRight: Math.round(panel.right),
+        bandLeft: Math.round(band.left), bandRight: Math.round(band.right),
+        coversTop: panel.top <= band.top + 8,
+        spansBand: panel.left <= band.left + 1 && panel.right >= band.right - 1,
+        badgeBelow: badge.top >= panel.bottom - 2,
         frameH: f ? Math.round(f.getBoundingClientRect().height) : 0,
-        aboveBadge: hr.bottom <= badge.top + 1,
-        badgeTop: Math.round(badge.top),
       };
     });
     if (!assist || !assist.found) {
       problems.push(`${size.name}: the drone assistant button is missing`);
     } else {
-      console.log(`assistant   button ${assist.headTop}..${assist.headBottom} in band ${assist.bandTop}..${assist.bandBottom}  frame ${assist.frameH}px  badge top ${assist.badgeTop}`);
+      console.log(`assistant   closed: button ${assist.headTop}..${assist.headBottom} in band ${assist.bandTop}..${assist.bandBottom} (badge top ${assist.badgeTop})`);
+      console.log(`            open: panel ${assist.panelTop}..${assist.panelBottom} x ${assist.panelLeft}..${assist.panelRight} in band x ${assist.bandLeft}..${assist.bandRight}  frame ${assist.frameH}px`);
       if (!assist.visible) problems.push(`${size.name}: the drone assistant did not appear in drone mode`);
       if (assist.headTop < assist.bandTop) problems.push(`${size.name}: the assistant's button is above the map band (button top ${assist.headTop} vs band top ${assist.bandTop}) — it is the only way to close it`);
-      if (assist.frameH < 100) problems.push(`${size.name}: the assistant frame has no usable height (${assist.frameH}px)`);
-      if (!assist.aboveBadge) problems.push(`${size.name}: the assistant overlaps the LandsD notice (button bottom ${assist.headBottom} vs notice top ${assist.badgeTop})`);
+      if (!assist.aboveBadge) problems.push(`${size.name}: the assistant button overlaps the LandsD notice (button bottom ${assist.headBottom} vs notice top ${assist.badgeTop})`);
+      if (!assist.coversTop) problems.push(`${size.name}: the open assistant does not reach the top of the map band (panel top ${assist.panelTop} vs band top ${assist.bandTop}) — it would clip the placard`);
+      if (!assist.spansBand) problems.push(`${size.name}: the open assistant does not span the map band (${assist.panelLeft}..${assist.panelRight} vs ${assist.bandLeft}..${assist.bandRight})`);
+      if (!assist.badgeBelow) problems.push(`${size.name}: the open assistant hides the LandsD credit (panel bottom ${assist.panelBottom} vs notice top ${assist.badgeTop})`);
+      if (assist.frameH < 90) problems.push(`${size.name}: the assistant frame has no usable height (${assist.frameH}px)`);
     }
     await page.evaluate(async () => {
       const sel = [...document.querySelectorAll("select")].find((s) => [...s.options].some((o) => o.value === "overview"));

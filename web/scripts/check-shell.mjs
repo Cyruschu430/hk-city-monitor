@@ -89,7 +89,22 @@ const enteredDrone = await page.evaluate(async () => {
 });
 const assistInMode = await page.evaluate(() => {
   const el = document.querySelector(".drone-assist");
-  return { visible: !!el && getComputedStyle(el).display !== "none", frames: document.querySelectorAll(".drone-assist iframe").length };
+  const headEl = document.querySelector(".drone-assist-head");
+  const head = headEl?.getBoundingClientRect();
+  const cs = headEl ? getComputedStyle(headEl) : null;
+  const band = document.querySelector("#mapWrap")?.getBoundingClientRect();
+  return {
+    visible: !!el && getComputedStyle(el).display !== "none",
+    frames: document.querySelectorAll(".drone-assist iframe").length,
+    headTop: head ? Math.round(head.top) : null,
+    headBottom: head ? Math.round(head.bottom) : null,
+    // The shape was the request: one round button, chat-widget style.
+    round: head ? Math.abs(head.width - head.height) <= 2 && (cs?.borderRadius ?? "").startsWith("50%") : false,
+    headW: head ? Math.round(head.width) : 0,
+    name: headEl?.getAttribute("aria-label") ?? null,
+    insideBand: head && band ? head.top >= band.top - 1 && head.bottom <= band.bottom + 1 : null,
+    badgeTop: Math.round(document.querySelector(".landsd-badge")?.getBoundingClientRect().top ?? 0),
+  };
 });
 await page.evaluate(async () => {
   const head = document.querySelector(".drone-assist-head");
@@ -100,25 +115,41 @@ const assistOpen = await page.evaluate(() => {
   const f = document.querySelector(".drone-assist iframe");
   const box = f?.getBoundingClientRect();
   const band = document.querySelector("#mapWrap")?.getBoundingClientRect();
-  const headEl = document.querySelector(".drone-assist-head");
-  const head = headEl?.getBoundingClientRect();
-  const cs = headEl ? getComputedStyle(headEl) : null;
+  const panel = document.querySelector(".drone-assist-body")?.getBoundingClientRect();
+  const placard = document.querySelector(".mh-scope")?.getBoundingClientRect();
+  const clock = document.querySelector(".mh-clock")?.getBoundingClientRect();
+  const badge = document.querySelector(".landsd-badge")?.getBoundingClientRect();
+  const closeBtn = document.querySelector(".drone-assist-x");
   return {
     frames: document.querySelectorAll(".drone-assist iframe").length,
     src: f?.getAttribute("src") ?? null,
     height: box ? Math.round(box.height) : 0,
-    headInside: head && band ? head.top >= band.top - 1 && head.bottom <= band.bottom + 1 : null,
-    badgeTop: document.querySelector(".landsd-badge")?.getBoundingClientRect().top ?? null,
-    headTop: head ? Math.round(head.top) : null,
-    // The shape was the request: one round button, chat-widget style. An icon-only control
-    // also has to keep a name, or a screen reader announces an unlabelled button.
-    round: head ? Math.abs(head.width - head.height) <= 2 && (cs?.borderRadius ?? "").startsWith("50%") : false,
-    headW: head ? Math.round(head.width) : 0,
-    name: headEl?.getAttribute("aria-label") ?? null,
-    // The bot glyph shows when closed, the close glyph when open — swapping them is the
-    // only affordance an icon button has.
-    glyph: cs ? (document.querySelector(".drone-assist-close") ? getComputedStyle(document.querySelector(".drone-assist-close")).display : "missing") : "missing",
+    panel: panel ? { top: Math.round(panel.top), left: Math.round(panel.left), right: Math.round(panel.right), bottom: Math.round(panel.bottom) } : null,
+    band: band ? { top: Math.round(band.top), left: Math.round(band.left), right: Math.round(band.right) } : null,
+    // The tidy-overlay requirement: the placard and the clock are BEHIND the panel, not
+    // clipped at its edge. A box that leaves half a label showing looks broken.
+    coversPlacard: !!(panel && placard) && panel.top <= placard.top && panel.left <= placard.left,
+    coversClock: !!(panel && clock) && panel.top <= clock.top && panel.left <= clock.left,
+    spansBand: !!(panel && band) && panel.left <= band.left + 1 && panel.right >= band.right - 1,
+    // The licence credit must never end up behind the assistant.
+    badgeVisibleBelow: !!(panel && badge) && badge.top >= panel.bottom - 2,
+    hasClose: !!closeBtn,
+    closeName: closeBtn?.getAttribute("aria-label") ?? null,
+    loadingGone: !document.querySelector(".drone-assist-load"),
   };
+});
+// The header's ✕ has to be a working way out — the launcher is out of the way while open.
+const closedByX = await page.evaluate(async () => {
+  const x = document.querySelector(".drone-assist-x");
+  if (!(x instanceof HTMLElement)) return null;
+  x.click();
+  await new Promise((r) => setTimeout(r, 700));
+  const el = document.querySelector(".drone-assist");
+  return { open: !!el?.classList.contains("is-open"), launcherBack: getComputedStyle(document.querySelector(".drone-assist-head")).display !== "none" };
+});
+await page.evaluate(async () => {
+  document.querySelector(".drone-assist-head")?.click();
+  await new Promise((r) => setTimeout(r, 900));
 });
 // Leave the mode again: the button must go away with it, and take the frame with it.
 const leftDrone = await page.evaluate(async () => {
@@ -143,10 +174,16 @@ ok(assistOpen.height > 120, `the assistant frame has a usable height (${assistOp
 ok(assistHits.length > 0 && assistHits.every((s) => s < 400),
   `the assistant page actually loaded inside the frame (status ${assistHits.join(",") || "none"}; no response at all means our own frame-src blocked it)`);
 ok(assistFailed.length === 0, `no blocked or failed request to the assistant (${assistFailed.join(",") || "none"})`);
-ok(assistOpen.headInside !== false, `the assistant's button stays inside the map band (button top ${assistOpen.headTop}, LandsD notice top ${assistOpen.badgeTop})`);
-ok(assistOpen.round, `the assistant button is the round widget button it was asked to be (${assistOpen.headW}px)`);
-ok(!!assistOpen.name && assistOpen.name.length > 4, `the icon-only button keeps an accessible name (${assistOpen.name})`);
-ok(assistOpen.glyph === "block", `the button shows its close glyph while the frame is open (${assistOpen.glyph})`);
+ok(assistInMode.insideBand !== false, `the assistant's button stays inside the map band (button top ${assistInMode.headTop}, LandsD notice top ${assistInMode.badgeTop})`);
+ok(assistOpen.loadingGone, "the loading hint is replaced once the frame is in (it must not sit over a loaded page)");
+ok(assistInMode.round, `the assistant button is the round widget button it was asked to be (${assistInMode.headW}px)`);
+ok(!!assistInMode.name && assistInMode.name.length > 4, `the icon-only button keeps an accessible name (${assistInMode.name})`);
+ok(assistOpen.coversPlacard, "the open assistant covers the map placard outright instead of clipping it");
+ok(assistOpen.coversClock, "the open assistant covers the clock outright");
+ok(assistOpen.spansBand, `the open assistant spans the map band (${JSON.stringify(assistOpen.panel)} vs band ${JSON.stringify(assistOpen.band)})`);
+ok(assistOpen.badgeVisibleBelow, "the LandsD credit stays visible under the open assistant");
+ok(assistOpen.hasClose && !!assistOpen.closeName, `the panel header carries a named close control (${assistOpen.closeName})`);
+ok(closedByX && !closedByX.open && closedByX.launcherBack, "the header's close control is a working way out and brings the launcher back");
 ok(leftDrone && !leftDrone.visible && !leftDrone.open, "leaving drone mode puts the assistant and its frame away");
 
 await browser.close();

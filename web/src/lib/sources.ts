@@ -96,6 +96,11 @@ export interface LayerDefRaw {
       Absent = solid. Config-not-code; the builder is shared with the MTR
       network, which stays solid. */
   dash?: number[];
+  /** Adapter key when a layer does NOT read its panel's adapter. `bus_live`
+      shares the `bus_eta` source but needs live vehicle positions while the
+      panel needs a searchable route table, so it names its own. Absent = use
+      the adapter of the panel that carries this source. */
+  adapter?: string;
   /** Per-feature text label on a point layer (journey-time minutes). The
       adapter writes the value into this property and the colour into
       `label_color` — no expressions in config, the colour logic lives with

@@ -100,52 +100,104 @@ ok(entries.rows.length > 0, "no .lyr-row[data-rail] at all — a rail layer has 
 ok(entries.btns.every((b) => entries.rows.includes(b)) || entries.btns.length === 0,
   "a rail layer button exists whose LAYERS row does not");
 
-// ── 2. The TD camera layer: on by default, real, and its map layers exist.
+// ── 2. The TD camera layer: OFF by default (every layer is), real, and its map layers exist.
+//
+// The camera layers are the ONE pair that is drawn eagerly at boot rather than lazily on toggle
+// (cameras.ts adds them on the style's `load`), so "the default is off" is not free for them: the
+// boot replay has to switch them off explicitly. It did not, for as long as `replayLayerState` was
+// written as `if (want || l.on)` — once no layer carried `on: true` any more, that guard could
+// never be satisfied, and the cameras stayed on the map while the LAYERS row read OFF. So this
+// block asserts the map, not the control: MapLibre's own layout property.
 const td0 = await rowInfo("cameras_td");
 ok(td0.present, "no .lyr-item[data-row=cameras_td] — the TD camera layer row is gone");
-ok(td0.checked === "true", `the TD camera layer should default to on, aria-checked=${td0.checked}`);
+ok(td0.checked === "false", `every layer is OFF by default, but the TD row reads aria-checked=${td0.checked}`);
 ok(/運輸署相機|Traffic Cameras/.test(td0.label), `unexpected TD layer label: "${td0.label}"`);
 ok(td0.hasGlyph, "the TD layer row lost its symbol glyph");
 
 const v0 = await vis(TD);
 ok(!Object.values(v0).includes("MISSING"), `TD map layers missing from the style: ${JSON.stringify(v0)}`);
-ok(Object.values(v0).every((v) => v === "visible"), `TD layers should start visible, got ${JSON.stringify(v0)}`);
+ok(Object.values(v0).every((v) => v === "none"),
+  `TD layers are drawn on the map at boot while their row reads OFF: ${JSON.stringify(v0)}`);
 
-// ── 3. THE DEAD-CONTROL TEST: off really hides, on really restores.
+// ── 3. THE DEAD-CONTROL TEST: on really draws, off really hides.
+await clickRow("cameras_td");
+await page.waitForTimeout(800);
+const vOn = await vis(TD);
+ok(Object.values(vOn).every((v) => v === "visible"), `toggling TD on did not draw: ${JSON.stringify(vOn)}`);
+
 await clickRow("cameras_td");
 await page.waitForTimeout(800);
 const vOff = await vis(TD);
 ok(Object.values(vOff).every((v) => v === "none"), `toggling TD off left layers visible: ${JSON.stringify(vOff)}`);
 
-await clickRow("cameras_td");
-await page.waitForTimeout(800);
-const vOn = await vis(TD);
-ok(Object.values(vOn).every((v) => v === "visible"), `toggling TD back on did not restore: ${JSON.stringify(vOn)}`);
-
-// ── 4. The HKO layer is a sibling caller of the same handler, so it gets the same test.
+// ── 4. The HKO layer is a sibling caller of the same handler, so it gets the same test: hidden at
+//      rest, visible when asked for, hidden again when dismissed.
 const hko0 = await rowInfo("cameras_hko");
 ok(hko0.present && /天文台相機|Observatory/.test(hko0.label), `unexpected HKO layer label: "${hko0.label}"`);
 const hkoStart = await vis(HKO);
 ok(!Object.values(hkoStart).includes("MISSING"), `HKO map layers missing: ${JSON.stringify(hkoStart)}`);
+ok(Object.values(hkoStart).every((v) => v === "none"),
+  `HKO layers are drawn on the map at boot while their row reads OFF: ${JSON.stringify(hkoStart)}`);
+await clickRow("cameras_hko");
+await page.waitForTimeout(800);
+const hkoOn = await vis(HKO);
+ok(Object.values(hkoOn).every((v) => v === "visible"), `toggling HKO on did not draw: ${JSON.stringify(hkoOn)}`);
 await clickRow("cameras_hko");
 await page.waitForTimeout(800);
 const hkoOff = await vis(HKO);
 ok(Object.values(hkoOff).every((v) => v === "none"), `toggling HKO off left layers visible: ${JSON.stringify(hkoOff)}`);
-await clickRow("cameras_hko");
-await page.waitForTimeout(800);
 
 // ── 5. ONE CONTROL, ONE STATE. The row IS the control now (see block 1), so what has to hold is
 //      that the row's own `aria-checked` and the map agree: the state lives in the row and in
-//      `layerOn`, and nothing else keeps a copy of it.
+//      `layerOn`, and nothing else keeps a copy of it. Checked here at rest, after both toggles.
 const rowState = await page.evaluate(() => {
   const row = document.querySelector('.lyr-item[data-row="cameras_td"] .lyr-row');
   return { checked: row?.getAttribute("aria-checked") };
 });
-ok(rowState.checked === "true",
-  `the TD row should read checked after being toggled back on, got ${rowState.checked}`);
+ok(rowState.checked === "false",
+  `the TD row should read unchecked once dismissed, got ${rowState.checked}`);
 const tdAfter = await vis(TD);
-ok(Object.values(tdAfter).every((v) => v === "visible"),
-  `the row says on but the map disagrees: ${JSON.stringify(tdAfter)}`);
+ok(Object.values(tdAfter).every((v) => v === "none"),
+  `the row says off but the map disagrees: ${JSON.stringify(tdAfter)}`);
+
+// ── 5b. THE BUS LIVE LAYER — the one layer whose features are computed, not fetched.
+//
+// A toggle here can look alive and draw nothing: the adapter returns a status grid either way, so
+// the panel fills in and the map stays empty. The draw path is the one that can fail silently, so
+// this asserts the MAP: after the row is switched on, the layer's own source must exist and its
+// point layer must be visible in the style. The feature count is reported but NOT asserted — the
+// layer is fed by live ETAs, and a fleet of zero at 04:00 is a real answer, not a broken build.
+{
+  const bus = await rowInfo("bus_live");
+  ok(bus.present, "no .lyr-item[data-row=bus_live] — the bus live layer row is gone");
+  ok(bus.checked === "false", `the bus layer must default to OFF, aria-checked=${bus.checked}`);
+  ok(/推算|estimated/.test(bus.label), `the bus layer label must say it is estimated: "${bus.label}"`);
+
+  await clickRow("bus_live");
+  await page.waitForTimeout(12000);
+  const b = await page.evaluate(() => {
+    const s = window.__map?.getSource("vl-bus_live");
+    const d = s?._data;
+    const lid = "vl-bus_live-point";
+    return {
+      hasSource: !!s,
+      features: d?.features?.length ?? -1,
+      layer: (() => { try { return window.__map.getLayoutProperty(lid, "visibility") ?? "visible"; } catch { return "MISSING"; } })(),
+      icon: (() => { try { return window.__map.getLayoutProperty(lid, "icon-image"); } catch { return null; } })(),
+      banner: document.querySelector(".banner, .layer-error")?.textContent?.trim() ?? "",
+    };
+  });
+  ok(b.hasSource, "switching the bus layer on created no vl-bus_live source — the adapter threw or returned no geometry");
+  ok(b.layer === "visible", `the bus point layer is not visible after the toggle: ${b.layer}`);
+  ok(b.icon === "bus", `the bus layer must draw the bus glyph, not a dot: icon-image=${b.icon}`);
+  ok(!b.banner, `a banner appeared while drawing the bus layer: "${b.banner}"`);
+  if (b.features === 0) console.log("NOTE  bus layer drew 0 positions right now (no live ETAs at the sampled stops)");
+  await clickRow("bus_live");
+  await page.waitForTimeout(1200);
+  const busOff = await page.evaluate(() => !!window.__map?.getSource("vl-bus_live"));
+  ok(!busOff, "switching the bus layer off left its source on the map");
+  console.log(`bus live: default=off features=${b.features} glyph=${b.icon}`);
+}
 
 // ── 6. 3D IS GONE, and this asserts it stays gone.
 //

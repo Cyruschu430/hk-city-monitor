@@ -8,6 +8,7 @@ Output:
 """
 import json
 import urllib.request
+from collections import Counter
 
 UA = {"User-Agent": "Mozilla/5.0 (compatible; HKCityMonitor/1.0; +https://hk-city-monitor.pages.dev)"}
 
@@ -36,16 +37,24 @@ def fetch_kmb():
     return out
 
 def fetch_kmb_stops(route, service_type, bound):
-    """Get stops for one route. Returns list of {seq, stop_id}."""
-    # Try different URL patterns
+    """Get stops for one route. Returns list of {seq, stop}.
+
+    The BOUND WORD comes before the service type in this endpoint:
+    /route-stop/{route}/outbound/{service_type}. The older order the first
+    draft used answers `422 Invalid direction`, which is how 1,605 KMB routes
+    ended up with an empty stop list while Citybus looked fine.
+    seq is cast to int: the API serves it as a string here and as a number in
+    the ETA feed, and estimatePositions() matches them with ===.
+    """
+    direction = "outbound" if bound == "O" else "inbound"
     for url in [
+        f"https://data.etabus.gov.hk/v1/transport/kmb/route-stop/{route}/{direction}/{service_type}",
         f"https://data.etabus.gov.hk/v1/transport/kmb/route-stop/{route}/{service_type}/{bound}",
-        f"https://data.etabus.gov.hk/v1/transport/kmb/route-stop/{route}/{service_type}/{bound}/1",
     ]:
         try:
             data = get(url)
-            if "data" in data:
-                return [{"seq": s["seq"], "stop": s["stop"]} for s in data["data"]]
+            if data.get("data"):
+                return [{"seq": int(s["seq"]), "stop": s["stop"]} for s in data["data"]]
         except Exception:
             continue
     return []
@@ -70,10 +79,10 @@ def fetch_ctb():
     return out
 
 def fetch_ctb_stops(route):
-    """Get stops for one CTB route."""
+    """Get stops for one CTB route. seq cast to int (see fetch_kmb_stops)."""
     try:
         data = get(f"https://rt.data.gov.hk/v2/transport/citybus/route-stop/CTB/{route}/outbound")
-        return [{"seq": s["seq"], "stop": s["stop"]} for s in data.get("data", [])]
+        return [{"seq": int(s["seq"]), "stop": s["stop"]} for s in data.get("data", [])]
     except Exception:
         return []
 
@@ -127,12 +136,46 @@ def fetch_gmb():
         return {}
 
 def fetch_nlb_stops(route_id):
-    """Get stops for one NLB route."""
+    """NLB stops for one route. stop.php carries lat/long, so the same call
+    yields the stop list AND the coordinates — NLB needs no extra lookup."""
     try:
         data = get(f"https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=list&routeId={route_id}")
-        return [{"seq": s["seq"], "stop": s["stopId"]} for s in data.get("stops", [])]
     except Exception:
         return []
+    out = []
+    for i, s in enumerate(data.get("stops", []), 1):
+        out.append({
+            "seq": i,
+            "stop": s["stopId"],
+            "name": s.get("stopName_c", ""),
+            "lat": float(s["latitude"]),
+            "lng": float(s["longitude"]),
+        })
+    return out
+
+def fetch_ctb_stop_coord(stop_id):
+    """One CTB stop's official coordinates. The CTB route-stop feed lists ids
+    only, and the KMB master list is KMB-only, so these have to be fetched."""
+    try:
+        s = get(f"https://rt.data.gov.hk/v2/transport/citybus/stop/{stop_id}")["data"]
+        # The field is `long`, not `lon` — reading the wrong key raised KeyError
+        # for every Citybus stop, which silently emptied the live-layer sample.
+        return stop_id, {"name": s["name_tc"], "lat": float(s["lat"]), "lng": float(s["long"])}
+    except Exception:
+        return stop_id, None
+
+def fetch_ctb_coords(stop_ids):
+    """Coordinate lookup for every CTB stop, 8 requests at a time (~1,400
+    stops; sequential would take longer than the whole rest of the bake)."""
+    from concurrent.futures import ThreadPoolExecutor
+    found = {}
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        for i, (sid, rec) in enumerate(pool.map(fetch_ctb_stop_coord, stop_ids)):
+            if rec:
+                found[sid] = rec
+            if i % 200 == 0:
+                print(f"    coords {i}/{len(stop_ids)}")
+    return found
 
 def fetch_gmb_stops(route_no, region):
     """Get stops for one GMB route."""
@@ -156,6 +199,58 @@ def fetch_all_stops():
     print(f"  {len(stops)} stops")
     return stops
 
+def route_key(route):
+    """ONE key format for every operator: {co}_{route}_{service_type}_{bound}.
+
+    The first draft let each fetcher invent its own (KMB `1_1_O`, CTB
+    `CTB_1_O`, GMB `GMB_HKI_1`), which is why the live layer's lookup could
+    only ever match one company. A single format removes the guesswork."""
+    svc = str(route.get("service_type") or "1")
+    bound = route.get("bound") or "O"
+    if route["co"] == "GMB":
+        return f"GMB_{route.get('region', 'HKI')}_{route['route']}_{svc}_{bound}"
+    return f"{route['co']}_{route['route']}_{svc}_{bound}"
+
+def pick_live_stops(routes, all_stops, per_company):
+    """Sample the stops the live layer polls.
+
+    Busiest first (a stop counts once per route that calls at it), then thinned
+    to stay ~3km apart so the sample covers the territory instead of stacking
+    every bus in Central. Baked rather than hardcoded: the previous in-adapter
+    list named ten stop ids by hand and several did not exist.
+    """
+    counts: dict[str, Counter] = {co: Counter() for co in per_company}
+    route_for: dict[str, str] = {}
+    for r in routes.values():
+        co = r["co"]
+        if co not in counts:
+            continue
+        for s in r.get("stops", []):
+            counts[co][s["stop"]] += 1
+            route_for.setdefault(s["stop"], r["route"])
+
+    picked: dict[str, list] = {"KMB": [], "CTB": []}
+    for co in ("KMB", "LWB", "CTB"):
+        # LWB shares the KMB feed, so one KMB list covers both.
+        want = per_company.get(co, 0)
+        if not want:
+            continue
+        taken: list[tuple[float, float]] = []
+        for sid, _n in counts[co].most_common():
+            rec = all_stops.get(sid)
+            if not rec:
+                continue
+            if any(abs(rec["lat"] - la) < 0.03 and abs(rec["lng"] - lo) < 0.03 for la, lo in taken):
+                continue
+            taken.append((rec["lat"], rec["lng"]))
+            if co == "CTB":
+                picked["CTB"].append({"stop": sid, "route": route_for[sid]})
+            else:
+                picked["KMB"].append(sid)
+            if len(taken) >= want:
+                break
+    return picked
+
 def main():
     # 1. Fetch all routes
     routes = {}
@@ -163,13 +258,15 @@ def main():
     routes.update(fetch_ctb())
     routes.update(fetch_nlb())
     routes.update(fetch_gmb())
+    routes = {route_key(r): r for r in routes.values()}
+    print(f"  {len(routes)} routes keyed")
 
     # 2. Fetch all stops (KMB has the master list)
     all_stops = fetch_all_stops()
 
     # 3. For each route, fetch its stop sequence
     print("Fetching stop sequences...")
-    for i, (key, route) in enumerate(routes.items()):
+    for i, route in enumerate(routes.values()):
         if i % 50 == 0:
             print(f"  {i}/{len(routes)}")
         if route["co"] in ("KMB", "LWB"):
@@ -177,10 +274,23 @@ def main():
         elif route["co"] == "CTB":
             route["stops"] = fetch_ctb_stops(route["route"])
         elif route["co"] == "NLB":
-            route["stops"] = fetch_nlb_stops(route["routeId"])
+            rows = fetch_nlb_stops(route["routeId"])
+            for r in rows:
+                all_stops.setdefault(r["stop"], {"name": r["name"], "lat": r["lat"], "lng": r["lng"]})
+            route["stops"] = [{"seq": r["seq"], "stop": r["stop"]} for r in rows]
         elif route["co"] == "GMB":
             route["stops"] = fetch_gmb_stops(route["route"], route["region"])
-        # NLB/GMB stop sequences need their own APIs — skip for now
+
+    # 3b. CTB coordinates — the route-stop feed carries ids only.
+    ctb_ids = sorted({s["stop"] for r in routes.values() if r["co"] == "CTB" for s in r["stops"]})
+    print(f"CTB stop coordinates ({len(ctb_ids)})...")
+    all_stops.update(fetch_ctb_coords(ctb_ids))
+
+    # 3c. The live-layer sample, baked so the adapter holds no stop ids.
+    live = pick_live_stops(routes, all_stops, {"KMB": 24, "CTB": 10})
+    with open("data/bus_live_stops.json", "w", encoding="utf-8") as f:
+        json.dump(live, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"  live sample: {len(live['KMB'])} KMB stops, {len(live['CTB'])} CTB stop-route pairs")
 
     # 4. Save
     with open("data/bus_routes.json", "w", encoding="utf-8") as f:

@@ -173,7 +173,10 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   { id: "carpark_vacancy", label: { tc: "停車場空位", en: "Car park vacancies" }, on: false },
   { id: "sensor_parking_spaces", label: { tc: "路邊感應車位", en: "On-street sensor spaces" }, on: false },
   // Bus live positions — estimated from ETA data (KMB/LWB/CTB/NLB/GMB)
-  { id: "bus_live", label: { tc: "巴士實時位置", en: "Bus Live Positions" }, on: false },
+    // Estimated, not GPS, exactly like mtr_trains: the operators publish
+  // next-bus times, never vehicle positions. The （推算） suffix is the honesty
+  // rule for this layer, so it stays in the label.
+  { id: "bus_live", label: { tc: "巴士位置（推算）", en: "Bus positions (estimated)" }, on: false },
   // 952 LCSD leisure facilities (libraries, museums, parks, courts, camps, bbq)
   // from nine CSDI services — the official geometry, not a geocode. OFF by
   // default like every reference layer; the generic attribute popup handles it.
@@ -688,7 +691,7 @@ async function boot(): Promise<void> {
   const LAYER_VERSION_KEY = "hkcm.layers.version";
   /** Bump this whenever the default layer set changes — stale localStorage state
       gets wiped instead of overriding the new defaults. */
-  const LAYER_VERSION = "2026-10-07-all-off";
+  const LAYER_VERSION = "2026-10-13-all-off-replay";
   const DEFAULT_ON = RAIL_LAYERS.filter((l) => l.on).map((l) => l.id).sort().join(",");
   const isRailLayer = (id: string): boolean => RAIL_LAYERS.some((l) => l.id === id);
 
@@ -1066,17 +1069,16 @@ async function boot(): Promise<void> {
   // panels gone and no restore chip, which makes hiding a one-way door.
   paintRestore(engine.hiddenIds());
   // Replay the remembered state now the map exists.
-  // addCameraLayers() has ALREADY drawn both camera layers as visible, so a
-  // remembered state that excludes one has to say so explicitly: replaying only
-  // the ON layers leaves an un-asked-for layer on the map (measured — the URL
-  // said ?layers=aircraft while cameras-hko-point was still "visible").
-  // Only the default-ON layers are replayed as OFF; imagery / 3D are left alone
-  // so a boot can never fire a layer error banner for something never asked for.
+  // EVERY rail layer is replayed, ON and OFF alike. It has to be both: most
+  // layers are added lazily so "off" means absent, but the camera layers are
+  // drawn eagerly as visible by addCameraLayers(), so a layer nobody asked for
+  // is only gone if this loop explicitly says so. Replaying only the ON set
+  // left cameras-td/hko on the map while the rail read OFF (measured — the
+  // `want || l.on` guard rotted when the default-ON set became empty).
+  // The basemap switches (imagery / esri_*) are safe to replay: createMap()
+  // already starts on `topo`, so their "off" is the same no-op as boot.
   const replayLayerState = (): void => {
-    for (const l of RAIL_LAYERS) {
-      const want = layerOn.has(l.id);
-      if (want || l.on) void toggleLayer(l.id, want);
-    }
+    for (const l of RAIL_LAYERS) void toggleLayer(l.id, layerOn.has(l.id));
   };
   // The camera layers attach on the map's `load` event (cameras.ts — the `load`
   // event is the only honest signal that the style has landed), so replaying

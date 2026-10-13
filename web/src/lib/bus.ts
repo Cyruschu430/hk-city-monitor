@@ -59,45 +59,60 @@ export async function loadBusData(): Promise<BusData> {
 }
 
 // ---------- ETA fetching ----------
+// KMB and LWB share one feed: stop-eta at a stop returns every route calling
+// there, so one request covers a whole stop.
 export async function fetchStopETA(stopId: string): Promise<BusETA[]> {
-  // Try KMB/LWB/CTB first (same API), then NLB
   try {
     const res = await fetch(
       `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${stopId}`
     );
-    if (res.ok) {
-      const data = await res.json();
-      if (data.data && data.data.length > 0) return data.data;
-    }
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.data ?? []) as BusETA[];
   } catch {
-    // fall through to NLB
+    return [];
   }
+}
 
-  // NLB uses a different API
+// Citybus has no stop-level feed — ETA is per (stop, route), which is why the
+// baked sample carries a route alongside each CTB stop. Rows have no
+// service_type field, so it is filled in here.
+export async function fetchCtbETA(stopId: string, route: string): Promise<BusETA[]> {
   try {
     const res = await fetch(
-      `https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=eta&stopId=${stopId}`
+      `https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/${stopId}/${route}`
     );
-    if (res.ok) {
-      const data = await res.json();
-      // NLB returns a different shape — map to common BusETA
-      return (data.eta ?? []).map((e: Record<string, unknown>) => ({
-        co: "NLB",
-        route: String(e.routeNo ?? ""),
-        dir: "O",
-        service_type: 1,
-        seq: Number(e.seq ?? 0),
-        dest_tc: String(e.dest_tc ?? ""),
-        eta: typeof e.eta === "string" ? e.eta : null,
-        rmk_tc: String(e.rmk_tc ?? ""),
-        data_timestamp: String(e.data_timestamp ?? ""),
-      }));
-    }
+    if (!res.ok) return [];
+    const data = await res.json();
+    return ((data.data ?? []) as Array<Record<string, unknown>>).map((e) => ({
+      co: "CTB",
+      route: String(e.route ?? route),
+      dir: String(e.dir ?? "O"),
+      service_type: 1,
+      seq: Number(e.seq ?? 0),
+      dest_tc: String(e.dest_tc ?? ""),
+      eta: typeof e.eta === "string" ? e.eta : null,
+      rmk_tc: String(e.rmk_tc ?? ""),
+      data_timestamp: String(e.data_timestamp ?? ""),
+    }));
   } catch {
-    // ignore
+    return [];
   }
+}
 
-  return [];
+/** The baked live-layer sample: which stops the layer polls per operator.
+ *  Baked by scripts/build_bus_data.py — the baked form replaced a hand-written
+ *  list in the adapter whose Citybus ids used the wrong namespace and whose
+ *  NLB ids did not exist. */
+export interface LiveStops {
+  KMB: string[];
+  CTB: Array<{ stop: string; route: string }>;
+}
+
+export async function loadLiveStops(): Promise<LiveStops> {
+  const res = await fetch("data/bus_live_stops.json");
+  if (!res.ok) throw new Error(`bus_live_stops.json HTTP ${res.status}`);
+  return (await res.json()) as LiveStops;
 }
 
 // ---------- live tracking (ETA → estimated position) ----------
@@ -118,6 +133,10 @@ export interface BusPosition {
  * Estimate bus positions from ETA data.
  * A bus with ETA=3min to stop N is somewhere between stop N-1 and stop N.
  * We linearly interpolate based on typical segment time (2min per stop).
+ *
+ * Honesty note the UI repeats: these are INTERPOLATED from the operator's own
+ * next-bus times, not GPS fixes. A bus at a terminus with two minutes on the
+ * clock is drawn two minutes up the road.
  */
 export function estimatePositions(
   etas: BusETA[],
@@ -129,10 +148,14 @@ export function estimatePositions(
   for (const eta of etas) {
     if (!eta.eta) continue; // no ETA = not running
     const etaMs = new Date(eta.eta).getTime();
+    if (!Number.isFinite(etaMs)) continue;
     const etaMin = (etaMs - now) / 60000;
     if (etaMin < -2 || etaMin > 60) continue; // stale or too far
 
-    const routeKey = `${eta.route}_${eta.service_type}_${eta.dir}`;
+    // ONE key format across operators — see route_key() in
+    // scripts/build_bus_data.py. service_type defaults to 1 because the
+    // Citybus feed omits it where the KMB feed numbers it.
+    const routeKey = `${eta.co}_${eta.route}_${eta.service_type ?? 1}_${eta.dir}`;
     const route = data.routes[routeKey];
     if (!route || route.stops.length === 0) continue;
 

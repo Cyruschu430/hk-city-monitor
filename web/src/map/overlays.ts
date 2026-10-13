@@ -499,8 +499,10 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   if (panel && hasAdapter(def.source)) {
     // Feed source (ADS-B): reuse the panel's adapter so the map and the panel
     // read the SAME parse of the SAME fetch — they cannot disagree about what
-    // is aloft.
-    const { geo } = await adaptPanel(panel, args.ctx);
+    // is aloft. A layer whose own adapter differs (bus_live) names it in
+    // layers.json; `hasAdapter(def.source)` still has to be true so a source
+    // with no adapter at all takes the plain-fetch branch below.
+    const { geo } = await adaptPanel(panel, args.ctx, def.adapter);
     if (stale(args, gen)) throw new Error("obsolete layer request");
     if (!geo) throw new Error(`layer ${def.id}: adapter 冇提供 geo 資料`);
     fc = geo;
@@ -518,7 +520,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // seconds, so clusters would re-form constantly and hide exactly the
   // individual tracks this layer exists to show. Camera points are static and
   // stay clustered.
-  const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel" || glyph === "mtr-train" || def.symbol === "meter";
+  const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel" || glyph === "mtr-train" || glyph === "bus" || def.symbol === "meter";
   map.addSource(id, {
     type: "geojson",
     data: fc,
@@ -693,9 +695,9 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // Vacancy refreshes on its own cadence: positions are static, numbers are
   // not. The refetch goes through the SAME adapter, so the redraw and the
   // panel keep reading one parse.
-  if (def.refresh_ms && panel && hasAdapter(def.source)) {
+  if (def.refresh_ms && panel && hasAdapter(def.adapter ?? def.source)) {
     startLayerRefresh(map, id, def.refresh_ms, async () => {
-      const { geo } = await adaptPanel(panel, args.ctx);
+      const { geo } = await adaptPanel(panel, args.ctx, def.adapter);
       if (!geo) throw new Error(`layer ${def.id}: adapter 冇提供 geo 資料`);
       return geo;
     });
@@ -991,6 +993,12 @@ const POPUP_LABELS: Record<string, { tc: string; en: string }> = {
   // Facility fields (build_facilities.py). `Name` is the head slot and needs no label here.
   Type: { tc: "類型", en: "Type" },
   Restriction: { tc: "限制", en: "Restriction" },
+  // Bus live positions — interpolated from the operators' next-bus times, so the
+  // ETA row is the only number that is published and the rest is derived.
+  route: { tc: "路線", en: "Route" },
+  co: { tc: "巴士公司", en: "Operator" },
+  nextStop: { tc: "下一站", en: "Next stop" },
+  etaMin: { tc: "到站（分鐘）", en: "ETA (min)" },
 };
 
 /** Keys that carry no information for a reader. `_sc` is Simplified Chinese —

@@ -756,33 +756,20 @@ const ADAPTERS: Record<string, Adapter> = {
 
   async bus_live(_src, _panel, _ctx) {
     void _src; void _ctx;
-    const data = await Bus.loadBusData();
+    const [data, sample] = await Promise.all([Bus.loadBusData(), Bus.loadLiveStops()]);
 
-    // For live tracking, we need ETAs from multiple stops.
-    // Strategy: fetch ETAs from a sample of major stops across HK.
-    // In production this would be the worker's job; here we use a fixed set
-    // of high-traffic stops to get representative coverage.
-    const majorStops = [
-      "18492910339410B1", // 竹園邨總站 (KMB)
-      "001027", // 中環(港澳碼頭) (CTB)
-      "001629", // 銅鑼灣(摩頓台) (CTB)
-      "001860", // 東涌站 (CTB)
-      "003540", // 機場/港珠澳大橋 (CTB)
-      "000001", // NLB 梅窩碼頭
-      "000002", // NLB 大澳
-      "000003", // NLB 昂坪
-      "000004", // NLB 塘福
-      "000005", // NLB 水口
-    ];
+    // Where the ETAs come from. Not GPS: the operators publish next-bus times
+    // only, so each position is interpolated from those times (see
+    // Bus.estimatePositions). The sample of stops is baked — one KMB request
+    // covers every route at a stop, Citybus needs one per (stop, route).
+    const [kmb, ctb] = await Promise.all([
+      Promise.allSettled(sample.KMB.map((stop) => Bus.fetchStopETA(stop))),
+      Promise.allSettled(sample.CTB.map((p) => Bus.fetchCtbETA(p.stop, p.route))),
+    ]);
 
     const allEtas: Bus.BusETA[] = [];
-    for (const stopId of majorStops) {
-      try {
-        const etas = await Bus.fetchStopETA(stopId);
-        allEtas.push(...etas);
-      } catch {
-        // skip failed stops
-      }
+    for (const r of [...kmb, ...ctb]) {
+      if (r.status === "fulfilled") allEtas.push(...r.value);
     }
 
     const positions = Bus.estimatePositions(allEtas, data);
@@ -793,14 +780,20 @@ const ADAPTERS: Record<string, Adapter> = {
         route: p.route,
         co: p.co,
         nextStop: p.nextStop,
-        etaMin: p.etaMin,
+        etaMin: Math.round(p.etaMin),
         bearing: p.bearing,
         color: Bus.COMPANIES.find((c) => c.id === p.co)?.color ?? "#666666",
       },
     }));
 
     return {
-      data: { kind: "status_grid", cells: [{ label: "巴士位置", value: String(positions.length), status: 0 as const }] },
+      data: {
+        kind: "status_grid",
+        cells: [
+          { label: "巴士位置", value: String(positions.length), status: 0 as const },
+          { label: "查詢站數", value: String(sample.KMB.length + sample.CTB.length), status: 0 as const },
+        ],
+      },
       observedAt: new Date(),
       geo: { type: "FeatureCollection", features },
     };
@@ -1592,12 +1585,20 @@ const ADAPTERS: Record<string, Adapter> = {
   },
 };
 
-/** Resolve + run the adapter for a panel. */
-export async function adaptPanel(panel: PanelDefRaw, ctx: AdapterCtx): Promise<AdapterResult> {
+/** Resolve + run the adapter for a panel.
+ *
+ *  `adapterId` lets a LAYER name its own adapter when it is not the panel's.
+ *  bus_live is the case that needs it: the layer and the search panel share one
+ *  source (`bus_eta`), but the panel wants a searchable route table while the
+ *  layer wants estimated vehicle positions — and they must not pay for each
+ *  other's fetch. Without this the layer's lookup fell through to the panel's
+ *  adapter, which returns no geometry, and the layer threw instead of drawing. */
+export async function adaptPanel(panel: PanelDefRaw, ctx: AdapterCtx, adapterId?: string): Promise<AdapterResult> {
   const src = ctx.registry.byId.get(panel.source);
   if (!src) throw new Error(`source ${panel.source} 唔在 sources.json`);
-  const adapter = ADAPTERS[panel.source];
-  if (!adapter) throw new Error(`panel ${panel.id}: 未有 ${panel.source} 嘅 adapter`);
+  const key = adapterId ?? panel.source;
+  const adapter = ADAPTERS[key];
+  if (!adapter) throw new Error(`panel ${panel.id}: 未有 ${key} 嘅 adapter`);
   const result = await adapter(src, panel, ctx);
   return result;
 }

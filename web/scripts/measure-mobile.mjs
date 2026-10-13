@@ -125,24 +125,39 @@ for (const size of SIZES) {
     const clearance = await page.evaluate(() => {
       const box = (sel) => {
         const e = document.querySelector(sel);
-        return e ? e.getBoundingClientRect() : null;
+        if (!e) return null;
+        const r = e.getBoundingClientRect();
+        return { top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right) };
       };
-      const attr = box(".maplibregl-ctrl-bottom-right");
-      const badge = box(".landsd-badge");
-      const ctrl = box(".layer-control");
+      // The credit lives in MapLibre's bottom-right control; its INNER text box is what
+      // wraps and grows, so that is the edge to clear, not the container.
+      const attr = document.querySelector(".maplibregl-ctrl-attrib-inner") || document.querySelector(".maplibregl-ctrl-bottom-right");
+      const a = attr ? attr.getBoundingClientRect() : null;
       return {
-        attrTop: attr ? Math.round(attr.top) : null,
-        badgeBottom: badge ? Math.round(badge.bottom) : null,
-        ctrlBottom: ctrl ? Math.round(ctrl.bottom) : null,
+        attrTop: a ? Math.round(a.top) : null,
+        attrLeft: a ? Math.round(a.left) : null,
+        attrRight: a ? Math.round(a.right) : null,
+        badge: box(".landsd-badge"),
+        ctrl: box(".layer-control"),
       };
     });
-    console.log(`attribution top=${clearance.attrTop}  landsd bottom=${clearance.badgeBottom}  layer ctrl bottom=${clearance.ctrlBottom}`);
+    console.log(`attribution top=${clearance.attrTop}  landsd bottom=${clearance.badge && clearance.badge.bottom}  layer ctrl bottom=${clearance.ctrl && clearance.ctrl.bottom}`);
     if (clearance.attrTop !== null) {
-      if (clearance.badgeBottom !== null && clearance.badgeBottom > clearance.attrTop - 6) {
-        problems.push(`${size.name}: the LandsD badge sits on the attribution line (badge bottom ${clearance.badgeBottom} vs attribution top ${clearance.attrTop})`);
+      // A gap only means anything if the two boxes also overlap horizontally — the credit
+      // is a full-width box here (x=10..380 at 390px), but assert it rather than assume it,
+      // so a future layout that moves the credit to one side does not keep this rule alive
+      // for no reason.
+      const hits = (b) => b && b.bottom > clearance.attrTop - 6 && b.right > clearance.attrLeft && b.left < clearance.attrRight;
+      if (hits(clearance.badge)) {
+        problems.push(`${size.name}: the LandsD badge sits on the attribution line (badge bottom ${clearance.badge.bottom} vs attribution top ${clearance.attrTop})`);
       }
-      if (clearance.ctrlBottom !== null && clearance.ctrlBottom > clearance.attrTop - 6) {
-        problems.push(`${size.name}: the layer button sits on the attribution line (button bottom ${clearance.ctrlBottom} vs attribution top ${clearance.attrTop})`);
+      if (hits(clearance.ctrl)) {
+        problems.push(`${size.name}: the layer button sits on the attribution line (button bottom ${clearance.ctrl.bottom} vs attribution top ${clearance.attrTop})`);
+      }
+      // ...and the button must not be parked up in the sky either: it belongs in the
+      // corner, so assert a ceiling on how far above the credit it may float.
+      if (clearance.ctrl && clearance.attrTop - clearance.ctrl.bottom > 30) {
+        problems.push(`${size.name}: the layer button floats ${clearance.attrTop - clearance.ctrl.bottom}px above the credit line — that is not the corner any more`);
       }
     }
   }
@@ -159,22 +174,29 @@ for (const size of SIZES) {
       await new Promise((r) => setTimeout(r, 350));
       const hr = head.getBoundingClientRect();
       const cr = document.querySelector(".layer-control").getBoundingClientRect();
+      // The band's top edge is where a phone's own browser chrome starts on a real device,
+      // so "y >= 0" is not enough — the head needs real clearance below it or it is
+      // invisible in practice.
+      const band = document.querySelector("#mapWrap");
+      const bandTop = band ? Math.round(band.getBoundingClientRect().top) : 0;
       const body = document.querySelector(".layer-control .lyr-body");
       return {
         headY: Math.round(hr.y),
         headH: Math.round(hr.height),
         ctrlTop: Math.round(cr.y),
         ctrlBottom: Math.round(cr.bottom),
+        bandTop,
         bodyDisplay: body ? getComputedStyle(body).display : "missing",
       };
     });
     if (!expanded) {
       problems.push(`${size.name}: no .layer-control .lyr-head to expand`);
     } else {
-      console.log(`expanded    head y=${expanded.headY} h=${expanded.headH}  control ${expanded.ctrlTop}..${expanded.ctrlBottom}  body=${expanded.bodyDisplay}`);
+      console.log(`expanded    head y=${expanded.headY} h=${expanded.headH}  band top=${expanded.bandTop}  control ${expanded.ctrlTop}..${expanded.ctrlBottom}  body=${expanded.bodyDisplay}`);
       if (expanded.bodyDisplay === "none") problems.push(`${size.name}: the head did not open the list`);
-      if (expanded.headY < 0) {
-        problems.push(`${size.name}: the CLOSE button is off the top of the screen while the list is open (head y=${expanded.headY})`);
+      const clear = expanded.headY - expanded.bandTop;
+      if (clear < 32) {
+        problems.push(`${size.name}: the CLOSE button ends up ${clear}px below the map band's top while the list is open — the map band is 46% of the screen and the browser chrome is right above it, so the reader cannot reach the control (head y=${expanded.headY}, band top=${expanded.bandTop})`);
       }
       await page.evaluate(() => document.querySelector(".layer-control .lyr-head")?.click());
       await page.waitForTimeout(250);

@@ -1073,17 +1073,21 @@ a:hover{color:var(--cyan)}
      + body (52vh of the VIEWPORT) + key is taller than the band, so the head was pushed
      off the top edge and the reader could open the list but not close it. The control is
      already a column, so it is capped to the band minus the controls beneath it, and the
-     body — the only scrolling part — takes what is left. */
-  .layer-control{max-height:calc(100% - 92px)}
-  /* TWO CONTROLS, ONE ATTRIBUTION LINE. The credit block (Powered by Esri · Imagery: …)
-     WRAPS TO THREE LINES on a phone, so it is 44px tall and its top sits 54px above the
-     map band's bottom edge — measured at 390x700: attribution y=369..413 while the layer
-     button ended at 371 and the LandsD badge at 377. Both were sitting on the white text.
-     Raised clear of it here, and measure-mobile.mjs asserts the geometry so the desktop
-     numbers (which are shorter, because the credit fits on one line) cannot be reused by
-     accident. */
-  .layer-control{bottom:84px}
-  .landsd-badge{bottom:72px}
+     body — the only scrolling part — takes what is left. The cap itself is set below with
+     the bottom offset, since the two have to be chosen together. */
+  /* TWO CONTROLS, ONE ATTRIBUTION LINE. Measured at 390x700: the credit box is
+     x=10..380, y=369..413 — it spans nearly the full width (the inner text is 334px of
+     wrapped credit), so BOTH bottom-anchored controls sit in its x-range and must clear
+     its top edge. (An earlier fix moved the layer button on the y numbers alone, on the
+     assumption the credit was a right-hand block; it is not, so that move was right but
+     went too far and left the button floating high above the corner.)
+     Position: as low as the credit allows, not higher.
+     Height: the panel opens upward, so its head — the only close control — is its top
+     edge. It must finish well clear of the map band's top, which is where a phone's own
+     browser chrome sits on a real device. 120px of reserve, and check:mobile asserts both
+     the gap above the credit and the head's clearance below the band top. */
+  .layer-control{bottom:62px;max-height:calc(100% - 120px)}
+  .landsd-badge{bottom:60px}
   .lyr-body{flex:1 1 auto;min-height:0;max-height:none}
   /* One tap target for the whole row: the head is 32px on a desktop pointer and needs
      the touch minimum on a phone. */

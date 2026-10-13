@@ -298,11 +298,14 @@ for (const size of SIZES) {
       if (assist.straddlesClock) problems.push(`${size.name}: the open assistant half-covers the clock — move it clear or cover it whole`);
       if (assist.widthOfBand > 0.88) problems.push(`${size.name}: the open assistant is nearly as wide as the band (${assist.widthOfBand} of it) — it reads as cramped, and a strip of map should show beside it`);
       if (!assist.badgeBelow) problems.push(`${size.name}: the open assistant hides the LandsD credit (panel bottom ${assist.panelBottom} vs notice top ${assist.badgeTop})`);
-      if (assist.frameH < 90) problems.push(`${size.name}: the assistant frame has no usable height (${assist.frameH}px)`);
+      // 70px is a message and a composer, no more. A phone that cannot give the card that much
+      // still has the frame's own ⤢, which takes the whole band — asserted below to be worth
+      // taking, so the two states cannot converge into the same cramped box.
+      if (assist.frameH < 70) problems.push(`${size.name}: the assistant frame has no usable height (${assist.frameH}px)`);
       // A frame taller than its own panel is clipped by overflow:hidden: the reader sees the top
       // of the chat and never the input box, with nothing in the console to say so.
       if (assist.frameH > assist.panelBottom - assist.panelTop + 2) problems.push(`${size.name}: the assistant frame overflows the panel it sits in (frame ${assist.frameH}px vs panel ${assist.panelBottom - assist.panelTop}px)`);
-      if (!(assist.bigHeight > assist.cardHeight)) problems.push(`${size.name}: the ⤢ in the frame does not make the panel taller (${assist.cardHeight} → ${assist.bigHeight}px)`);
+      if (!(assist.bigHeight >= assist.cardHeight * 1.25 && assist.bigHeight >= 110)) problems.push(`${size.name}: the ⤢ in the frame barely enlarges the panel (${assist.cardHeight} → ${assist.bigHeight}px) — it has to be worth taking`);
       if (assist.bigStraddles) problems.push(`${size.name}: the enlarged panel half-covers a label (${assist.bigHeight}px tall)`);
     }
     await page.evaluate(async () => {

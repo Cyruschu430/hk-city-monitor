@@ -568,7 +568,21 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
         // `icon-rotate` reads the `bearing` property the adapter writes, so a
         // plane points where it is flying rather than all pointing north.
         layout: {
-          "icon-image": glyph,
+          // A bus draws ITS OPERATOR's livery. `match` rather than `concat`, because a
+          // concat of an unknown code yields an image id that does not exist — and a
+          // symbol layer with a missing icon draws NOTHING, silently. The final "bus"
+          // is the fallback, so an operator we cannot read still shows a bus.
+          "icon-image": (glyph === "bus"
+            ? [
+                "match",
+                ["get", "co"],
+                "CTB", "bus-ctb",
+                "LWB", "bus-lwb",
+                "NLB", "bus-nlb",
+                "GMB", "bus-gmb",
+                "bus",
+              ]
+            : glyph) as never,
           "icon-size": ["interpolate", ["linear"], ["zoom"], 8, 0.32, 12, 0.46, 16, 0.64] as never,
           "icon-rotate": ["get", "bearing"],
           "icon-rotation-alignment": "map",

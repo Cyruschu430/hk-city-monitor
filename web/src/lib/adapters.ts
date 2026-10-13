@@ -799,6 +799,62 @@ const ADAPTERS: Record<string, Adapter> = {
     };
   },
 
+  /** On-street sensor parking, live.
+   *
+   *  The occupancy feed carries NO coordinates — four columns, one of them an id — so
+   *  the positions come from the metered-spaces layer and the two are joined on
+   *  ParkingSpaceId. MEASURED 2026-10-13 against both live endpoints: 20,702 of the
+   *  20,705 ids in the occupancy feed match a metered space, so the join is the
+   *  publisher's own id, not a guess.
+   *
+   *  A space with no live row is NOT drawn as vacant: it is grey. Absence of a reading
+   *  is not a reading, and a green disc where no sensor reported would be a claim this
+   *  feed cannot make. The disc colours are the ones the `meter` glyph branch reads
+   *  (`color` per feature) — the layer draws the spaces, this decides their colour.
+   */
+  async sensor_live(src, _panel, ctx) {
+    const occSrc = ctx.registry.byId.get("td_sensor_parking_occupancy");
+    if (!occSrc) throw new Error("sources.json 冇 td_sensor_parking_occupancy");
+    const [meters, csv] = await Promise.all([json(await get(src)), text(await get(occSrc))]);
+
+    // Header-indexed, not column-position-indexed — see parseParkingOccupancy, which
+    // carries the assertions for this join.
+    const status = P.parseParkingOccupancy(csv);
+
+    const OCCUPIED = "#ef4444";
+    const VACANT = "#22c55e";
+    const NO_READING = "#5b6472";
+    let occupied = 0;
+    let vacant = 0;
+    let unknown = 0;
+    const feats = ((meters as GeoJSON.FeatureCollection).features ?? []).map((f) => {
+      const id = String((f.properties as { id?: string })?.id ?? "");
+      const s = status.get(id);
+      const color = s === "O" ? OCCUPIED : s === "V" ? VACANT : NO_READING;
+      if (s === "O") occupied++;
+      else if (s === "V") vacant++;
+      else unknown++;
+      return {
+        type: "Feature" as const,
+        geometry: f.geometry,
+        properties: { ...(f.properties as object), color },
+      };
+    });
+
+    return {
+      data: {
+        kind: "status_grid" as const,
+        cells: [
+          { label: "已佔用", value: String(occupied), status: 0 as const },
+          { label: "空置", value: String(vacant), status: 0 as const },
+          { label: "無讀數", value: String(unknown), status: 0 as const },
+        ],
+      },
+      observedAt: new Date(),
+      geo: { type: "FeatureCollection", features: feats },
+    };
+  },
+
   async sb_bwt_status(src, _panel) {
     const payload = (await json(await get(src))) as {
       updateDate: string;

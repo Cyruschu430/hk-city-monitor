@@ -864,3 +864,36 @@ console.log("\nparsers.test.ts: ALL PASS");
     console.log(`✓ 港鐵 heading 沿線段: ${tr[0]!.heading.toFixed(1)}°（直角轉彎唔指向終點）`);
   }
 }
+
+// --- sensor parking occupancy: the half of the join that carries no geometry --------
+// The layer colours 20,712 metered spaces from this feed. If the parse reads the wrong
+// column the discs are all wrong and nothing throws, so the column mapping is asserted
+// against the publisher's real header, in the real order, plus the case that must fail.
+{
+  const csv = [
+    "ParkingSpaceId,ParkingMeterStatus,OccupancyStatus,OccupancyDateChanged",
+    "10006A,N,O,10/13/2026 02:11:13 PM",
+    "10009A,N,V,10/13/2026 02:05:00 PM",
+    "10010A,,V,10/13/2026 02:05:00 PM",
+    "",
+  ].join("\r\n");
+  const m = P.parseParkingOccupancy(csv);
+  assert.equal(m.size, 3, `three spaces parsed, got ${m.size}`);
+  assert.equal(m.get("10006A"), "O", "first row reads OCCUPIED from the OccupancyStatus column, not ParkingMeterStatus");
+  assert.equal(m.get("10009A"), "V", "second row reads VACANT");
+  assert.equal(m.get("10006A"), "O", "the trailing blank line adds nothing");
+  console.log("✓ 感應車位佔用 CSV: 依表頭對位（唔靠欄序）");
+
+  // A reordered feed must not parse silently into the wrong column.
+  const reordered = [
+    "OccupancyStatus,ParkingMeterStatus,ParkingSpaceId",
+    "V,N,10006A",
+  ].join("\n");
+  assert.equal(P.parseParkingOccupancy(reordered).get("10006A"), "V", "reordered header still maps by name");
+  assert.throws(
+    () => P.parseParkingOccupancy("Id,Status\n1,O"),
+    /unexpected header/,
+    "an unknown header throws rather than colouring every space by the wrong field",
+  );
+  console.log("✓ 感應車位佔用 CSV: 欄序改動仍正確、表頭唔對就 throw");
+}

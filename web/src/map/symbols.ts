@@ -28,7 +28,16 @@ export type GlyphId =
   // Buses (KMB / 龍運, and later the other operators). A bus glyph, never a light dot: the
   // vehicle layers draw a vehicle, and the standing rule is that a marker which only
   // GLOWS is standing in for something it cannot show.
+  //
+  // One glyph per operator, because the livery IS the operator to a Hong Kong reader: a
+  // KMB bus is red and black, Citybus is blue. `bus` is KMB's, and it is the default in
+  // the layer's icon match, so a feature whose company we cannot read still draws a bus
+  // instead of nothing.
   | "bus"
+  | "bus-lwb"
+  | "bus-ctb"
+  | "bus-nlb"
+  | "bus-gmb"
   // Car parks. The glyph is a car and the DISC is the international parking blue — the disc carries
   // the meaning; see the layer 「停車場空位」. Placed on a point, never a glowing dot, for the same
   // reason as the bus.
@@ -411,11 +420,14 @@ function drawTrain(ctx: CanvasRenderingContext2D, size: number): void {
  *  A bus is SHORT and BOXY (~1:2.7 against the train's ~1:4), so the proportions carry as much of
  *  the reading as the detail does. Drawn from primitives like every other glyph: no icon font, no
  *  emoji, no binary asset in the repo. */
-function drawBus(ctx: CanvasRenderingContext2D, size: number): void {
+function drawBus(ctx: CanvasRenderingContext2D, size: number, body = "#e60012"): void {
   const c = size / 2;
   ctx.save();
   ctx.translate(c, c);
-  // body — blunt at the front, slightly rounded at the back
+  // body — blunt at the front, slightly rounded at the back.
+  // The body colour is the OPERATOR (see the bus-* variants in GLYPHS): KMB red and
+  // black, which is what the fleet on a Hong Kong street actually looks like. The
+  // windows and outline stay near-black for every operator, so the livery reads.
   ctx.beginPath();
   ctx.moveTo(-6, -14);
   ctx.lineTo(6, -14);
@@ -424,7 +436,7 @@ function drawBus(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.lineTo(-4, 15);
   ctx.quadraticCurveTo(-6, 15, -6, 13);
   ctx.closePath();
-  ctx.fillStyle = "#cdd5dc";
+  ctx.fillStyle = body;
   ctx.fill();
   ctx.strokeStyle = "rgba(5,7,13,.85)";
   ctx.lineWidth = 1.1;
@@ -760,6 +772,12 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   vessel: { draw: drawVessel },
   "mtr-train": { draw: drawTrain },
   bus: { draw: drawBus },
+  // Same bus, one per operator livery. Colours come from Bus.COMPANIES; KMB is the
+  // bare `bus` above, so the glyph the legend draws is the one most streets show.
+  "bus-lwb": { draw: (ctx, size) => drawBus(ctx, size, "#ff6600") },
+  "bus-ctb": { draw: (ctx, size) => drawBus(ctx, size, "#0066cc") },
+  "bus-nlb": { draw: (ctx, size) => drawBus(ctx, size, "#00aa44") },
+  "bus-gmb": { draw: (ctx, size) => drawBus(ctx, size, "#8844aa") },
   parking: { draw: drawParking, disc: "#2563eb", off: [-1.4, 0] },
   water: { draw: drawWater, disc: "#22d3ee" },
   "cp-land": { draw: drawControlPoint, disc: "#a855f7" },

@@ -121,4 +121,47 @@ const iso = (minutesFromNow: number) => new Date(Date.now() + minutesFromNow * 6
   console.log("✓ 無法定位嘅班次一律靜靜略過（無 crash、無 0,0 假點）");
 }
 
-console.log("bus: 4 組斷言全部通過");
+// --- heading: MapLibre rotates clockwise from NORTH --------------------------------
+// The first formula was atan2(dLat, dLng), which is the maths angle from EAST. Every
+// bus was drawn 90° out and mirrored, and a bus sitting AT a stop was drawn pointing
+// north. Both are asserted here, because "the buses look wrong" is the report this has
+// to prevent.
+{
+  const mk = (a: [number, number], b: [number, number]) => ({
+    routes: {
+      "KMB_1_1_O": {
+        co: "KMB",
+        route: "1",
+        service_type: 1,
+        bound: "O",
+        orig_tc: "甲",
+        dest_tc: "乙",
+        stops: [{ seq: 1, stop: "A" }, { seq: 2, stop: "B" }],
+      },
+    },
+    stops: {
+      A: { name: "A", lat: a[0], lng: a[1] },
+      B: { name: "B", lat: b[0], lng: b[1] },
+    },
+  });
+  const eta = (seq: number, minutes: number) => [{
+    co: "KMB", route: "1", service_type: 1, dir: "O", seq,
+    dest_tc: "", rmk_tc: "", data_timestamp: "",
+    eta: new Date(Date.now() + minutes * 60_000).toISOString(),
+  }] as never;
+
+  // North: one degree of latitude apart, same longitude.
+  const north = Bus.estimatePositions(eta(2, 1), mk([22.0, 114.0], [22.1, 114.0]) as never);
+  assert.ok(Math.abs(north[0]!.bearing) < 1, `northbound bearing ~0°, got ${north[0]!.bearing.toFixed(1)}`);
+
+  // East: same latitude, one degree of longitude apart.
+  const east = Bus.estimatePositions(eta(2, 1), mk([22.0, 114.0], [22.0, 114.1]) as never);
+  assert.ok(Math.abs(east[0]!.bearing - 90) < 1, `eastbound bearing ~90°, got ${east[0]!.bearing.toFixed(1)}`);
+
+  // A bus already AT its stop still has a heading — it must not fall back to north.
+  const arrived = Bus.estimatePositions(eta(2, -0.5), mk([22.0, 114.0], [22.0, 114.1]) as never);
+  assert.ok(Math.abs(arrived[0]!.bearing - 90) < 1, `arrived bus keeps its 90° heading, got ${arrived[0]!.bearing.toFixed(1)}`);
+  console.log("✓ 巴士 heading: 0°=北、90°=東、到站都保留方向");
+}
+
+console.log("bus: 5 組斷言全部通過");

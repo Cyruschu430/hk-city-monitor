@@ -171,21 +171,35 @@ export function estimatePositions(
 
     // Estimate position: if etaMin <= 0, bus is AT this stop
     // Otherwise, interpolate from previous stop
+    // Direction of travel, in the frame MapLibre rotates glyphs in: degrees
+    // CLOCKWISE FROM NORTH. The first version returned atan2(dLat, dLng), which is
+    // the maths angle from EAST measured anticlockwise — every bus was drawn 90°
+    // out, and mirrored. Longitude degrees are also shorter than latitude degrees
+    // at this latitude, so they are scaled by cos(lat) or a bus heading north-east
+    // would be drawn heading east.
+    //
+    // The segment is used whenever the previous stop is known, not only while the
+    // bus is between stops: a bus sitting AT a stop (etaMin <= 0) still has a
+    // heading, and returning 0 pointed it north.
     let lat = stop.lat;
     let lng = stop.lng;
     let bearing = 0;
 
-    if (etaMin > 0 && stopIdx > 0) {
+    if (stopIdx > 0) {
       const prevEntry = route.stops[stopIdx - 1];
       const prevStopId = prevEntry?.stop;
       const prevStop = prevStopId ? data.stops[prevStopId] : undefined;
       if (prevStop) {
-        // Assume 2 minutes per segment
-        const segmentTime = 2;
-        const progress = Math.max(0, Math.min(1, 1 - etaMin / segmentTime));
-        lat = prevStop.lat + (stop.lat - prevStop.lat) * progress;
-        lng = prevStop.lng + (stop.lng - prevStop.lng) * progress;
-        bearing = Math.atan2(stop.lat - prevStop.lat, stop.lng - prevStop.lng) * (180 / Math.PI);
+        const dLat = stop.lat - prevStop.lat;
+        const dLng = (stop.lng - prevStop.lng) * Math.cos(((stop.lat + prevStop.lat) / 2) * (Math.PI / 180));
+        if (dLat !== 0 || dLng !== 0) bearing = Math.atan2(dLng, dLat) * (180 / Math.PI);
+        if (etaMin > 0) {
+          // Assume 2 minutes per segment
+          const segmentTime = 2;
+          const progress = Math.max(0, Math.min(1, 1 - etaMin / segmentTime));
+          lat = prevStop.lat + (stop.lat - prevStop.lat) * progress;
+          lng = prevStop.lng + (stop.lng - prevStop.lng) * progress;
+        }
       }
     }
 

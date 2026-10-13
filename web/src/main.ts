@@ -194,9 +194,8 @@ const RAIL_LAYERS: { id: string; label: { tc: string; en: string }; on?: boolean
   // 855 MTR feeder-bus stops with LIVE per-stop ETAs (POST per route, 5-min
   // cadence). OFF by default — a dense dot field.
   { id: "mtr_bus_stops", label: { tc: "港鐵接駁巴士", en: "MTR feeder buses" }, on: false },
-  // 80 TD journey-time indicators with LIVE minutes per approach road,
-  // coloured by congestion. OFF by default.
-  { id: "journey_time", label: { tc: "行車時間", en: "Journey time" }, on: false },
+  // journey_time withdrew 2026-10-13: a sign with a number on it told the reader
+  // nothing they could act on, and the layer drew 80 of them at once.
   // 16 TD AI Video Analytics CCTVs with LIVE avg speed per camera. OFF.
   { id: "ai_cctv_speed", label: { tc: "路網車速（AI）", en: "Road speed (AI)" }, on: false },
   // 988 public EV chargers (EPD), as-issued counts. OFF by default.

@@ -1123,6 +1123,34 @@ export function carparkToGeoJson(rows: CarparkRow[]): GeoJSON.FeatureCollection 
   } as GeoJSON.FeatureCollection;
 }
 
+/** The live on-street sensor occupancy feed, as id -> "O" | "V".
+ *
+ *  The feed is four columns (ParkingSpaceId, ParkingMeterStatus, OccupancyStatus,
+ *  OccupancyDateChanged) and carries NO coordinates, so this is one half of the join the
+ *  sensor-parking layer needs — the other half is the metered-spaces geometry, keyed by
+ *  the same ParkingSpaceId (measured: 20,702 of 20,705 live ids match).
+ *
+ *  Indexed by HEADER, not by column position: the publisher does not promise a column
+ *  order, and a reordered file would otherwise colour every space by the wrong field
+ *  without throwing. An unexpected header throws instead — the layer then shows its
+ *  normal error state rather than 20,000 confidently wrong discs.
+ */
+export function parseParkingOccupancy(csv: string): Map<string, string> {
+  const lines = csv.split(/\r?\n/);
+  const head = (lines.shift() ?? "").split(",").map((h) => h.trim().replace(/^\uFEFF/, ""));
+  const iId = head.indexOf("ParkingSpaceId");
+  const iOcc = head.indexOf("OccupancyStatus");
+  if (iId < 0 || iOcc < 0) throw new Error(`occupancy CSV: unexpected header ${head.join(",")}`);
+  const out = new Map<string, string>();
+  for (const line of lines) {
+    if (!line) continue;
+    const cells = line.split(",");
+    const id = cells[iId]?.trim();
+    if (id) out.set(id, (cells[iOcc] ?? "").trim().toUpperCase());
+  }
+  return out;
+}
+
 interface CarparkVacancyRec {
   park_id?: string;
   vehicle_type?: { type?: string; service_category?: { vacancy?: number; lastupdate?: string }[] }[];

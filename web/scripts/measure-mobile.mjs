@@ -283,7 +283,7 @@ for (const size of SIZES) {
       if (assist.panelTop < assist.bandTop) problems.push(`${size.name}: the open assistant is above the map band (panel top ${assist.panelTop} vs band top ${assist.bandTop})`);
       if (assist.straddlesPlacard) problems.push(`${size.name}: the open assistant half-covers the map placard (panel top ${assist.panelTop}, placard bottom ${assist.placardBottom}) — move it clear or cover it whole`);
       if (assist.straddlesClock) problems.push(`${size.name}: the open assistant half-covers the clock — move it clear or cover it whole`);
-      if (assist.widthOfBand > 0.9) problems.push(`${size.name}: the open assistant is as wide as the band (${assist.widthOfBand} of it) — it reads as cramped`);
+      if (assist.widthOfBand > 0.88) problems.push(`${size.name}: the open assistant is nearly as wide as the band (${assist.widthOfBand} of it) — it reads as cramped, and a strip of map should show beside it`);
       if (!assist.badgeBelow) problems.push(`${size.name}: the open assistant hides the LandsD credit (panel bottom ${assist.panelBottom} vs notice top ${assist.badgeTop})`);
       if (assist.frameH < 90) problems.push(`${size.name}: the assistant frame has no usable height (${assist.frameH}px)`);
     }

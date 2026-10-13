@@ -1131,7 +1131,7 @@ a:hover{color:var(--cyan)}
   /* Docked sideways is not an option on a phone, so the panel is a card in the lower right,
      narrower than the band, with map left showing beside it and the placard row left readable
      above it — below that row's bottom edge, not level with it. */
-  .drone-assist.is-open{top:72px;right:10px;width:min(340px,calc(100% - 20px))}
+  .drone-assist.is-open{top:72px;right:10px;width:min(340px,calc(100% - 64px))}
   .drone-assist-body{border-radius:14px}
   .drone-assist-frame{min-height:90px}
   .lyr-body{flex:1 1 auto;min-height:0;max-height:none}

@@ -573,11 +573,12 @@ a:hover{color:var(--cyan)}
 .drone-assist{position:absolute;right:10px;bottom:100px;z-index:6;
   display:none;flex-direction:column-reverse;align-items:flex-end;gap:8px;pointer-events:auto}
 .drone-assist.is-on{display:flex}
-/* Flush to the top, left and right of the map band: with any inset, the top row of the
-   placard shows through the gap above the panel and reads as a clipped label — which is the
-   untidiness this is meant to remove. Only the bottom corners are rounded, because the bottom
-   is the edge that the eye reads as a stack of things. */
-.drone-assist.is-open{top:0;left:0;right:0;align-items:stretch}
+/* A card in the map's lower right, not the whole band. At band width it reads as cramped, and
+   the frame's own page has a header; docked to the band's right edge it meets the placard only
+   where the map puts nothing, so the panel and the map's furniture never straddle each other.
+   Straddling is the thing that looks broken — a label half under a panel edge. A label beside
+   a panel is just a label. */
+.drone-assist.is-open{top:0;bottom:100px;left:auto;right:0;width:min(520px,46%);align-items:stretch}
 .drone-assist-head{display:grid;place-items:center;cursor:pointer;font:inherit;
   width:44px;height:44px;padding:0;border-radius:50%;color:var(--map-face);
   background:var(--map-face-bg);border:1px solid var(--map-face-line);
@@ -585,25 +586,20 @@ a:hover{color:var(--cyan)}
 .drone-assist-head:hover{border-color:var(--cyan);color:var(--cyan)}
 .drone-assist-mark{width:30px;height:30px;border-radius:50%}
 .drone-assist-close{display:none}
-.drone-assist.is-open .drone-assist-head{display:none}
-/* The panel carries the mark and the title itself, so the launcher row would be a second copy
-   of the same control — and on a 640px-tall phone its 52px is the difference between a frame
-   with room and a frame with none. The header's ✕ is the way out, and it is a real button. */
+/* The launcher is the way out, so it stays: the frame's own close affordances belong to
+   someone else's page and can change under us. Its glyph swaps to a close mark, which is the
+   only affordance a label-less button has. */
+.drone-assist.is-open .drone-assist-bot{display:none}
+.drone-assist.is-open .drone-assist-close{display:block}
+/* Rounded on the bottom left only: the other three edges ARE the map band's edges. */
 .drone-assist-body{display:none;position:relative;flex:1 1 auto;min-height:0;
-  flex-direction:column;overflow:hidden;border-radius:0 0 14px 14px;
+  flex-direction:column;overflow:hidden;border-radius:0 0 0 14px;
   background:linear-gradient(180deg,rgba(17,25,35,.93),rgba(11,18,26,.96));
   border:1px solid var(--map-face-line);backdrop-filter:blur(10px)}
 .drone-assist.is-open .drone-assist-body{display:flex}
-.drone-assist-top{display:flex;align-items:center;gap:9px;padding:7px 10px;
-  border-bottom:1px solid var(--map-face-line);color:var(--map-face)}
-.drone-assist-title{font-weight:600;font-size:13px}
-.drone-assist-note{margin-left:auto;font-size:11px;opacity:.6}
-.drone-assist-x{display:grid;place-items:center;cursor:pointer;font:inherit;padding:3px;
-  color:var(--map-face);background:none;border:1px solid var(--map-face-line);border-radius:6px}
-.drone-assist-x:hover{border-color:var(--cyan);color:var(--cyan)}
 .drone-assist-frame{flex:1 1 auto;width:100%;height:100%;border:0}
-.drone-assist-load{position:absolute;left:0;right:0;top:44px;bottom:0;display:grid;
-  place-items:center;font-size:12px;color:var(--map-face);opacity:.5}
+.drone-assist-load{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;
+  color:var(--map-face);opacity:.5}
 /* The `.view3d` rules stood here. Removed with the 3D button 2026-09-27, but only the SELECTOR line
    was deleted, leaving eight declarations with no selector. A CSS parser cannot recover from that: it
    consumes the following rules, and the rule it consumed was `#panelCol`.
@@ -1132,9 +1128,11 @@ a:hover{color:var(--cyan)}
      the gap above the credit and the head's clearance below the band top. */
   .layer-control{bottom:62px;max-height:calc(100% - 120px)}
   .landsd-badge{bottom:60px}
-  /* The assistant covers the map band when open (see the base rules). On a phone that is the
-     whole point: a corner box small enough to clear the layer control and the LandsD notice
-     leaves a sliver of map with clipped labels in it, which is what looked untidy. */
+  /* Docked sideways is not an option on a phone, so the panel is a card in the lower right,
+     narrower than the band, with map left showing beside it and the placard row left readable
+     above it — below that row's bottom edge, not level with it. */
+  .drone-assist.is-open{top:72px;right:10px;width:min(340px,calc(100% - 20px))}
+  .drone-assist-body{border-radius:14px}
   .drone-assist-frame{min-height:90px}
   .lyr-body{flex:1 1 auto;min-height:0;max-height:none}
   /* One tap target for the whole row: the head is 32px on a desktop pointer and needs

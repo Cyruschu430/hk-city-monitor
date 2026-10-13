@@ -119,37 +119,41 @@ const assistOpen = await page.evaluate(() => {
   const placard = document.querySelector(".mh-scope")?.getBoundingClientRect();
   const clock = document.querySelector(".mh-clock")?.getBoundingClientRect();
   const badge = document.querySelector(".landsd-badge")?.getBoundingClientRect();
-  const closeBtn = document.querySelector(".drone-assist-x");
+  // The panel and the map's own furniture must never straddle each other: either the panel is
+  // clear of a label, or it covers it whole. Half a label under a panel edge is the thing that
+  // reads as broken — and it is one pixel away from the version that reads as tidy, which is
+  // why it is asserted as an invariant instead of as a width.
+  const overlaps = (a, b) => !(a.left >= b.right || a.right <= b.left || a.top >= b.bottom || a.bottom <= b.top);
+  const covers = (a, b) => a.top <= b.top && a.left <= b.left && a.bottom >= b.bottom && a.right >= b.right;
+  const straddles = (a, b) => overlaps(a, b) && !covers(a, b);
+  const headEl = document.querySelector(".drone-assist-head");
   return {
     frames: document.querySelectorAll(".drone-assist iframe").length,
     src: f?.getAttribute("src") ?? null,
     height: box ? Math.round(box.height) : 0,
     panel: panel ? { top: Math.round(panel.top), left: Math.round(panel.left), right: Math.round(panel.right), bottom: Math.round(panel.bottom) } : null,
     band: band ? { top: Math.round(band.top), left: Math.round(band.left), right: Math.round(band.right) } : null,
-    // The tidy-overlay requirement: the placard and the clock are BEHIND the panel, not
-    // clipped at its edge. A box that leaves half a label showing looks broken.
-    coversPlacard: !!(panel && placard) && panel.top <= placard.top && panel.left <= placard.left,
-    coversClock: !!(panel && clock) && panel.top <= clock.top && panel.left <= clock.left,
-    // The panel is a card inset a few px inside the band, not a flush sheet: assert the
-    // designed inset rather than an exact edge, or the assertion argues with the design.
-    spansBand: !!(panel && band) && panel.left <= band.left + 14 && panel.right >= band.right - 14,
+    straddlesPlacard: panel && placard ? straddles(panel, placard) : null,
+    straddlesClock: panel && clock ? straddles(panel, clock) : null,
+    // Narrower than the band on purpose: at full band width the assistant reads as cramped.
+    widthOfBand: panel && band ? +(panel.width / band.width).toFixed(2) : null,
     // The licence credit must never end up behind the assistant.
     badgeVisibleBelow: !!(panel && badge) && badge.top >= panel.bottom - 2,
     markSrc: document.querySelector('.drone-assist-head img')?.getAttribute('src') ?? null,
     markLoaded: !!document.querySelector('.drone-assist-head img')?.complete,
-    hasClose: !!closeBtn,
-    closeName: closeBtn?.getAttribute("aria-label") ?? null,
+    // The launcher is the only close control we own, so it stays put and shows the close mark.
+    launcherVisible: headEl ? getComputedStyle(headEl).display !== "none" : false,
+    launcherGlyph: document.querySelector(".drone-assist-close") ? getComputedStyle(document.querySelector(".drone-assist-close")).display : "missing",
     loadingGone: !document.querySelector(".drone-assist-load"),
   };
 });
-// The header's ✕ has to be a working way out — the launcher is out of the way while open.
-const closedByX = await page.evaluate(async () => {
-  const x = document.querySelector(".drone-assist-x");
-  if (!(x instanceof HTMLElement)) return null;
-  x.click();
+// It also has to work: a close control that does not close is worse than none.
+const closedByLauncher = await page.evaluate(async () => {
+  const head = document.querySelector(".drone-assist-head");
+  if (head instanceof HTMLElement) head.click();
   await new Promise((r) => setTimeout(r, 700));
   const el = document.querySelector(".drone-assist");
-  return { open: !!el?.classList.contains("is-open"), launcherBack: getComputedStyle(document.querySelector(".drone-assist-head")).display !== "none" };
+  return { open: !!el?.classList.contains("is-open"), body: !!document.querySelector(".drone-assist-body") && getComputedStyle(document.querySelector(".drone-assist-body")).display !== "none" };
 });
 await page.evaluate(async () => {
   document.querySelector(".drone-assist-head")?.click();
@@ -182,13 +186,13 @@ ok(assistInMode.insideBand !== false, `the assistant's button stays inside the m
 ok(assistOpen.loadingGone, "the loading hint is replaced once the frame is in (it must not sit over a loaded page)");
 ok(assistInMode.round, `the assistant button is the round widget button it was asked to be (${assistInMode.headW}px)`);
 ok(!!assistInMode.name && assistInMode.name.length > 4, `the icon-only button keeps an accessible name (${assistInMode.name})`);
-ok(assistOpen.coversPlacard, "the open assistant covers the map placard outright instead of clipping it");
-ok(assistOpen.coversClock, "the open assistant covers the clock outright");
-ok(assistOpen.spansBand, `the open assistant spans the map band (${JSON.stringify(assistOpen.panel)} vs band ${JSON.stringify(assistOpen.band)})`);
+ok(assistOpen.straddlesPlacard === false, `the open assistant never half-covers the map placard (panel ${JSON.stringify(assistOpen.panel)})`);
+ok(assistOpen.straddlesClock === false, "the open assistant never half-covers the clock");
+ok(assistOpen.widthOfBand !== null && assistOpen.widthOfBand <= 0.6, `the open assistant is narrower than the band, not a full-width sheet (${assistOpen.widthOfBand} of it)`);
 ok(assistOpen.badgeVisibleBelow, "the LandsD credit stays visible under the open assistant");
 ok(assistOpen.markLoaded, `the button carries the project mark, and it loaded (${assistOpen.markSrc})`);
-ok(assistOpen.hasClose && !!assistOpen.closeName, `the panel header carries a named close control (${assistOpen.closeName})`);
-ok(closedByX && !closedByX.open && closedByX.launcherBack, "the header's close control is a working way out and brings the launcher back");
+ok(assistOpen.launcherVisible && assistOpen.launcherGlyph === "block", `the launcher stays put as the way out, showing the close mark (${assistOpen.launcherGlyph})`);
+ok(closedByLauncher && !closedByLauncher.open && !closedByLauncher.body, "the launcher closes the panel it opened");
 ok(leftDrone && !leftDrone.visible && !leftDrone.open, "leaving drone mode puts the assistant and its frame away");
 
 await browser.close();

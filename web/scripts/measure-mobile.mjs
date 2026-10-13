@@ -250,17 +250,24 @@ for (const size of SIZES) {
       const badge = document.querySelector(".landsd-badge").getBoundingClientRect();
       const panel = document.querySelector(".drone-assist-body").getBoundingClientRect();
       const f = document.querySelector(".drone-assist iframe");
+      // The panel is a card in the corner, so the invariant is not where it sits but what it
+      // does to the map's own labels: clear of them, or covering them whole. Never straddling.
+      const overlaps = (a, b) => !(a.left >= b.right || a.right <= b.left || a.top >= b.bottom || a.bottom <= b.top);
+      const covers = (a, b) => a.top <= b.top && a.left <= b.left && a.bottom >= b.bottom && a.right >= b.right;
+      const straddles = (a, b) => overlaps(a, b) && !covers(a, b);
+      const placard = document.querySelector(".mh-scope").getBoundingClientRect();
+      const clock = document.querySelector(".mh-clock").getBoundingClientRect();
       return {
         found: true,
         visible: beforeOpen.visible,
         ...closed,
-        // Open: the panel covers the band outright (that is the tidy version), and the
-        // licence credit underneath it must still be visible.
         panelTop: Math.round(panel.top), panelBottom: Math.round(panel.bottom),
         panelLeft: Math.round(panel.left), panelRight: Math.round(panel.right),
         bandLeft: Math.round(band.left), bandRight: Math.round(band.right),
-        coversTop: panel.top <= band.top + 8,
-        spansBand: panel.left <= band.left + 14 && panel.right >= band.right - 14,
+        widthOfBand: +(panel.width / band.width).toFixed(2),
+        straddlesPlacard: straddles(panel, placard),
+        straddlesClock: straddles(panel, clock),
+        placardBottom: Math.round(placard.bottom),
         badgeBelow: badge.top >= panel.bottom - 2,
         frameH: f ? Math.round(f.getBoundingClientRect().height) : 0,
       };
@@ -273,8 +280,10 @@ for (const size of SIZES) {
       if (!assist.visible) problems.push(`${size.name}: the drone assistant did not appear in drone mode`);
       if (assist.headTop < assist.bandTop) problems.push(`${size.name}: the assistant's button is above the map band (button top ${assist.headTop} vs band top ${assist.bandTop}) — it is the only way to close it`);
       if (!assist.aboveBadge) problems.push(`${size.name}: the assistant button overlaps the LandsD notice (button bottom ${assist.headBottom} vs notice top ${assist.badgeTop})`);
-      if (!assist.coversTop) problems.push(`${size.name}: the open assistant does not reach the top of the map band (panel top ${assist.panelTop} vs band top ${assist.bandTop}) — it would clip the placard`);
-      if (!assist.spansBand) problems.push(`${size.name}: the open assistant does not span the map band (${assist.panelLeft}..${assist.panelRight} vs ${assist.bandLeft}..${assist.bandRight})`);
+      if (assist.panelTop < assist.bandTop) problems.push(`${size.name}: the open assistant is above the map band (panel top ${assist.panelTop} vs band top ${assist.bandTop})`);
+      if (assist.straddlesPlacard) problems.push(`${size.name}: the open assistant half-covers the map placard (panel top ${assist.panelTop}, placard bottom ${assist.placardBottom}) — move it clear or cover it whole`);
+      if (assist.straddlesClock) problems.push(`${size.name}: the open assistant half-covers the clock — move it clear or cover it whole`);
+      if (assist.widthOfBand > 0.9) problems.push(`${size.name}: the open assistant is as wide as the band (${assist.widthOfBand} of it) — it reads as cramped`);
       if (!assist.badgeBelow) problems.push(`${size.name}: the open assistant hides the LandsD credit (panel bottom ${assist.panelBottom} vs notice top ${assist.badgeTop})`);
       if (assist.frameH < 90) problems.push(`${size.name}: the assistant frame has no usable height (${assist.frameH}px)`);
     }

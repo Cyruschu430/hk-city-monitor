@@ -1138,14 +1138,17 @@ a:hover{color:var(--cyan)}
   /* Docked sideways is not an option on a phone, so the panel is a card in the lower right,
      narrower than the band, with map left showing beside it and the placard row left readable
      above it — below that row's bottom edge, not level with it. */
-  .drone-assist.is-open{top:72px;right:10px;width:min(340px,calc(100% - 64px))}
+  /* Top edge measured, not guessed: the placard row ends 23px below the band top on both phone
+     sizes (band 101, placard bottom 124), so 30px clears it and hands the card the 49px that a
+     round 72px was wasting — on a 640px-tall phone that is the difference between a chat window
+     and a sliver. measure-mobile fails if the card ever straddles that row. */
+  .drone-assist.is-open{top:30px;right:10px;width:min(340px,calc(100% - 64px))}
   .drone-assist-body{border-radius:14px}
   /* On a phone room can only come from height, and the band's height is spoken for by the
      placard row — so the enlarged card takes the band outright, placard and clock included,
      which is the one shape that adds height without leaving a label half-cut. */
   .drone-assist.is-open.is-large{top:0;left:0;right:0;width:auto}
   .drone-assist.is-open.is-large .drone-assist-body{border-radius:0 0 14px 14px}
-  .drone-assist-frame{min-height:0}
   .lyr-body{flex:1 1 auto;min-height:0;max-height:none}
   /* One tap target for the whole row: the head is 32px on a desktop pointer and needs
      the touch minimum on a phone. */

@@ -500,7 +500,19 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // with no colours — the layer's adapter was never called, and a missing `color` falls
   // back to grey rather than erroring.
   const adapterKey = def.adapter ?? def.source;
-  const panel = args.registry.panels.find((p) => p.source === def.source);
+  // A panel that reads this source, or a stand-in built from the layer. adaptPanel is
+  // panel-SHAPED — id, source, search params — and the refresh loop at the end of this
+  // function needs the SAME object, so there is one lookup and one fallback here rather
+  // than two that drift. (The sensor-parking layer has no panel reading its source; with
+  // the old `panel &&` test its 20,712 bays drew grey AND never refreshed.)
+  const panel: PanelDefRaw = args.registry.panels.find((p) => p.source === def.source) ?? {
+    id: def.id,
+    source: def.source,
+    render: "list",
+    title: { tc: def.title?.tc ?? def.id, en: def.title?.en ?? def.id },
+    params: {},
+    cadence_note: { tc: "", en: "" },
+  };
   let fc: GeoJSON.FeatureCollection;
 
   if (hasAdapter(adapterKey)) {
@@ -508,20 +520,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     // read the SAME parse of the SAME fetch — they cannot disagree about what
     // is aloft. A layer whose own adapter differs (bus_live) names it in
     // layers.json.
-    //
-    // A layer whose source no panel reads — the sensor-parking one — has no panel to
-    // borrow, and adaptPanel is only panel-SHAPED: it takes the id, the source and the
-    // search params. So it gets a stand-in built from the layer, rather than a second
-    // adapter call path that would drift from this one.
-    const p: PanelDefRaw = panel ?? {
-      id: def.id,
-      source: def.source,
-      render: "list",
-      title: { tc: def.title?.tc ?? def.id, en: def.title?.en ?? def.id },
-      params: {},
-      cadence_note: { tc: "", en: "" },
-    };
-    const { geo } = await adaptPanel(p, args.ctx, def.adapter);
+    const { geo } = await adaptPanel(panel, args.ctx, def.adapter);
     if (stale(args, gen)) throw new Error("obsolete layer request");
     if (!geo) throw new Error(`layer ${def.id}: adapter 冇提供 geo 資料`);
     fc = geo;
@@ -539,7 +538,11 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // seconds, so clusters would re-form constantly and hide exactly the
   // individual tracks this layer exists to show. Camera points are static and
   // stay clustered.
-  const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel" || glyph === "mtr-train" || glyph === "bus" || def.symbol === "meter";
+  //
+  // Sensor parking bays are STATIC, and there are 20,712 of them, so they cluster
+  // too — at city zoom the reader gets a count instead of a solid smear of colour,
+  // and the individual bays appear as they zoom in.
+  const moving = glyph === "plane" || glyph === "ferry" || glyph === "vessel" || glyph === "mtr-train" || glyph === "bus";
   map.addSource(id, {
     type: "geojson",
     data: fc,
@@ -564,29 +567,13 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
         "circle-blur": 0.5,
       },
     });
-    if (def.symbol === "meter") {
-      // Sensor parking spaces: a bare colour disc per space — red occupied,
-      // green vacant, grey unknown. No glyph: the disc IS the meaning.
-      map.addLayer({
-        id: `${id}-point`,
-        type: "circle",
-        source: id,
-        paint: {
-          "circle-color": ["coalesce", ["get", "color"], "#5b6472"] as never,
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 10, 2.6, 13, 3.8, 16, 5.5] as never,
-          "circle-stroke-color": "#0b0f14",
-          "circle-stroke-width": 1,
-        },
-      });
-      if (def.popup === "sensor_popup") sensorPopup(map, `${id}-point`);
-    } else {
-      map.addLayer({
-        id: `${id}-point`,
-        type: "symbol",
-        source: id,
-        // `icon-rotate` reads the `bearing` property the adapter writes, so a
-        // plane points where it is flying rather than all pointing north.
-        layout: {
+    map.addLayer({
+      id: `${id}-point`,
+      type: "symbol",
+      source: id,
+      // `icon-rotate` reads the `bearing` property the adapter writes, so a
+      // plane points where it is flying rather than all pointing north.
+      layout: {
           // A bus draws ITS OPERATOR's livery. `match` rather than `concat`, because a
           // concat of an unknown code yields an image id that does not exist — and a
           // symbol layer with a missing icon draws NOTHING, silently. The final "bus"
@@ -608,15 +595,12 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
           "icon-allow-overlap": true,
           "icon-ignore-placement": true,
         },
-      });
-    }
+    });
     // Attributes on the moving path too. The aircraft layer was withdrawn, but the
     // vessel one is coming and it draws exactly here — leaving this branch without
     // a popup would recreate the weather-station bug on a brand new layer.
-    if (def.symbol !== "meter") {
-      if (glyph === "mtr-train") mtrTrainPopup(map, `${id}-point`);
-      else attributePopup(map, `${id}-point`);
-    }
+    if (glyph === "mtr-train") mtrTrainPopup(map, `${id}-point`);
+    else attributePopup(map, `${id}-point`);
     // Trains keep sliding between the 30s schedule refetches (see startMtrAnimation).
     if (glyph === "mtr-train") void startMtrAnimation(map, id, () => fetchMtrData(src));
     return;
@@ -688,7 +672,27 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     type: "symbol",
     source: id,
     filter: ["!", ["has", "point_count"]],
-    layout: { "icon-image": glyph, "icon-size": size as never, "icon-allow-overlap": true },
+    layout: {
+      // Sensor parking bays carry their STATE in the image: red occupied, green
+      // vacant, grey where no sensor reported. `match` on the colour the adapter
+      // wrote, with a registered default — a symbol layer whose icon id is missing
+      // draws nothing at all, silently, which is how a layer reads as "no data".
+      "icon-image": (def.symbol === "meter"
+        ? [
+            "match",
+            ["get", "color"],
+            "#ef4444", "meter-occupied",
+            "#22c55e", "meter-vacant",
+            "meter-unknown",
+          ]
+        : glyph) as never,
+      // A bay is a small upright rectangle, not a dot: it takes its own size curve so
+      // 20,712 of them read as parking bays rather than as a field of pebbles.
+      "icon-size": (def.symbol === "meter"
+        ? ["interpolate", ["linear"], ["zoom"], 12, 0.3, 15, 0.44, 18, 0.62]
+        : size) as never,
+      "icon-allow-overlap": true,
+    },
   });
   // Per-feature text label (e.g. journey-time minutes): the adapter writes the
   // text in `text_prop` and the colour in `label_color` — a "coloured circle +
@@ -716,6 +720,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
   // no click handler at all, so 氣象站 (and any point layer without its own
   // popup) was inert under the cursor.
   if (def.popup === "aed_popup") aedPopup(map, `${id}-point`);
+  else if (def.popup === "sensor_popup") sensorPopup(map, `${id}-point`);
   else if (def.popup === "carpark_popup") carparkPopup(map, `${id}-point`);
   else if (def.popup === "aqhi_popup") aqhiPopup(map, `${id}-point`);
   else if (def.popup === "beach_popup") beachPopup(map, `${id}-point`);

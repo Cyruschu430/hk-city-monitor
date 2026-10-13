@@ -116,6 +116,40 @@ for (const size of SIZES) {
   console.log(`panel band  ${JSON.stringify(m.panelCol)}`);
   console.log(`layer ctrl  ${JSON.stringify(m.lyrRect)} hidden=${m.lyrHidden}`);
   console.log(`  -> layer control covers ${m.mapCoveredPct}% of the map's area`);
+
+  // THE CLOSE BUTTON MUST SURVIVE BEING OPENED. The head is the only way to put the list
+  // away; the expanded control used to be taller than the map band, which pushed the head
+  // off the top edge — you could open the list on a phone and not close it. Expand it here
+  // and assert the button is still inside the viewport.
+  if (size.w < 900) {
+    const expanded = await page.evaluate(async () => {
+      const head = document.querySelector(".layer-control .lyr-head");
+      if (!(head instanceof HTMLElement)) return null;
+      head.click();
+      await new Promise((r) => setTimeout(r, 350));
+      const hr = head.getBoundingClientRect();
+      const cr = document.querySelector(".layer-control").getBoundingClientRect();
+      const body = document.querySelector(".layer-control .lyr-body");
+      return {
+        headY: Math.round(hr.y),
+        headH: Math.round(hr.height),
+        ctrlTop: Math.round(cr.y),
+        ctrlBottom: Math.round(cr.bottom),
+        bodyDisplay: body ? getComputedStyle(body).display : "missing",
+      };
+    });
+    if (!expanded) {
+      problems.push(`${size.name}: no .layer-control .lyr-head to expand`);
+    } else {
+      console.log(`expanded    head y=${expanded.headY} h=${expanded.headH}  control ${expanded.ctrlTop}..${expanded.ctrlBottom}  body=${expanded.bodyDisplay}`);
+      if (expanded.bodyDisplay === "none") problems.push(`${size.name}: the head did not open the list`);
+      if (expanded.headY < 0) {
+        problems.push(`${size.name}: the CLOSE button is off the top of the screen while the list is open (head y=${expanded.headY})`);
+      }
+      await page.evaluate(() => document.querySelector(".layer-control .lyr-head")?.click());
+      await page.waitForTimeout(250);
+    }
+  }
   console.log(`#panels     ${JSON.stringify(m.panels)} scroll=${JSON.stringify(m.panelsScroll)}`);
   console.log(`panels=${m.panelCount}  last panel reachable by scrolling: ${m.lastPanelReachable}`);
   console.log(`horizontal overflow: ${m.horizontalOverflow}`);

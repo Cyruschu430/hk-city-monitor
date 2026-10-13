@@ -212,6 +212,45 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   console.log(`bus live: default=off features=${b.features} glyph=${iconExpr}`);
 }
 
+// ── 5c. SENSOR PARKING: 20,712 STATIC BAYS, CLUSTERED, DRAWN AS RECTANGLES ──────
+//
+// This layer has three ways to be silently wrong: it can draw nothing (its adapter threw),
+// it can draw grey everywhere (the colour never reached the features), or it can draw a
+// coloured smear across the whole territory (not clustered). All three have happened.
+{
+  await clickRow("sensor_parking_spaces");
+  await page.waitForTimeout(14000);
+  const sp = await page.evaluate(() => {
+    const src = window.__map?.getSource("vl-sensor_parking_spaces");
+    const feats = src?._data?.features ?? [];
+    const missing = ["meter", "meter-occupied", "meter-vacant", "meter-unknown"]
+      .filter((i) => !window.__map?.hasImage(i));
+    let layout = null;
+    try {
+      layout = window.__map.getLayoutProperty("vl-sensor_parking_spaces-point", "icon-image");
+    } catch {
+      /* the layer is not there — hasSource below reports it */
+    }
+    return {
+      hasSource: !!src,
+      features: feats.length,
+      cluster: !!src?._options?.cluster,
+      missingImages: missing,
+      icon: Array.isArray(layout) ? layout.join(",") : String(layout),
+      coloured: feats.slice(0, 200).filter((f) => f.properties?.color).length,
+    };
+  });
+  ok(sp.hasSource, "the sensor parking layer created no source — its adapter threw");
+  ok(sp.features > 20000, `the sensor parking layer placed ${sp.features} bays`);
+  ok(sp.cluster, "the sensor parking layer must cluster: 20,712 bays unclustered is a colour smear");
+  ok(sp.missingImages.length === 0, `bay images missing from the map: ${sp.missingImages.join(", ")} — those bays draw nothing`);
+  ok(sp.icon.includes("meter-"), `the sensor parking layer must draw bay shapes: icon-image=${sp.icon}`);
+  ok(sp.coloured > 0, "the sensor parking layer carries its live colour per bay (grey everywhere = the adapter never ran)");
+  await clickRow("sensor_parking_spaces");
+  await page.waitForTimeout(900);
+  console.log(`sensor parking: features=${sp.features} cluster=${sp.cluster} coloured=${sp.coloured} icons=${sp.icon}`);
+}
+
 // ── 6. 3D IS GONE, and this asserts it stays gone.
 //
 // This used to toggle `buildings3d` and assert it switched on. There is no `buildings3d` any more:

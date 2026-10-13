@@ -79,7 +79,10 @@ export type GlyphId =
   // a charger layer needs to say at a glance.
   | "ev"
   // On-street sensor parking: no glyph — the live colour disc is the signal.
-  | "meter";
+  | "meter"
+  | "meter-occupied"
+  | "meter-vacant"
+  | "meter-unknown";
 
 /** AED: the universal defibrillator mark — a heart with a bolt through it. */
 function drawAed(ctx: CanvasRenderingContext2D, size: number): void {
@@ -762,6 +765,25 @@ function drawWater(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
+/** Sensor parking bay: an upright rounded rectangle in the state colour, with a dark
+ *  border so it stays a SHAPE on a pale basemap. On the same 44px grid as every other
+ *  glyph, so `icon-size` stays comparable between layers. */
+function drawMeter(ctx: CanvasRenderingContext2D, size: number, fill = "#5b6472"): void {
+  const c = size / 2;
+  const w = 11;
+  const h = 18;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.beginPath();
+  ctx.roundRect(-w / 2, -h / 2, w, h, 2.6);
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.lineWidth = 1.2;
+  ctx.strokeStyle = "rgba(5,7,13,.9)";
+  ctx.stroke();
+  ctx.restore();
+}
+
 const GLYPHS: Record<GlyphId, GlyphSpec> = {
   "cam-td": { draw: drawCamera, disc: "#22d3ee", off: [1, -3.5] },
   "cam-hko": { draw: drawStation, disc: "#a855f7" },
@@ -810,15 +832,14 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   // Public EV chargers: a lightning bolt on the same dark sign disc — the bolt
   // is the meaning, the disc keeps it a place rather than a bare glyph.
   ev: { draw: drawEv, disc: "#080e18" },
-  // Sensor parking space: no disc at all — the live colour (red/green/grey)
-  // IS the meaning, and any icon on top would hide it at this density.
-  meter: { draw: (ctx, size) => {
-    const c = size / 2;
-    ctx.fillStyle = "#5b6472";
-    ctx.beginPath();
-    ctx.arc(c, c, c, 0, Math.PI * 2);
-    ctx.fill();
-  } },
+  // Sensor parking space: an upright rounded rectangle — the shape of the thing on the
+  // street. A disc read as a generic dot next to the camera and station discs; a bay
+  // reads as a bay. Three registrations, one per state the feed can report, because the
+  // layer picks the image per feature (a symbol cannot be tinted at draw time).
+  meter: { draw: (ctx, size) => drawMeter(ctx, size) },
+  "meter-occupied": { draw: (ctx, size) => drawMeter(ctx, size, "#ef4444") },
+  "meter-vacant": { draw: (ctx, size) => drawMeter(ctx, size, "#22c55e") },
+  "meter-unknown": { draw: (ctx, size) => drawMeter(ctx, size, "#5b6472") },
 };
 
 /** Public EV charger: a lightning bolt — dark disc + white ring, bolt in the

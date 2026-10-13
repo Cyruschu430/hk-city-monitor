@@ -1065,6 +1065,17 @@ a:hover{color:var(--cyan)}
      override the theme. Upgrade path if that ever matters — accept ?theme= in
      the URL, the same way ?tab= and ?layers= already work, and drop this rule. */
   #themeSwitch{display:none}
+  /* THE CLOSE BUTTON MUST STAY ON SCREEN. The head is the only way to put the list
+     away, and the control is anchored to the bottom of a 46vh map band: head + filter
+     + body (52vh of the VIEWPORT) + key is taller than the band, so the head was pushed
+     off the top edge and the reader could open the list but not close it. The control is
+     already a column, so it is capped to the band minus the controls beneath it, and the
+     body — the only scrolling part — takes what is left. */
+  .layer-control{max-height:calc(100% - 92px)}
+  .lyr-body{flex:1 1 auto;min-height:0;max-height:none}
+  /* One tap target for the whole row: the head is 32px on a desktop pointer and needs
+     the touch minimum on a phone. */
+  .lyr-head{min-height:40px}
   /* The category chips must NOT wrap on a phone: 18 of them wrapped to 100px inside a panel band
      that is shorter than that, and the list below them was pushed out of the column. One row that
      scrolls sideways costs ~34px and can never grow. */

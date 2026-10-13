@@ -220,6 +220,55 @@ for (const size of SIZES) {
   if (size.w < 900 && m.lastPanelReachable === false) {
     problems.push(`${size.name}: the last panel is unreachable even at full scroll`);
   }
+
+  // THE ASSISTANT IS THE SECOND THING THAT UNFOLDS IN THE CORNER, and the same trap applies:
+  // its head is the only way to close it, it is anchored to the bottom of a 46vh band, so a
+  // height-based box puts the button off the top. It is anchored to both edges instead —
+  // asserted here, last, because switching mode changes which panels are on screen.
+  if (size.w < 900) {
+    const assist = await page.evaluate(async () => {
+      const sel = [...document.querySelectorAll("select")].find((s) => [...s.options].some((o) => o.value === "drone"));
+      if (!(sel instanceof HTMLSelectElement)) return null;
+      sel.value = "drone";
+      sel.dispatchEvent(new Event("change", { bubbles: true }));
+      await new Promise((r) => setTimeout(r, 1600));
+      const head = document.querySelector(".drone-assist-head");
+      if (!(head instanceof HTMLElement)) return { found: false };
+      const beforeOpen = { visible: getComputedStyle(document.querySelector(".drone-assist")).display !== "none" };
+      head.click();
+      await new Promise((r) => setTimeout(r, 2500));
+      const hr = head.getBoundingClientRect();
+      const band = document.querySelector("#mapWrap").getBoundingClientRect();
+      const badge = document.querySelector(".landsd-badge").getBoundingClientRect();
+      const f = document.querySelector(".drone-assist iframe");
+      return {
+        found: true,
+        visible: beforeOpen.visible,
+        headTop: Math.round(hr.top), headBottom: Math.round(hr.bottom),
+        bandTop: Math.round(band.top), bandBottom: Math.round(band.bottom),
+        frameH: f ? Math.round(f.getBoundingClientRect().height) : 0,
+        aboveBadge: hr.bottom <= badge.top + 1,
+        badgeTop: Math.round(badge.top),
+      };
+    });
+    if (!assist || !assist.found) {
+      problems.push(`${size.name}: the drone assistant button is missing`);
+    } else {
+      console.log(`assistant   button ${assist.headTop}..${assist.headBottom} in band ${assist.bandTop}..${assist.bandBottom}  frame ${assist.frameH}px  badge top ${assist.badgeTop}`);
+      if (!assist.visible) problems.push(`${size.name}: the drone assistant did not appear in drone mode`);
+      if (assist.headTop < assist.bandTop) problems.push(`${size.name}: the assistant's button is above the map band (button top ${assist.headTop} vs band top ${assist.bandTop}) — it is the only way to close it`);
+      if (assist.frameH < 100) problems.push(`${size.name}: the assistant frame has no usable height (${assist.frameH}px)`);
+      if (!assist.aboveBadge) problems.push(`${size.name}: the assistant overlaps the LandsD notice (button bottom ${assist.headBottom} vs notice top ${assist.badgeTop})`);
+    }
+    await page.evaluate(async () => {
+      const sel = [...document.querySelectorAll("select")].find((s) => [...s.options].some((o) => o.value === "overview"));
+      if (sel instanceof HTMLSelectElement) {
+        sel.value = "overview";
+        sel.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      await new Promise((r) => setTimeout(r, 600));
+    });
+  }
   await page.close();
 }
 

@@ -124,7 +124,7 @@ const leftDrone = await page.evaluate(async () => {
 ok(assistBefore.exists, "the drone assistant button is created with the shell");
 ok(!assistBefore.visible, "the drone assistant stays out of the way outside drone mode");
 ok(assistBefore.frames === 0, "the drone assistant fetches nothing until it is opened (no third-party frame at boot)");
-ok(enteredDrone, "drone mode is reachable from the rail");
+ok(enteredDrone, "the mode control selects 無人機模式");
 ok(assistInMode.visible, "the drone assistant appears in 無人機模式");
 ok(assistInMode.frames === 0, "the assistant still fetched nothing when its mode opened it");
 ok(assistOpen.frames === 1 && (assistOpen.src ?? "").includes("sua-assistant.pages.dev"),

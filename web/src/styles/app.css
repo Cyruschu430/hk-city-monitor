@@ -573,7 +573,11 @@ a:hover{color:var(--cyan)}
 .drone-assist{position:absolute;right:10px;bottom:100px;z-index:6;
   display:none;flex-direction:column-reverse;align-items:flex-end;gap:8px;pointer-events:auto}
 .drone-assist.is-on{display:flex}
-.drone-assist.is-open{top:8px;left:8px;right:8px;align-items:stretch}
+/* Flush to the top, left and right of the map band: with any inset, the top row of the
+   placard shows through the gap above the panel and reads as a clipped label — which is the
+   untidiness this is meant to remove. Only the bottom corners are rounded, because the bottom
+   is the edge that the eye reads as a stack of things. */
+.drone-assist.is-open{top:0;left:0;right:0;align-items:stretch}
 .drone-assist-head{display:grid;place-items:center;cursor:pointer;font:inherit;
   width:44px;height:44px;padding:0;border-radius:50%;color:var(--map-face);
   background:var(--map-face-bg);border:1px solid var(--map-face-line);
@@ -586,7 +590,7 @@ a:hover{color:var(--cyan)}
    of the same control — and on a 640px-tall phone its 52px is the difference between a frame
    with room and a frame with none. The header's ✕ is the way out, and it is a real button. */
 .drone-assist-body{display:none;position:relative;flex:1 1 auto;min-height:0;
-  flex-direction:column;overflow:hidden;border-radius:14px;
+  flex-direction:column;overflow:hidden;border-radius:0 0 14px 14px;
   background:linear-gradient(180deg,rgba(17,25,35,.93),rgba(11,18,26,.96));
   border:1px solid var(--map-face-line);backdrop-filter:blur(10px)}
 .drone-assist.is-open .drone-assist-body{display:flex}

@@ -544,8 +544,11 @@ a:hover{color:var(--cyan)}
 .landsd-badge{position:absolute;right:10px;
   /* Above MapLibre's own attribution line, not beside it (2026-10-02: keep the notice,
      give it a proper panel, seat it above the Esri credit) - the two then read as one block in
-     the corner. bottom:34px clears the attribution control's own height; check:shell asserts the
-     geometry against that control's measured rect rather than trusting this number. */
+     the corner. This 46px is the DESKTOP number, where the credit fits on one line;
+     check:shell asserts the geometry against that control's measured rect rather than
+     trusting it. On a phone the credit wraps to three lines and 46px is not enough — the
+     narrow-screen override near the end of this file raises this badge and the layer
+     button clear of it, and measure-mobile.mjs asserts that too. */
   bottom:46px;display:flex;align-items:center;gap:7px;padding:5px 10px;
   background:var(--map-face-bg);border:1px solid var(--map-face-line);border-radius:7px;
   /* White, like the attribution line below it (2026-10-02) - was --map-face-dim. Still a
@@ -1072,6 +1075,15 @@ a:hover{color:var(--cyan)}
      already a column, so it is capped to the band minus the controls beneath it, and the
      body — the only scrolling part — takes what is left. */
   .layer-control{max-height:calc(100% - 92px)}
+  /* TWO CONTROLS, ONE ATTRIBUTION LINE. The credit block (Powered by Esri · Imagery: …)
+     WRAPS TO THREE LINES on a phone, so it is 44px tall and its top sits 54px above the
+     map band's bottom edge — measured at 390x700: attribution y=369..413 while the layer
+     button ended at 371 and the LandsD badge at 377. Both were sitting on the white text.
+     Raised clear of it here, and measure-mobile.mjs asserts the geometry so the desktop
+     numbers (which are shorter, because the credit fits on one line) cannot be reused by
+     accident. */
+  .layer-control{bottom:84px}
+  .landsd-badge{bottom:72px}
   .lyr-body{flex:1 1 auto;min-height:0;max-height:none}
   /* One tap target for the whole row: the head is 32px on a desktop pointer and needs
      the touch minimum on a phone. */

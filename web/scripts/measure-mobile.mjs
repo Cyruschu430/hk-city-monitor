@@ -117,6 +117,36 @@ for (const size of SIZES) {
   console.log(`layer ctrl  ${JSON.stringify(m.lyrRect)} hidden=${m.lyrHidden}`);
   console.log(`  -> layer control covers ${m.mapCoveredPct}% of the map's area`);
 
+  // NOTHING MAY SIT ON THE ATTRIBUTION LINE. The credit block wraps to three lines on a
+  // phone, so it grew upward past both bottom-anchored controls — the LandsD notice and the
+  // layer button were printed over the white text. The desktop check:shell assertion missed
+  // it because the credit fits on one line there.
+  if (size.w < 900) {
+    const clearance = await page.evaluate(() => {
+      const box = (sel) => {
+        const e = document.querySelector(sel);
+        return e ? e.getBoundingClientRect() : null;
+      };
+      const attr = box(".maplibregl-ctrl-bottom-right");
+      const badge = box(".landsd-badge");
+      const ctrl = box(".layer-control");
+      return {
+        attrTop: attr ? Math.round(attr.top) : null,
+        badgeBottom: badge ? Math.round(badge.bottom) : null,
+        ctrlBottom: ctrl ? Math.round(ctrl.bottom) : null,
+      };
+    });
+    console.log(`attribution top=${clearance.attrTop}  landsd bottom=${clearance.badgeBottom}  layer ctrl bottom=${clearance.ctrlBottom}`);
+    if (clearance.attrTop !== null) {
+      if (clearance.badgeBottom !== null && clearance.badgeBottom > clearance.attrTop - 6) {
+        problems.push(`${size.name}: the LandsD badge sits on the attribution line (badge bottom ${clearance.badgeBottom} vs attribution top ${clearance.attrTop})`);
+      }
+      if (clearance.ctrlBottom !== null && clearance.ctrlBottom > clearance.attrTop - 6) {
+        problems.push(`${size.name}: the layer button sits on the attribution line (button bottom ${clearance.ctrlBottom} vs attribution top ${clearance.attrTop})`);
+      }
+    }
+  }
+
   // THE CLOSE BUTTON MUST SURVIVE BEING OPENED. The head is the only way to put the list
   // away; the expanded control used to be taller than the map band, which pushed the head
   // off the top edge — you could open the list on a phone and not close it. Expand it here

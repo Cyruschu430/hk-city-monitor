@@ -377,16 +377,26 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
         // ImageData, an ImageBitmap, or raw RGBA bytes beside the image's own width/height.
         // Guessing wrong is a type error at drawImage, so all three are handled.
         const d = img.data;
+        // Measured: this build hands back an RGBA wrapper — {width, height, data: Uint8ClampedArray}
+        // — neither an ImageData nor an ImageBitmap nor bare bytes. One level of unwrapping, and
+        // all three shapes are covered.
+        const ra = d && typeof d === "object" && d.data ? d.data : d;
         const w = img.width ?? (d && typeof d === "object" ? d.width : 0);
         const h = img.height ?? (d && typeof d === "object" ? d.height : 0);
         let drawable = null;
         if (typeof ImageBitmap !== "undefined" && d instanceof ImageBitmap) {
           drawable = d;
-        } else if (typeof ImageData !== "undefined" && (d instanceof ImageData || (d && d.length && w && h))) {
+        } else if (typeof ImageData !== "undefined" && d instanceof ImageData) {
+          const off = document.createElement("canvas");
+          off.width = d.width;
+          off.height = d.height;
+          off.getContext("2d").putImageData(d, 0, 0);
+          drawable = off;
+        } else if (ra && typeof ra.length === "number" && ra.length >= w * h * 4 && w && h) {
           const off = document.createElement("canvas");
           off.width = w;
           off.height = h;
-          off.getContext("2d").putImageData(d instanceof ImageData ? d : new ImageData(new Uint8ClampedArray(d), w, h), 0, 0);
+          off.getContext("2d").putImageData(new ImageData(new Uint8ClampedArray(ra), w, h), 0, 0);
           drawable = off;
         }
         if (!drawable) {

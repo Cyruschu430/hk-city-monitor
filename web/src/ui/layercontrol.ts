@@ -329,6 +329,23 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
         { class: "lyr-item", "data-row": row.def.id },
         h("div", { class: "lyr-line" }, btn, info, remove),
       );
+      const key = row.def.legend ?? [];
+      const legend = key.length
+        ? h(
+            "div",
+            { class: "lyr-legend", role: "list" },
+            ...key.map((it) => {
+              const swatch = h("i", { class: "lyr-legend-swatch" });
+              swatch.style.background = it.color;
+              return h(
+                "span",
+                { class: "lyr-legend-item", role: "listitem", title: `${it.tc} / ${it.en}` },
+                swatch,
+                lang() === "tc" ? it.tc : it.en,
+              );
+            }),
+          )
+        : null;
       const note = h(
         "div",
         { class: "lyr-note", hidden: "true", "data-note-for": row.def.id },
@@ -339,13 +356,14 @@ export function createLayerControl(el: HTMLElement, onToggle: (row: LayerRow, on
           ? h("span", { class: "src-hold", title: row.sourceUrl ?? "" }, row.sourceName)
           : row.sourceName,
       );
+      if (legend) wrap.append(legend);
       wrap.append(note);
       body.append(wrap);
       // Both languages, the id and the source name: a user searching 「相機」, "cam"
       // or "camera" finds the same row, and the id catches a name nobody translated.
       items.push({
         el: wrap,
-        text: `${label.tc} ${label.en} ${row.def.id} ${row.sourceName}`.toLowerCase(),
+        text: `${label.tc} ${label.en} ${row.def.id} ${row.sourceName} ${key.map((k) => `${k.tc} ${k.en}`).join(" ")}`.toLowerCase(),
         isOn: () => btn.getAttribute("aria-checked") === "true",
       });
     }

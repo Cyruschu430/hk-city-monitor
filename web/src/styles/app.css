@@ -839,6 +839,11 @@ a:hover{color:var(--cyan)}
    the ticker. This is a density fix, not a content cut — nothing is removed
    from the DOM, so the text is still selectable and still in the page. */
 .plist{display:flex;flex-direction:column;gap:7px;margin:0;padding:0;list-style:none}
+/* A layer's own key. One line, wrapped, under the row it belongs to. */
+.lyr-legend{display:flex;flex-wrap:wrap;gap:2px 9px;margin:2px 0 1px 9px;font-size:10px;color:var(--dim)}
+.lyr-legend-item{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.lyr-legend-swatch{width:9px;height:3px;border-radius:1px;flex:none}
+
 /* The brief's speaker. Small and quiet: it is a way to hear the panel, not a thing to look at. */
 .plist .speak-btn{float:right;margin-left:6px;padding:1px 5px;font-size:11px;line-height:1.5;cursor:pointer;
   color:var(--dim);background:transparent;border:1px solid var(--hairline);border-radius:var(--radius-sm)}

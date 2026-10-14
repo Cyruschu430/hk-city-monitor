@@ -384,6 +384,30 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
     `the hiking trails must be coloured by difficulty: found ${trails.colours.length} colour(s) — ${trails.colours.join(", ")}`,
   );
   ok(trails.rendered > 0, "the hiking-trails line layer rendered nothing in view");
+  // The key and the map must agree, both ways: a legend that names a colour the trails do not use
+  // is as wrong as a trail whose colour the key omits. Compared as rgb triples because the swatch
+  // paints an inline background and the data carries hex.
+  const legendColours = await page.evaluate(() => {
+    const rgb = (hex) => {
+      const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex.trim());
+      return m ? `rgb(${parseInt(m[1], 16)}, ${parseInt(m[2], 16)}, ${parseInt(m[3], 16)})` : hex;
+    };
+    const swatches = [...document.querySelectorAll('.lyr-item[data-row="hiking_trails"] .lyr-legend-swatch')];
+    const feats = window.__map?.getSource("vl-hiking_trails")?._data?.features ?? [];
+    return {
+      key: swatches.map((s) => getComputedStyle(s).backgroundColor),
+      labels: [...document.querySelectorAll('.lyr-item[data-row="hiking_trails"] .lyr-legend-item')].map((e) => e.textContent ?? ""),
+      data: [...new Set(feats.map((f) => rgb(String(f.properties?.color ?? ""))))],
+    };
+  });
+  ok(legendColours.key.length >= 4, `the trails layer states its key (${legendColours.key.length} swatches)`);
+  ok(
+    legendColours.key.every((c) => legendColours.data.includes(c)) &&
+      legendColours.data.every((c) => legendColours.key.includes(c)),
+    `the key and the drawn trails list the same colours (key ${legendColours.key.join(" ")} vs data ${legendColours.data.join(" ")})`,
+  );
+  ok(legendColours.labels.every((l) => l.trim().length > 1), `every swatch is labelled (${legendColours.labels.join(" / ")})`);
+  console.log(`trail key: ${legendColours.labels.join(" · ")}`);
   console.log(
     `hiking trails: ${trails.features} trails · ${trails.colours.length} difficulty colours · ${trails.rendered} rendered lines · ${trails.renderedColours.length} rendered colours`,
   );

@@ -96,6 +96,10 @@ export interface LayerDefRaw {
       Absent = solid. Config-not-code; the builder is shared with the MTR
       network, which stays solid. */
   dash?: number[];
+  /** A colour key for a layer whose colours carry meaning (hiking trails: difficulty). Rendered
+      as swatches in the layer's own row — a key that needs a click to read is a key nobody reads.
+      The colours must match what the baked features carry, and check-layers asserts that. */
+  legend?: { tc: string; en: string; color: string }[];
   /** Adapter key when a layer does NOT read its panel's adapter. `bus_live`
       shares the `bus_eta` source but needs live vehicle positions while the
       panel needs a searchable route table, so it names its own. Absent = use

@@ -282,8 +282,14 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
     ["carpark_vacancy", "parking"],
   ];
   for (const [id] of wants) await clickRow(id);
-  // The CCTV layer fetches 16 per-camera JSONs through the Worker proxy on its first tick.
-  await page.waitForTimeout(20000);
+  // Poll each layer's source into existence rather than sleeping 20s for all five at once: the
+  // beach layer goes to the Worker proxy for an XML feed, and a fixed window that five racing
+  // adapters share reported it missing on some runs and present on others.
+  for (const [id] of wants) {
+    await page
+      .waitForFunction((r) => !!window.__map?.getSource(`vl-${r}`), id, { timeout: 30000 })
+      .catch(() => {});
+  }
   const s = await page.evaluate((ids) => {
     const out = {};
     for (const [id, glyph] of ids) {
@@ -350,7 +356,21 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   // AND that the line layer draws — a payload of six colours that renders one is still the bug.
   await clickRow("hiking_trails");
   await page.waitForFunction(() => !!window.__map?.getSource("vl-hiking_trails"), null, { timeout: 30000 }).catch(() => {});
-  await page.waitForTimeout(2500);
+  // Fit the view to the trails before reading the render: at the default view 167 trails across
+  // the whole territory put none of them in frame on some runs, which read as "drew nothing".
+  await page.evaluate(() => {
+    const feats = window.__map?.getSource("vl-hiking_trails")?._data?.features ?? [];
+    let minX = 180, minY = 90, maxX = -180, maxY = -90;
+    const walk = (c) => {
+      if (typeof c[0] === "number") {
+        minX = Math.min(minX, c[0]); maxX = Math.max(maxX, c[0]);
+        minY = Math.min(minY, c[1]); maxY = Math.max(maxY, c[1]);
+      } else for (const x of c) walk(x);
+    };
+    for (const f of feats) walk(f.geometry?.coordinates ?? []);
+    if (minX < maxX) window.__map.fitBounds([[minX, minY], [maxX, maxY]], { padding: 40, duration: 0 });
+  });
+  await page.waitForTimeout(3000);
   const trails = await page.evaluate(() => {
     const feats = window.__map?.getSource("vl-hiking_trails")?._data?.features ?? [];
     const colours = new Set(feats.map((f) => f.properties?.color).filter(Boolean));

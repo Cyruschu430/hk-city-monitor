@@ -552,6 +552,15 @@ await toggleRfz("drone_rfz");
 await page
   .waitForFunction(() => (window.__map?.getSource("vl-drone_rfz")?._data?.features?.length ?? 0) > 0, null, { timeout: 25000 })
   .catch(() => {});
+// The source having features is not the same as the map having painted them: queryRenderedFeatures
+// reads the last frame, so wait for the frame that contains them.
+await page
+  .waitForFunction(
+    () => (window.__map?.queryRenderedFeatures({ layers: ["vl-drone_rfz-fill"] }) ?? []).length > 0,
+    null,
+    { timeout: 20000 },
+  )
+  .catch(() => {});
 const r0 = await rfzFeat();
 ok(r0.hasSource, "toggling the RFZ layer on did not create the vl-drone_rfz source");
 ok(r0.features === 290, `the source should carry all 290 zones, got ${r0.features}`);

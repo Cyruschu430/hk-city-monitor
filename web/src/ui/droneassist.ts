@@ -70,15 +70,21 @@ export function droneAssist(): HTMLElement {
       // Loading it here, not in the markup: see the header comment.
       const frame = h("iframe", {
         class: "drone-assist-frame",
-        src: DRONE_ASSIST_SRC,
         title: names().title,
         loading: "lazy",
         referrerpolicy: "no-referrer",
         allow: "clipboard-write",
       });
-      // The third-party page takes a moment; without this the panel is an empty rectangle
-      // that looks broken for as long as that takes.
-      frame.addEventListener("load", () => loading.remove());
+      // The third-party page takes a moment; without this the panel is an empty rectangle that
+      // looks broken for as long as that takes. The listeners go on BEFORE src: a page answered
+      // from cache can finish loading between setting the attribute and attaching the listener,
+      // and the hint then sits over a loaded page for ever — measured on the live site, still
+      // there 30 seconds after the frame arrived. The error path clears it too, because
+      // 「載入中…」 over a page that never arrived is a claim the page cannot support.
+      const arrived = () => loading.remove();
+      frame.addEventListener("load", arrived);
+      frame.addEventListener("error", arrived);
+      frame.src = DRONE_ASSIST_SRC;
       body.append(frame);
     }
   };

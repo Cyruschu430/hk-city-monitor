@@ -278,6 +278,45 @@ ok(r.clock.top >= r.scope.bottom - 2,
 if (r.gauges > 0) ok(r.legendItems >= 5, `the AQHI key drew its bands (${r.legendItems} entries)`);
 else console.log("note  no gauge panel rendered in this run - legend not asserted");
 
+// THE BRIEF'S SPEAKER (2026-10-14, "城市簡報有 TTS reporting"). Existence is not the assertion:
+// the button must hand the brief's own text to the speech engine, so speak() is stubbed, the
+// button is clicked, and what it would have said is what is checked.
+const spoken = await page.evaluate(async () => {
+  const btn = document.querySelector('[data-panel="ai_brief"] .speak-btn');
+  if (!btn) return { button: false };
+  const row = btn.closest("li");
+  const text = row?.querySelector(".src-hold")?.textContent ?? row?.textContent ?? "";
+  const said = [];
+  const synth = window.speechSynthesis;
+  if (!synth) return { button: true, engine: false };
+  const real = { speak: synth.speak, cancel: synth.cancel };
+  synth.speak = (u) => said.push(u.text);
+  synth.cancel = () => {};
+  btn.click();
+  await new Promise((r) => setTimeout(r, 120));
+  const on = btn.classList.contains("on");
+  synth.speak = real.speak;
+  synth.cancel = real.cancel;
+  return {
+    button: true,
+    engine: true,
+    name: btn.getAttribute("aria-label") ?? "",
+    long: (said[0] ?? "").length,
+    // The spoken script is the author's, the on-screen prose may differ by a word; what must hold
+    // is that the reader hears THIS brief and not silence or some other panel's text.
+    shares: ((said[0] ?? "").slice(0, 12) === text.trim().slice(0, 12)) || (text.includes((said[0] ?? "").slice(0, 10))),
+    on,
+  };
+});
+ok(spoken.button, "the city brief carries a speaker button");
+if (spoken.button) {
+  ok(spoken.engine, "the browser exposes a speech engine to that button");
+  ok((spoken.name ?? "").length > 2, `the speaker has an accessible name (${spoken.name})`);
+  ok(spoken.long > 20, `clicking it speaks the brief rather than nothing (${spoken.long} chars)`);
+  ok(spoken.shares, "the text it speaks is this panel's brief");
+  ok(spoken.on, "the button shows it is speaking (a click that gives no sign reads as broken)");
+}
+
 ok(r.navSourceLinks === 0, `no source link leaves the page (${r.navSourceLinks} found)`);
 ok(r.srcHold > 0, `the source URLs survive as tooltips (${r.srcHold} .src-hold)`);
 

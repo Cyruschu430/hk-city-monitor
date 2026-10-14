@@ -33,6 +33,8 @@ from __future__ import annotations
 import argparse
 import csv
 import io
+import re
+import xml.etree.ElementTree as ET
 import json
 import os
 import re
@@ -69,6 +71,13 @@ LIVE_API = {
     "wind_10min": "https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_10min_wind.csv",
     "warnsum": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc",
     "special_traffic": "https://resource.data.one.gov.hk/td/tc/specialtrafficnews.xml",
+    # Added 2026-10-14 ("簡報依家多咗 feed"): the app gained beaches, tunnel journey times and
+    # on-street sensor parking since the last brief, so the brief was describing a smaller city
+    # than the dashboard shows. Same rule as the six above — the payload is slimmed to counts and
+    # maxima the script computed, never a figure the model is asked to add up.
+    "beach_grading": "https://cd.epic.epd.gov.hk/beachpsi/tc/beach2.rss",
+    "journey_time": "https://resource.data.one.gov.hk/td/jss/Journeytimev2.xml",
+    "sensor_parking": "https://resource.data.one.gov.hk/td/psiparkingspaces/occupancystatus/occupancystatus.csv",
 }
 
 # Land control-point codes → names, so the brief says 香園圍 rather than HYW. Same map as
@@ -133,8 +142,9 @@ RULES, in order of importance:
    sources) — only when BOTH sides are numbers already in DATA, and you must name them. Never
    infer a cause the data does not show.
 4. Work down this list and skip a level only when DATA holds nothing for it:
-   (a) an active warning, suspension or closure; (b) a waiting time or a queue; (c) air quality,
-   wind or rain; (d) flights, vessels or traffic; (e) berth or carpark counts.
+   (a) an active warning, suspension or closure; (b) a waiting time or a queue; (c) beach water
+   quality, air quality, wind or rain; (d) flights, vessels, traffic, tunnel journey times;
+   (e) berth, carpark or on-street sensor parking counts.
    The aircraft and berth counts on their own are NOT a brief — they are where a lazy summary
    stops, and every run of this job used to stop there.
 5. Plain language a resident understands. No jargon, no "insights", no "leverage", no emoji.
@@ -145,8 +155,14 @@ RULES, in order of importance:
    District). If you do not know a value's English name, describe it in English rather than
    copying the Chinese text across.
 8. The data is public open data from Hong Kong government departments and public bodies.
+9. "spoken_tc" and "spoken_en" are the SAME brief written to be READ ALOUD by a speech engine,
+   and they are the fields a listener hears instead of the prose. Write every number as words
+   (7.5 hours → 七個半鐘; 30 km/h → 時速三十公里), never as digits, and never as a symbol a voice
+   would spell out — no "%", "/", "km/h", "AQHI" or department initials. Spell a name as a
+   Cantonese speaker says it, keep the sentences short, and do not add anything that is not in
+   "tc"/"en": the listener must hear the same brief, not a longer one.
 
-Return ONLY JSON, no prose around it: {"tc": "<three or four sentences, Traditional Chinese, Cantonese register>", "en": "<the same brief in English, no Chinese characters>"}
+Return ONLY JSON, no prose around it: {"tc": "<three or four sentences, Traditional Chinese, Cantonese register>", "en": "<the same brief in English, no Chinese characters>", "spoken_tc": "<the same brief, written for a Cantonese voice: numbers as words, no symbols or abbreviations>", "spoken_en": "<the same brief, written for an English voice>"}
 
 DATA (verbatim from the publishers, with their own timestamps):
 """
@@ -227,12 +243,14 @@ def fetch_api(key: str, url: str):
     except (urllib.error.URLError, TimeoutError) as exc:
         print(f"  WARN {key}: unreachable ({exc})", file=sys.stderr)
         return None
-    if key == "wind_10min":
-        return raw.decode("utf-8-sig", errors="replace")
-    if key == "special_traffic":
-        return raw.decode("utf-8", errors="replace")
+    # Sniff the body rather than keep a list of which sources are CSV or XML: the list grew by
+    # three the day beaches, journey times and sensor parking were added, and a source that is
+    # silently skipped for being "not JSON" is worse than one that fails loudly.
+    text = raw.decode("utf-8-sig", errors="replace")
+    if not text.lstrip()[:1] in ("{", "["):
+        return text
     try:
-        return json.loads(raw.decode("utf-8-sig"))
+        return json.loads(text)
     except json.JSONDecodeError as exc:
         print(f"  WARN {key}: not JSON ({exc})", file=sys.stderr)
         return None
@@ -286,6 +304,59 @@ def slim_api(key: str, payload) -> dict:
         return {"active": len(payload or {}), "names": [str(v.get("name") or k) for k, v in (payload or {}).items()]}
     if key == "special_traffic":
         return {"messages": payload.count("<message>")}
+    if key == "beach_grading":
+        # EPD publishes one RSS item per beach; the grade is in the title
+        # ("…水質被評為一般(二級)"). Only the tally is handed on.
+        items = ET.fromstring(payload).findall(".//item")
+        # Named levels, not {"一": 23}: the first brief written from the bare keys said 二十七
+        # beaches were level one while the feed said 23 (27 was a berth figure from another
+        # source, so the figure check below could not tell them apart).
+        grades: dict[str, int] = {}
+        for it in items:
+            m = re.search(r"\((一|二|三|四)級\)", it.findtext("title") or "")
+            if m:
+                key = {"一": "level_one", "二": "level_two", "三": "level_three", "四": "level_four"}[m.group(1)]
+                grades[key] = grades.get(key, 0) + 1
+        return {"beaches": len(items), "water_quality": grades,
+                "observed": (items[0].findtext("pubDate") if items else None)}
+    if key == "journey_time":
+        # TD's journey-time indicators: one record per location/destination pair, with the
+        # travel time and the sign colour (1 red, 2 amber, 3 green — same map as the app).
+        recs = [e for e in ET.fromstring(payload).iter() if e.tag.split("}")[-1] == "jtis_journey_time"]
+        band: dict[str, int] = {}
+        observed = None
+
+        def field(rec, tag):  # noqa: E306 - local helper
+            return next((c.text for c in rec if c.tag.split("}")[-1] == tag), None)
+
+        for r in recs:
+            colour = field(r, "COLOUR_ID") or "?"
+            band[colour] = band.get(colour, 0) + 1
+            observed = field(r, "CAPTURE_DATE") or observed
+        # Named bands, not the raw ids. TD's numbers mean red/amber/green on its own signs — the
+        # same map the app draws — but "by_colour_id": {"1": 1} reads as a code, and the first
+        # brief written from it said only that 83 segments "had been recorded" while one road was
+        # showing a red sign. The pair ids ("SJ4>TMCLK") are dropped: TD's two location tables
+        # carry no names, so a segment could only be quoted as initials.
+        named = {"1": "serious_red", "2": "busy_amber", "3": "clear_green"}
+        return {"segments": len(recs), "signs": {named.get(k, k): v for k, v in band.items()},
+                "observed": observed}
+    if key == "sensor_parking":
+        rows = list(csv.DictReader(io.StringIO(payload)))
+        status: dict[str, int] = {}
+        stamp: datetime | None = None
+        for r in rows:
+            s = (r.get("OccupancyStatus") or "?").strip()
+            status[s] = status.get(s, 0) + 1
+            try:
+                # The file mixes 12-hour stamps from different days. Comparing them as strings
+                # picked 12/29/2025 as the newest and would have dated the brief to last year.
+                at = datetime.strptime((r.get("OccupancyDateChanged") or "").strip(), "%m/%d/%Y %I:%M:%S %p")
+            except ValueError:
+                continue
+            stamp = at if stamp is None or at > stamp else stamp
+        return {"bays": len(rows), "status": status,
+                "observed": stamp.strftime("%Y-%m-%d %H:%M") if stamp else None}
     return {}
 
 
@@ -297,10 +368,10 @@ _PRIORITY = (
     # Same keys, same bytes, ordered the way the prompt already asks for them.
     "water_suspension.json",
     "special_traffic", "warnsum",
-    "ae_waiting", "cp_queue",
+    "ae_waiting", "cp_queue", "beach_grading",
     "aqhi", "wind_10min",
-    "aircraft.json",
-    "berth_vacancy.json", "carpark_info.json",
+    "journey_time", "aircraft.json",
+    "berth_vacancy.json", "carpark_info.json", "sensor_parking",
     "baselines.json",
 )
 
@@ -487,11 +558,65 @@ def call_model(model: str, context: str, key: str) -> dict:
         raise _Busy(f"did not return JSON: {text[:200]}") from exc
     if not out.get("tc") or not out.get("en"):
         raise _Busy(f"incomplete brief: {out}")
+    known = figures(context)
+    for field in ("tc", "en", "spoken_tc", "spoken_en"):
+        unbacked = figures(str(out.get(field) or "")) - known
+        if unbacked:
+            raise _Busy(f"{field} quotes figures the data does not carry: {sorted(unbacked)}")
     return out
 
 
 class _Busy(Exception):
     """The model was unavailable or unusable - try the next one."""
+
+
+
+
+# --- the figures a brief may quote -------------------------------------------
+# Rule 1 of the prompt forbids inventing a number, and on 2026-10-14 a brief said 二十七 beaches
+# were rated level one while the feed said 23 — a reading of the same feed two minutes apart. The
+# The prompt is not a guard, so the script now checks: every figure in the reply, digits or Chinese
+# numerals, must be a figure that appears in the DATA handed to the model. Its limit, measured the
+# same day: a figure that collides with another source's number passes (an invented "27 beaches"
+# slipped through because 27 berths were vacant), so this catches the "figure from nowhere" class
+# and not a misread one. Keys are therefore named for the model where it has to quote them.
+# treated as unusable and the next model in the chain is asked (see _Busy), which is the same path
+# a malformed reply already takes.
+_CN = {"〇": 0, "零": 0, "一": 1, "二": 2, "兩": 2, "三": 3, "四": 4, "五": 5,
+       "六": 6, "七": 7, "八": 8, "九": 9}
+_CN_UNIT = {"十": 10, "百": 100, "千": 1000, "萬": 10000}
+
+
+def _cn_int(text: str) -> int | None:
+    """二十七 → 27, 四十 → 40, 五 → 5. None when the run is not a plain numeral."""
+    total, section, seen = 0, 0, False
+    for ch in text:
+        if ch in _CN:
+            section = _CN[ch]
+            seen = True
+        elif ch in _CN_UNIT:
+            section = (section or 1) * _CN_UNIT[ch]
+            total += section
+            section = 0
+            seen = True
+    return total + section if seen else None
+
+
+def figures(text: str) -> set[str]:
+    """Every figure in a text: arabic digits as written, and Chinese numerals of two or more
+    characters (二十七, 十八, 四十) as their value.
+
+    SINGLE-character numerals are deliberately NOT read as figures. 一級 and 九龍 are the level
+    name and the district, not the numbers 1 and 9 — reading them as figures rejected two correct
+    replies the first time this guard ran. The cost is that a lone 五 written as a word is
+    unchecked; the win is that the guard does not cry wolf on the brief's own vocabulary.
+    """
+    out = set(re.findall(r"\d+", text))
+    for run in re.findall(r"[〇零一二兩三四五六七八九十百千萬]{2,}", text):
+        val = _cn_int(run)
+        if val is not None:
+            out.add(str(val))
+    return out
 
 
 def ask_chain(context: str) -> tuple[dict, str, list[str]]:
@@ -587,6 +712,14 @@ def main() -> int:
         assert brief_age_hours({"generated": now.isoformat()}) is not None
         assert brief_age_hours({"generated": (now - timedelta(hours=8)).isoformat()}) > 6.0
         assert brief_age_hours({"generated": "not a date"}) is None
+        # The figure guard, on the case that shipped a wrong number (23 in the feed, 二十七 in
+        # the brief) and on the words that must NOT be read as figures.
+        assert _cn_int("二十七") == 27 and _cn_int("四十") == 40 and _cn_int("五") == 5
+        assert "27" in figures("有二十七個海灘")
+        # The 27 IS the fault: the feed said 23 — the guard must flag it, not accept it.
+        assert figures("有二十七個海灘") - figures("一級 23, 二級 17") == {"27"}
+        assert not (figures("一級 23") - figures("一級 23, 二級 17"))
+        assert figures("二級 99") - figures("一級 23, 二級 17") == {"99"}
         assert brief_age_hours({}) is None
         # The chain only walks on _Busy, so every "cannot answer" class has to be in NET_ERRORS.
         # Narrowing that tuple back to HTTPError-only is exactly the 2026-10-04 dead run.

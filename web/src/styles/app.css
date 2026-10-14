@@ -839,6 +839,11 @@ a:hover{color:var(--cyan)}
    the ticker. This is a density fix, not a content cut — nothing is removed
    from the DOM, so the text is still selectable and still in the page. */
 .plist{display:flex;flex-direction:column;gap:7px;margin:0;padding:0;list-style:none}
+/* The brief's speaker. Small and quiet: it is a way to hear the panel, not a thing to look at. */
+.plist .speak-btn{float:right;margin-left:6px;padding:1px 5px;font-size:11px;line-height:1.5;cursor:pointer;
+  color:var(--dim);background:transparent;border:1px solid var(--hairline);border-radius:var(--radius-sm)}
+.plist .speak-btn:hover{color:var(--txt);border-color:var(--hairline-hi)}
+.plist .speak-btn.on{color:var(--cyan);border-color:var(--cyan)}
 .plist li{border-left:2px solid var(--amber);padding:1px 0 1px 9px;font-size:12px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .plist li.ok-line{border-left-color:var(--hairline)}

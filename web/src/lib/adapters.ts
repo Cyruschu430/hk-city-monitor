@@ -290,7 +290,7 @@ const ADAPTERS: Record<string, Adapter> = {
         generated?: string;
         model?: string;
         provenance?: { inputs?: { file?: string }[] };
-        brief?: { tc?: string; en?: string };
+        brief?: { tc?: string; en?: string; spoken_tc?: string; spoken_en?: string };
       };
       const prose = (tc ? j.brief?.tc : j.brief?.en) ?? "";
       if (!prose) return { data: honest(tc ? "簡報暫時冇內容" : "the brief has no text yet"), observedAt: new Date() };
@@ -305,6 +305,10 @@ const ADAPTERS: Record<string, Adapter> = {
               // JSON, which records both. The panel's own source line already says the text was
               // written by a model ("… 由免費模型覆述已發佈數據" / "a free model reading published
               // data back"), which is the disclosure a reader actually needs.
+              // The spoken script is the author's own: it has the numbers written as words, which
+              // is what a voice should read. An older payload has none, and the prose still reads
+              // aloud acceptably, so the field is optional rather than a second failure mode.
+              speak: (tc ? j.brief?.spoken_tc : j.brief?.spoken_en) ?? prose,
               href: liveDataUrl("data/ai_summary.json") ?? undefined,
               time: String(j.generated ?? "").replace("T", " ").slice(0, 16),
               ok: true,

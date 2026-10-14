@@ -28,6 +28,7 @@ export interface ListItem {
   sub?: string; // secondary line (place, detail)
   time?: string; // mono timestamp line
   href?: string; // link back to the source (traceability rule)
+  speak?: string; // text a speech engine reads aloud (already written for a voice)
   ok?: boolean; // informational line, no warning accent
   icon?: string; // glyph name from GLYPHS below - a warning type, drawn as inline SVG
 }
@@ -106,6 +107,40 @@ export type TableCell = string | { text: string; cls?: string; spark?: number[] 
     quiet day to a straight line and say nothing. A flat series draws at
     mid-height instead of dividing by zero.
     SVG y grows downward, so a rising series ends at a SMALLER y. */
+export // READING THE BRIEF ALOUD. The engine is the browser's own (no key, no per-play cost), so the
+// voice is whatever the machine already has: zh-HK when it ships one, the reader's own language
+// otherwise. The button is drawn ONLY once such a voice exists — a control that cannot speak is
+// worse than no control — and the text it speaks is the author's own spoken script, which is
+// where the number-to-words work happens, not here.
+// ponytail: browser voices beat a hosted TTS on cost and privacy; swap in MiniMax audio when a
+// Cantonese voice matters more than a zero-key public app (a key would have to sit in the client).
+function speakButton(text: string): HTMLElement | null {
+  const synth = window.speechSynthesis;
+  if (!synth || typeof SpeechSynthesisUtterance === "undefined" || !text) return null;
+  const tc = lang() === "tc";
+  const label = tc ? "讀出簡報" : "Read the brief aloud";
+  const btn = h("button", { class: "speak-btn", type: "button", "aria-label": label, title: label }, "🔊");
+  const stop = () => {
+    synth.cancel();
+    btn.classList.remove("on");
+  };
+  btn.addEventListener("click", () => {
+    if (synth.speaking) return stop(); // second press stops, because a reader who wants it off wants it off now
+    // Prefer a voice for the panel's language, but speak regardless: getVoices() is empty until
+    // the list loads on some browsers, and the default voice for `lang` is still the right read.
+    const want = tc ? /^(zh[-_]HK|yue)/i : /^en/i;
+    const voices = synth.getVoices();
+    const u = new SpeechSynthesisUtterance(text);
+    u.voice = voices.find((v) => want.test(v.lang)) ?? voices.find((v) => /^zh/i.test(v.lang)) ?? null;
+    u.lang = u.voice?.lang ?? (tc ? "zh-HK" : "en-US");
+    u.onend = stop;
+    u.onerror = stop;
+    btn.classList.add("on");
+    synth.speak(u);
+  });
+  return btn;
+}
+
 export function sparkPath(values: number[], w = 56, h = 14): string {
   const vals = values.filter((v) => Number.isFinite(v));
   if (vals.length < 2) return "";
@@ -367,6 +402,7 @@ function body(data: PanelData, opts: RenderOpts): HTMLElement {
           // href is the SOURCE url, so a click used to leave the dashboard for a raw file. The
           // URL stays on screen in the tooltip, which is what traceability actually needs.
           it.href ? h("span", { class: "src-hold", title: it.href }, it.title) : it.title,
+          it.speak ? speakButton(it.speak) : null,
           it.sub ? h("span", { class: "meta" }, it.sub) : "",
           it.time
             ? h("span", { class: "meta", title: it.time }, isStamp ? relTime(it.time!) : it.time)

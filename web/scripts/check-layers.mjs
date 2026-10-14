@@ -367,6 +367,10 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   console.log(
     `hiking trails: ${trails.features} trails · ${trails.colours.length} difficulty colours · ${trails.rendered} rendered lines · ${trails.renderedColours.length} rendered colours`,
   );
+  // Back OFF: later sections measure a quiet map, and a 1.2MB line layer left drawn competes
+  // with the 3MB RFZ fetch that §7 times.
+  await clickRow("hiking_trails");
+  await page.waitForTimeout(800);
 
   // The sheet: reviewing a canvas glyph means looking at it, and at the size a reader sees. The
   // images come from the map's own registry, never re-drawn from source — a copy of a draw
@@ -523,7 +527,11 @@ const rfzFeat = () => page.evaluate(() => {
 });
 
 await toggleRfz("drone_rfz");
-await page.waitForTimeout(4000);
+// 3MB over the wire: poll for the source instead of trusting 4 seconds. The fixed wait passed
+// only while nothing else competed for the connection.
+await page
+  .waitForFunction(() => (window.__map?.getSource("vl-drone_rfz")?._data?.features?.length ?? 0) > 0, null, { timeout: 25000 })
+  .catch(() => {});
 const r0 = await rfzFeat();
 ok(r0.hasSource, "toggling the RFZ layer on did not create the vl-drone_rfz source");
 ok(r0.features === 290, `the source should carry all 290 zones, got ${r0.features}`);

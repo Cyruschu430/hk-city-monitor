@@ -31,7 +31,12 @@ for (const id of ids) {
     btn.click();
     return btn.getAttribute("aria-checked");
   }, id);
-  await page.waitForTimeout(6000);
+  // Wait for the source to APPEAR rather than for a fixed delay: the layer build includes a
+  // network fetch, so a 6s window reported false failures on layers that were merely slow
+  // (lcsd_facilities, which uses no proxy at all, "failed" in one run and passed in the next).
+  await page
+    .waitForFunction((r) => !!window.__map.getSource(`vl-${r}`), id, { timeout: 25000 })
+    .catch(() => {});
   const after = await page.evaluate((r) => ({
     checked: document.querySelector(`.lyr-item[data-row="${r}"] .lyr-row`)?.getAttribute("aria-checked"),
     source: !!window.__map.getSource(`vl-${r}`),

@@ -344,6 +344,30 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   ok(carpark.negative === 0, `${carpark.negative} car parks carry a negative vacancy — that is TD's "no figure" sentinel, not a count`);
   console.log(`carpark layer: ${carpark.features} parks · negative vacancies=${carpark.negative} · no-figure rows=${carpark.blank}`);
 
+  // The hiking trails were reported as "all green, hard to read": 167 official AFCD trails drawn in
+  // one colour read as one trail. The colour is baked per feature from its difficulty, and the
+  // popup reads the feature's own colour, so this asserts the variety actually reaches the style
+  // AND that the line layer draws — a payload of six colours that renders one is still the bug.
+  await clickRow("hiking_trails");
+  await page.waitForFunction(() => !!window.__map?.getSource("vl-hiking_trails"), null, { timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(2500);
+  const trails = await page.evaluate(() => {
+    const feats = window.__map?.getSource("vl-hiking_trails")?._data?.features ?? [];
+    const colours = new Set(feats.map((f) => f.properties?.color).filter(Boolean));
+    const rendered = window.__map?.queryRenderedFeatures({ layers: ["vl-hiking_trails-line"] }) ?? [];
+    const renderedColours = new Set(rendered.map((f) => f.layer?.paint?.["line-color"]).filter(Boolean));
+    return { features: feats.length, colours: [...colours], rendered: rendered.length, renderedColours: [...renderedColours] };
+  });
+  ok(trails.features >= 150, `the hiking-trails layer drew ${trails.features} trails, expected ~167`);
+  ok(
+    trails.colours.length >= 4,
+    `the hiking trails must be coloured by difficulty: found ${trails.colours.length} colour(s) — ${trails.colours.join(", ")}`,
+  );
+  ok(trails.rendered > 0, "the hiking-trails line layer rendered nothing in view");
+  console.log(
+    `hiking trails: ${trails.features} trails · ${trails.colours.length} difficulty colours · ${trails.rendered} rendered lines · ${trails.renderedColours.length} rendered colours`,
+  );
+
   // The sheet: reviewing a canvas glyph means looking at it, and at the size a reader sees. The
   // images come from the map's own registry, never re-drawn from source — a copy of a draw
   // function drifts, and one missing helper fails silently into a blank picture.

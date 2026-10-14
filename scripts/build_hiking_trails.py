@@ -7,8 +7,10 @@ CSDI common folder (the same family as the weather-station and AQHI layers).
 data.gov.hk links to it via the geoportal; the earlier "closed trails" service
 (afcd_rcd_17425500968) was token-gated, but THIS one is open.
 
-The layer draws green dashed (line-dasharray from the layer def); each feature
-carries its own `color` so the existing lineLayer draws it without code change.
+The layer draws DASHED (line-dasharray from the layer def) and each feature carries
+its OWN `color`, taken from its difficulty — one flat green made 167 trails look like
+one trail. The ramp is the mapping below, and the popup reads the feature's own colour
+so the line and the popup can never disagree about what 難行 means.
 
 Usage:  python3 scripts/build_hiking_trails.py [--check]
 """
@@ -17,6 +19,22 @@ import sys
 import urllib.request
 
 UA = "Mozilla/5.0 (compatible; HKCityMonitor/1.0)"
+
+# Difficulty → colour. The data carries five levels plus a blank, so a single green said
+# nothing; a reader can see which line is a stroll and which is the 難行 one at a glance.
+# Blue-purple for the hardest because two shades of red are indistinguishable at 2px.
+DIFFICULTY_COLOR = {
+    "易行": "#22c55e",   # Easy
+    "普通": "#eab308",   # Moderate
+    "費力": "#f97316",   # Demanding
+    "難行": "#ef4444",   # Difficult
+    "非常難行": "#a855f7",  # Very difficult
+}
+UNKNOWN_COLOR = "#94a3b8"  # 12 features carry no difficulty: neither green nor red, but unclassified
+
+
+def color_for(props: dict) -> str:
+    return DIFFICULTY_COLOR.get(str(props.get("DIFFICULTY_TC") or "").strip(), UNKNOWN_COLOR)
 BASE = "https://portal.csdi.gov.hk/server/rest/services/common/afcd_rcd_1665568199103_4360/FeatureServer/0"
 OUT = "data/hiking_trails.geojson"
 
@@ -83,7 +101,7 @@ def build() -> list[dict]:
             break
         for f in batch:
             props = {k: v for k, v in (f.get("properties") or {}).items() if v is not None}
-            props["color"] = "#22c55e"  # green: the lineLayer reads this
+            props["color"] = color_for(props)  # the lineLayer reads this
             features.append({"type": "Feature", "geometry": f.get("geometry"), "properties": props})
         start += len(batch)
     return features
@@ -97,12 +115,21 @@ def main() -> None:
     for f in features:
         kinds[f["geometry"]["type"]] = kinds.get(f["geometry"]["type"], 0) + 1
     print("trails:", len(features), "| 幾何:", kinds)
+    bycolor = {}
+    for f in features:
+        bycolor[f["properties"]["color"]] = bycolor.get(f["properties"]["color"], 0) + 1
+    print("顏色:", bycolor)
     print("首條 props:", json.dumps(features[0]["properties"], ensure_ascii=False)[:400])
     with open(OUT, "w", encoding="utf-8") as fh:
         json.dump({"type": "FeatureCollection", "features": features}, fh, ensure_ascii=False, indent=1)
     if "--check" in sys.argv:
         bad = [f for f in features if f["geometry"]["type"] not in ("LineString", "MultiLineString")]
         assert not bad, "全部要係線幾何"
+        # The reported fault was every trail the same green; assert the ramp actually applied.
+        ramp = set(DIFFICULTY_COLOR.values()) | {UNKNOWN_COLOR}
+        off = [f["properties"].get("color") for f in features if f["properties"].get("color") not in ramp]
+        assert not off, f"呢啲顏色唔屬於難度色階: {sorted(set(off))}"
+        assert len({f["properties"]["color"] for f in features}) >= 4, "顏色太少，分唔到難度"
         print(f"OK: {len(features)} 條遠足徑（線幾何，已簡化），已寫 {OUT}")
 
 

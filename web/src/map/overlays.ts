@@ -1396,7 +1396,10 @@ function trailPopup(map: maplibregl.Map, layerId: string): void {
     const p = (f.properties ?? {}) as Record<string, unknown>;
     const tc = lang() === "tc";
     const diff = pick(p, "DIFFICULTY_TC", "DIFFICULTY_EN");
-    const diffColor = /極費力|very demanding/i.test(diff) ? "#ef4444" : /費力|demanding/i.test(diff) ? "#f59e0b" : "#22c55e";
+    // The feature's OWN colour, baked from its difficulty by build_hiking_trails.py. The regex
+    // this replaces knew two levels out of five and painted 難行 green — the line and the label
+    // must never disagree about what a colour means.
+    const diffColor = String(p["color"] ?? "#22c55e");  // eslint-disable-line -- see above
     const start = pick(p, "STARTpt_TC", "STARTpt_EN");
     const finish = pick(p, "FINISHpt_TC", "FINISHpt_EN");
     new maplibregl.Popup({ closeButton: true, className: "cam-popup", maxWidth: "320px" })

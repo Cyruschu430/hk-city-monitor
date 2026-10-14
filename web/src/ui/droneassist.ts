@@ -74,7 +74,7 @@ export function droneAssist(): HTMLElement {
         loading: "lazy",
         referrerpolicy: "no-referrer",
         allow: "clipboard-write",
-      });
+      }) as HTMLIFrameElement;
       // The third-party page takes a moment; without this the panel is an empty rectangle that
       // looks broken for as long as that takes. The listeners go on BEFORE src: a page answered
       // from cache can finish loading between setting the attribute and attaching the listener,

@@ -12,7 +12,7 @@
 import { MIN_REFRESH_MS } from "../config.ts";
 import { adaptPanel, type AdapterCtx } from "../lib/adapters.ts";
 import { clear, h } from "../lib/dom.ts";
-import { cadenceSeconds, degrade, errored, live, LOADING, quietSeconds, type Honesty } from "../lib/honesty.ts";
+import { cadenceSeconds, degrade, errored, live, LOADING, PENDING, quietSeconds, type Honesty } from "../lib/honesty.ts";
 import { lang, onLangChange, t } from "../lib/i18n.ts";
 import { renderPanel, type PanelData, type PanelDef, type WallImage } from "../lib/render.ts";
 import { sourceLabel, type PanelDefRaw, type Registry } from "../lib/sources.ts";
@@ -357,10 +357,10 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
           });
         }
       },
-      // root is #panels, the scroller itself. 400px of margin is roughly one panel
-      // ahead of the fold: enough that a normal scroll never waits on a fetch, small
-      // enough that the far end of a long column costs nothing.
-      { root, rootMargin: "400px" },
+      // root is #panels, the scroller itself. 900px is two panels ahead of the fold: measured,
+      // 400px still let a panel arrive on screen as "待載入" when a wheel or a fast flick moved
+      // further than the margin in one frame. The far end of a long column still costs nothing.
+      { root, rootMargin: "900px" },
     );
     io.observe(el);
   }
@@ -437,6 +437,7 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
       // observer; the fetch fires when the panel comes within 400px of the fold, so a
       // panel already above it loads on the next frame.
       entry.deferred = true;
+      entry.honesty = PENDING;
       paint(id);
     }
     syncDeferredTag();
@@ -537,12 +538,15 @@ export function createPanelEngine(deps: PanelEngineDeps): PanelEngine {
         // silently improve the number.
         if (!passes(entry)) continue;
         if (userHidden.has(id)) continue;
+        // A panel that has not been asked for yet is not evidence about its source either way:
+        // counting it would put "待載入" into the reader's status line for panels below the fold.
+        if (entry.honesty.state === "pending") continue;
         const prev = bySource.get(entry.panel.source);
         // Worst state wins, so one broken panel is never masked by a sibling.
-        const rank = { error: 3, stale: 2, loading: 1, live: 0 } as const;
+        const rank = { error: 3, stale: 2, loading: 1, pending: 1, live: 0 } as const;
         if (!prev || rank[entry.honesty.state] > rank[prev]) bySource.set(entry.panel.source, entry.honesty.state);
       }
-      const tally = { total: bySource.size, live: 0, stale: 0, error: 0, loading: 0 };
+      const tally = { total: bySource.size, live: 0, stale: 0, error: 0, loading: 0, pending: 0 };
       for (const st of bySource.values()) tally[st] += 1;
       return tally;
     },

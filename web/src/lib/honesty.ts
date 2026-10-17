@@ -3,7 +3,7 @@
 // A panel past its freshness threshold must LOOK degraded; stale data may
 // never be presented as live. This module is the single place that decides.
 
-export type HonestyState = "loading" | "live" | "stale" | "error";
+export type HonestyState = "pending" | "loading" | "live" | "stale" | "error";
 
 export interface Honesty {
   state: HonestyState;
@@ -14,6 +14,10 @@ export interface Honesty {
 }
 
 export const LOADING: Honesty = { state: "loading", updatedAt: null };
+/** A panel the engine has not asked for yet (it is below the fold). It must not say "loading",
+ *  because nothing is in flight — a spinner over a request that has not started reads as a hang,
+ *  and that is exactly how a deferred panel was reported. */
+export const PENDING: Honesty = { state: "pending", updatedAt: null };
 
 export function live(updatedAt: Date): Honesty {
   return { state: "live", updatedAt };

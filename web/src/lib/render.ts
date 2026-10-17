@@ -294,6 +294,9 @@ function withRegionTabs(wall: HTMLElement, data: PanelData & { kind: "image_wall
 
 function chip(honesty: Honesty): HTMLElement {
   switch (honesty.state) {
+    case "pending":
+      return h("span", { class: "chip", title: lang() === "tc" ? "捲到呢塊面板就會載入" : "loads when you scroll to it" },
+        lang() === "tc" ? "待載入" : "not loaded");
     case "loading":
       return h("span", { class: "chip" }, lang() === "tc" ? "載入中…" : "loading…");
     case "live":

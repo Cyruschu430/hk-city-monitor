@@ -595,7 +595,7 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
               ]
             : glyph) as never,
           "icon-size": ["interpolate", ["linear"], ["zoom"], 8, 0.32, 12, 0.46, 16, 0.64] as never,
-          "icon-rotate": ["get", "bearing"],
+          "icon-rotate": glyph === "bus" ? 0 : (["get", "bearing"] as never),
           "icon-rotation-alignment": "map",
           "icon-allow-overlap": true,
           "icon-ignore-placement": true,

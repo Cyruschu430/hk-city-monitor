@@ -420,64 +420,81 @@ function drawTrain(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** Bus: a top-down bus — flat front, two window bands and a roof sign, which is what separates
- *  "a bus" from "a smaller train" at 44px. The nose points to −Y, the same convention as the
- *  train, plane and vessel, because the layer rotates the icon by the vehicle's own bearing.
+/** Bus: a SIDE PROFILE — body, window strip, wheels, route board. The shape a reader already
+ *  knows, at the size it is actually seen.
  *
- *  A bus is SHORT and BOXY (~1:2.7 against the train's ~1:4), so the proportions carry as much of
- *  the reading as the detail does. Drawn from primitives like every other glyph: no icon font, no
- *  emoji, no binary asset in the repo. */
+ *  This was drawn top-down to share the convention of the rotating vehicle glyphs. At 20px that is
+ *  a narrow bar with no wheels, and the glyph sheet's verdict on it was 「似電芯／手機／紅色柱」: a
+ *  rectangle seen from above is honest and unreadable at once, which is the light-dot problem in a
+ *  different costume. Wheels are what make a bus a bus at any size, and wheels only exist in
+ *  profile — so this glyph is drawn from the side and is NOT rotated (see the moving set in
+ *  overlays.ts). The nose points +X.
+ *
+ *  The body colour is the OPERATOR (see bus-* in GLYPHS): KMB red, Citybus blue, and so on. The
+ *  windows stay near-black for every operator so the livery reads. Drawn from primitives like
+ *  every other glyph: no icon font, no emoji, no binary asset in the repo. */
 function drawBus(ctx: CanvasRenderingContext2D, size: number, body = "#e60012"): void {
   const c = size / 2;
   ctx.save();
   ctx.translate(c, c);
-  // body — blunt at the front, slightly rounded at the back.
-  // The body colour is the OPERATOR (see the bus-* variants in GLYPHS): KMB red and
-  // black, which is what the fleet on a Hong Kong street actually looks like. The
-  // windows and outline stay near-black for every operator, so the livery reads.
+  ctx.lineJoin = "round";
+  // ground shadow — a bus that floats reads as a marker, not as a vehicle
   ctx.beginPath();
-  ctx.moveTo(-6, -14);
-  ctx.lineTo(6, -14);
-  ctx.lineTo(6, 13);
-  ctx.quadraticCurveTo(6, 15, 4, 15);
-  ctx.lineTo(-4, 15);
-  ctx.quadraticCurveTo(-6, 15, -6, 13);
+  ctx.ellipse(0, 8.6, 15.5, 2.2, 0, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(3,6,12,.35)";
+  ctx.fill();
+  // body, nose to +X
+  const r = 2.4;
+  ctx.beginPath();
+  ctx.moveTo(-16.4, -7.6);
+  ctx.lineTo(16.4 - r, -7.6);
+  ctx.quadraticCurveTo(16.4, -7.6, 16.4, -7.6 + r);
+  ctx.lineTo(16.4, 5.4 - r);
+  ctx.quadraticCurveTo(16.4, 5.4, 16.4 - r, 5.4);
+  ctx.lineTo(-16.4, 5.4);
   ctx.closePath();
   ctx.fillStyle = body;
   ctx.fill();
   ctx.strokeStyle = "rgba(5,7,13,.85)";
-  ctx.lineWidth = 1.1;
-  ctx.lineJoin = "round";
+  ctx.lineWidth = 1;
   ctx.stroke();
-  // windscreen, flat across the front
+  // window strip — one dark band, not four panes: the panes close up at 20px and the band is what
+  // survives as "glazing" there
   ctx.beginPath();
-  ctx.moveTo(-5, -12.6);
-  ctx.lineTo(5, -12.6);
-  ctx.lineTo(5, -9.4);
-  ctx.lineTo(-5, -9.4);
+  ctx.moveTo(-14.6, -5.9);
+  ctx.lineTo(12.6, -5.9);
+  ctx.lineTo(12.6, -1.6);
+  ctx.lineTo(-14.6, -1.6);
   ctx.closePath();
-  ctx.fillStyle = "rgba(10,14,22,.85)";
+  ctx.fillStyle = "rgba(10,14,22,.86)";
   ctx.fill();
-  // side window bands — the detail that makes it read as a bus rather than a box
-  for (const x of [-4.6, 4.6]) {
-    ctx.beginPath();
-    ctx.moveTo(x - 0.7, -8);
-    ctx.lineTo(x + 0.7, -8);
-    ctx.lineTo(x + 0.7, 8);
-    ctx.lineTo(x - 0.7, 8);
-    ctx.closePath();
-    ctx.fillStyle = "rgba(10,14,22,.6)";
-    ctx.fill();
-  }
-  // roof sign — the amber route panel a Hong Kong bus carries at the front of its roof
+  // door, ahead of the rear axle — the one vertical break that says "passenger vehicle"
   ctx.beginPath();
-  ctx.moveTo(-3.2, -7.4);
-  ctx.lineTo(3.2, -7.4);
-  ctx.lineTo(3.2, -4.6);
-  ctx.lineTo(-3.2, -4.6);
+  ctx.moveTo(7.4, -5.9);
+  ctx.lineTo(7.4, 5.4);
+  ctx.strokeStyle = "rgba(10,14,22,.7)";
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+  // route board, above the windscreen at the nose
+  ctx.beginPath();
+  ctx.moveTo(13.4, -7.2);
+  ctx.lineTo(16.2, -7.2);
+  ctx.lineTo(16.2, -5.9);
+  ctx.lineTo(13.4, -5.9);
   ctx.closePath();
   ctx.fillStyle = "#f0a11e";
   ctx.fill();
+  // wheels — the whole point of the redraw
+  for (const x of [-9.6, 9.6]) {
+    ctx.beginPath();
+    ctx.arc(x, 5.9, 3.1, 0, Math.PI * 2);
+    ctx.fillStyle = "#0a0d14";
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, 5.9, 1.1, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(190,200,215,.75)";
+    ctx.fill();
+  }
   ctx.restore();
 }
 

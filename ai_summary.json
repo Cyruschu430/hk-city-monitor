@@ -1,0 +1,87 @@
+{
+ "generated": "2026-10-18T04:18:31+08:00",
+ "model": "ca/gpt-4o-mini",
+ "provenance": {
+  "generator": "LLM summary of published open data",
+  "inputs": [
+   {
+    "file": "aircraft.json",
+    "from": "live-data",
+    "observed": 1790852103501
+   },
+   {
+    "file": "berth_vacancy.json",
+    "from": "live-data",
+    "observed": "2026-10-18 02:49"
+   },
+   {
+    "file": "water_suspension.json",
+    "from": "live-data",
+    "observed": "2026-10-18T02:51:57+08:00"
+   },
+   {
+    "file": "carpark_info.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "baselines.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "ae_waiting",
+    "from": "live-api",
+    "observed": "2026年10月18日 上午4時00分"
+   },
+   {
+    "file": "cp_queue",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "aqhi",
+    "from": "live-api",
+    "observed": "2026-10-18T03:30:00"
+   },
+   {
+    "file": "wind_10min",
+    "from": "live-api",
+    "observed": "202610180410"
+   },
+   {
+    "file": "warnsum",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "special_traffic",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "beach_grading",
+    "from": "live-api",
+    "observed": "Fri, 16 Oct 2026 14:04:42"
+   },
+   {
+    "file": "journey_time",
+    "from": "live-api",
+    "observed": "2026-10-18T04:16:01"
+   },
+   {
+    "file": "sensor_parking",
+    "from": "live-api",
+    "observed": "2026-10-18 04:17"
+   }
+  ],
+  "frequency": "2x daily (08:00, 20:00 HKT)",
+  "disclaimer": "AI-generated from the figures above. It is not analysis, not advice, and not an official notice."
+ },
+ "brief": {
+  "tc": "目前有四個地區的水供應受到影響，分別是中西區、九龍城區、元朗區和北區。醫院的等候時間中，廣華醫院、博愛醫院和基督教聯合醫院的最長等候時間為四小時。空氣質素指數的風險為低，最高指數為三。海灘水質中，二級水質的海灘有十六個，一級水質的海灘有二十四個。",
+  "en": "Currently, four districts have water supply affected: Central and Western District, Kowloon City District, Yuen Long District, and North District. The longest waiting time at hospitals is four hours at Kwong Wah Hospital, Pok Oi Hospital, and Christian Alliance Hospital. The air quality health index risk is low, with a maximum index of three. In beach water quality, there are sixteen beaches with level two quality and twenty-four with level one quality.",
+  "spoken_tc": "目前有四個地區的水供應受到影響，分別是中西區、九龍城區、元朗區和北區。醫院的等候時間中，廣華醫院、博愛醫院和基督教聯合醫院的最長等候時間為四小時。空氣質素指數的風險為低，最高指數為三。海灘水質中，二級水質的海灘有十六個，一級水質的海灘有二十四個。",
+  "spoken_en": "Currently, four districts have water supply affected: Central and Western District, Kowloon City District, Yuen Long District, and North District. The longest waiting time at hospitals is four hours at Kwong Wah Hospital, Pok Oi Hospital, and Christian Alliance Hospital. The air quality health index risk is low, with a maximum index of three. In beach water quality, there are sixteen beaches with level two quality and twenty-four with level one quality."
+ }
+}

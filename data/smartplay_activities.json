@@ -16,38 +16,6 @@
   "left": 0
  },
  {
-  "name_tc": "社區園圃計劃 - 東涌達東路花園社區園圃 (園圃編號22-42號)",
-  "name_en": "Community Garden Programme - Tung Chung Tat Tung Road Garden (Plots 22-42)",
-  "type_tc": "社區園圃計劃",
-  "type_en": "Community Garden Programme",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "東涌社區園圃",
-  "venue_en": "Tung Chung Community Garden",
-  "start": "2026-06-14",
-  "end": "2026-10-18",
-  "time": "08:00–18:00",
-  "fee": 400.0,
-  "quota": 21,
-  "left": 0
- },
- {
-  "name_tc": "社區園圃計劃 - 東涌達東路花園社區園圃 (園圃編號1-21號) (補堂:18/10)",
-  "name_en": "Community Garden Programme -Tung Chung Tat Tung Road Garden (Plots 1-21) (Compensatory:18/10)",
-  "type_tc": "社區園圃計劃",
-  "type_en": "Community Garden Programme",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "東涌社區園圃",
-  "venue_en": "Tung Chung Community Garden",
-  "start": "2026-06-14",
-  "end": "2026-10-18",
-  "time": "08:00–18:00",
-  "fee": 400.0,
-  "quota": 21,
-  "left": 0
- },
- {
   "name_tc": "清晨太極劍訓練班",
   "name_en": "Morning Tai Chi Sword Training Course",
   "type_tc": "太極劍",
@@ -19280,22 +19248,6 @@
   "left": 0
  },
  {
-  "name_tc": "高爾夫球訓練班(第一階段)",
-  "name_en": "Golf Training Course (Level I)",
-  "type_tc": "高爾夫球/室內高爾夫球",
-  "type_en": "Golf / Indoor Golf",
-  "district_tc": "屯門康樂體育中心",
-  "district_en": "Tuen Mun Recreation & Sports Centre",
-  "venue_tc": "屯門康樂體育中心",
-  "venue_en": "Tuen Mun Recreation & Sports Centre",
-  "start": "2026-10-04",
-  "end": "2026-10-18",
-  "time": "16:00–18:00",
-  "fee": 160.0,
-  "quota": 6,
-  "left": 0
- },
- {
   "name_tc": "乒乓球訓練班",
   "name_en": "Table-tennis Training Course ",
   "type_tc": "乒乓球",
@@ -19325,22 +19277,6 @@
   "time": "12:00–14:00",
   "fee": 70.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "荃灣區籃球比賽 2026/27",
-  "name_en": "Tsuen Wan District Basketball Competition 2026/27",
-  "type_tc": "籃球",
-  "type_en": "Basketball",
-  "district_tc": "荃灣區",
-  "district_en": "Tsuen Wan",
-  "venue_tc": "蕙荃體育館",
-  "venue_en": "Wai Tsuen Sports Centre",
-  "start": "2026-10-04",
-  "end": "2026-10-18",
-  "time": "09:00–18:00",
-  "fee": 60.0,
-  "quota": 36,
   "left": 0
  },
  {
@@ -19408,38 +19344,6 @@
   "left": 0
  },
  {
-  "name_tc": "高爾夫球訓練班(第二階段)",
-  "name_en": "Golf Training Course (Level II)",
-  "type_tc": "高爾夫球/室內高爾夫球",
-  "type_en": "Golf / Indoor Golf",
-  "district_tc": "屯門康樂體育中心",
-  "district_en": "Tuen Mun Recreation & Sports Centre",
-  "venue_tc": "屯門康樂體育中心",
-  "venue_en": "Tuen Mun Recreation & Sports Centre",
-  "start": "2026-10-04",
-  "end": "2026-10-18",
-  "time": "11:00–13:00",
-  "fee": 160.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "高爾夫球訓練班(斜坡擊球技巧改良班)",
-  "name_en": "Golf Training Course (Uneven Lies Technique)",
-  "type_tc": "高爾夫球/室內高爾夫球",
-  "type_en": "Golf / Indoor Golf",
-  "district_tc": "屯門康樂體育中心",
-  "district_en": "Tuen Mun Recreation & Sports Centre",
-  "venue_tc": "屯門康樂體育中心",
-  "venue_en": "Tuen Mun Recreation & Sports Centre",
-  "start": "2026-10-04",
-  "end": "2026-10-18",
-  "time": "16:00–18:00",
-  "fee": 160.0,
-  "quota": 6,
-  "left": 0
- },
- {
   "name_tc": "柔道訓練班",
   "name_en": "Judo Training Course",
   "type_tc": "柔道",
@@ -19472,22 +19376,6 @@
   "left": 0
  },
  {
-  "name_tc": "青少年高爾夫球訓練班(第二階段)",
-  "name_en": "Golf Training Course for Youth (Level II)",
-  "type_tc": "高爾夫球/室內高爾夫球",
-  "type_en": "Golf / Indoor Golf",
-  "district_tc": "屯門康樂體育中心",
-  "district_en": "Tuen Mun Recreation & Sports Centre",
-  "venue_tc": "屯門康樂體育中心",
-  "venue_en": "Tuen Mun Recreation & Sports Centre",
-  "start": "2026-10-04",
-  "end": "2026-10-18",
-  "time": "09:00–11:00",
-  "fee": 160.0,
-  "quota": 6,
-  "left": 0
- },
- {
   "name_tc": "圍棋訓練班（第二階段）",
   "name_en": "Go Training Course (Level II)",
   "type_tc": "圍棋",
@@ -19517,22 +19405,6 @@
   "time": "10:00–12:00",
   "fee": 160.0,
   "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "高爾夫球訓練班(第一階段)",
-  "name_en": "Golf Training Course (Level I)",
-  "type_tc": "高爾夫球/室內高爾夫球",
-  "type_en": "Golf / Indoor Golf",
-  "district_tc": "屯門康樂體育中心",
-  "district_en": "Tuen Mun Recreation & Sports Centre",
-  "venue_tc": "屯門康樂體育中心",
-  "venue_en": "Tuen Mun Recreation & Sports Centre",
-  "start": "2026-10-04",
-  "end": "2026-10-18",
-  "time": "09:00–11:00",
-  "fee": 160.0,
-  "quota": 6,
   "left": 0
  },
  {
@@ -19629,54 +19501,6 @@
   "time": "16:00–18:00",
   "fee": 45.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "高爾夫球訓練班(斜坡擊球技巧改良班)",
-  "name_en": "Golf Training Course (Uneven Lies Technique)",
-  "type_tc": "高爾夫球/室內高爾夫球",
-  "type_en": "Golf / Indoor Golf",
-  "district_tc": "屯門康樂體育中心",
-  "district_en": "Tuen Mun Recreation & Sports Centre",
-  "venue_tc": "屯門康樂體育中心",
-  "venue_en": "Tuen Mun Recreation & Sports Centre",
-  "start": "2026-10-04",
-  "end": "2026-10-18",
-  "time": "14:00–16:00",
-  "fee": 160.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "高爾夫球訓練班(第一階段)",
-  "name_en": "Golf Training Course (Level I)",
-  "type_tc": "高爾夫球/室內高爾夫球",
-  "type_en": "Golf / Indoor Golf",
-  "district_tc": "屯門康樂體育中心",
-  "district_en": "Tuen Mun Recreation & Sports Centre",
-  "venue_tc": "屯門康樂體育中心",
-  "venue_en": "Tuen Mun Recreation & Sports Centre",
-  "start": "2026-10-04",
-  "end": "2026-10-18",
-  "time": "11:00–13:00",
-  "fee": 160.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "高爾夫球訓練班(第一階段)",
-  "name_en": "Golf Training Course (Level I)",
-  "type_tc": "高爾夫球/室內高爾夫球",
-  "type_en": "Golf / Indoor Golf",
-  "district_tc": "屯門康樂體育中心",
-  "district_en": "Tuen Mun Recreation & Sports Centre",
-  "venue_tc": "屯門康樂體育中心",
-  "venue_en": "Tuen Mun Recreation & Sports Centre",
-  "start": "2026-10-04",
-  "end": "2026-10-18",
-  "time": "14:00–16:00",
-  "fee": 160.0,
-  "quota": 6,
   "left": 0
  },
  {
@@ -28077,7 +27901,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -34752,22 +34576,6 @@
   "left": 0
  },
  {
-  "name_tc": "風帆基本技巧訓練班(第二級)",
-  "name_en": "Sailing Basic Skills Training Course (Level 2)",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "聖士提反灣水上活動中心",
-  "district_en": "St. Stephen's Beach Water Sports Centre",
-  "venue_tc": "聖士提反灣水上活動中心",
-  "venue_en": "St. Stephen's Beach Water Sports Centre",
-  "start": "2026-10-10",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 140.0,
-  "quota": 6,
-  "left": 0
- },
- {
   "name_tc": "長者八段錦訓練班",
   "name_en": "Baduanjin Training Course for Elderly",
   "type_tc": "八段錦",
@@ -34781,22 +34589,6 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "風帆基本技巧訓練班(第二級)",
-  "name_en": "Sailing Basic Skills Training Course (Level 2)",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "赤柱正灘水上活動中心",
-  "district_en": "Stanley Main Beach Water Sports Centre",
-  "venue_tc": "赤柱正灘水上活動中心",
-  "venue_en": "Stanley Main Beach Water Sports Centre",
-  "start": "2026-10-10",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 140.0,
-  "quota": 6,
   "left": 0
  },
  {
@@ -35664,22 +35456,6 @@
   "left": 0
  },
  {
-  "name_tc": "風帆入門訓練班(第一級)",
-  "name_en": "Introduction to Sailing Training Course (Level 1) ",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-10-11",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 6,
-  "left": 0
- },
- {
   "name_tc": "社交舞訓練班",
   "name_en": "Social Dance Training Course",
   "type_tc": "社交舞",
@@ -35693,22 +35469,6 @@
   "time": "20:00–22:00",
   "fee": 86.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "九龍地域（油尖旺區、觀塘區、九龍城區、黃大仙區及深水埗區） 分齡壁球比賽2026",
-  "name_en": "Kowloon Region (Yau Tsim Mong, Kwun Tong, Kowloon City, Wong Tai Sin and Sham Shui Po Districts) Age Group Squash Competition 2026",
-  "type_tc": "壁球",
-  "type_en": "Squash",
-  "district_tc": "九龍城區",
-  "district_en": "Kowloon City",
-  "venue_tc": "歌和老街壁球及乒乓球中心",
-  "venue_en": "Cornwall Street Squash & Table Tennis Centre",
-  "start": "2026-10-11",
-  "end": "2026-10-18",
-  "time": "09:00–19:00",
-  "fee": 20.0,
-  "quota": 200,
   "left": 0
  },
  {
@@ -38688,38 +38448,6 @@
   "left": 0
  },
  {
-  "name_tc": "風帆入門訓練班(第一級)",
-  "name_en": "Introduction to Sailing Training Course (Level 1)",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "聖士提反灣水上活動中心",
-  "district_en": "St. Stephen's Beach Water Sports Centre",
-  "venue_tc": "聖士提反灣水上活動中心",
-  "venue_en": "St. Stephen's Beach Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "初級滑浪風帆專修",
-  "name_en": "Basic Windsurfing Clinic",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "赤柱正灘水上活動中心",
-  "district_en": "Stanley Main Beach Water Sports Centre",
-  "venue_tc": "赤柱正灘水上活動中心",
-  "venue_en": "Stanley Main Beach Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 5,
-  "left": 0
- },
- {
   "name_tc": "兒童柔道訓練班",
   "name_en": "Judo Training Course for Children",
   "type_tc": "柔道",
@@ -38784,22 +38512,6 @@
   "left": 0
  },
  {
-  "name_tc": "初級滑浪風帆訓練班",
-  "name_en": "Basic Windsurfing Training Course ",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 5,
-  "left": 0
- },
- {
   "name_tc": "兒童小型網球訓練班",
   "name_en": "Mini-tennis Training Course for Children",
   "type_tc": "小型網球",
@@ -38829,22 +38541,6 @@
   "time": "18:00–20:00",
   "fee": 85.0,
   "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "少年帆船第三級:舵手進階",
-  "name_en": "Junior Sail 3: Skipper",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 6,
   "left": 0
  },
  {
@@ -38896,22 +38592,6 @@
   "left": 0
  },
  {
-  "name_tc": "獨木舟中級金章訓練班(技術及旅程)",
-  "name_en": "Kayak Proficiency Gold Award Training Course (Techniques & Sea Trip)",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 60.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "高級獨木舟救生員訓練班 (技術)",
   "name_en": "Advanced Canoe Lifeguard Training Course (Techniques)",
   "type_tc": "獨木舟",
@@ -38925,38 +38605,6 @@
   "time": "09:00–17:00",
   "fee": 90.0,
   "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "兒童滑浪風帆體驗訓練班",
-  "name_en": "Windsurfing Discovery (Junior) Training Course",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 4,
-  "left": 0
- },
- {
-  "name_tc": "初級滑浪風帆訓練班",
-  "name_en": "Basic Windsurfing Training Course",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 5,
   "left": 0
  },
  {
@@ -38992,38 +38640,6 @@
   "left": 0
  },
  {
-  "name_tc": "少年帆船第一級:入門訓練",
-  "name_en": "Junior Sail 1: Introduction to Sailing ",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "中級滑浪風帆訓練班",
-  "name_en": "Intermediate Windsurfing Training Course",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "大美督水上活動中心",
-  "district_en": "Tai Mei Tuk Water Sports Centre",
-  "venue_tc": "大美督水上活動中心",
-  "venue_en": "Tai Mei Tuk Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "親子(7-17歲)羽毛球訓練班",
   "name_en": "Parent-child (Aged 7-17) Badminton Training Course",
   "type_tc": "羽毛球",
@@ -39056,22 +38672,6 @@
   "left": 0
  },
  {
-  "name_tc": "兒童滑浪風帆體驗訓練班",
-  "name_en": "Windsurfing Discovery (Junior) Training Course",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "聖士提反灣水上活動中心",
-  "district_en": "St. Stephen's Beach Water Sports Centre",
-  "venue_tc": "聖士提反灣水上活動中心",
-  "venue_en": "St. Stephen's Beach Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 4,
-  "left": 0
- },
- {
   "name_tc": "柔道訓練班",
   "name_en": "Judo Training Course",
   "type_tc": "柔道",
@@ -39086,38 +38686,6 @@
   "fee": 65.0,
   "quota": 15,
   "left": 0
- },
- {
-  "name_tc": "少年帆船第二級：舵手訓練",
-  "name_en": "Junior Sail 2: Helmsman",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "大美督水上活動中心",
-  "district_en": "Tai Mei Tuk Water Sports Centre",
-  "venue_tc": "大美督水上活動中心",
-  "venue_en": "Tai Mei Tuk Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "沙灘排球同樂日",
-  "name_en": "Beach Volleyball Fun Day",
-  "type_tc": "排球",
-  "type_en": "Volleyball",
-  "district_tc": "南區",
-  "district_en": "Southern",
-  "venue_tc": "淺水灣泳灘 (沙灘排球場)",
-  "venue_en": "Repulse Bay Beach (Beach Volleyball Court)",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "14:00–17:00",
-  "fee": 0.0,
-  "quota": 150,
-  "left": 150
  },
  {
   "name_tc": "深水埗區籃球比賽 2026",
@@ -39136,86 +38704,6 @@
   "left": 0
  },
  {
-  "name_tc": "獨木舟一星章訓練班",
-  "name_en": "Kayak 1 Star Award Training Course",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "赤柱正灘水上活動中心",
-  "district_en": "Stanley Main Beach Water Sports Centre",
-  "venue_tc": "赤柱正灘水上活動中心",
-  "venue_en": "Stanley Main Beach Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "健身室指導課",
-  "name_en": "Fitness Instruction Session",
-  "type_tc": "正確使用健身室設施簡介會",
-  "type_en": "Briefing on Proper Ways to Use Fitness Equipment",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "富善體育館（主場非備空調）",
-  "venue_en": "Fu Shin Sports Centre (Non-air-conditioned in Arena)",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "10:00–12:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 20
- },
- {
-  "name_tc": "圍棋同樂日",
-  "name_en": "Go Fun Day",
-  "type_tc": "圍棋",
-  "type_en": "Go",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "東涌文東路體育館",
-  "venue_en": "Tung Chung Man Tung Road Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "10:00–12:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "正確使用健身室設施簡介會",
-  "name_en": "Briefing on Proper Ways to Use Fitness Equipment",
-  "type_tc": "正確使用健身室設施簡介會",
-  "type_en": "Briefing on Proper Ways to Use Fitness Equipment",
-  "district_tc": "深水埗區",
-  "district_en": "Sham Shui Po",
-  "venue_tc": "深水埗體育館",
-  "venue_en": "Sham Shui Po Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "14:00–17:00",
-  "fee": 0.0,
-  "quota": 25,
-  "left": 0
- },
- {
-  "name_tc": "健身室指導課",
-  "name_en": "Fitness Instruction Session",
-  "type_tc": "正確使用健身室設施簡介會",
-  "type_en": "Briefing on Proper Ways to Use Fitness Equipment",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "富善體育館（主場非備空調）",
-  "venue_en": "Fu Shin Sports Centre (Non-air-conditioned in Arena)",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "10:00–12:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 20
- },
- {
   "name_tc": "風帆入門訓練班（第一級）",
   "name_en": "Introduction to Sailing Training Course (Level 1)",
   "type_tc": "風帆",
@@ -39232,54 +38720,6 @@
   "left": 0
  },
  {
-  "name_tc": "青少年三人籃球同樂日",
-  "name_en": "3-on-3 Basketball Fun Day for Youth",
-  "type_tc": "三人籃球",
-  "type_en": "3-on-3 Basketball",
-  "district_tc": "東區",
-  "district_en": "Eastern",
-  "venue_tc": "電照街遊樂場",
-  "venue_en": "Tin Chiu Street Playground",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "14:00–17:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "少年獨木舟海象章訓練班",
-  "name_en": "Junior Kayak Walrus Award Training Course",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "獨木舟二星章訓練班",
-  "name_en": "Kayak 2 Star Award Training Course",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "大美督水上活動中心",
-  "district_en": "Tai Mei Tuk Water Sports Centre",
-  "venue_tc": "大美督水上活動中心",
-  "venue_en": "Tai Mei Tuk Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "短板入門",
   "name_en": "Introduction to Short Board",
   "type_tc": "滑浪風帆",
@@ -39293,22 +38733,6 @@
   "time": "09:00–17:00",
   "fee": 130.0,
   "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "騎馬暨哥爾夫球同樂日",
-  "name_en": "Horse Riding cum Golf Fun Day",
-  "type_tc": "騎馬暨高爾夫球",
-  "type_en": "Horse Riding cum Golf",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "屯門康樂體育中心",
-  "venue_en": "Tuen Mun Recreation & Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "15:00–17:00",
-  "fee": 75.0,
-  "quota": 32,
   "left": 0
  },
  {
@@ -39344,38 +38768,6 @@
   "left": 0
  },
  {
-  "name_tc": "功夫閣",
-  "name_en": "Kung Fu Corner",
-  "type_tc": "國術",
-  "type_en": "Martial Arts",
-  "district_tc": "油尖旺區",
-  "district_en": "Yau Tsim Mong",
-  "venue_tc": "九龍公園 (雕塑廊)",
-  "venue_en": "Kowloon Park (Sculpture Walk)",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "14:30–16:30",
-  "fee": 0.0,
-  "quota": 150,
-  "left": 150
- },
- {
-  "name_tc": "匹克球同樂日",
-  "name_en": "Pickleball Fun Day",
-  "type_tc": "匹克球",
-  "type_en": "Pickleball",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "摩士公園體育館",
-  "venue_en": "Morse Park Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "14:00–17:00",
-  "fee": 0.0,
-  "quota": 32,
-  "left": 0
- },
- {
   "name_tc": "初級滑浪風帆訓練班",
   "name_en": "Basic Windsurfing Training Course",
   "type_tc": "滑浪風帆",
@@ -39408,54 +38800,6 @@
   "left": 0
  },
  {
-  "name_tc": "運動攀登同樂日",
-  "name_en": "Sport Climbing Fun Day",
-  "type_tc": "運動攀登",
-  "type_en": "Sport Climbing",
-  "district_tc": "荃灣區",
-  "district_en": "Tsuen Wan",
-  "venue_tc": "荃灣體育館 (毗鄰荃灣西站)",
-  "venue_en": "Tsuen Wan Sports Centre (adjacent to Tsuen Wan West Station)",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "13:00–15:00",
-  "fee": 0.0,
-  "quota": 24,
-  "left": 0
- },
- {
-  "name_tc": "油尖旺區分齡游泳比賽 2026",
-  "name_en": "Yau Tsim Mong District Age Group Swimming Competition 2026",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "油尖旺區",
-  "district_en": "Yau Tsim Mong",
-  "venue_tc": "九龍公園游泳池",
-  "venue_en": "Kowloon Park Swimming Pool",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "09:00–20:00",
-  "fee": 20.0,
-  "quota": 1076,
-  "left": 0
- },
- {
-  "name_tc": "獨木舟三星章訓練班",
-  "name_en": "Kayak 3 Star Award Training Course ",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "兒童舞訓練班",
   "name_en": "Children Dance Training Course",
   "type_tc": "兒童舞",
@@ -39469,22 +38813,6 @@
   "time": "14:00–16:00",
   "fee": 60.0,
   "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "運動攀登同樂日",
-  "name_en": "Sport Climbing Fun Day",
-  "type_tc": "運動攀登",
-  "type_en": "Sport Climbing",
-  "district_tc": "荃灣區",
-  "district_en": "Tsuen Wan",
-  "venue_tc": "荃灣體育館 (毗鄰荃灣西站)",
-  "venue_en": "Tsuen Wan Sports Centre (adjacent to Tsuen Wan West Station)",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "15:00–17:00",
-  "fee": 0.0,
-  "quota": 24,
   "left": 0
  },
  {
@@ -39502,54 +38830,6 @@
   "fee": 90.0,
   "quota": 8,
   "left": 0
- },
- {
-  "name_tc": "少年獨木舟海豹章訓練班",
-  "name_en": "Junior Kayak Seal Award Training Course",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "正確使用健身室設施簡介會",
-  "name_en": "Briefing on Proper Ways to Use Fitness Equipment",
-  "type_tc": "正確使用健身室設施簡介會",
-  "type_en": "Briefing on Proper Ways to Use Fitness Equipment",
-  "district_tc": "灣仔區",
-  "district_en": "Wan Chai",
-  "venue_tc": "駱克道體育館",
-  "venue_en": "Lockhart Road Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "14:00–17:00",
-  "fee": 0.0,
-  "quota": 25,
-  "left": 0
- },
- {
-  "name_tc": "綠化講座",
-  "name_en": "Green Seminar",
-  "type_tc": "綠化活動",
-  "type_en": "Green Activity",
-  "district_tc": "荃灣區",
-  "district_en": "Tsuen Wan",
-  "venue_tc": "荃灣體育館 (三樓會議室)",
-  "venue_en": "Tsuen Wan Sports Centre (3/F Conference Room)",
-  "start": "2026-10-18",
-  "end": "2026-10-18",
-  "time": "15:00–17:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
  },
  {
   "name_tc": "風帆入門訓練班(第一級)",
@@ -43709,7 +42989,7 @@
   "time": "15:00–16:00",
   "fee": 0.0,
   "quota": 15,
-  "left": 0
+  "left": 15
  },
  {
   "name_tc": "青少年三人籃球同樂日",
@@ -44637,7 +43917,7 @@
   "time": "09:15–16:30",
   "fee": 0.0,
   "quota": 10,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -51805,7 +51085,7 @@
   "time": "14:00–16:00",
   "fee": 0.0,
   "quota": 15,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "黃昏簡易太極班",
@@ -69501,7 +68781,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 4,
-  "left": 0
+  "left": 4
  },
  {
   "name_tc": "兒童乒乓球訓練班",
@@ -69581,7 +68861,7 @@
   "time": "09:15–17:00",
   "fee": 0.0,
   "quota": 8,
-  "left": 0
+  "left": 8
  },
  {
   "name_tc": "健球同樂日",
@@ -70925,7 +70205,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 19,
-  "left": 3
+  "left": 1
  },
  {
   "name_tc": "高爾夫球同樂日",
@@ -73520,6 +72800,38 @@
   "left": 30
  },
  {
+  "name_tc": "戶外健體訓練簡介會",
+  "name_en": "Briefing on Outdoor Fitness Training",
+  "type_tc": "徒手健體",
+  "type_en": "Fitness Exercise",
+  "district_tc": "葵青區",
+  "district_en": "Kwai Tsing",
+  "venue_tc": "青衣公園",
+  "venue_en": "Tsing Yi Park",
+  "start": "2026-11-18",
+  "end": "2026-11-18",
+  "time": "09:30–11:00",
+  "fee": 0.0,
+  "quota": 30,
+  "left": 30
+ },
+ {
+  "name_tc": "戶外健體訓練簡介會",
+  "name_en": "Briefing on Outdoor Fitness Training",
+  "type_tc": "徒手健體",
+  "type_en": "Fitness Exercise",
+  "district_tc": "葵青區",
+  "district_en": "Kwai Tsing",
+  "venue_tc": "青衣公園",
+  "venue_en": "Tsing Yi Park",
+  "start": "2026-11-18",
+  "end": "2026-11-18",
+  "time": "08:00–09:30",
+  "fee": 0.0,
+  "quota": 30,
+  "left": 30
+ },
+ {
   "name_tc": "長者陸上暢遊",
   "name_en": "Excursion for Elderly",
   "type_tc": "陸上暢遊",
@@ -75709,7 +75021,7 @@
   "time": "16:00–17:00",
   "fee": 0.0,
   "quota": 80,
-  "left": 22
+  "left": 25
  },
  {
   "name_tc": "少年獨木舟海豹章訓練班",
@@ -75757,7 +75069,7 @@
   "time": "14:00–15:00",
   "fee": 0.0,
   "quota": 80,
-  "left": 17
+  "left": 19
  },
  {
   "name_tc": "匹克球同樂日",
@@ -75789,7 +75101,7 @@
   "time": "15:00–16:00",
   "fee": 0.0,
   "quota": 80,
-  "left": 24
+  "left": 25
  },
  {
   "name_tc": "少年獨木舟海豹章訓練班",
@@ -90461,7 +89773,7 @@
   "time": "18:00–19:00",
   "fee": 0.0,
   "quota": 2,
-  "left": 0
+  "left": 2
  },
  {
   "name_tc": "長者體趣同樂 - 門球",
@@ -90957,7 +90269,7 @@
   "time": "19:00–20:00",
   "fee": 0.0,
   "quota": 2,
-  "left": 0
+  "left": 2
  },
  {
   "name_tc": "健體舞訓練班",
@@ -108334,6 +107646,22 @@
   "fee": 75.0,
   "quota": 30,
   "left": 30
+ },
+ {
+  "name_tc": "健身室指導課",
+  "name_en": "Fitness Instruction Session",
+  "type_tc": "正確使用健身室設施簡介會",
+  "type_en": "Briefing on Proper Ways to Use Fitness Equipment",
+  "district_tc": "中西區",
+  "district_en": "Central & Western",
+  "venue_tc": "中山紀念公園體育館",
+  "venue_en": "Sun Yat Sen Memorial Park Sports Centre",
+  "start": "2026-12-23",
+  "end": "2026-12-23",
+  "time": "19:00–20:00",
+  "fee": 0.0,
+  "quota": 15,
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",

@@ -17,6 +17,15 @@ export type GlyphId =
   | "station-wind"
   | "aqhi"
   | "facility"
+  // The three families the LCSD merge is actually made of. All 952 points drew the same
+  // dumbbell, which said "sport" about 184 libraries, 123 parks and 18 museums. The disc
+  // stays the one green — these are the public's facilities, not a department's — and the
+  // INK carries the family: a ball for the courts, a civic building for the venues you go
+  // inside, a tree for the outdoors. `facility` above stays as the match fallback, so a
+  // type a future merge adds still draws something rather than nothing.
+  | "facility-court"
+  | "facility-venue"
+  | "facility-outdoor"
   // Graded beaches (EPD water quality): a teal disc with white wave crests —
   // the sea, and deliberately neither the amber aqhi plume nor the green
   // facility disc. The crests keep it from reading as a bare glow orb.
@@ -82,7 +91,9 @@ export type GlyphId =
   // Public EV chargers (EPD): a lightning bolt — "plug in here", the one thing
   // a charger layer needs to say at a glance.
   | "ev"
-  // On-street sensor parking: no glyph — the live colour disc is the signal.
+  // On-street sensor parking: a disc, and the LIVE COLOUR is the whole signal — red
+  // occupied, green vacant, grey where no sensor reported. No ink inside it: at the size
+  // 20,700-odd of these are actually seen, anything drawn within the disc is a smudge.
   | "meter"
   | "meter-occupied"
   | "meter-vacant"
@@ -420,81 +431,104 @@ function drawTrain(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** Bus: a SIDE PROFILE — body, window strip, wheels, route board. The shape a reader already
- *  knows, at the size it is actually seen.
+/** Bus: TOP-DOWN — roof, windscreen, destination board — drawn nose-up so `icon-rotate` can
+ *  point it where it is actually driving.
  *
- *  This was drawn top-down to share the convention of the rotating vehicle glyphs. At 20px that is
- *  a narrow bar with no wheels, and the glyph sheet's verdict on it was 「似電芯／手機／紅色柱」: a
- *  rectangle seen from above is honest and unreadable at once, which is the light-dot problem in a
- *  different costume. Wheels are what make a bus a bus at any size, and wheels only exist in
- *  profile — so this glyph is drawn from the side and is NOT rotated (see the moving set in
- *  overlays.ts). The nose points +X.
+ *  This glyph has now been drawn three ways, and the record is the point:
+ *
+ *   1. top-down, to share the convention of the rotating vehicle glyphs. At 20px that was a
+ *      narrow bar with no wheels, and the glyph sheet's verdict on it was 「似電芯／手機／紅色柱」:
+ *      a plain rectangle seen from above is honest and unreadable at once.
+ *   2. side profile, NOT rotated — wheels only exist in profile, and wheels are what make a
+ *      bus a bus. Readable, but the nose was pinned to +X, so a northbound bus was drawn
+ *      travelling sideways across the map. That is the complaint this version answers.
+ *   3. here: top-down again, because rotation is only honest for a shape that has a front.
+ *      What beats the battery verdict is not the outline but the FACE — a dark windscreen band
+ *      across the nose, the amber destination board on the leading edge, the roof hatch cluster
+ *      amidships, and the mirror ticks sticking out past the body. A bus from above is a
+ *      rounded rectangle WITH a face; a battery has neither windscreen nor mirrors.
+ *
+ *  Drawn nose UP (-Y), like `plane`, `vessel` and `mtr-train`, because `icon-rotate` reads
+ *  `bearing` in degrees CLOCKWISE FROM NORTH. The side profile's +X frame would put every bus
+ *  a quarter turn out. The body is ~2:1 rather than the train's 4:1: a bus is short and fat,
+ *  and 4:1 at 20px is exactly the bar that failed the first time.
  *
  *  The body colour is the OPERATOR (see bus-* in GLYPHS): KMB red, Citybus blue, and so on. The
- *  windows stay near-black for every operator so the livery reads. Drawn from primitives like
- *  every other glyph: no icon font, no emoji, no binary asset in the repo. */
+ *  glazing and the roof unit stay neutral for every operator so the livery reads. Drawn from
+ *  primitives like every other glyph: no icon font, no emoji, no binary asset in the repo. */
 function drawBus(ctx: CanvasRenderingContext2D, size: number, body = "#e60012"): void {
   const c = size / 2;
   ctx.save();
   ctx.translate(c, c);
   ctx.lineJoin = "round";
-  // ground shadow — a bus that floats reads as a marker, not as a vehicle
+  const ink = "rgba(5,7,13,.85)";
+
+  // Mirrors FIRST, so the body overlaps their stems. Two ticks standing off the sides are the
+  // one top-down feature no other vehicle on this map has.
+  ctx.fillStyle = ink;
+  ctx.fillRect(-10.4, -12.2, 3.3, 1.9);
+  ctx.fillRect(7.1, -12.2, 3.3, 1.9);
+
+  // Body. From directly above the roof IS the visible surface, so this is the livery itself.
   ctx.beginPath();
-  ctx.ellipse(0, 8.6, 15.5, 2.2, 0, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(3,6,12,.35)";
+  ctx.roundRect(-7.6, -15.5, 15.2, 31, 2.6);
+  ctx.fillStyle = body;
   ctx.fill();
-  // body, nose to +X
-  const r = 2.4;
+  ctx.strokeStyle = ink;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Roof edge: an inset highlight, so the body reads as a surface seen from above rather than
+  // as a flat sticker. Cheap, and it survives downscaling better than any interior detail.
   ctx.beginPath();
-  ctx.moveTo(-16.4, -7.6);
-  ctx.lineTo(16.4 - r, -7.6);
-  ctx.quadraticCurveTo(16.4, -7.6, 16.4, -7.6 + r);
-  ctx.lineTo(16.4, 5.4 - r);
-  ctx.quadraticCurveTo(16.4, 5.4, 16.4 - r, 5.4);
-  ctx.lineTo(-16.4, 5.4);
+  ctx.roundRect(-5.9, -13.3, 11.8, 26.4, 1.9);
+  ctx.strokeStyle = "rgba(255,255,255,.2)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Windscreen: a wide dark band across the nose, SPLIT by a centre pillar. The split is the
+  // whole point — one solid band was read as a battery terminal, and two panes read as glass.
+  // This band is also the front, so the reader can see which way the bus is pointing.
+  ctx.beginPath();
+  ctx.moveTo(-5.9, -11.2);
+  ctx.quadraticCurveTo(0, -13.7, 5.9, -11.2);
+  ctx.lineTo(5.9, -6);
+  ctx.quadraticCurveTo(0, -8.3, -5.9, -6);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(10,14,22,.9)";
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-0.75, -13.4);
+  ctx.lineTo(0.75, -13.4);
+  ctx.lineTo(0.75, -7);
+  ctx.lineTo(-0.75, -7);
   ctx.closePath();
   ctx.fillStyle = body;
   ctx.fill();
-  ctx.strokeStyle = "rgba(5,7,13,.85)";
-  ctx.lineWidth = 1;
-  ctx.stroke();
-  // window strip — one dark band, not four panes: the panes close up at 20px and the band is what
-  // survives as "glazing" there
+
+  // Destination board: the amber the side profile carried, now the top lip of the board on the
+  // leading edge — all of it that is visible from above, which is why it sits on the nose
+  // rather than on the roof.
   ctx.beginPath();
-  ctx.moveTo(-14.6, -5.9);
-  ctx.lineTo(12.6, -5.9);
-  ctx.lineTo(12.6, -1.6);
-  ctx.lineTo(-14.6, -1.6);
-  ctx.closePath();
-  ctx.fillStyle = "rgba(10,14,22,.86)";
-  ctx.fill();
-  // door, ahead of the rear axle — the one vertical break that says "passenger vehicle"
-  ctx.beginPath();
-  ctx.moveTo(7.4, -5.9);
-  ctx.lineTo(7.4, 5.4);
-  ctx.strokeStyle = "rgba(10,14,22,.7)";
-  ctx.lineWidth = 1.2;
-  ctx.stroke();
-  // route board, above the windscreen at the nose
-  ctx.beginPath();
-  ctx.moveTo(13.4, -7.2);
-  ctx.lineTo(16.2, -7.2);
-  ctx.lineTo(16.2, -5.9);
-  ctx.lineTo(13.4, -5.9);
-  ctx.closePath();
+  ctx.roundRect(-4.6, -15.5, 9.2, 1.9, 0.7);
   ctx.fillStyle = "#f0a11e";
   ctx.fill();
-  // wheels — the whole point of the redraw
-  for (const x of [-9.6, 9.6]) {
-    ctx.beginPath();
-    ctx.arc(x, 5.9, 3.1, 0, Math.PI * 2);
-    ctx.fillStyle = "#0a0d14";
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x, 5.9, 1.1, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(190,200,215,.75)";
-    ctx.fill();
-  }
+
+  // Roof hatches amidships: two ribs, NOT one pale panel. The panel was the thing that read as
+  // a phone screen in the first top-down attempt; ribs read as structure on a roof.
+  ctx.fillStyle = lighten(body, 0.26);
+  ctx.beginPath();
+  ctx.roundRect(-4, -3.6, 8, 2.3, 1);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.roundRect(-4, 1.1, 8, 2.3, 1);
+  ctx.fill();
+
+  // Rear window, so the tail reads as a tail and not merely as where the rectangle stops.
+  ctx.beginPath();
+  ctx.roundRect(-4.9, 11.4, 9.8, 2.7, 1);
+  ctx.fillStyle = "rgba(10,14,22,.75)";
+  ctx.fill();
   ctx.restore();
 }
 
@@ -548,6 +582,93 @@ function drawFacility(ctx: CanvasRenderingContext2D, size: number): void {
   plate(8, -6.5, 12.5, 6.5);
   plate(-16, -9, -12.5, 9);       // outer plate
   plate(12.5, -9, 16, 9);
+  ctx.restore();
+}
+
+/** LCSD family: the COURTS — basketball, badminton, tennis (475 of the 952 points).
+ *
+ *  The dumbbell said "sport" for the whole layer, which is wrong about 184 libraries and
+ *  123 parks. A ball is the one shape that says 球場 without a legend. The two seams are
+ *  what separate it from a plain dot — a bare circle here would be the generic POI marker
+ *  the dumbbell was introduced to replace. */
+function drawFacilityCourt(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.beginPath();
+  ctx.arc(0, 0.4, 9.4, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(6,10,18,.7)";
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+  // Two seams, bowing away from each other: a tennis ball, not a target.
+  ctx.lineWidth = 1.1;
+  ctx.beginPath();
+  ctx.moveTo(0, -9);
+  ctx.quadraticCurveTo(-10.2, 0.4, 0, 9.8);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0, -9);
+  ctx.quadraticCurveTo(10.2, 0.4, 0, 9.8);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** LCSD family: the VENUES you go INSIDE — sports centres, libraries, museums (308 points).
+ *
+ *  A civic building: pediment, body, columns. The pediment is what makes it read as a
+ *  building rather than as a box, and it is the same silhouette a museum, a library and a
+ *  sports centre share — which is exactly the family. */
+function drawFacilityVenue(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.lineJoin = "round";
+  ctx.fillStyle = "#ffffff";
+  ctx.strokeStyle = "rgba(6,10,18,.7)";
+  ctx.lineWidth = 1.1;
+  // Pediment.
+  ctx.beginPath();
+  ctx.moveTo(0, -10.6);
+  ctx.lineTo(10.6, -3.4);
+  ctx.lineTo(-10.6, -3.4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // Body.
+  ctx.beginPath();
+  ctx.roundRect(-8.8, -3.4, 17.6, 13.4, 1);
+  ctx.fill();
+  ctx.stroke();
+  // Columns, cut out of the body in the glyph's own ink — the middle one is the door.
+  ctx.fillStyle = "rgba(6,10,18,.7)";
+  for (const x of [-5.6, 0, 5.6]) ctx.fillRect(x - 1.25, -1.2, 2.5, 7.4);
+  ctx.restore();
+}
+
+/** LCSD family: the OUTDOORS — parks, BBQ sites, holiday camps (169 points).
+ *
+ *  A tree. Canopy plus trunk, and the TRUNK is what keeps it apart from the courts' ball at
+ *  the size these are actually seen: a ball is a circle with seams and no stem, a tree is a
+ *  circle standing on one. */
+function drawFacilityOutdoor(ctx: CanvasRenderingContext2D, size: number): void {
+  const c = size / 2;
+  ctx.save();
+  ctx.translate(c, c);
+  ctx.fillStyle = "#ffffff";
+  ctx.strokeStyle = "rgba(6,10,18,.7)";
+  ctx.lineWidth = 1.1;
+  // Trunk first, so the canopy overlaps its top.
+  ctx.beginPath();
+  ctx.roundRect(-1.9, 1.4, 3.8, 9.6, 0.9);
+  ctx.fill();
+  ctx.stroke();
+  // Canopy.
+  ctx.beginPath();
+  ctx.arc(0, -2.6, 8.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
   ctx.restore();
 }
 
@@ -868,20 +989,27 @@ function drawWater(ctx: CanvasRenderingContext2D, size: number): void {
   ctx.restore();
 }
 
-/** Sensor parking bay: an upright rounded rectangle in the state colour, with a dark
- *  border so it stays a SHAPE on a pale basemap. On the same 44px grid as every other
- *  glyph, so `icon-size` stays comparable between layers. */
+/** Sensor parking space: a plain disc in the state colour, with a dark border so it stays
+ *  a SHAPE on a pale basemap. On the same 44px grid as every other glyph, so `icon-size`
+ *  stays comparable between layers.
+ *
+ *  This was an upright rounded rectangle — a bay lying along its street, rotated by the
+ *  per-space `bearing` scripts/build_meters.py bakes in. Changed to a disc on request: the
+ *  colour is what carries the state (red occupied / green vacant / grey unknown), and a
+ *  disc is the shape that stays legible when 20,700-odd of them overlap at city zoom.
+ *
+ *  The consequence is that the baked `bearing` is no longer read — a rotated circle is the
+ *  same circle — so the layer pins `icon-rotate` to 0. The property stays in the data: it
+ *  costs nothing, and it is what the bay shape would need to come back. */
 function drawMeter(ctx: CanvasRenderingContext2D, size: number, fill = "#5b6472"): void {
   const c = size / 2;
-  const w = 11;
-  const h = 18;
   ctx.save();
   ctx.translate(c, c);
   ctx.beginPath();
-  ctx.roundRect(-w / 2, -h / 2, w, h, 2.6);
+  ctx.arc(0, 0, 9.5, 0, Math.PI * 2);
   ctx.fillStyle = fill;
   ctx.fill();
-  ctx.lineWidth = 1.2;
+  ctx.lineWidth = 1.4;
   ctx.strokeStyle = "rgba(5,7,13,.9)";
   ctx.stroke();
   ctx.restore();
@@ -918,7 +1046,16 @@ const GLYPHS: Record<GlyphId, GlyphSpec> = {
   // Green, not an agency colour: leisure facilities are the public's, not a
   // department's. The disc carries the meaning; the centre dot keeps it from
   // reading as a glow orb (a facility is a place, not a light).
+  //
+  // ONE DISC, THREE INK SHAPES. The layer draws a match on the facility's own `Type_en`
+  // (see overlays.ts): a ball for the courts, a building for the venues, a tree for the
+  // outdoors. The bare `facility` here is the match fallback — the dumbbell — so a type a
+  // later CSDI merge adds still draws instead of silently drawing NOTHING, which is what a
+  // missing icon id does.
   facility: { draw: drawFacility, disc: "#34d399" },
+  "facility-court": { draw: drawFacilityCourt, disc: "#34d399" },
+  "facility-venue": { draw: drawFacilityVenue, disc: "#34d399" },
+  "facility-outdoor": { draw: drawFacilityOutdoor, disc: "#34d399" },
   // Teal, not an agency colour: beaches are the public's (same reasoning as
   // facility). The white crests are the meaning; the disc keeps it a place.
   beach: { draw: drawBeach, disc: "#14b8a6" },

@@ -184,6 +184,9 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
       features: d?.features?.length ?? -1,
       layer: (() => { try { return window.__map.getLayoutProperty(lid, "visibility") ?? "visible"; } catch { return "MISSING"; } })(),
       icon: (() => { try { return window.__map.getLayoutProperty(lid, "icon-image"); } catch { return null; } })(),
+      // The bus is drawn top-down and nose-up so it can be rotated by its heading. Pinned to 0
+      // it is a bus travelling sideways, which is the complaint this asserts against.
+      rotate: (() => { try { const r = window.__map.getLayoutProperty(lid, "icon-rotate"); return Array.isArray(r) ? r.join(",") : String(r); } catch { return null; } })(),
       banner: document.querySelector(".banner, .layer-error")?.textContent?.trim() ?? "",
     };
   });
@@ -203,6 +206,7 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
     iconExpr.includes("bus") && (Array.isArray(b.icon) ? iconExpr.includes("match") : b.icon.startsWith("bus")),
     `the bus layer must draw bus glyphs, not a dot: icon-image=${iconExpr}`,
   );
+  ok(String(b.rotate).includes("bearing"), `the bus must be rotated by its heading, not pinned to 0: icon-rotate=${b.rotate}`);
   ok(!b.banner, `a banner appeared while drawing the bus layer: "${b.banner}"`);
   if (b.features === 0) console.log("NOTE  bus layer drew 0 positions right now (no live ETAs at the sampled stops)");
   await clickRow("bus_live");
@@ -212,7 +216,7 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   console.log(`bus live: default=off features=${b.features} glyph=${iconExpr}`);
 }
 
-// ── 5c. SENSOR PARKING: 20,700-ODD STATIC BAYS, CLUSTERED, DRAWN AS RECTANGLES ──────
+// ── 5c. SENSOR PARKING: 20,700-ODD STATIC SPACES, CLUSTERED, DRAWN AS DISCS ──────
 //
 // This layer has three ways to be silently wrong: it can draw nothing (its adapter threw),
 // it can draw grey everywhere (the colour never reached the features), or it can draw a
@@ -255,13 +259,15 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
   ok(sp.features > 20000, `the sensor parking layer placed ${sp.features} bays`);
   ok(sp.cluster, "the sensor parking layer must cluster: 20,700-odd bays unclustered is a colour smear");
   ok(sp.missingImages.length === 0, `bay images missing from the map: ${sp.missingImages.join(", ")} — those bays draw nothing`);
-  ok(sp.icon.includes("meter-"), `the sensor parking layer must draw bay shapes: icon-image=${sp.icon}`);
+  ok(sp.icon.includes("meter-"), `the sensor parking layer must draw the state discs: icon-image=${sp.icon}`);
   ok(sp.coloured > 0, "the sensor parking layer carries its live colour per bay (grey everywhere = the adapter never ran)");
-  ok(sp.angles > 0, "the bays carry a baked street bearing — without it every bay stands upright");
-  ok(String(sp.rotate).includes("bearing"), `the bays must be rotated by their bearing: icon-rotate=${sp.rotate}`);
+  // The space is a DISC now, and a rotated circle is the same circle — so this layer must NOT
+  // rotate. It used to, to lay each bay along its street. `angles` is still printed because the
+  // baked bearing is still in the data and is what the bay shape would need to come back.
+  ok(String(sp.rotate) === "0", `the parking disc must not be rotated: icon-rotate=${sp.rotate}`);
   await clickRow("sensor_parking_spaces");
   await page.waitForTimeout(900);
-  console.log(`sensor parking: features=${sp.features} cluster=${sp.cluster} coloured=${sp.coloured} rotate=${sp.rotate} icons=${sp.icon}`);
+  console.log(`sensor parking: features=${sp.features} cluster=${sp.cluster} coloured=${sp.coloured} rotate=${sp.rotate} bakedBearings=${sp.angles} icons=${sp.icon}`);
 }
 
 // ── 5d. SYMBOLS AND LIVE NUMBERS ON THE LAYERS THE REVIEW CALLED OUT ─────────────────
@@ -319,6 +325,37 @@ ok(Object.values(tdAfter).every((v) => v === "none"),
     ok(r.imageRegistered, `${id}: the ${glyph} glyph is not registered — that layer draws nothing`);
     ok(String(r.icon).includes(glyph), `${id} must draw the ${glyph} glyph: icon-image=${r.icon}`);
     console.log(`symbol check  ${id}: ${r.features} features · icon=${r.icon} · ${glyph} registered=${r.imageRegistered}`);
+  }
+
+  // The LCSD layer's icon-image is a `match` on each facility's own Type_en, so every id that
+  // match can return has to EXIST — a missing one draws nothing for that entire family,
+  // silently, which is the failure mode the `facility` fallback exists to prevent. The counts
+  // come from the layer's own features, so a family that stops being drawn is caught even
+  // though the match expression still looks fine.
+  {
+    const fam = await page.evaluate(() => {
+      const feats = window.__map?.getSource("vl-lcsd_facilities")?._data?.features ?? [];
+      const byType = {};
+      for (const f of feats) {
+        const t = String(f.properties?.Type_en ?? "(no Type_en)");
+        byType[t] = (byType[t] ?? 0) + 1;
+      }
+      const ids = ["facility-court", "facility-venue", "facility-outdoor", "facility"];
+      return { byType, missing: ids.filter((i) => !window.__map?.hasImage(i)), ids };
+    });
+    ok(fam.missing.length === 0, `LCSD family glyphs missing from the map: ${fam.missing.join(", ")} — that family draws nothing`);
+    const familyOf = {
+      "Basketball Courts": "court", "Badminton Courts": "court", "Tennis Courts": "court",
+      "Sports Centres": "venue", "Libraries": "venue", "Museums": "venue",
+      "Parks": "outdoor", "BBQ Sites": "outdoor", "Holiday Camps": "outdoor",
+    };
+    const counts = { court: 0, venue: 0, outdoor: 0, fallback: 0 };
+    for (const [t, n] of Object.entries(fam.byType)) counts[familyOf[t] ?? "fallback"] += n;
+    const uncovered = Object.keys(fam.byType).filter((t) => !familyOf[t]);
+    ok(uncovered.length === 0, `LCSD types the family match does not cover: ${uncovered.join(", ")} — they fall back to the dumbbell`);
+    ok(counts.court > 0 && counts.venue > 0 && counts.outdoor > 0,
+      `every LCSD family must be populated: ${JSON.stringify(counts)}`);
+    console.log(`LCSD families: ${JSON.stringify(counts)} over ${Object.keys(fam.byType).length} types`);
   }
 
   // The AI-analytics layer's live merge, asserted where it shows: speed present on every drawn

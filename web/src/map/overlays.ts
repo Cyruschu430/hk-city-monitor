@@ -595,7 +595,12 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
               ]
             : glyph) as never,
           "icon-size": ["interpolate", ["linear"], ["zoom"], 8, 0.32, 12, 0.46, 16, 0.64] as never,
-          "icon-rotate": glyph === "bus" ? 0 : (["get", "bearing"] as never),
+          // Every moving glyph reads `bearing` now. The bus used to be pinned to 0 because it
+          // was drawn as a SIDE PROFILE, and rotating a side view stands it on its nose. It is
+          // drawn top-down and nose-up as of the bus redraw (see drawBus in symbols.ts), so it
+          // rotates exactly like the plane, the vessel and the train — a northbound bus no
+          // longer travels sideways across the map.
+          "icon-rotate": ["get", "bearing"] as never,
           "icon-rotation-alignment": "map",
           "icon-allow-overlap": true,
           "icon-ignore-placement": true,
@@ -678,10 +683,15 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
     source: id,
     filter: ["!", ["has", "point_count"]],
     layout: {
-      // Sensor parking bays carry their STATE in the image: red occupied, green
-      // vacant, grey where no sensor reported. `match` on the colour the adapter
-      // wrote, with a registered default — a symbol layer whose icon id is missing
-      // draws nothing at all, silently, which is how a layer reads as "no data".
+      // Two layers here draw a `match` instead of one fixed glyph id, both for the same
+      // reason: a symbol layer whose icon id is missing draws NOTHING, silently, which is
+      // how a layer reads as "no data" rather than as a bug.
+      //
+      //   meter    — the STATE is the image: red occupied, green vacant, grey no sensor.
+      //   facility — the FAMILY is the image, off the facility's own `Type_en`. All 952 LCSD
+      //              points drew one dumbbell, which said "sport" about 184 libraries and 123
+      //              parks. The bare "facility" at the end is the fallback for a type a later
+      //              CSDI merge adds.
       "icon-image": (def.symbol === "meter"
         ? [
             "match",
@@ -690,18 +700,32 @@ async function pointLayer(map: maplibregl.Map, def: LayerDefRaw, args: LayerArgs
             "#22c55e", "meter-vacant",
             "meter-unknown",
           ]
-        : glyph) as never,
-      // A bay is a small upright rectangle, not a dot: it takes its own size curve so
-      // 20,700-odd of them read as parking bays rather than as a field of pebbles.
+        : def.symbol === "facility"
+          ? [
+              "match",
+              ["get", "Type_en"],
+              "Basketball Courts", "facility-court",
+              "Badminton Courts", "facility-court",
+              "Tennis Courts", "facility-court",
+              "Sports Centres", "facility-venue",
+              "Libraries", "facility-venue",
+              "Museums", "facility-venue",
+              "Parks", "facility-outdoor",
+              "BBQ Sites", "facility-outdoor",
+              "Holiday Camps", "facility-outdoor",
+              "facility",
+            ]
+          : glyph) as never,
+      // The parking disc takes its own size curve: 20,700-odd of them at the general point
+      // size is a field of pebbles at city zoom.
       "icon-size": (def.symbol === "meter"
         ? ["interpolate", ["linear"], ["zoom"], 12, 0.3, 15, 0.44, 18, 0.62]
         : size) as never,
-      // A bay LIES ALONG its street. `bearing` is baked per space from the principal axis
-      // of its local cluster of the same street (see scripts/build_meters.py) — one angle
-      // per street name would stand bays across their own kerb on a curved road, and the
-      // nearest-neighbour alternative picks the bay across the road and points 90° out.
-      "icon-rotate": (def.symbol === "meter" ? ["get", "bearing"] : 0) as never,
-      "icon-rotation-alignment": (def.symbol === "meter" ? "map" : "auto") as never,
+      // No rotation. The space is a DISC now (see drawMeter), and a rotated circle is the same
+      // circle — so the per-space `bearing` scripts/build_meters.py bakes is left in the data
+      // but no longer read. It is what the bay shape would need if it ever comes back.
+      "icon-rotate": 0 as never,
+      "icon-rotation-alignment": "auto" as never,
       "icon-allow-overlap": true,
     },
   });

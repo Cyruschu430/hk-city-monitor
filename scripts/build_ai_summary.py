@@ -94,7 +94,8 @@ def _minutes(s: str) -> float:
     m = re.search(r"(\d+)\s*分鐘", s)
     return (float(h.group(1)) if h else 0) * 60 + (int(m.group(1)) if m else 0)
 
-# MEASURED 2026-10-01 against the public model list (openrouter.ai/api/v1/models needs no key):
+# MEASURED 2026-10-18 against the public model list (re-check before trusting the ids below:
+# the free catalogue rotates — one entry here went 404 within 17 days) (openrouter.ai/api/v1/models needs no key):
 # 462 models, 16 end in `:free`, and only 6 of those support `response_format` - which this script
 # needs, because the panel renders fields rather than prose. The id this file originally carried
 # (`deepseek/deepseek-chat-v3.1:free`) DOES NOT EXIST, so the first run would have died on a 400.
@@ -109,7 +110,10 @@ MODEL_CHAIN = (
     # below answered 429 on every scheduled run for days. Provider by prefix - see PROVIDERS.
     "ca/gpt-4o-mini",
     "ca/deepseek-chat",
-    "qwen/qwen3.8-27b:free",  # Chinese-native, JSON, 262k ctx
+    # 2026-10-18: qwen3.8-27b:free is DELISTED (HTTP 404) — it was the 3rd link, so once
+    # ca/* failed there was nothing usable behind them and the run died instead of
+    # degrading. This id answered a real response_format call the same day.
+    "nvidia/nemotron-3.5-super-vl:free",
     "google/gemma-4-31b-it:free",
     "google/gemma-4-26b-a4b-it:free",
     # Only reachable once GROQ_API_KEY exists; until then provider_of() + the empty-key guard skip it.

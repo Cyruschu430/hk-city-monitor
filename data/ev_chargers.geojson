@@ -1007,10 +1007,10 @@
     "location_en": "Shau Kei Wan Car Park",
     "address_en": "1 Po Man Street, Shau Kei Wan, Hong Kong",
     "std": 0,
-    "medium": 116,
+    "medium": 97,
     "quick": 2,
     "fast": 0,
-    "total": 118
+    "total": 99
    }
   },
   {
@@ -2921,10 +2921,10 @@
     "location_en": "Choi Ming Car Park 1",
     "address_en": "Choi Ming Shopping Centre, 1 Choi Ming Street, Tiu Keng Leng, Tseung Kwan O, New Territories",
     "std": 0,
-    "medium": 31,
+    "medium": 21,
     "quick": 2,
     "fast": 0,
-    "total": 33
+    "total": 23
    }
   },
   {
@@ -7684,28 +7684,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.208797,
-     22.315725
-    ]
-   },
-   "properties": {
-    "district_tc": "九龍城區",
-    "district_en": "Kowloon City",
-    "location_tc": "香港兒童醫院",
-    "location_en": "Hong Kong Children's Hospital",
-    "address_en": "SHING CHEONG ROAD",
-    "std": 22,
-    "medium": 0,
-    "quick": 0,
-    "fast": 0,
-    "total": 22
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.201378,
      22.330264
     ]
@@ -8026,9 +8004,9 @@
     "address_en": "PO TAI STREET, SHATIN",
     "std": 0,
     "medium": 0,
-    "quick": 18,
+    "quick": 14,
     "fast": 0,
-    "total": 18
+    "total": 14
    }
   },
   {
@@ -8381,28 +8359,6 @@
     "quick": 4,
     "fast": 0,
     "total": 5
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     113.995522,
-     22.458332
-    ]
-   },
-   "properties": {
-    "district_tc": "元朗區",
-    "district_en": "Yuen Long",
-    "location_tc": "天水圍醫院",
-    "location_en": "Tin Shui Wai Hospital",
-    "address_en": "TIN TAN STREET, YUEN LONG",
-    "std": 2,
-    "medium": 0,
-    "quick": 0,
-    "fast": 0,
-    "total": 2
    }
   },
   {
@@ -9235,10 +9191,10 @@
     "location_en": "Shek Lei Shopping Centre II",
     "address_en": "8 Shek Lei St, Shek Lei",
     "std": 0,
-    "medium": 3,
-    "quick": 6,
+    "medium": 2,
+    "quick": 11,
     "fast": 0,
-    "total": 9
+    "total": 13
    }
   },
   {
@@ -9653,8 +9609,8 @@
     "location_en": "Hong Kong Red Cross Blood Transfusion Service",
     "address_en": "15 King's Park Rise, Yau Ma Tei",
     "std": 0,
-    "medium": 0,
-    "quick": 8,
+    "medium": 8,
+    "quick": 0,
     "fast": 0,
     "total": 8
    }
@@ -9873,8 +9829,8 @@
     "location_en": "Shek Wai Kok Square",
     "address_en": "Shek Wai Kok Rd, Kwai Chung",
     "std": 0,
-    "medium": 6,
-    "quick": 6,
+    "medium": 0,
+    "quick": 12,
     "fast": 0,
     "total": 12
    }
@@ -10424,8 +10380,8 @@
     "address_en": "TSUN KING ROAD, SHATIN",
     "std": 0,
     "medium": 0,
-    "quick": 2,
-    "fast": 2,
+    "quick": 0,
+    "fast": 4,
     "total": 4
    }
   },
@@ -10776,8 +10732,8 @@
     "address_en": "CHEUNG SHA WAN ROAD, SHAM SHUI PO",
     "std": 0,
     "medium": 11,
-    "quick": 4,
-    "fast": 0,
+    "quick": 2,
+    "fast": 2,
     "total": 15
    }
   },
@@ -11681,6 +11637,28 @@
     "quick": 0,
     "fast": 0,
     "total": 7
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.199187,
+     22.335248
+    ]
+   },
+   "properties": {
+    "district_tc": "黃大仙區",
+    "district_en": "Wong Tai Sin",
+    "location_tc": "東蒲",
+    "location_en": "TUNG PO",
+    "address_en": "JOINT OF KING FUK STREET, KAI SAN ROAD, TSAT PO STREET",
+    "std": 0,
+    "medium": 0,
+    "quick": 0,
+    "fast": 4,
+    "total": 4
    }
   },
   {
@@ -13327,8 +13305,8 @@
     "location_en": "Shun Lee (Shopping Centre) Car Park",
     "address_en": "Shun Lee Commercial Centre, 15 Lee On Road, Kwun Tong, Kowloon",
     "std": 0,
-    "medium": 1,
-    "quick": 4,
+    "medium": 0,
+    "quick": 5,
     "fast": 1,
     "total": 6
    }
@@ -14010,8 +13988,8 @@
     "address_en": "Yuen Ching Road, Shap Pat Heung, Yuen Long, New Territories",
     "std": 0,
     "medium": 0,
-    "quick": 6,
-    "fast": 0,
+    "quick": 0,
+    "fast": 6,
     "total": 6
    }
   },
@@ -14142,9 +14120,9 @@
     "address_en": "1570 Tsuen Wan -\nHoi Kwai Road, Tsuen Wan, New Territories",
     "std": 0,
     "medium": 0,
-    "quick": 2,
-    "fast": 4,
-    "total": 6
+    "quick": 8,
+    "fast": 0,
+    "total": 8
    }
   },
   {
@@ -21373,8 +21351,8 @@
     ]
    },
    "properties": {
-    "district_tc": "中西區",
-    "district_en": "Central & Western",
+    "district_tc": "灣仔區",
+    "district_en": "Wan Chai",
     "location_tc": "富豪香港酒店",
     "location_en": "Regal Hong Kong Hotel",
     "address_en": "YEE WO STREET",
@@ -21471,28 +21449,6 @@
     "quick": 2,
     "fast": 0,
     "total": 16
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.198932,
-     22.334986
-    ]
-   },
-   "properties": {
-    "district_tc": "黃大仙區",
-    "district_en": "Wong Tai Sin",
-    "location_tc": "胡李名靜體育館",
-    "location_en": "Kitty Woo Stadium",
-    "address_en": "2 Tsat Po St, San Po Kong, Kowloon",
-    "std": 0,
-    "medium": 0,
-    "quick": 0,
-    "fast": 4,
-    "total": 4
    }
   },
   {
@@ -21735,6 +21691,50 @@
     "quick": 0,
     "fast": 0,
     "total": 4
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.021956,
+     22.437275
+    ]
+   },
+   "properties": {
+    "district_tc": "元朗區",
+    "district_en": "Yuen Long",
+    "location_tc": "元朗寶億停車場",
+    "location_en": "Bo Billion Car Park",
+    "address_en": "83 Shap Pat Heung Road, Yuen Long",
+    "std": 0,
+    "medium": 0,
+    "quick": 3,
+    "fast": 0,
+    "total": 3
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.8949,
+     22.2244
+    ]
+   },
+   "properties": {
+    "district_tc": "離島區",
+    "district_en": "Islands",
+    "location_tc": "石壁水塘路47號",
+    "location_en": "47 Shek Pik Reservoir Rd",
+    "address_en": "47 Shek Pik Reservoir Rd",
+    "std": 0,
+    "medium": 3,
+    "quick": 2,
+    "fast": 0,
+    "total": 5
    }
   }
  ]

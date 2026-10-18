@@ -188,7 +188,6 @@ const LIVE_FILES = new Set([
   "bus_live_stops.json",
   "lcsd_facilities.geojson",
   "parking_meters.geojson",
-  "parking_meters_lite.json",
   "carpark_info.json",
   "hiking_trails.geojson",
   "ev_chargers.geojson",

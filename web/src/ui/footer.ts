@@ -24,6 +24,7 @@ const T = {
   },
   source: { tc: "原始碼", en: "Source" },
   licence: { tc: "AGPL-3.0 授權", en: "AGPL-3.0" },
+  guide: { tc: "使用指南", en: "Guide" },
   author: { tc: "由 Cyrus Chu 建立", en: "Built by Cyrus Chu" },
   built: { tc: "決定性規則引擎 · 零追蹤 · 零 cookie", en: "Deterministic rule engine · no tracking · no cookies" },
 };
@@ -63,6 +64,7 @@ export function createFooter(parent: HTMLElement): void {
         { class: "foot-row" },
         h("span", { class: "foot-author" }, T.author[tc ? "tc" : "en"]),
         h("a", { class: "foot-gh", href: REPO, target: "_blank", rel: "noopener noreferrer", title: T.source[tc ? "tc" : "en"], "aria-label": T.source[tc ? "tc" : "en"] }, ghIcon()),
+        h("a", { class: "foot-link", href: "./guide.html", target: "_blank", rel: "noopener noreferrer" }, T.guide[tc ? "tc" : "en"]),
         h("a", { class: "foot-link", href: LICENSE, target: "_blank", rel: "noopener noreferrer" }, T.licence[tc ? "tc" : "en"]),
       ),
       h("p", { class: "foot-data" }, T.data[tc ? "tc" : "en"]),

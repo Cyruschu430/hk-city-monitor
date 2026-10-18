@@ -179,6 +179,21 @@ const LIVE_FILES = new Set([
   // every other live file: the layer and its panel read the published copy, and the bundle
   // snapshot is the fallback that shows how old it is.
   "ai_cctv.geojson",
+  // Slow-cadence reference snapshots, published daily by .github/workflows/refresh-data.yml
+  // (scripts/snapshot_cycle.sh publishes only the files whose bytes changed). These change
+  // daily-to-monthly; before they were live they only refreshed when somebody rebuilt the site,
+  // so a panel could be correct on the day it shipped and quietly wrong a fortnight later.
+  "bus_routes.json",
+  "bus_stops.json",
+  "bus_live_stops.json",
+  "lcsd_facilities.geojson",
+  "parking_meters.geojson",
+  "parking_meters_lite.json",
+  "carpark_info.json",
+  "hiking_trails.geojson",
+  "ev_chargers.geojson",
+  "aed.json",
+  "smartplay_activities.json",
 ]);
 
 /** The live copy of a bundled `data/<file>` path, or null when there is none. */

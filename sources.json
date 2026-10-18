@@ -3593,6 +3593,19 @@
       "notes": "Live journey time between 80 indicator pairs across HK. Colour: 3=green, 2=amber, 1=red."
     },
     {
+      "id": "td_journey_time_locations",
+      "group": "transport",
+      "name": "運輸署 行車時間指示位置（CSDI）",
+      "name_en": "TD Journey Time Indicator Locations (CSDI)",
+      "type": "geojson",
+      "url": "data/journey_time_locations.geojson",
+      "auth": "none",
+      "cadence": "irregular (reference geometry)",
+      "fetch": "browser",
+      "todo": false,
+      "notes": "The 80 indicator locations, built by scripts/build_journey_time.py from the CSDI dataset. Joined to the live XML by location_id|destination_id, so no name matching is involved."
+    },
+    {
       "id": "td_ai_video_analytics",
       "group": "transport",
       "name": "運輸署 AI 影像分析閉路電視（交通數據）",

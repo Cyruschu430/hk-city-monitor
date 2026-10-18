@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>使用指南 · HK City Monitor 香港城市監察</title>
+<meta name="description" content="HK City Monitor 香港城市監察 — 使用指南：點睇地圖、面板、圖層，邊啲數據係真、邊啲唔係。">
+<meta name="theme-color" content="#0b1220">
+<style>
+  :root{
+    --void:#0b1220;
+    --card:#101a2e;
+    --line:rgba(140,190,255,.16);
+    --line-hi:rgba(140,190,255,.32);
+    --txt:#e9f2ff;
+    --dim:#9fb2cc;
+    --muted:#8ea6c4;
+    --faint:#5d7a9b;
+    --cyan:#22d3ee;
+    --amber:#fbbf24;
+    --alert:#ff5d6c;
+    --ok:#34d399;
+    --violet:#a855f7;
+    --sans:ui-sans-serif,-apple-system,"Segoe UI","PingFang HK","Noto Sans TC","Microsoft JhengHei",sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--void);
+    color:var(--txt);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px 72px;}
+  header.top{padding:40px 0 8px;}
+  .brand{
+    font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--cyan);margin:0 0 14px;
+  }
+  h1{font-size:clamp(26px,6vw,36px);line-height:1.25;font-weight:700;letter-spacing:-.01em;margin:0 0 14px;}
+  .lede{color:var(--dim);font-size:17px;max-width:60ch;margin:0;}
+  section{margin-top:46px;padding-top:6px;border-top:1px solid var(--line);}
+  h2{font-size:clamp(20px,4.6vw,25px);font-weight:700;line-height:1.35;margin:22px 0 12px;letter-spacing:-.01em;}
+  h2::before{
+    content:"";display:block;width:34px;height:3px;border-radius:2px;
+    background:var(--accent,var(--cyan));margin-bottom:12px;
+  }
+  h3{font-size:16px;font-weight:700;margin:22px 0 8px;color:var(--txt);}
+  p{margin:0 0 14px;color:var(--txt);}
+  ul{margin:0 0 14px;padding-left:1.25em;}
+  li{margin:0 0 10px;color:var(--txt);}
+  li b{color:#fff;font-weight:700;}
+  .en{
+    font-size:12px;line-height:1.65;color:var(--muted);margin:16px 0 0;
+    padding-left:12px;border-left:2px solid var(--line-hi);max-width:66ch;
+  }
+  .note{color:var(--dim);font-size:14.5px;}
+  .kbd{
+    font-family:var(--mono);font-size:13px;color:var(--txt);
+    background:#0a1526;border:1px solid var(--line-hi);border-radius:6px;
+    padding:1px 7px;white-space:nowrap;
+  }
+  table{width:100%;border-collapse:collapse;margin:6px 0 8px;}
+  th,td{
+    text-align:left;vertical-align:top;padding:11px 12px;font-size:14.5px;line-height:1.6;
+    border-bottom:1px solid var(--line);
+  }
+  thead th{color:var(--faint);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+  tbody th{color:var(--txt);font-weight:700;width:30%;}
+  tbody tr:last-child th,tbody tr:last-child td{border-bottom:0;}
+  td .tag{display:inline-block;font-size:11px;letter-spacing:.06em;padding:1px 7px;border-radius:999px;border:1px solid var(--line-hi);color:var(--muted);margin-right:6px;}
+  .live{color:var(--ok);}
+  .sched{color:var(--cyan);}
+  .est{color:var(--amber);}
+  .sim{color:var(--violet);}
+  .stat{color:var(--dim);}
+  dl{margin:0 0 14px;}
+  dt{font-weight:700;margin-top:12px;}
+  dd{margin:2px 0 0;color:var(--dim);}
+  footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);color:var(--faint);font-size:13px;}
+  a{color:var(--cyan);text-decoration:underline;text-underline-offset:3px;}
+  a:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:2px;}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  @media (max-width:560px){
+    body{font-size:15.5px;}
+    .wrap{padding:0 16px 56px;}
+    th,td{padding:9px 8px;font-size:13.5px;}
+    tbody th{width:34%;}
+    header.top{padding:28px 0 4px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <p class="brand">HK City Monitor · 香港城市監察</p>
+    <h1>使用指南</h1>
+    <p class="lede">呢一頁教你點用呢個地圖同面板，同埋邊啲數字係即時、邊啲唔係。全部資料都係香港政府部門同公共機構公開嘅開放數據，每一格都連返佢原本嘅出處。</p>
+  </header>
+
+  <!-- 1 -->
+  <section style="--accent:#22d3ee">
+    <h2>呢個 app 係咩</h2>
+    <p>「香港城市監察」係一個喺瀏覽器入面行嘅香港實時情況儀表板。佢把政府部門同公共機構發佈嘅開放數據，擺喺同一個地圖同一堆面板上面：天氣警告、交通、口岸排隊、航班、船隻、停水、空氣質素、急症室輪候、公共交通到站時間、市場報價等等。</p>
+    <p>佢係寫嚟畀想一眼睇清香港而家點嘅人用——例如出門口前想知會唔會落雨、邊條路塞、過關要排幾耐。每一格數字都寫明邊個發佈、幾時讀到，下面有來源同時間。</p>
+    <p>個 app 完全喺你部機度行：冇帳戶、唔使登入、冇 cookie、亦唔會追蹤你。佢係一個開源社群項目，同香港政府冇關係，亦唔屬於任何官方系統；資料嘅版權同解釋權，一律以原本嘅發佈者為準。</p>
+    <p class="en">HK City Monitor is a live Hong Kong situation dashboard that runs entirely in your browser. It places open data from government departments and public bodies — weather, traffic, border queues, flights, vessels, water, air quality, A&amp;E waits, transport times and markets — on one map and one column of panels. Every figure names its publisher and shows when it was read, and links back to the original. It is for anyone who wants Hong Kong at a glance. No account, no cookies, no tracking. It is a community open-source project, not a government system; the data belongs to its publishers.</p>
+  </section>
+
+  <!-- 2 -->
+  <section style="--accent:#34d399">
+    <h2>五分鐘上手</h2>
+    <p>開個網址就得，唔使安裝、唔使登入。介面以繁體中文為主，右上角可以隨時切換繁中／EN，旁邊個掣就係換主題（自動／淺色／深色／指揮）。</p>
+    <p><b>版面。</b>最上面一橫係狀態列：品牌、模式選擇、語言同主題。狀態列下面有條即時標題條，播新聞標題，可以用上面嘅分類頁籤淨睇某一類，或者睇全部。中間左邊大範圍係地圖，右邊係面板直欄。螢幕窄（例如手機）嘅時候，地圖同面板會上下排。</p>
+    <p><b>換模式。</b>用狀態列嘅「模式」下拉選單揀。除咗總覽，每個模式都係答一條實際問題，例如「會唔會掛風球同聽日飛唔飛得成」、「而家過關要等幾耐」。揀完之後，地圖同面板會換成嗰個情境要用嘅嘢；地圖左上角會寫住你而家睇緊咩、幾點。</p>
+    <p><b>搜嘢。</b>按 <span class="kbd">Ctrl</span>+<span class="kbd">K</span>（Mac 用 <span class="kbd">⌘</span>+<span class="kbd">K</span>）會開一個搜尋面板，打模式名、面板名或者相機名，用上下鍵揀，按 Enter 就直接跳去。跳去一個面板嘅時候，畫面會自動捲到佢並閃一閃，等你知去咗邊。</p>
+    <p><b>睇詳情。</b>面板本身已經開喺右邊嗰欄，唔使「打開」。地圖上面撳一粒鏡頭點，會即刻彈出一個細標籤（名、座標、縮圖），同時開一個大抽屜，睇得大啲。面板入面嘅相或者直播磚，撳一下同樣會放大。按 <span class="kbd">Esc</span> 或者撳個 ✕ 就閂。</p>
+    <p><b>執靚個版面。</b>揸住面板頂可以上下拖動，改面板次序；唔想睇就撳面板右上角嘅 ×，上面會出一個「還原全部」畀你叫返晒出嚟。面板上面有一行分類頁籤，係由呢個模式嘅來源自動砌出嚟；撳一下只係篩走唔屬嗰類嘅面板，唔會重新下載，所以切換好快。</p>
+    <p>你揀咗嘅分類同圖層，會寫入網址，所以可以直接 copy 條 link 分享畀人。</p>
+    <p class="en">Just open the page — nothing to install or sign in to. The top strip holds the mode picker, the language switch (繁中 / EN) and the theme button. Under it, a headline strip shows news with category tabs, and a coverage line reports the health of the panels on screen. The map is on the left, the panel column on the right; on a narrow screen they stack. Switch modes from the 「模式」 dropdown: each mode answers one real question and redraws the map and panels for it. Press Ctrl-K (⌘K on a Mac) to search every mode, panel and camera and jump straight there. Panels are already open in the column and can be dragged to reorder or hidden with ×; clicking a camera point on the map (or an image in a panel) opens a larger drawer, closed with Esc. Your category and layer choices are written into the URL, so the link is shareable.</p>
+  </section>
+
+  <!-- 3 -->
+  <section style="--accent:#a855f7">
+    <h2>圖層</h2>
+    <p>地圖左下角有一個「圖層」清單，列出而家可以畫出嚟嘅圖層。佢係一個真正嘅開關，唔係一張只讀嘅說明牌。</p>
+    <p><b>每一行有咩。</b>左邊一個剔（着／熄）、跟住一個細圖示、再係圖層名。右邊有時會有個 ⓘ 睇來源，同一個 ✕。</p>
+    <p><b>點開關。</b>撳個行就切換。開關只係決定畫唔畫——佢唔會重新下載，亦唔會改動個模式本身有咩圖層；模式決定有咩「可以」畫，你決定「畫唔畫」。</p>
+    <p><b>收起同展開。</b>撳個標題可以收埋成張清單。螢幕窄嘅時候預設收埋，唔會遮住成個地圖；你自己開返之後，佢會記住你嘅選擇。</p>
+    <p><b>搵圖層。</b>清單上面有搜尋格，打中文、英文或者圖層名都搵到；隔籬嘅「只顯示已開」可以淨係睇而家着住嘅圖層。</p>
+    <p><b>✕ 係移走。</b>撳 ✕ 會順手熄咗嗰層，並由清單攞走。呢個「唔要」只係針對而家呢個模式；你轉去另一個模式之後，返返嚟嗰個模式需要嘅圖層會再出返。</p>
+    <p><b>會唔會記住。</b>你自己開嘅圖層會記住，下次開都仲喺度。模式自帶嘅圖層，你即時熄咗唔睇係冇問題嘅，但下次入返嗰個模式佢會再出。</p>
+    <p><b>顏色鍵。</b>圖層名下面如果有色塊，個顏色就係有意思嘅，唔係裝飾。例如「行山徑」用綠／黃／橙／紅／紫代表難度，由易行到非常難行。冇色塊嘅圖層，顏色唔帶額外意思。另外，地圖上面見到一個圓圈包住數字，係話畀你知嗰區有幾多支鏡頭；撳一下個圓圈就會散開做一點點。</p>
+    <p>每個圖層嘅 ⓘ 都會寫明來源。如果某一層載入出錯，地圖上會出一個提示牌講明係邊層出錯，你可以閂咗個提示。</p>
+    <p class="en">A LAYERS control sits at the bottom-left of the map. Each row has a checkbox, a small glyph and the layer name, plus an ⓘ for its source and a ✕ to remove it. Click a row to show or hide the layer: toggling only changes what is drawn — it never re-fetches and never changes which layers a mode makes available. The list collapses (collapsed by default on narrow screens) and remembers your choice, and it has a search box and an “only layers that are on” filter. The ✕ switches a layer off and drops its row; returning to that mode brings it back. Layers you switched on yourself are remembered. Where a layer shows coloured swatches under its name, the colours carry meaning (hiking-trail difficulty, for example); a circle with a number on the map is the camera count for that area and expands when clicked. Every ⓘ names the source, and a layer that fails says so on the map face.</p>
+  </section>
+
+  <!-- 4 -->
+  <section style="--accent:#fbbf24">
+    <h2>面板點讀</h2>
+    <p><b>標題。</b>每塊面板最頂就係佢嘅名，滑鼠停留可以睇全名。</p>
+    <p><b>狀態晶片。</b>標題右邊嗰粒細字，係講呢塊面板而家係咩狀態，唔同顏色代表唔同嘢：</p>
+    <dl>
+      <dt>即時 / 啱啱 / 幾分鐘前 <span class="live">（綠色）</span></dt>
+      <dd>呢個係「新鮮」。最新一次讀到嘅時間，距離而家仲喺嗰個來源本身嘅容忍範圍以內，所以內容當作係當前嘅。</dd>
+      <dt>過期 <span class="est">（琥珀色）</span></dt>
+      <dd>讀到嘅時間已經超過嗰個來源自己嘅更新節奏容忍值，個晶片會寫「數據 +幾多分鐘」。呢個唔一定係壞咗，好多時只係來源慢咗或者靜咗；但重點係——落後就會咁樣顯示，唔會扮即時。</dd>
+      <dt>待載入</dt>
+      <dd>呢塊面板仲未捲到畫面，所以未開始下載。捲到佢就會自己載入。</dd>
+      <dt>載入中…</dt>
+      <dd>第一次下載緊。</dd>
+      <dt>未能更新 <span class="stat">（紅色）</span></dt>
+      <dd>讀唔到。面板會寫明係邊個來源、錯咩，右邊有「重試」。失敗嘅面板會保留個來源連結，唔會砌一個假數字出嚟。</dd>
+    </dl>
+    <p><b>冇資料唔等於壞。</b>如果真係讀到、但係內容係空，面板會直接講明，例如「現時無生效天氣警告」、「現時無特別交通消息」。呢句同「讀唔到」係兩件事，會分開講——唔會用一個空白格呃你話一切正常。</p>
+    <p><b>時間戳。</b>面板最底一行係來源名同佢嘅更新節奏，右邊一個時間戳（香港時間，年月日同時分）。呢個係發佈者嗰邊嘅觀測時間，唔係你部機嘅鐘。滑住個時間戳可以睇到完整嗰個。詳細啲嘅來源網址收埋喺提示度，唔會撳一下就被帶走；面板底部亦可能有一段編輯聲明，講清楚你睇緊嘅係咩。</p>
+    <p class="en">Each panel is headed by its title, with a status chip to the right. A green live chip (「即時」/「啱啱」/「幾分鐘前」) means the reading is still inside the source’s own freshness window, so it counts as current. An amber 過期 chip means the reading is older than that window and names the lag (「數據 +…」) — it is shown rather than hidden, so nothing stale is ever presented as live. 「待載入」 means the panel has not been scrolled to yet and has not started loading; 「載入中…」 means the first fetch is in flight; a red 「未能更新」 means the fetch failed, names the source and the reason, and offers Retry. A source that answers with nothing is not shown as an error: the panel says plainly that there is nothing to report. The footer carries the source name, its cadence and the publisher’s observation timestamp in Hong Kong time — the publisher’s clock, not yours. Source links stay in a tooltip instead of navigating you away.</p>
+  </section>
+
+  <!-- 5 -->
+  <section style="--accent:#ff5d6c">
+    <h2>邊啲係真・邊啲唔係</h2>
+    <p>呢個 app 有好多唔同種類嘅資料，佢哋「有幾真」係唔一樣嘅。下面照實講清楚。</p>
+    <table>
+      <thead>
+        <tr><th scope="col">類別</th><th scope="col">實情同例子</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"><span class="tag">即時 feed</span></th>
+          <td>真係直接由官方讀過嚟，係發布者正式嘅 feed。例如：天氣警告、本港現況、特別交通消息、入境處管制站輪候時間、保安局口岸狀況、急症室輪候時間、臨時停水通知、空氣質素健康指數、港鐵下一班列車、巴士同渡輪到站時間、機場航班、海事處跨境渡輪同船隻到離港。面板會顯示發布者自己嘅觀測時間。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="tag">定時更新</span></th>
+          <td>係真數據，但唔係連續。例如：交通快拍同天氣攝影機嘅影像、天氣雷達、衛星雲圖、降雨臨近預報、速度圖板。呢啲影像每隔一段時間影一張，唔係影片；個別來源係「有更新先出」，即係幾時有新嘢先會變。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="tag">收集器快照</span></th>
+          <td>唔係直接向源頭逐秒查，而係由一個收集器隔一段時間收一次，寫成一份靜態檔案，再由頁面讀取。例如：香港上空嘅航機（社群 ADS-B）、水域嘅船隻位置（AIS）。所以佢哋係「一路更新嘅快照」，唔係實時逐格；船隻更新得尤其疏。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="tag">推算或模擬</span></th>
+          <td>呢啲唔係量度出嚟嘅。港鐵列車同巴士嘅位置，係由「下一班幾時到」推算出嚟，唔係 GPS 定位；風場係一個天氣模型（Open-Meteo）嘅輸出，再插值落格網度，唔係實測——實測就喺「氣象站」嗰個圖層；「城市簡報」係定時由一個免費模型，根據已發佈嘅數字寫成，佢唔會計任何嘢，只係覆述。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="tag">延遲</span></th>
+          <td>港股同指數嘅報價係延遲報價（Yahoo Finance），唔係即時。嗰塊面板自己都會寫明「延遲報價，唔係即時」。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="tag">靜態參考</span></th>
+          <td>官方參考圖層，唔跟時間變。例如：底圖、航拍、港鐵路線、氣象站位置、各類設施、行山徑、管制站座標。呢啲係位置同事實，唔存在「過期」。</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="tag">第三方</span></th>
+          <td>唔係政府或公共機構出。直播牆嘅影片由第三方頻道提供，本頁只係偵測佢而家有冇播，唔會核實、亦唔會轉載內容。無人機模式入面嗰個「無人機助手」，係外面一個網頁，唔係本頁自己嘅資料。</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="en">Not everything on the map is equally “live”, and the table above says which is which. <b>Live feeds</b> are read directly from official publishers — weather warnings, current conditions, special traffic news, control-point queue times, A&amp;E waits, water-suspension notices, the AQHI, next-train and bus/ferry times, flights and marine movements. <b>Scheduled</b> data is real but not continuous: camera images, radar, satellite, the rainfall nowcast and speed boards are frames taken at intervals, not video. <b>Collector snapshots</b> — aircraft (community ADS-B) and vessel positions (AIS) — are gathered periodically into a static file, so they are refreshed snapshots, not a live stream. <b>Derived or simulated</b>: MTR and bus positions are estimated from arrival times, not GPS; the wind field is model output, not a measurement; the city brief is written on a schedule by a free model that reproduces published figures and computes nothing. <b>Delayed</b>: market quotes are delayed, and the panel says so. <b>Reference</b> layers are static facts. <b>Third-party</b> items — the live-stream wall and the drone assistant — are external content this page does not verify.</p>
+  </section>
+
+  <!-- 6 -->
+  <section style="--accent:#22d3ee">
+    <h2>鍵盤快捷鍵</h2>
+    <p>呢啲係真係用得到嘅鍵，唔係樣板：</p>
+    <ul>
+      <li><span class="kbd">Ctrl</span>+<span class="kbd">K</span> 或者 <span class="kbd">⌘</span>+<span class="kbd">K</span> — 開／閂搜尋面板。</li>
+      <li><span class="kbd">↑</span> / <span class="kbd">↓</span> — 喺搜尋面板入面上下揀。</li>
+      <li><span class="kbd">Enter</span> — 去你揀嗰項；如果焦點喺面板入面嘅搜尋格，就係套用嗰個搜尋。</li>
+      <li><span class="kbd">Esc</span> — 閂搜尋面板、閂大抽屜，或者散去地圖上嘅鏡頭標籤。</li>
+      <li><span class="kbd">空格</span> 或者 <span class="kbd">Enter</span> — 當焦點喺地圖或面板入面嘅鏡頭磚／直播磚，用嚟開或閂佢。</li>
+    </ul>
+    <p class="en">Only keys that actually exist are listed. Ctrl-K or ⌘K opens and closes the search palette; ↑ and ↓ move the selection; Enter runs the highlighted item (or applies a panel’s own search box); Esc closes the palette, the drawer or the map’s camera label; and Space or Enter toggles a focused camera or live tile.</p>
+  </section>
+
+  <!-- 7 -->
+  <section style="--accent:#38bdf8">
+    <h2>資料來源</h2>
+    <p>資料嚟自香港政府部門同公共機構嘅開放數據平台，以及少數國際同社群嘅開放來源。每一類大致如下：</p>
+    <ul>
+      <li><b>政府開放數據平台</b> — data.gov.hk 同 CSDI（空間數據共享平台），各部門嘅原始數據同官方地理圖層。</li>
+      <li><b>香港天文台</b> — 天氣警告、本港現況、九天預報、雷達、衛星、潮汐、環境輻射、降雨臨近預報、風同氣溫讀數。</li>
+      <li><b>運輸署</b> — 交通快拍鏡頭、特別交通消息、速度圖板、停車場空位、行車時間。</li>
+      <li><b>入境事務處</b> — 各管制站嘅實際輪候時間。</li>
+      <li><b>保安局「口岸通」</b> — 管制站即時狀況（綠／黃／紅）。</li>
+      <li><b>醫院管理局</b> — 公立醫院急症室輪候時間。</li>
+      <li><b>水務署</b> — 臨時停水通知同受影響位置。</li>
+      <li><b>環境保護署同 AQHI 平台</b> — 空氣質素健康指數、泳灘水質、智慧燈柱、公眾充電站。</li>
+      <li><b>康文署同 SmartPLAY</b> — 公共設施位置、活動同可預約時段。</li>
+      <li><b>海事處</b> — 跨境渡輪班次、船隻到離港。</li>
+      <li><b>消防處</b> — 公眾 AED（心臟去顫器）位置。</li>
+      <li><b>香港國際機場</b> — 航班資料。</li>
+      <li><b>公共交通營運商</b> — 港鐵、九巴／龍運、城巴／新大嶼山巴士、綠色小巴、渡輪公司，提供到站同班次。</li>
+      <li><b>消費者委員會</b> — 車用油價同超市物價。</li>
+      <li><b>新聞發布</b> — RTHK 各節同 news.gov.hk（政府新聞處），只取標題並連返原本嗰篇。</li>
+      <li><b>國際同社群開放數據</b> — 社群 ADS-B（航機）、AIS（船隻）、Open-Meteo（風場模式）、USGS（地震）、NASA EONET（自然事件）。</li>
+      <li><b>底圖同影像</b> — 地政總署地形圖，以及 Esri 公開嘅底圖同航拍。</li>
+      <li><b>財經</b> — Yahoo Finance 延遲報價。</li>
+      <li><b>城市簡報</b> — 由免費模型定時寫成嘅靜態檔案，連埋用咗邊啲輸入同幾時寫。</li>
+    </ul>
+    <p>每個來源各有自己嘅授權條款。本頁只係呈現數據同連返原本嘅出處，並唔會轉載或者改動內容。</p>
+    <p class="en">Sources come from Hong Kong government open-data platforms and public bodies, plus a few international and community open sources. The families are data.gov.hk and CSDI; the Hong Kong Observatory (warnings, conditions, forecasts, radar, satellite, tides, radiation, rainfall nowcast, wind and temperature); the Transport Department (traffic cameras, special traffic news, speed boards, car-park vacancy, journey times); Immigration (control-point queue times); the Security Bureau’s boundary-crossing portal; the Hospital Authority (A&amp;E waits); the Water Supplies Department; the EPD and the AQHI platform; the LCSD and SmartPLAY; the Marine Department; the Fire Services Department (AEDs); Hong Kong International Airport; public transport operators (MTR, KMB/LWB, Citybus, NLB, green minibus and ferry companies); the Consumer Council; RTHK and news.gov.hk for headlines; community/international sources (ADS-B, AIS, Open-Meteo, USGS, NASA EONET); Lands Department and Esri for the basemap and imagery; Yahoo Finance for delayed quotes; and the city brief, a static file written on a schedule. Each source keeps its own licence; this page presents data and links back to the original.</p>
+  </section>
+
+  <!-- 8 -->
+  <section style="--accent:#fb923c">
+    <h2>已知限制</h2>
+    <p>呢個 app 唔會做、或者做唔到嘅嘢，照講：</p>
+    <ul>
+      <li><b>唔係政府系統。</b>佢同香港政府冇任何關係，亦唔係官方渠道。資料一律以發布者為準。</li>
+      <li><b>唔追蹤你。</b>冇帳戶、冇 cookie、唔會收集或者追蹤任何個人資料；亦唔會做人物追蹤。</li>
+      <li><b>相機係快照，唔係影片。</b>交通同天氣鏡頭係一張張影低嘅相。只有「直播牆」係影片，而且係第三方提供，本頁唔會核實內容。</li>
+      <li><b>市場報價係延遲。</b>港股同指數唔係即時。</li>
+      <li><b>航機同船隻係快照。</b>唔係逐秒，船隻更新得比較疏；冇收集到嘅時候，會老實講係空，而唔係扮有。</li>
+      <li><b>列車同巴士位置係推算。</b>由到站時間推算出嚟，唔係 GPS。</li>
+      <li><b>風場係模型。</b>唔係實測；實測睇「氣象站」圖層。</li>
+      <li><b>城市簡報係模型寫嘅。</b>只覆述官方數字，唔會計算，亦唔會判斷咩叫「出咗事」。</li>
+      <li><b>部分來源要經代理。</b>有啲發布者唔准瀏覽器直接讀，要經一個代理伺服器。如果代理未設定好，嗰啲面板會照樣出「未能更新」，唔會扮有數據。</li>
+      <li><b>3D 樓宇未開放。</b>地圖上有個 3D 掣，但功能仲未開放。</li>
+      <li><b>冇時間軸回放。</b>睇唔到過去某個時刻嘅成個情況。</li>
+      <li><b>冇推送通知。</b>唔會主動提醒你，要自己開嚟睇。</li>
+      <li><b>離線有限。</b>離線時開得到個外殼，但實時數據唔會快取，所以冇得離線睇。</li>
+      <li><b>冇對外 API。</b>暫時冇程式介面畀其他程式直接讀。</li>
+      <li><b>個別位置唔夠準。</b>有啲地點（例如個別口岸）冇可靠座標，只會顯示到地區層，而唔會砌一個自信但錯嘅點。</li>
+      <li><b>讀唔到同「真係冇」係分開嘅。</b>如果全部新聞來源都讀唔到，標題條會直接講「讀唔到」，而唔會話「現時無消息」。</li>
+    </ul>
+    <p class="en">Honest boundaries. This is not a government system and has no official status; the data belongs to its publishers. There is no account, no cookie and no tracking of people. Camera views are still snapshots, not video — only the third-party live-stream wall is video, and it is not verified here. Market quotes are delayed. Aircraft and vessel positions are periodic snapshots, not continuous, and an empty result is reported as empty rather than faked. MTR and bus positions are estimated from arrival times, not GPS. The wind field is model output, not a measurement. The city brief is written by a model that reproduces published figures and computes nothing. Some publishers refuse direct browser reads, so those panels depend on a proxy and will show an error if it is not configured. The 3D buildings control is not open yet. There is no timeline replay, no push notifications, no usable offline data mode, and no public API. Some locations resolve only to district level, and the app always distinguishes “could not be read” from “nothing to report”.</p>
+  </section>
+
+  <footer>
+    <p>HK City Monitor「香港城市監察」— 開源社群項目，原始碼以 AGPL-3.0 授權。資料版權屬各發佈者所有，使用時請尊重其授權條款。本項目與香港特別行政區政府並無關係。</p>
+  </footer>
+
+</div>
+</body>
+</html>

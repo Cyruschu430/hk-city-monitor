@@ -9,9 +9,10 @@
 //   node measure-mobile.mjs [url]
 // Exit code 1 = the map is covered, or a panel cannot be reached at all.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const BASE = process.argv[2] ?? "https://hk-city-monitor.pages.dev";
-const exe = process.env.CHROME_PATH ?? "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const SIZES = [
   { name: "iPhone 12 (390x844, browser chrome shown)", w: 390, h: 700 },
   { name: "small Android (360x640)", w: 360, h: 600 },

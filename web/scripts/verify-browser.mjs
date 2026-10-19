@@ -9,13 +9,14 @@
 // Usage: node scripts/verify-browser.mjs [baseUrl] [--headed]
 
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 import { mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const base = process.argv.find((a) => a.startsWith("http")) ?? (process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/");
 const headed = process.argv.includes("--headed");
-const exe = process.env.CHROME_PATH || "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const outDir = join(dirname(fileURLToPath(import.meta.url)), "..", "test", "artifacts");
 mkdirSync(outDir, { recursive: true });
 

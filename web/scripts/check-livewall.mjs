@@ -3,8 +3,8 @@
 // The numbers are the evidence: deep-review.mjs already screenshots the page, and a PNG
 // would churn ~850KB in git on every run.
 import { chromium } from "playwright-core";
-const exe = process.env.CHROME_PATH ?? process.env.HKCM_CHROME
-  ?? "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+import { browserExe } from "./browser.mjs";
+const exe = browserExe();
 const fails = [];
 const ok = (cond, msg) => { console.log(`${cond ? "OK  " : "FAIL"} ${msg}`); if (!cond) fails.push(msg); };
 const browser = await chromium.launch({ executablePath: exe, headless: true });

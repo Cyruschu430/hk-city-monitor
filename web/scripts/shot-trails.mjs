@@ -3,11 +3,12 @@
 // The change under review is a colour ramp, and no assertion settles whether six colours are
 // actually distinguishable. Enable the layer, fit the view to the trails, screenshot the map.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const base = process.argv[2] ?? "https://hk-city-monitor.pages.dev";
 const out = process.argv[3] ?? "/tmp/trails.png";
 const browser = await chromium.launch({
-  executablePath: process.env.CHROME_PATH || undefined,
+  executablePath: browserExe(),
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 });
 const page = await browser.newPage({ viewport: { width: 1400, height: 900 }, locale: "zh-HK" });

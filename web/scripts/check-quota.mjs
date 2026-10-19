@@ -18,6 +18,7 @@
 // Usage: node scripts/check-quota.mjs [baseUrl]
 
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const BASE = process.argv[2] ?? process.env.BASE ?? (process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/");
 const BUDGET = 34;
@@ -27,8 +28,7 @@ const SETTLE_MS = 35_000; // long enough for the below-the-fold panels to fire
 // chrome-headless-shell, which is not the browser this repo has installed — launching with no
 // executablePath fails outright (measured: "Executable doesn't exist at
 // ...chromium_headless_shell-1243..."). CHROME_PATH overrides it for a different machine.
-const exe = process.env.CHROME_PATH
-  ?? "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, locale: "zh-HK" });
 

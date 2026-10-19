@@ -7,9 +7,10 @@
 // steady state and calling it the first paint. This probe measures the actual
 // cold-boot curve, so "how long until the app is usable" becomes a number.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const URL_UNDER_TEST = process.argv[2] ?? "http://localhost:4173/";
-const exe = process.env.CHROME_PATH || "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, locale: "zh-HK" });
 

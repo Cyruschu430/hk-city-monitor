@@ -3,9 +3,10 @@
 // much space each region takes, what font sizes and weights are actually
 // applied, and how dense the panel column is. Prints a table; asserts nothing.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const URL_UNDER_TEST = process.argv[2] ?? "https://hk-city-monitor.pages.dev/";
-const exe = process.env.CHROME_PATH || "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, locale: "zh-HK" });
 await page.goto(URL_UNDER_TEST, { waitUntil: "domcontentloaded" });

@@ -10,11 +10,11 @@
 // 16 aircraft at the publisher's own timestamp, berth layer 120 polygons, and with
 // raw.githubusercontent aborted the aircraft panel still renders from the bundle.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const BASE = process.argv[2] ?? (process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/");
 const BLOCK = process.env.BLOCK_LIVE === "1";
-const exe = process.env.CHROME_PATH ?? process.env.HKCM_CHROME
-  ?? "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 
 const fails = [];
 const ok = (cond, msg) => { console.log(`${cond ? "OK  " : "FAIL"} ${msg}`); if (!cond) fails.push(msg); };

@@ -2,11 +2,12 @@
 // aria-checked starts false. The beach row drew nothing while its neighbours drew, so this prints
 // every row's state around the click and whether a source appears.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const base = process.argv[2] ?? "http://127.0.0.1:8921";
 const ids = ["ai_cctv_speed", "mtr_bus_stops", "lcsd_facilities", "beach_grading", "carpark_vacancy"];
 const browser = await chromium.launch({
-  executablePath: process.env.CHROME_PATH || undefined,
+  executablePath: browserExe(),
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, locale: "zh-HK" });

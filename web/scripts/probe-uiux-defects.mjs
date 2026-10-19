@@ -9,8 +9,9 @@
 // It is deliberately NOT a screenshot review — a screenshot has been recorded
 // calling a two-column grid single-column and a fixed build still broken.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
-const exe = process.env.CHROME_PATH || "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const url = process.argv[2] ?? "http://localhost:4173/";
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 

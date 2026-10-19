@@ -4,9 +4,10 @@
 // which requests fail, and are there any console errors or layout overflows.
 // "No bugs" needs a measurement, not an impression.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const base = process.argv[2] || "http://localhost:4173/";
-const exe = process.env.CHROME_PATH || "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, locale: "zh-HK" });
 

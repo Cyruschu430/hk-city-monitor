@@ -2,13 +2,14 @@
 // The app renders every panel in the column, so nothing needs clicking: wait for the panel element,
 // then wait for it to stop saying "loading" and say something.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const base = process.argv[2] ?? "https://hk-city-monitor.pages.dev";
 const LIMIT_MS = Number(process.argv[3] ?? 60000);
 const ids = ["special_traffic_list", "carpark_vacancy_list", "mtr_next_train_list"];
 
 const browser = await chromium.launch({
-  executablePath: process.env.CHROME_PATH || "/usr/bin/chromium-browser",
+  executablePath: browserExe(),
   args: ["--no-sandbox", "--disable-dev-shm-usage", "--use-gl=swiftshader", "--enable-unsafe-swiftshader"],
 });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });

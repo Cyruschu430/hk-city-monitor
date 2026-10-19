@@ -7,9 +7,9 @@
 //
 //   node scripts/check-shell.mjs        # against the preview server on :4173
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
-const exe = process.env.CHROME_PATH ?? process.env.HKCM_CHROME
-  ?? "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const BASE = process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/";
 const fails = [];
 const ok = (cond, msg) => { console.log(`${cond ? "OK  " : "FAIL"} ${msg}`); if (!cond) fails.push(msg); };

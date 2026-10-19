@@ -111,12 +111,20 @@ npm run check:all                 # 9 checks; needs a preview on 127.0.0.1:4173 
 python3 scripts/validate_config.py
 ```
 
-The browser checks require Chromium. They default to the maintainer's Windows path, so on any other
-machine set `CHROME_PATH` (and `HKCM_CHROME` for the older checks):
+The browser checks need Chromium. `web/scripts/browser.mjs` resolves it (it is the only place that
+does): `CHROME_PATH`, then `HKCM_CHROME`, then Playwright's own browser **if it is actually installed**,
+then a system browser (`/usr/bin/chromium-browser`, `/usr/bin/chromium`, `/usr/bin/google-chrome`, the
+macOS Chrome). Set `CHROME_PATH` only to force a different browser:
 
 ```bash
-CHROME_PATH=/usr/bin/chromium npm run check:all
+CHROME_PATH=/usr/bin/chromium npm run check:all     # optional override
+npx playwright install chromium                     # if nothing on the machine has one
 ```
+
+A hardcoded per-machine path is what made every browser gate die with
+`Failed to launch chromium because executable doesn't exist at C:\Users\<user>\…` on every other
+machine — which reads like a broken build rather than an unset path. Keep the resolution in that one
+file.
 
 Claims about the interface are verified in the DOM, never from a screenshot — screenshots have
 previously misreported a two-column grid as single-column and a correct light theme as dark.

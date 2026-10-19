@@ -6,8 +6,9 @@
 // probe that cannot tell "the product is broken" from "I am blocked" is worse than
 // no probe, so this one drives the real page and reads the real request.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
-const exe = process.env.CHROME_PATH || "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const url = process.argv[2] ?? "http://localhost:4173/";
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, locale: "zh-HK" });

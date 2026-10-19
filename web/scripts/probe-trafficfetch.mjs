@@ -1,6 +1,7 @@
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 const browser = await chromium.launch({
-  executablePath: process.env.CHROME_PATH || "/usr/bin/chromium-browser",
+  executablePath: browserExe(),
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 });
 const page = await browser.newPage();

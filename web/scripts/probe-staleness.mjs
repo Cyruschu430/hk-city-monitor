@@ -9,11 +9,12 @@
 // gate is a timer measures the timer, not the app — so it now waits for every
 // panel to leave the loading state, and reports how many it actually saw.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 
 const URL_UNDER_TEST = process.argv[2] ?? "http://localhost:4173/";
 const EXPECTED_PANELS = Number(process.argv[3] ?? 18);
 
-const exe = process.env.CHROME_PATH || "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe";
+const exe = browserExe();
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, locale: "zh-HK" });
 await page.goto(URL_UNDER_TEST, { waitUntil: "domcontentloaded" });

@@ -8,6 +8,7 @@
 // measurement: how much of the viewport the map actually gets, and how much of the panel set is
 // visible without scrolling.
 import { chromium } from "playwright-core";
+import { browserExe } from "./browser.mjs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -18,7 +19,7 @@ import { join } from "node:path";
 const problems = [];
 
 const BASE = process.env.HKCM_URL ?? (process.env.HKCM_URL ?? process.env.BASE ?? "http://localhost:4173/");
-const exe = process.env.CHROME_PATH || (process.env.HKCM_CHROME ?? "C:\\Users\\<user>\\AppData\\Local\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe");
+const exe = browserExe();
 
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 // The viewport is an env var so the SAME assertions can be pointed at a phone

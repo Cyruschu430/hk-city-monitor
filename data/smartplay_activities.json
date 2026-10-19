@@ -6528,22 +6528,6 @@
   "left": 0
  },
  {
-  "name_tc": "獨木舟中級銀章訓練班(技術及旅程)",
-  "name_en": "Kayak Proficiency Silver Award Training Course (Techniques & Sea Trip)",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "赤柱正灘水上活動中心",
-  "district_en": "Stanley Main Beach Water Sports Centre",
-  "venue_tc": "赤柱正灘水上活動中心",
-  "venue_en": "Stanley Main Beach Water Sports Centre",
-  "start": "2026-09-06",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 60.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "網球訓練班",
   "name_en": "Tennis Training Couse",
   "type_tc": "網球",
@@ -9469,7 +9453,7 @@
   "time": "07:30–08:30",
   "fee": 60.0,
   "quota": 40,
-  "left": 5
+  "left": 4
  },
  {
   "name_tc": "健體舞訓練班",
@@ -22941,7 +22925,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 80,
-  "left": 18
+  "left": 17
  },
  {
   "name_tc": "活力長者計劃-羽毛球",
@@ -35680,22 +35664,6 @@
   "left": 0
  },
  {
-  "name_tc": "風帆基本技巧訓練班(第二級)",
-  "name_en": "Sailing Basic Skills Training Course (Level 2)",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-10-11",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 140.0,
-  "quota": 6,
-  "left": 0
- },
- {
   "name_tc": "爵士舞訓練班",
   "name_en": "Jazz Training Course",
   "type_tc": "爵士舞",
@@ -36509,7 +36477,7 @@
   "time": "19:00–21:00",
   "fee": 160.0,
   "quota": 8,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "長者室內門球訓練班",
@@ -38592,22 +38560,6 @@
   "left": 0
  },
  {
-  "name_tc": "高級獨木舟救生員訓練班 (技術)",
-  "name_en": "Advanced Canoe Lifeguard Training Course (Techniques)",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "大美督水上活動中心",
-  "district_en": "Tai Mei Tuk Water Sports Centre",
-  "venue_tc": "大美督水上活動中心",
-  "venue_en": "Tai Mei Tuk Water Sports Centre",
-  "start": "2026-10-17",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 90.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "社交舞訓練班",
   "name_en": "Social Dance Training Course",
   "type_tc": "社交舞",
@@ -38704,38 +38656,6 @@
   "left": 0
  },
  {
-  "name_tc": "風帆入門訓練班（第一級）",
-  "name_en": "Introduction to Sailing Training Course (Level 1)",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "大美督水上活動中心",
-  "district_en": "Tai Mei Tuk Water Sports Centre",
-  "venue_tc": "大美督水上活動中心",
-  "venue_en": "Tai Mei Tuk Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "短板入門",
-  "name_en": "Introduction to Short Board",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "大美督水上活動中心",
-  "district_en": "Tai Mei Tuk Water Sports Centre",
-  "venue_tc": "大美督水上活動中心",
-  "venue_en": "Tai Mei Tuk Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "普及體操訓練班",
   "name_en": "Gymnastics for All Training Course",
   "type_tc": "普及體操",
@@ -38749,54 +38669,6 @@
   "time": "15:00–17:00",
   "fee": 54.0,
   "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "初級滑浪風帆專修",
-  "name_en": "Basic Windsurfing Clinic",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 5,
-  "left": 0
- },
- {
-  "name_tc": "初級滑浪風帆訓練班",
-  "name_en": "Basic Windsurfing Training Course",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "聖士提反灣水上活動中心",
-  "district_en": "St. Stephen's Beach Water Sports Centre",
-  "venue_tc": "聖士提反灣水上活動中心",
-  "venue_en": "St. Stephen's Beach Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 5,
-  "left": 0
- },
- {
-  "name_tc": "短板入門",
-  "name_en": "Introduction to Short Board",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "赤柱正灘水上活動中心",
-  "district_en": "Stanley Main Beach Water Sports Centre",
-  "venue_tc": "赤柱正灘水上活動中心",
-  "venue_en": "Stanley Main Beach Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 8,
   "left": 0
  },
  {
@@ -38832,54 +38704,6 @@
   "left": 0
  },
  {
-  "name_tc": "風帆入門訓練班(第一級)",
-  "name_en": "Introduction to Sailing Training Course (Level 1)",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-10-18",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "風帆舵手專修(碧高)",
-  "name_en": "Sailing Helmsman Clinic (Pico)",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "聖士提反灣水上活動中心",
-  "district_en": "St. Stephen's Beach Water Sports Centre",
-  "venue_tc": "聖士提反灣水上活動中心",
-  "venue_en": "St. Stephen's Beach Water Sports Centre",
-  "start": "2026-10-19",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 40.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "風帆旅程(碧高)",
-  "name_en": "Sailing Trip (Pico)",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "赤柱正灘水上活動中心",
-  "district_en": "Stanley Main Beach Water Sports Centre",
-  "venue_tc": "赤柱正灘水上活動中心",
-  "venue_en": "Stanley Main Beach Water Sports Centre",
-  "start": "2026-10-19",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 40.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "初級滑浪風帆訓練班",
   "name_en": "Basic Windsurfing Training Course",
   "type_tc": "滑浪風帆",
@@ -38893,102 +38717,6 @@
   "time": "09:00–17:00",
   "fee": 130.0,
   "quota": 5,
-  "left": 0
- },
- {
-  "name_tc": "獨木舟環島之旅(鹽田仔) ",
-  "name_en": "Kayak Round Island Tour (Yim Tin Tsai) ",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-10-19",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "獨木舟環島之旅(鹽田仔) ",
-  "name_en": "Kayak Round Island Tour (Yim Tin Tsai) ",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-10-19",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "獨木舟海洋生態之旅(海下灣) ",
-  "name_en": "Kayak Eco-touring (Hoi Ha Wan)",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-10-19",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "獨木舟二星章訓練班",
-  "name_en": "Kayak 2 Star Award Training Course",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-10-19",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "獨木舟中級銅章訓練班",
-  "name_en": "Kayak Proficiency Bronze Award Training Course ",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-10-19",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "獨木舟三星章訓練班",
-  "name_en": "Kayak 3 Star Award Training Course",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "赤柱正灘水上活動中心",
-  "district_en": "Stanley Main Beach Water Sports Centre",
-  "venue_tc": "赤柱正灘水上活動中心",
-  "venue_en": "Stanley Main Beach Water Sports Centre",
-  "start": "2026-10-19",
-  "end": "2026-10-19",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
   "left": 0
  },
  {
@@ -42141,7 +41869,7 @@
   "time": "09:00–17:00",
   "fee": 130.0,
   "quota": 8,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "風帆入門訓練班（第一級）",
@@ -42989,7 +42717,7 @@
   "time": "15:00–16:00",
   "fee": 0.0,
   "quota": 15,
-  "left": 13
+  "left": 12
  },
  {
   "name_tc": "青少年三人籃球同樂日",
@@ -45117,7 +44845,7 @@
   "time": "14:00–16:00",
   "fee": 0.0,
   "quota": 3,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "器械健體訓練班",
@@ -45501,7 +45229,7 @@
   "time": "09:15–11:45",
   "fee": 0.0,
   "quota": 80,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -51085,7 +50813,7 @@
   "time": "14:00–16:00",
   "fee": 0.0,
   "quota": 15,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "黃昏簡易太極班",
@@ -67357,7 +67085,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 5,
-  "left": 2
+  "left": 1
  },
  {
   "name_tc": "網球訓練班",
@@ -68861,7 +68589,7 @@
   "time": "09:15–17:00",
   "fee": 0.0,
   "quota": 8,
-  "left": 3
+  "left": 1
  },
  {
   "name_tc": "健球同樂日",
@@ -73680,6 +73408,22 @@
   "left": 8
  },
  {
+  "name_tc": "康體匯敍-八段錦",
+  "name_en": "Meeting Points-Baduanjin",
+  "type_tc": "長者康體匯聚",
+  "type_en": "Meeting Point for the Elderly",
+  "district_tc": "離島區",
+  "district_en": "Islands",
+  "venue_tc": "海傍街體育館 (長洲市政大廈內)",
+  "venue_en": "Praya Street Sports Centre (In Cheung Chau Municipal Services Building) ",
+  "start": "2026-11-19",
+  "end": "2027-01-21",
+  "time": "19:50–21:20",
+  "fee": 0.0,
+  "quota": 50,
+  "left": 50
+ },
+ {
   "name_tc": "社交舞訓練班",
   "name_en": "Social Dance Training Course",
   "type_tc": "社交舞",
@@ -75021,7 +74765,7 @@
   "time": "16:00–17:00",
   "fee": 0.0,
   "quota": 80,
-  "left": 25
+  "left": 23
  },
  {
   "name_tc": "少年獨木舟海豹章訓練班",
@@ -75101,7 +74845,7 @@
   "time": "15:00–16:00",
   "fee": 0.0,
   "quota": 80,
-  "left": 25
+  "left": 24
  },
  {
   "name_tc": "少年獨木舟海豹章訓練班",
@@ -80128,6 +79872,22 @@
   "left": 24
  },
  {
+  "name_tc": "健體指導課",
+  "name_en": "Fitness Instruction Session",
+  "type_tc": "正確使用健身室設施簡介會",
+  "type_en": "Briefing on Proper Ways to Use Fitness Equipment",
+  "district_tc": "南區",
+  "district_en": "Southern",
+  "venue_tc": "鴨脷洲體育館",
+  "venue_en": "Ap Lei Chau Sports Centre",
+  "start": "2026-11-28",
+  "end": "2026-11-28",
+  "time": "14:00–15:00",
+  "fee": 0.0,
+  "quota": 13,
+  "left": 0
+ },
+ {
   "name_tc": "中級滑浪風帆訓練班",
   "name_en": "Intermediate Windsurfing Training Course",
   "type_tc": "滑浪風帆",
@@ -80446,6 +80206,22 @@
   "fee": 30.0,
   "quota": 8,
   "left": 8
+ },
+ {
+  "name_tc": "健體指導課",
+  "name_en": "Fitness Instruction Session",
+  "type_tc": "正確使用健身室設施簡介會",
+  "type_en": "Briefing on Proper Ways to Use Fitness Equipment",
+  "district_tc": "南區",
+  "district_en": "Southern",
+  "venue_tc": "鴨脷洲體育館",
+  "venue_en": "Ap Lei Chau Sports Centre",
+  "start": "2026-11-28",
+  "end": "2026-11-28",
+  "time": "15:00–16:00",
+  "fee": 0.0,
+  "quota": 12,
+  "left": 0
  },
  {
   "name_tc": "家庭飛盤共奔FUN同樂日",
@@ -85069,7 +84845,7 @@
   "time": "10:00–12:00",
   "fee": 0.0,
   "quota": 15,
-  "left": 4
+  "left": 5
  },
  {
   "name_tc": "成人胸泳訓練班(第三階段)",
@@ -103197,7 +102973,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 10,
-  "left": 4
+  "left": 5
  },
  {
   "name_tc": "風帆旅程(激光XD)",
@@ -111118,6 +110894,54 @@
   "fee": 60.0,
   "quota": 30,
   "left": 30
+ },
+ {
+  "name_tc": "肢體傷殘人士網球訓練班",
+  "name_en": "Tennis Training Course for  Persons with Physical Disability",
+  "type_tc": "網球",
+  "type_en": "Tennis",
+  "district_tc": "九龍城區",
+  "district_en": "Kowloon City",
+  "venue_tc": "海心公園",
+  "venue_en": "Hoi Sham Park",
+  "start": "2027-01-05",
+  "end": "2027-02-04",
+  "time": "10:00–12:00",
+  "fee": 0.0,
+  "quota": 8,
+  "left": 0
+ },
+ {
+  "name_tc": "視障人士身心伸展訓練班",
+  "name_en": "Body-mind Stretch Training Course for  Persons with Visual Impairment",
+  "type_tc": "身心伸展訓練",
+  "type_en": "Body-Mind Stretch",
+  "district_tc": "黃大仙區",
+  "district_en": "Wong Tai Sin",
+  "venue_tc": "竹園體育館",
+  "venue_en": "Chuk Yuen Sports Centre",
+  "start": "2027-01-05",
+  "end": "2027-01-21",
+  "time": "10:00–12:00",
+  "fee": 0.0,
+  "quota": 15,
+  "left": 0
+ },
+ {
+  "name_tc": "精神病康復者水中健體訓練班",
+  "name_en": "Hydro Fitness Training Scheme for Ex-mentally Ill Persons",
+  "type_tc": "水中健體",
+  "type_en": "Hydro Fitness",
+  "district_tc": "中西區",
+  "district_en": "Central & Western",
+  "venue_tc": "堅尼地城游泳池",
+  "venue_en": "Kennedy Town Swimming Pool",
+  "start": "2027-01-08",
+  "end": "2027-02-22",
+  "time": "10:00–11:00",
+  "fee": 0.0,
+  "quota": 10,
+  "left": 0
  },
  {
   "name_tc": "元朗區三人籃球比賽2026/27",

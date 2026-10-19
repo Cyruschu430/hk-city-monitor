@@ -264,22 +264,40 @@ def main():
     # 2. Fetch all stops (KMB has the master list)
     all_stops = fetch_all_stops()
 
-    # 3. For each route, fetch its stop sequence
+    # 3. For each route, fetch its stop sequence — 8 at a time.
+    #
+    # WHY CONCURRENT. This loop IS the bake's cost: ~2,600 requests, one per route. From Hong Kong it
+    # takes ~13 minutes; from a GitHub runner (a US datacentre, ~200 ms round trip) the same sequential
+    # loop ran past the refresh workflow's 25-minute timeout and the daily refresh has never completed
+    # — the job dies mid-loop and publishes nothing. Each route is independent and the cost is latency,
+    # so concurrency is the whole fix; fetch_ctb_coords already uses the same 8 workers for the same
+    # reason, and results are applied here in order so nothing writes concurrently.
     print("Fetching stop sequences...")
-    for i, route in enumerate(routes.values()):
-        if i % 50 == 0:
-            print(f"  {i}/{len(routes)}")
+    from concurrent.futures import ThreadPoolExecutor
+
+    def fetch_route(route):
+        """-> (stops, nlb_rows). NLB rows carry their own coordinates and are applied below."""
         if route["co"] in ("KMB", "LWB"):
-            route["stops"] = fetch_kmb_stops(route["route"], route["service_type"], route["bound"])
-        elif route["co"] == "CTB":
-            route["stops"] = fetch_ctb_stops(route["route"])
-        elif route["co"] == "NLB":
+            return fetch_kmb_stops(route["route"], route["service_type"], route["bound"]), []
+        if route["co"] == "CTB":
+            return fetch_ctb_stops(route["route"]), []
+        if route["co"] == "NLB":
             rows = fetch_nlb_stops(route["routeId"])
-            for r in rows:
+            return [{"seq": r["seq"], "stop": r["stop"]} for r in rows], rows
+        if route["co"] == "GMB":
+            return fetch_gmb_stops(route["route"], route["region"]), []
+        return [], []
+
+    items = list(routes.values())
+    done = 0
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        for route, (stops, nlb_rows) in zip(items, pool.map(fetch_route, items)):
+            route["stops"] = stops
+            for r in nlb_rows:
                 all_stops.setdefault(r["stop"], {"name": r["name"], "lat": r["lat"], "lng": r["lng"]})
-            route["stops"] = [{"seq": r["seq"], "stop": r["stop"]} for r in rows]
-        elif route["co"] == "GMB":
-            route["stops"] = fetch_gmb_stops(route["route"], route["region"])
+            done += 1
+            if done % 200 == 0:
+                print(f"  {done}/{len(items)}")
 
     # 3b. CTB coordinates — the route-stop feed carries ids only.
     ctb_ids = sorted({s["stop"] for r in routes.values() if r["co"] == "CTB" for s in r["stops"]})

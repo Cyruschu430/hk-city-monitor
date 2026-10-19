@@ -54,5 +54,3 @@ jobs:
           git add data/
           git commit -m "chore(data): refresh the reference snapshots"
           git push origin HEAD:${GITHUB_REF_NAME}
-
-# probe

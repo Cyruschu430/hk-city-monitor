@@ -50,3 +50,39 @@ jobs:
       # forever. This reads the last COMMIT date of each one, which survives a clone.
       - name: Reference snapshots are inside their cadence
         run: python3 scripts/check_snapshot_age.py
+
+  # The deliverable is the site, so the deploy is the last step of the same run — pushed to master
+  # and gated on `check`, so a red commit never reaches the public URL. Cloudflare Pages rather than
+  # GitHub Pages: the edge worker and the `live-data` branch are already on that account, and
+  # pages-build-deployment (GitHub's own, unused) still runs on every push in parallel.
+  deploy:
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: web
+
+      - name: Build
+        run: npm run build
+        working-directory: web
+        env:
+          # overlays3d.ts throws without it. The worker URL is public, so it is configuration,
+          # not a secret — the only real secret here is the Cloudflare token.
+          VITE_WORKER_BASE: https://hk-city-monitor.cyrus738.workers.dev
+
+      - name: Deploy
+        run: npx --yes wrangler@4.147.0 pages deploy dist --project-name=hk-city-monitor --branch=main
+        working-directory: web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

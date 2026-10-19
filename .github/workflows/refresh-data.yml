@@ -1,0 +1,56 @@
+# refresh-data.yml — keep the slow-cadence snapshots current without a machine of our own.
+#
+# The live files (aircraft, berths, water notices, AI camera readings) are refreshed every ten
+# minutes by live-publish.yml. Everything else — bus route topology, LCSD venues, parking meters,
+# EV chargers, hiking trails, AED cabinets, SmartPLAY activities — used to change only when a
+# person ran the builder and deployed. That is a data panel that is correct once and stale forever.
+#
+# This runs those builders once a day and publishes only the files whose bytes actually changed
+# (scripts/snapshot_cycle.sh). No secret beyond the repository's own token: the branch it
+# publishes to is an orphan branch of this repository, read by the browser over raw.githubusercontent.
+#
+# The bundle still carries a committed snapshot of every file, so a failed publish degrades to a
+# panel that shows its age rather than to an empty panel.
+name: refresh-data
+
+on:
+  schedule:
+    # 20:10 UTC = 04:10 HKT — outside the hours anyone is reading the site.
+    - cron: "10 20 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      HKCM_REMOTE: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Cyruschu430/hk-city-monitor.git
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Refresh the snapshots and publish what changed
+        run: sh scripts/snapshot_cycle.sh
+
+      - name: The registry still validates against the refreshed files
+        run: python3 scripts/validate_config.py
+
+      # Commit the refreshed snapshots too, so the bundle's fallback copy is not years old and
+      # check_snapshot_age.py has a commit date that means "last successful refresh".
+      - name: Commit the refreshed snapshots
+        run: |
+          if [ -z "$(git status --porcelain data/)" ]; then
+            echo "no snapshot changed; nothing to commit"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git commit -m "chore(data): refresh the reference snapshots"
+          git push origin HEAD:${GITHUB_REF_NAME}

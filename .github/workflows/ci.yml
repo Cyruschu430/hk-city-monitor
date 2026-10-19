@@ -45,3 +45,8 @@ jobs:
 
       - name: Documented counts match the registries
         run: python3 scripts/check_doc_counts.py
+
+      # A reference snapshot that nobody refreshes is a panel that is right once and wrong
+      # forever. This reads the last COMMIT date of each one, which survives a clone.
+      - name: Reference snapshots are inside their cadence
+        run: python3 scripts/check_snapshot_age.py

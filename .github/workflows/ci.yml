@@ -86,3 +86,27 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  # The other half of "push and it is handled": when a push goes red, an agent picks it up instead of
+  # waiting for someone to notice. Only failures come through — a repo webhook on workflow_run fires on
+  # EVERY workflow completion (ci, live-publish, pages-build-deployment, ai-brief…), which is ~50 agent
+  # runs a day to say "✅ green". Green is silent; the Actions tab is the history. The signature is the
+  # same HMAC-SHA256 GitHub would send, so the relay needs no second code path.
+  notify:
+    needs: [check, deploy]
+    if: ${{ always() && (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tell the agent
+        run: |
+          body=$(printf '{"action":"completed","workflow_run":{"id":%s,"name":"ci","conclusion":"failure","head_branch":"%s","head_sha":"%s","html_url":"%s/%s/actions/runs/%s"}}' \
+            "${{ github.run_id }}" "${{ github.ref_name }}" "${{ github.sha }}" \
+            "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}")
+          sig="sha256=$(printf '%s' "$body" | openssl dgst -sha256 -hmac "$SECRET" | sed 's/^.* //')"
+          curl -sS -m 20 -X POST "https://projectportal.duckdns.org/webhooks/hkcm-ci" \
+            -H "Content-Type: application/json" \
+            -H "X-Hub-Signature-256: $sig" \
+            -H "X-GitHub-Event: workflow_run" \
+            --data "$body" -w '\nHTTP %{http_code}\n'
+        env:
+          SECRET: ${{ secrets.HERMES_WEBHOOK_SECRET }}

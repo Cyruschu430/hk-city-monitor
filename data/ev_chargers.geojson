@@ -1007,10 +1007,10 @@
     "location_en": "Shau Kei Wan Car Park",
     "address_en": "1 Po Man Street, Shau Kei Wan, Hong Kong",
     "std": 0,
-    "medium": 97,
+    "medium": 116,
     "quick": 2,
     "fast": 0,
-    "total": 99
+    "total": 118
    }
   },
   {
@@ -10381,8 +10381,8 @@
     "std": 0,
     "medium": 0,
     "quick": 0,
-    "fast": 4,
-    "total": 4
+    "fast": 6,
+    "total": 6
    }
   },
   {
@@ -10427,6 +10427,28 @@
     "quick": 4,
     "fast": 0,
     "total": 4
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.106183,
+     22.362668
+    ]
+   },
+   "properties": {
+    "district_tc": "葵青區",
+    "district_en": "Kwai Tsing",
+    "location_tc": "灝景灣",
+    "location_en": "VILLA ESPLANADA",
+    "address_en": "NGA YING CHAU STREET, KWAI TSING",
+    "std": 0,
+    "medium": 0,
+    "quick": 0,
+    "fast": 2,
+    "total": 2
    }
   },
   {
@@ -20016,8 +20038,8 @@
     "address_en": "Ginkgo Road, Yuen Long",
     "std": 0,
     "medium": 0,
-    "quick": 4,
-    "fast": 0,
+    "quick": 2,
+    "fast": 2,
     "total": 4
    }
   },
@@ -20193,8 +20215,8 @@
     "std": 0,
     "medium": 0,
     "quick": 0,
-    "fast": 6,
-    "total": 6
+    "fast": 12,
+    "total": 12
    }
   },
   {

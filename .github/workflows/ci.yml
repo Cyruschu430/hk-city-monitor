@@ -80,6 +80,23 @@ jobs:
           # not a secret — the only real secret here is the Cloudflare token.
           VITE_WORKER_BASE: https://hk-city-monitor.cyrus738.workers.dev
 
+      # A missing basemap/style.json does not fail anything by itself: Pages answers the request
+      # with the SPA's index.html, MapLibre throws on the HTML, and the map plus every layer on it
+      # silently disappears in production (measured 2026-10-22). Fail here, on the artefact that is
+      # about to ship, instead of on a user's screen.
+      - name: Verify the built artefact carries a usable basemap style
+        run: |
+          node -e '
+            const fs = require("fs");
+            const raw = fs.readFileSync("dist/basemap/style.json", "utf8");
+            if (raw.trimStart().startsWith("<")) throw new Error("dist/basemap/style.json is HTML, not JSON");
+            const s = JSON.parse(raw);
+            if (!s.sources || Object.keys(s.sources).length === 0) throw new Error("basemap style has no sources");
+            if (!Array.isArray(s.layers) || s.layers.length === 0) throw new Error("basemap style has no layers");
+            console.log("basemap style ok:", Object.keys(s.sources).length, "sources,", s.layers.length, "layers");
+          '
+        working-directory: web
+
       - name: Deploy
         run: npx --yes wrangler@4.147.0 pages deploy dist --project-name=hk-city-monitor --branch=main
         working-directory: web

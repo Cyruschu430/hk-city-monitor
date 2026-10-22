@@ -1,0 +1,124 @@
+{
+ "version": 8,
+ "name": "hkcm-landsd",
+ "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+ "sources": {
+  "landsd-topo": {
+   "type": "raster",
+   "tiles": [
+    "https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/basemap/WGS84/{z}/{x}/{y}.png"
+   ],
+   "tileSize": 256,
+   "maxzoom": 19
+  },
+  "landsd-label-tc": {
+   "type": "raster",
+   "tiles": [
+    "https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/label/hk/tc/WGS84/{z}/{x}/{y}.png"
+   ],
+   "tileSize": 256,
+   "maxzoom": 19
+  },
+  "landsd-imagery": {
+   "type": "raster",
+   "tiles": [
+    "https://mapapi.geodata.gov.hk/gs/api/v1.0.0/xyz/imagery/WGS84/{z}/{x}/{y}.png"
+   ],
+   "tileSize": 256,
+   "maxzoom": 19
+  },
+  "esri-imagery": {
+   "type": "raster",
+   "tiles": [
+    "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+   ],
+   "tileSize": 256,
+   "maxzoom": 19,
+   "attribution": "Imagery © Esri, Maxar, Earthstar Geographics"
+  },
+  "esri-topo": {
+   "type": "raster",
+   "tiles": [
+    "https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+   ],
+   "tileSize": 256,
+   "maxzoom": 19,
+   "attribution": "© Esri, HERE, Garmin, FAO, NOAA, USGS"
+  },
+  "esri-gray": {
+   "type": "raster",
+   "tiles": [
+    "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+   ],
+   "tileSize": 256,
+   "maxzoom": 19,
+   "attribution": "© Esri, HERE, Garmin, © OpenStreetMap contributors"
+  }
+ },
+ "layers": [
+  {
+   "id": "bg",
+   "type": "background",
+   "paint": {
+    "background-color": "#05070d"
+   }
+  },
+  {
+   "id": "landsd-topo",
+   "type": "raster",
+   "source": "landsd-topo",
+   "paint": {
+    "raster-opacity": 0.72,
+    "raster-brightness-max": 0.62,
+    "raster-contrast": 0.12,
+    "raster-saturation": -0.35
+   }
+  },
+  {
+   "id": "landsd-imagery",
+   "type": "raster",
+   "source": "landsd-imagery",
+   "layout": {
+    "visibility": "none"
+   },
+   "paint": {
+    "raster-brightness-max": 0.5,
+    "raster-contrast": 0.2,
+    "raster-saturation": -0.2
+   }
+  },
+  {
+   "id": "esri-imagery",
+   "type": "raster",
+   "source": "esri-imagery",
+   "layout": {
+    "visibility": "none"
+   },
+   "paint": {
+    "raster-brightness-max": 0.6,
+    "raster-contrast": 0.1
+   }
+  },
+  {
+   "id": "esri-topo",
+   "type": "raster",
+   "source": "esri-topo",
+   "layout": {
+    "visibility": "none"
+   }
+  },
+  {
+   "id": "esri-gray",
+   "type": "raster",
+   "source": "esri-gray",
+   "layout": {
+    "visibility": "none"
+   }
+  },
+  {
+   "id": "landsd-label-tc",
+   "type": "raster",
+   "source": "landsd-label-tc"
+  }
+ ]
+}

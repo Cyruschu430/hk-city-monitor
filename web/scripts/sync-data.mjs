@@ -28,4 +28,15 @@ for (const f of readdirSync("../data")) {
   if (["baselines.json", "dataset_candidates.json", "geocode_cache.json", "sources_report.json", "leave_plan.json"].includes(f)) continue;
   cpSync(`../data/${f}`, `${DST}/${f}`);
 }
+// web/public/basemap/ is likewise a build-time copy. It used to be hand-maintained on whatever
+// machine ran the deploy, which is why the first CI-driven deploy shipped a dist with no
+// basemap/style.json at all: MapLibre fetched the path, got the SPA's index.html, and the whole
+// map (and every layer on it) failed to render. The style is source, so it lives in web/basemap/.
+const BASEMAP_SRC = "basemap";
+const BASEMAP_DST = "public/basemap";
+if (existsSync(BASEMAP_SRC)) {
+  mkdirSync(BASEMAP_DST, { recursive: true });
+  cpSync(BASEMAP_SRC, BASEMAP_DST, { recursive: true });
+  console.log("sync-data: web/public/basemap/ refreshed from web/basemap/");
+}
 console.log("sync-data: web/public/data/ refreshed from repo-root data/ + sources.json");

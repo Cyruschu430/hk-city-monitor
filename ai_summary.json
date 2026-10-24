@@ -1,0 +1,87 @@
+{
+ "generated": "2026-10-24T11:49:15+08:00",
+ "model": "ca/gpt-4o-mini",
+ "provenance": {
+  "generator": "LLM summary of published open data",
+  "inputs": [
+   {
+    "file": "aircraft.json",
+    "from": "live-data",
+    "observed": 1792806730500
+   },
+   {
+    "file": "berth_vacancy.json",
+    "from": "live-data",
+    "observed": "2026-10-24 09:52"
+   },
+   {
+    "file": "water_suspension.json",
+    "from": "live-data",
+    "observed": "2026-10-24T09:54:39+08:00"
+   },
+   {
+    "file": "carpark_info.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "baselines.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "ae_waiting",
+    "from": "live-api",
+    "observed": "2026年10月24日 上午11時30分"
+   },
+   {
+    "file": "cp_queue",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "aqhi",
+    "from": "live-api",
+    "observed": "2026-10-24T10:30:00"
+   },
+   {
+    "file": "wind_10min",
+    "from": "live-api",
+    "observed": "202610241140"
+   },
+   {
+    "file": "warnsum",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "special_traffic",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "beach_grading",
+    "from": "live-api",
+    "observed": "Fri, 23 Oct 2026 14:30:47"
+   },
+   {
+    "file": "journey_time",
+    "from": "live-api",
+    "observed": "2026-10-24T11:47:00"
+   },
+   {
+    "file": "sensor_parking",
+    "from": "live-api",
+    "observed": "2026-10-24 11:48"
+   }
+  ],
+  "frequency": "2x daily (08:00, 20:00 HKT)",
+  "disclaimer": "AI-generated from the figures above. It is not analysis, not advice, and not an official notice."
+ },
+ "brief": {
+  "tc": "目前有兩個水務暫停，涉及中西區、九龍城區、元朗區、北區、南區和大埔區。火災危險警告仍然有效。十八間醫院的最長等候時間為四個半鐘，瑪嘉烈醫院的等候時間最長。海灘水質方面，有十二個海灘的水質為二級，二十八個海灘的水質為一級。",
+  "en": "There are currently two water supply suspensions affecting Central and Western District, Kowloon City District, Yuen Long District, North District, Southern District, and Tai Po District. A fire danger warning remains active. The longest waiting time at eighteen hospitals is four and a half hours, with Queen Mary Hospital having the longest wait. In terms of beach water quality, twelve beaches are rated level two and twenty-eight are rated level one.",
+  "spoken_tc": "目前有兩個水務暫停，涉及中西區、九龍城區、元朗區、北區、南區和大埔區。火災危險警告仍然有效。十八間醫院的最長等候時間為四個半鐘，瑪嘉烈醫院的等候時間最長。海灘水質方面，有十二個海灘的水質為二級，二十八個海灘的水質為一級。",
+  "spoken_en": "There are currently two water supply suspensions affecting Central and Western District, Kowloon City District, Yuen Long District, North District, Southern District, and Tai Po District. A fire danger warning remains active. The longest waiting time at eighteen hospitals is four and a half hours, with Queen Mary Hospital having the longest wait. In terms of beach water quality, twelve beaches are rated level two and twenty-eight are rated level one."
+ }
+}

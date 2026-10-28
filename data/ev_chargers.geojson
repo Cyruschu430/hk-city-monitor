@@ -20906,6 +20906,28 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     113.953494,
+     22.299953
+    ]
+   },
+   "properties": {
+    "district_tc": "離島區",
+    "district_en": "Islands",
+    "location_tc": "裕興苑",
+    "location_en": "Yu Hing Court",
+    "address_en": "16 Wui Tung St, Tung Chung",
+    "std": 0,
+    "medium": 12,
+    "quick": 2,
+    "fast": 0,
+    "total": 14
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      114.115774,
      22.367395
     ]

@@ -1,0 +1,87 @@
+{
+ "generated": "2026-11-01T05:11:44+08:00",
+ "model": "ca/gpt-4o-mini",
+ "provenance": {
+  "generator": "LLM summary of published open data",
+  "inputs": [
+   {
+    "file": "aircraft.json",
+    "from": "live-data",
+    "observed": 1793477115000
+   },
+   {
+    "file": "berth_vacancy.json",
+    "from": "live-data",
+    "observed": "2026-11-01 04:05"
+   },
+   {
+    "file": "water_suspension.json",
+    "from": "live-data",
+    "observed": "2026-11-01T04:07:22+08:00"
+   },
+   {
+    "file": "carpark_info.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "baselines.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "ae_waiting",
+    "from": "live-api",
+    "observed": "2026年11月1日 上午3時45分"
+   },
+   {
+    "file": "cp_queue",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "aqhi",
+    "from": "live-api",
+    "observed": "2026-11-01T04:30:00"
+   },
+   {
+    "file": "wind_10min",
+    "from": "live-api",
+    "observed": "202611010500"
+   },
+   {
+    "file": "warnsum",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "special_traffic",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "beach_grading",
+    "from": "live-api",
+    "observed": "Fri, 30 Oct 2026 10:00:27"
+   },
+   {
+    "file": "journey_time",
+    "from": "live-api",
+    "observed": "2026-11-01T05:10:00"
+   },
+   {
+    "file": "sensor_parking",
+    "from": "live-api",
+    "observed": "2026-11-01 01:13"
+   }
+  ],
+  "frequency": "2x daily (08:00, 20:00 HKT)",
+  "disclaimer": "AI-generated from the figures above. It is not analysis, not advice, and not an official notice."
+ },
+ "brief": {
+  "tc": "目前有四個地區的水供應暫停，分別是中西區、九龍城區、元朗區和北區。十八間醫院的等候時間中，屯門醫院最長為五個半鐘，伊利沙伯醫院和將軍澳醫院各為五個鐘。海灘水質方面，有二十九個海灘的水質評級為一級，十一個為二級。空氣質素指數為五，風速最高為時速三十八公里。",
+  "en": "There are currently four districts with water supply suspension: Central and Western District, Kowloon City District, Yuen Long District, and North District. Among eighteen hospitals, the longest waiting time is five and a half hours at Tuen Mun Hospital, while Queen Elizabeth Hospital and Tseung Kwan O Hospital each have a waiting time of five hours. In terms of beach water quality, twenty-nine beaches are rated level one and eleven are rated level two. The air quality index is five, with a maximum wind speed of thirty-eight kilometers per hour.",
+  "spoken_tc": "目前有四個地區的水供應暫停，分別是中西區、九龍城區、元朗區和北區。十八間醫院的等候時間中，屯門醫院最長為五個半鐘，伊利沙伯醫院和將軍澳醫院各為五個鐘。海灘水質方面，有二十九個海灘的水質評級為一級，十一個為二級。空氣質素指數為五，風速最高為時速三十八公里。",
+  "spoken_en": "There are currently four districts with water supply suspension: Central and Western District, Kowloon City District, Yuen Long District, and North District. Among eighteen hospitals, the longest waiting time is five and a half hours at Tuen Mun Hospital, while Queen Elizabeth Hospital and Tseung Kwan O Hospital each have a waiting time of five hours. In terms of beach water quality, twenty-nine beaches are rated level one and eleven are rated level two. The air quality index is five, with a maximum wind speed of thirty-eight kilometers per hour."
+ }
+}

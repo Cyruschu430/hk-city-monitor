@@ -1,0 +1,87 @@
+{
+ "generated": "2026-11-14T16:44:17+08:00",
+ "model": "ca/gpt-4o-mini",
+ "provenance": {
+  "generator": "LLM summary of published open data",
+  "inputs": [
+   {
+    "file": "aircraft.json",
+    "from": "live-data",
+    "observed": 1794627466500
+   },
+   {
+    "file": "berth_vacancy.json",
+    "from": "live-data",
+    "observed": "2026-11-14 11:37"
+   },
+   {
+    "file": "water_suspension.json",
+    "from": "live-data",
+    "observed": "2026-11-14T11:40:45+08:00"
+   },
+   {
+    "file": "carpark_info.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "baselines.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "ae_waiting",
+    "from": "live-api",
+    "observed": "2026年11月14日 下午4時30分"
+   },
+   {
+    "file": "cp_queue",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "aqhi",
+    "from": "live-api",
+    "observed": "2026-11-14T15:30:00"
+   },
+   {
+    "file": "wind_10min",
+    "from": "live-api",
+    "observed": "202611141630"
+   },
+   {
+    "file": "warnsum",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "special_traffic",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "beach_grading",
+    "from": "live-api",
+    "observed": "Fri, 13 Nov 2026 14:23:44"
+   },
+   {
+    "file": "journey_time",
+    "from": "live-api",
+    "observed": "2026-11-14T16:42:00"
+   },
+   {
+    "file": "sensor_parking",
+    "from": "live-api",
+    "observed": "2026-11-14 16:43"
+   }
+  ],
+  "frequency": "2x daily (08:00, 20:00 HKT)",
+  "disclaimer": "AI-generated from the figures above. It is not analysis, not advice, and not an official notice."
+ },
+ "brief": {
+  "tc": "目前有七個水務暫停，涉及中西區、九龍城區、元朗區、北區、南區和大埔區。十八間醫院的等候時間中，廣華醫院最長為五小時，基督教聯合醫院和仁濟醫院各為四小時。海灘水質方面，十一個海灘中有八個為一級，三個為二級。空氣質素指數為三，風速最高為時速三十一公里。",
+  "en": "There are seven active water suspensions affecting Central and Western District, Kowloon City District, Yuen Long District, North District, Southern District, and Tai Po District. Among eighteen hospitals, the longest waiting time is five hours at Kwong Wah Hospital, while both Christian Alliance Hospital and Yan Chai Hospital have four hours. In terms of beach water quality, out of eleven beaches, eight are rated level one and three are rated level two. The air quality health index is three, with a maximum wind speed of thirty-one kilometers per hour.",
+  "spoken_tc": "目前有七個水務暫停，涉及中西區、九龍城區、元朗區、北區、南區和大埔區。十八間醫院的等候時間中，廣華醫院最長為五小時，基督教聯合醫院和仁濟醫院各為四小時。海灘水質方面，十一個海灘中有八個為一級，三個為二級。空氣質素指數為三，風速最高為時速三十一公里。",
+  "spoken_en": "There are seven active water suspensions affecting Central and Western District, Kowloon City District, Yuen Long District, North District, Southern District, and Tai Po District. Among eighteen hospitals, the longest waiting time is five hours at Kwong Wah Hospital, while both Christian Alliance Hospital and Yan Chai Hospital have four hours. In terms of beach water quality, out of eleven beaches, eight are rated level one and three are rated level two. The air quality health index is three, with a maximum wind speed of thirty-one kilometers per hour."
+ }
+}

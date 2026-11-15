@@ -204,8 +204,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.222359,
-     22.28487
+     114.222316,
+     22.284782
     ]
    },
    "properties": {
@@ -635,8 +635,8 @@
     "std": 0,
     "medium": 12,
     "quick": 0,
-    "fast": 2,
-    "total": 14
+    "fast": 4,
+    "total": 16
    }
   },
   {
@@ -941,10 +941,10 @@
     "location_en": "Rumsey Street Car Park",
     "address_en": "2 Rumsey Street, Sheung Wan, Hong Kong",
     "std": 0,
-    "medium": 110,
+    "medium": 35,
     "quick": 0,
-    "fast": 4,
-    "total": 114
+    "fast": 0,
+    "total": 35
    }
   },
   {
@@ -2089,28 +2089,6 @@
     "quick": 0,
     "fast": 0,
     "total": 20
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.219773,
-     22.314561
-    ]
-   },
-   "properties": {
-    "district_tc": "觀塘區",
-    "district_en": "Kwun Tong",
-    "location_tc": "創紀之城2及3期 (威信停車場)",
-    "location_en": "Millennium City 2 & 3 (Wilson Parking)",
-    "address_en": "KWUN TONG ROAD",
-    "std": 0,
-    "medium": 0,
-    "quick": 2,
-    "fast": 0,
-    "total": 2
    }
   },
   {
@@ -4736,8 +4714,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     113.943303,
-     22.290981
+     113.943026,
+     22.290939
     ]
    },
    "properties": {
@@ -4745,12 +4723,12 @@
     "district_en": "Islands",
     "location_tc": "東薈城P3停車場",
     "location_en": "Citygate P3 Carpark",
-    "address_en": "39 Man Tung Road, Tung Chung",
+    "address_en": "41 Man Tung Road, Tung Chung",
     "std": 0,
     "medium": 21,
-    "quick": 22,
+    "quick": 21,
     "fast": 0,
-    "total": 43
+    "total": 42
    }
   },
   {
@@ -8784,28 +8762,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.211552,
-     22.286732
-    ]
-   },
-   "properties": {
-    "district_tc": "東區",
-    "district_en": "Eastern",
-    "location_tc": "太古坊二座",
-    "location_en": "Two Taikoo Place",
-    "address_en": "979 King's Rd, Quarry Bay",
-    "std": 0,
-    "medium": 24,
-    "quick": 3,
-    "fast": 0,
-    "total": 27
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.131965,
      22.257882
     ]
@@ -8865,28 +8821,6 @@
     "quick": 0,
     "fast": 0,
     "total": 2
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.191623,
-     22.308582
-    ]
-   },
-   "properties": {
-    "district_tc": "九龍城區",
-    "district_en": "Kowloon City",
-    "location_tc": "海逸坊",
-    "location_en": "The Laguna Mall",
-    "address_en": "8, LagunaVerde Ave",
-    "std": 0,
-    "medium": 0,
-    "quick": 26,
-    "fast": 10,
-    "total": 36
    }
   },
   {
@@ -9092,28 +9026,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.197029,
-     22.339913
-    ]
-   },
-   "properties": {
-    "district_tc": "黃大仙區",
-    "district_en": "Wong Tai Sin",
-    "location_tc": "現崇山商場",
-    "location_en": "Lions Rise Mall",
-    "address_en": "5 Chun Yan St, Chuk Un",
-    "std": 2,
-    "medium": 2,
-    "quick": 2,
-    "fast": 0,
-    "total": 6
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.194317,
      22.337464
     ]
@@ -9173,28 +9085,6 @@
     "quick": 0,
     "fast": 0,
     "total": 4
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.139362,
-     22.365336
-    ]
-   },
-   "properties": {
-    "district_tc": "葵青區",
-    "district_en": "Kwai Tsing",
-    "location_tc": "石籬商場二期",
-    "location_en": "Shek Lei Shopping Centre II",
-    "address_en": "8 Shek Lei St, Shek Lei",
-    "std": 0,
-    "medium": 2,
-    "quick": 11,
-    "fast": 0,
-    "total": 13
    }
   },
   {
@@ -9327,28 +9217,6 @@
     "quick": 6,
     "fast": 0,
     "total": 16
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.159789,
-     22.504008
-    ]
-   },
-   "properties": {
-    "district_tc": "北區",
-    "district_en": "North",
-    "location_tc": "山麗苑",
-    "location_en": "Shan Lai Court",
-    "address_en": "88 Lung Ma Rd, Kwan Tei",
-    "std": 18,
-    "medium": 0,
-    "quick": 0,
-    "fast": 0,
-    "total": 18
    }
   },
   {
@@ -9503,28 +9371,6 @@
     "quick": 4,
     "fast": 0,
     "total": 7
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     113.968664,
-     22.396687
-    ]
-   },
-   "properties": {
-    "district_tc": "屯門區",
-    "district_en": "Tuen Mun",
-    "location_tc": "發里4 號",
-    "location_en": "No.4 Kin Fat Lane",
-    "address_en": "4 Kin Fat Ln, Tuen Mun",
-    "std": 0,
-    "medium": 0,
-    "quick": 10,
-    "fast": 0,
-    "total": 10
    }
   },
   {
@@ -10104,28 +9950,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.111605,
-     22.33395
-    ]
-   },
-   "properties": {
-    "district_tc": "葵青區",
-    "district_en": "Kwai Tsing",
-    "location_tc": "中國招商局物流中心",
-    "location_en": "China Merchants Logistics Centre",
-    "address_en": "38 Tsing Yi Hong Wan Rd, Tsing Yi",
-    "std": 0,
-    "medium": 6,
-    "quick": 5,
-    "fast": 0,
-    "total": 11
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.251219,
      22.307652
     ]
@@ -10478,28 +10302,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.148749,
-     22.336106
-    ]
-   },
-   "properties": {
-    "district_tc": "深水埗區",
-    "district_en": "Sham Shui Po",
-    "location_tc": "D2 Place one",
-    "location_en": "D2 Place one",
-    "address_en": "CHEUNG YEE STREET, SHAM SHUI PO",
-    "std": 0,
-    "medium": 0,
-    "quick": 2,
-    "fast": 0,
-    "total": 2
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.147028,
      22.336546
     ]
@@ -10757,28 +10559,6 @@
     "quick": 2,
     "fast": 2,
     "total": 15
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.147534,
-     22.336154
-    ]
-   },
-   "properties": {
-    "district_tc": "深水埗區",
-    "district_en": "Sham Shui Po",
-    "location_tc": "D2 Place Two",
-    "location_en": "D2 Place Two",
-    "address_en": "CHEUNG SHUN STREET, SHAM SHUI PO",
-    "std": 0,
-    "medium": 18,
-    "quick": 0,
-    "fast": 0,
-    "total": 18
    }
   },
   {
@@ -11659,28 +11439,6 @@
     "quick": 0,
     "fast": 0,
     "total": 7
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.199187,
-     22.335248
-    ]
-   },
-   "properties": {
-    "district_tc": "黃大仙區",
-    "district_en": "Wong Tai Sin",
-    "location_tc": "東蒲",
-    "location_en": "TUNG PO",
-    "address_en": "JOINT OF KING FUK STREET, KAI SAN ROAD, TSAT PO STREET",
-    "std": 0,
-    "medium": 0,
-    "quick": 0,
-    "fast": 4,
-    "total": 4
    }
   },
   {
@@ -15252,28 +15010,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.162577,
-     22.281144
-    ]
-   },
-   "properties": {
-    "district_tc": "中西區",
-    "district_en": "Central & Western",
-    "location_tc": "長江集團中心二期",
-    "location_en": "CHEUNG KONG CENTER II",
-    "address_en": "Hutchison House, 10 Harcourt Rd, Central",
-    "std": 0,
-    "medium": 0,
-    "quick": 4,
-    "fast": 0,
-    "total": 4
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.116492,
      22.366363
     ]
@@ -16088,28 +15824,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.268865,
-     22.378649
-    ]
-   },
-   "properties": {
-    "district_tc": "西貢區",
-    "district_en": "Sai Kung",
-    "location_tc": "翠塘花園",
-    "location_en": "Lakeside Garden",
-    "address_en": "1 Chui Tong Rd, Sai Kung",
-    "std": 2,
-    "medium": 0,
-    "quick": 0,
-    "fast": 0,
-    "total": 2
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.145289,
      22.496531
     ]
@@ -16323,28 +16037,6 @@
     "quick": 7,
     "fast": 0,
     "total": 81
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.221342,
-     22.31339
-    ]
-   },
-   "properties": {
-    "district_tc": "觀塘區",
-    "district_en": "Kwun Tong",
-    "location_tc": "創紀之城1期",
-    "location_en": "Millennium City 1",
-    "address_en": "388 Kwun Tong Road, Kwun Tong",
-    "std": 0,
-    "medium": 0,
-    "quick": 2,
-    "fast": 0,
-    "total": 2
    }
   },
   {
@@ -17430,28 +17122,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.162317,
-     22.248078
-    ]
-   },
-   "properties": {
-    "district_tc": "南區",
-    "district_en": "Southern",
-    "location_tc": "南島廣場",
-    "location_en": "South Island Place",
-    "address_en": "8 Wong Chuk Hang Rd, Wong Chuk Hang",
-    "std": 0,
-    "medium": 0,
-    "quick": 8,
-    "fast": 0,
-    "total": 8
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.213297,
      22.283517
     ]
@@ -17641,50 +17311,6 @@
     "std": 2,
     "medium": 0,
     "quick": 0,
-    "fast": 0,
-    "total": 2
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.033737,
-     22.445372
-    ]
-   },
-   "properties": {
-    "district_tc": "元朗區",
-    "district_en": "Yuen Long",
-    "location_tc": "元點停車場",
-    "location_en": "Yoho Mix Parking",
-    "address_en": "1 Long Lok Rd, Yuen Long",
-    "std": 0,
-    "medium": 0,
-    "quick": 2,
-    "fast": 0,
-    "total": 2
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     114.18125,
-     22.249183
-    ]
-   },
-   "properties": {
-    "district_tc": "南區",
-    "district_en": "Southern",
-    "location_tc": "壽臣山廣場",
-    "location_en": "Shouson Place",
-    "address_en": "Shouson Hill Road",
-    "std": 0,
-    "medium": 0,
-    "quick": 2,
     "fast": 0,
     "total": 2
    }
@@ -19762,6 +19388,28 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     114.155069,
+     22.244815
+    ]
+   },
+   "properties": {
+    "district_tc": "南區",
+    "district_en": "Southern",
+    "location_tc": "鴨脷洲海濱長廊停車場",
+    "location_en": "Ap Lei Chau Waterfront Promenade Car Park",
+    "address_en": "Wah Ting Street, Ap Lei Chau",
+    "std": 0,
+    "medium": 6,
+    "quick": 0,
+    "fast": 0,
+    "total": 6
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      114.193154,
      22.383177
     ]
@@ -21676,28 +21324,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.164199,
-     22.305324
-    ]
-   },
-   "properties": {
-    "district_tc": "油尖旺區",
-    "district_en": "Yau Tsim Mong",
-    "location_tc": "環球匯停車場",
-    "location_en": "International Gateway Centre",
-    "address_en": "1 Wui Man Rd, Jordan, Kowloon",
-    "std": 0,
-    "medium": 228,
-    "quick": 12,
-    "fast": 0,
-    "total": 240
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.115328,
      22.364094
     ]
@@ -21764,8 +21390,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     113.8949,
-     22.2244
+     113.894873,
+     22.222756
     ]
    },
    "properties": {
@@ -21779,6 +21405,380 @@
     "quick": 2,
     "fast": 0,
     "total": 5
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.15454,
+     22.505183
+    ]
+   },
+   "properties": {
+    "district_tc": "北區",
+    "district_en": "North",
+    "location_tc": "山麗苑",
+    "location_en": "Shan Lai Court",
+    "address_en": "LUNG MA ROAD",
+    "std": 18,
+    "medium": 0,
+    "quick": 0,
+    "fast": 0,
+    "total": 18
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.96889,
+     22.397012
+    ]
+   },
+   "properties": {
+    "district_tc": "屯門區",
+    "district_en": "Tuen Mun",
+    "location_tc": "建發里4號",
+    "location_en": "No.4 Kin Fat Lane",
+    "address_en": "KIN FAT LANE",
+    "std": 0,
+    "medium": 0,
+    "quick": 10,
+    "fast": 0,
+    "total": 10
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.171606,
+     22.292503
+    ]
+   },
+   "properties": {
+    "district_tc": "西貢區",
+    "district_en": "Sai Kung",
+    "location_tc": "翠塘花園",
+    "location_en": "Lakeside Garden",
+    "address_en": "1 Chui Tong Road, Sai Kung, New Territories",
+    "std": 2,
+    "medium": 0,
+    "quick": 0,
+    "fast": 0,
+    "total": 2
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.171606,
+     22.292503
+    ]
+   },
+   "properties": {
+    "district_tc": "中西區",
+    "district_en": "Central & Western",
+    "location_tc": "長江集團中心二期",
+    "location_en": "Cheung Kong Centre II",
+    "address_en": "10 Harcourt Road, Central",
+    "std": 0,
+    "medium": 0,
+    "quick": 4,
+    "fast": 0,
+    "total": 4
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.181222,
+     22.24911
+    ]
+   },
+   "properties": {
+    "district_tc": "南區",
+    "district_en": "Southern",
+    "location_tc": "壽臣山廣場",
+    "location_en": "Shouson Place",
+    "address_en": "16E Shouson Hill Road",
+    "std": 0,
+    "medium": 0,
+    "quick": 2,
+    "fast": 0,
+    "total": 2
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.19146,
+     22.30888
+    ]
+   },
+   "properties": {
+    "district_tc": "九龍城區",
+    "district_en": "Kowloon City",
+    "location_tc": "海逸坊",
+    "location_en": "The Laguna Mall",
+    "address_en": "8 Laguna Verde Avenue, Hung Hom",
+    "std": 0,
+    "medium": 0,
+    "quick": 26,
+    "fast": 10,
+    "total": 36
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.196776,
+     22.340184
+    ]
+   },
+   "properties": {
+    "district_tc": "黃大仙區",
+    "district_en": "Wong Tai Sin",
+    "location_tc": "現崇山商場",
+    "location_en": "Lions Rise Mall",
+    "address_en": "8 Muk Lun Street",
+    "std": 2,
+    "medium": 2,
+    "quick": 2,
+    "fast": 0,
+    "total": 6
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.221371,
+     22.313462
+    ]
+   },
+   "properties": {
+    "district_tc": "觀塘區",
+    "district_en": "Kwun Tong",
+    "location_tc": "創紀之城1期",
+    "location_en": "Millennium City 1",
+    "address_en": "388 Kwun Tong Road, Kwun Tong",
+    "std": 0,
+    "medium": 0,
+    "quick": 2,
+    "fast": 0,
+    "total": 2
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.21978,
+     22.314611
+    ]
+   },
+   "properties": {
+    "district_tc": "觀塘區",
+    "district_en": "Kwun Tong",
+    "location_tc": "創紀之城 2 & 3期",
+    "location_en": "Millennium City 2 & 3",
+    "address_en": "370 and 378 Kwun Tong Road, Kwun Tong, Kowloon",
+    "std": 0,
+    "medium": 0,
+    "quick": 2,
+    "fast": 0,
+    "total": 2
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.03373,
+     22.445407
+    ]
+   },
+   "properties": {
+    "district_tc": "元朗區",
+    "district_en": "Yuen Long",
+    "location_tc": "元點",
+    "location_en": "Yoho Mix",
+    "address_en": "1 Long Lok Road, Yuen Long, New Territories",
+    "std": 0,
+    "medium": 0,
+    "quick": 2,
+    "fast": 0,
+    "total": 2
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.138949,
+     22.365501
+    ]
+   },
+   "properties": {
+    "district_tc": "葵青區",
+    "district_en": "Kwai Tsing",
+    "location_tc": "石籬商場二期",
+    "location_en": "Shek Lei Shopping Centre II",
+    "address_en": "110 Tai Loong Street, Kwai Chung, New Territories",
+    "std": 0,
+    "medium": 2,
+    "quick": 11,
+    "fast": 0,
+    "total": 13
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.162459,
+     22.248278
+    ]
+   },
+   "properties": {
+    "district_tc": "南區",
+    "district_en": "Southern",
+    "location_tc": "南島廣場",
+    "location_en": "South Island Place",
+    "address_en": "8 Wong Chuk Hang Road, Wong Chuk Hang",
+    "std": 0,
+    "medium": 0,
+    "quick": 8,
+    "fast": 0,
+    "total": 8
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.110633,
+     22.333927
+    ]
+   },
+   "properties": {
+    "district_tc": "葵青區",
+    "district_en": "Kwai Tsing",
+    "location_tc": "中國招商局物流中心",
+    "location_en": "China Merchants Logistics Centre",
+    "address_en": "青衣青衣航運路38號",
+    "std": 0,
+    "medium": 6,
+    "quick": 5,
+    "fast": 0,
+    "total": 11
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.212179,
+     22.286567
+    ]
+   },
+   "properties": {
+    "district_tc": "東區",
+    "district_en": "Eastern",
+    "location_tc": "太古坊二座",
+    "location_en": "Two Taikoo Place",
+    "address_en": "979 King's Road, Quarry Bay",
+    "std": 0,
+    "medium": 24,
+    "quick": 3,
+    "fast": 0,
+    "total": 27
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.164673,
+     22.305018
+    ]
+   },
+   "properties": {
+    "district_tc": "油尖旺區",
+    "district_en": "Yau Tsim Mong",
+    "location_tc": "環球匯",
+    "location_en": "International Gateway Centre",
+    "address_en": "1 Wui Man Road, West Kowloon",
+    "std": 0,
+    "medium": 228,
+    "quick": 12,
+    "fast": 0,
+    "total": 240
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.147569,
+     22.336115
+    ]
+   },
+   "properties": {
+    "district_tc": "深水埗區",
+    "district_en": "Sham Shui Po",
+    "location_tc": "D2 Place TWO",
+    "location_en": "D2 Place TWO",
+    "address_en": "G/F & 4/F., 15 Cheung Shun Street, Cheung Sha Wan, Kowloon",
+    "std": 0,
+    "medium": 18,
+    "quick": 0,
+    "fast": 0,
+    "total": 18
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.149105,
+     22.336226
+    ]
+   },
+   "properties": {
+    "district_tc": "深水埗區",
+    "district_en": "Sham Shui Po",
+    "location_tc": "D2 Place ONE",
+    "location_en": "D2 Place ONE",
+    "address_en": "G/F., 9 Cheung Yee Street, Cheung Sha Wan, Kowloon",
+    "std": 0,
+    "medium": 0,
+    "quick": 2,
+    "fast": 0,
+    "total": 2
    }
   }
  ]

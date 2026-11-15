@@ -106,8 +106,15 @@ def _minutes(s: str) -> float:
 # list does, and the output records which model actually answered rather than the one we asked for
 # (a brief attributed to a model that did not write it is the kind of claim this project bans).
 MODEL_CHAIN = (
-    # ChatAnywhere first (added 2026-10-02): a dedicated key with its own quota, because the pool
-    # below answered 429 on every scheduled run for days. Provider by prefix - see PROVIDERS.
+    # PAID FIRST, 2026-11-15. DeepSeek answered 200 on the first call in the same minute that both
+    # ChatAnywhere keys and all three OpenRouter :free models answered 429 — the free pools are
+    # shared, so they dry up together, which is why this job went red three times in two days
+    # (11-13, 11-14 and again on 11-15). The rest of the chain stays as the fallback it was always
+    # meant to be: a brief that does not publish is a panel showing yesterday, and that costs more
+    # than the fraction of a cent this run spends.
+    "ds/deepseek-chat",
+    # ChatAnywhere next (added 2026-10-02): a dedicated key with its own quota, because the free
+    # pool below answered 429 on every scheduled run for days. Provider by prefix - see PROVIDERS.
     "ca/gpt-4o-mini",
     "ca/deepseek-chat",
     # 2026-10-18: qwen3.8-27b:free is DELISTED (HTTP 404) — it was the 3rd link, so once
@@ -439,6 +446,11 @@ PROVIDERS = {
     # 配额"). Wire it the same way - a prefix and one env var - so whichever key he can actually
     # obtain is a one-line change, not a second code path.
     "groq": ("https://api.groq.com/openai/v1/chat/completions", "GROQ_API_KEY"),
+    # DeepSeek direct, 2026-11-15: every free pool was exhausted at once (both ChatAnywhere keys
+    # 429, the three OpenRouter :free models 429) and the brief went red three times in two days.
+    # A direct call answered 200 on the first try. Two calls a day at this prompt size costs a
+    # fraction of a cent, which is cheaper than a broken panel and cheaper than my time.
+    "ds": ("https://api.deepseek.com/v1/chat/completions", "DEEPSEEK_API_KEY"),
 }
 
 

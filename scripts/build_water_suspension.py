@@ -32,6 +32,7 @@ import re
 import ssl
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
@@ -70,13 +71,30 @@ COLUMNS = [
 
 
 def fetch() -> str:
-    ctx = ssl.create_default_context()
-    ctx.set_ciphers(LEGACY_CIPHERS)
-    req = urllib.request.Request(URL, headers=UA)
-    with urllib.request.urlopen(req, timeout=30, context=ctx) as r:
-        raw = r.read()
-    # big5hkscs, not UTF-8 — the format that silently produces garbage if assumed.
-    return raw.decode("big5hkscs", errors="replace")
+    """Fetch the suspension CSV, retrying the slow answers.
+
+    The host speaks a legacy TLS stack and is sometimes slow rather than down: on 2026-11-15 it
+    let the 30 s timeout expire from a GitHub runner four times in three days, and each time the
+    job went red for a panel that was fine an hour later. Three attempts with room to breathe turn
+    "slow once" into a slower success while a host that is genuinely gone still fails — the gate
+    in the workflow asserts THIS function answered, so a retry cannot make a dead upstream green.
+    """
+    last: Exception | None = None
+    for attempt, timeout in enumerate((30, 45, 60), start=1):
+        ctx = ssl.create_default_context()
+        ctx.set_ciphers(LEGACY_CIPHERS)
+        req = urllib.request.Request(URL, headers=UA)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
+                raw = r.read()
+            # big5hkscs, not UTF-8 — the format that silently produces garbage if assumed.
+            return raw.decode("big5hkscs", errors="replace")
+        except (urllib.error.URLError, OSError) as exc:
+            last = exc
+            print(f"  WSD attempt {attempt} failed after {timeout}s: {exc}", flush=True)
+            if attempt < 3:
+                time.sleep(5 * attempt)
+    raise last  # type: ignore[misc]
 
 
 def parse_hk_date(s: str) -> str | None:

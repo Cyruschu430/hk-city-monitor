@@ -4968,9 +4968,9 @@
     "address_en": "Cityplaza, 18 Taikoo Shing Road, Tai Koo Shing, Hong Kong",
     "std": 0,
     "medium": 0,
-    "quick": 36,
+    "quick": 49,
     "fast": 0,
-    "total": 36
+    "total": 49
    }
   },
   {
@@ -6529,10 +6529,10 @@
     "location_en": "Innocentre",
     "address_en": "TAT CHEE AVENUE, SHAM SHUI PO",
     "std": 3,
-    "medium": 6,
-    "quick": 3,
+    "medium": 12,
+    "quick": 4,
     "fast": 0,
-    "total": 12
+    "total": 19
    }
   },
   {
@@ -11446,6 +11446,28 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     114.199187,
+     22.335248
+    ]
+   },
+   "properties": {
+    "district_tc": "黃大仙區",
+    "district_en": "Wong Tai Sin",
+    "location_tc": "東蒲",
+    "location_en": "TUNG PO",
+    "address_en": "JOINT OF KING FUK STREET, KAI SAN ROAD, TSAT PO STREET",
+    "std": 0,
+    "medium": 0,
+    "quick": 0,
+    "fast": 4,
+    "total": 4
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      114.194349,
      22.332279
     ]
@@ -12931,10 +12953,10 @@
     "location_en": "Tsz Wan Shan SC Car Park A",
     "address_en": "Tsz Wan Shan Shopping Centre, 23 Yuk Wah Street, Tsz Wan Shan, Kowloon",
     "std": 0,
-    "medium": 38,
+    "medium": 29,
     "quick": 2,
     "fast": 0,
-    "total": 40
+    "total": 31
    }
   },
   {
@@ -13547,10 +13569,10 @@
     "location_en": "H Zentre Middle Road",
     "address_en": "15 Middle Road, Tsim Sha Tsui",
     "std": 0,
-    "medium": 165,
-    "quick": 6,
+    "medium": 226,
+    "quick": 8,
     "fast": 0,
-    "total": 171
+    "total": 234
    }
   },
   {
@@ -18212,9 +18234,9 @@
     "address_en": "8 Chung Wa Road, Hang Hau, TKO",
     "std": 0,
     "medium": 0,
-    "quick": 10,
+    "quick": 8,
     "fast": 0,
-    "total": 10
+    "total": 8
    }
   },
   {
@@ -19476,8 +19498,8 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.186038,
-     22.370763
+     114.185827,
+     22.370371
     ]
    },
    "properties": {

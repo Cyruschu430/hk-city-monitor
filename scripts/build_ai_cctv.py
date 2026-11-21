@@ -80,10 +80,10 @@ def hkt_hm(stamp: str) -> str:
     return d.strftime("%H:%M")
 
 
-def build() -> tuple[list[dict], int, str]:
+def build() -> tuple[list[dict], int, int, int, str]:
     q = urllib.parse.urlencode({"dataset_id": DSID, "format": "geojson", "layer_name": LAYER})
     fc = fetch_json(f"https://portal.csdi.gov.hk/csdi-webpage/file-api?{q}", timeout=90)
-    features, readings = [], 0
+    features, readings, invalid, dead = [], 0, 0, 0
     for f in fc.get("features", []):
         p = f.get("properties", {})
         props = {
@@ -97,6 +97,7 @@ def build() -> tuple[list[dict], int, str]:
             live = read_camera(str(p.get("url") or ""))
         except Exception as exc:  # noqa: BLE001 — one dead camera must not sink the other 15
             print(f"  ! {props['key']}: {exc}")
+            dead += 1
             live = {}
         if live:
             readings += 1
@@ -104,16 +105,41 @@ def build() -> tuple[list[dict], int, str]:
             props["flow"] = live["flow"]
             props["observed"] = live["observed"]
             props["generated"] = live["generated"]
+        else:
+            invalid += 1
         features.append({"type": "Feature", "geometry": f["geometry"], "properties": props})
     # The newest analysis time across the cameras, at the top level: the panel's own clock reads
     # it instead of `new Date()`, which would claim the reading was taken when we fetched it.
     stamps = [f["properties"].get("generated") for f in features if f["properties"].get("generated")]
     generated = max(stamps) if stamps else ""
-    return features, readings, generated
+    return features, readings, invalid, dead, generated
+
+
+def verdict(readings: int, invalid: int, dead: int) -> str:
+    """What a run with these counts means: 'publish', 'upstream-silent' or 'fail'.
+
+    Three outcomes, not two, because "the government host answered and told us it has nothing"
+    is not the same event as "we could not reach it", and treating them alike is what made this
+    job go red every six hours from 2026-11-21: every camera returned HTTP 200 with
+    {"Is_valid": "N", "traffic_data": []} — a fresh timestamp and no data — which is the TD's
+    state, not ours. Kept as a function so the rule is testable without the network.
+    """
+    if readings:
+        return "publish"
+    if invalid and not dead:
+        return "upstream-silent"
+    return "fail"
 
 
 def main() -> None:
-    features, readings, generated = build()
+    if "--selftest" in sys.argv:
+        assert verdict(16, 0, 0) == "publish"
+        assert verdict(0, 16, 0) == "upstream-silent", "an answering-but-empty source must not page anyone"
+        assert verdict(0, 0, 16) == "fail", "an unreachable source is our problem and must page"
+        assert verdict(0, 16, 1) == "fail", "one dead camera makes the silence ambiguous: fail"
+        print("selftest ok")
+        return
+    features, readings, invalid, dead, generated = build()
     assert len(features) >= 15, f"expected 16 AI CCTV, got {len(features)}"
     for f in features:
         lon, lat = f["geometry"]["coordinates"]
@@ -124,8 +150,16 @@ def main() -> None:
             assert int(sp) >= 0, f"camera {f['properties']['key']}: negative speed {sp}"
             assert len(str(f["properties"]["observed"])) == 5, f"camera {f['properties']['key']}: observed is not HH:MM"
     # The CORS finding is why this file is baked at all, and a run where nothing answered would
-    # otherwise publish positions with no numbers under a comment claiming live readings.
-    assert readings > 0, "no camera answered with a reading — check the endpoint before publishing"
+    # otherwise publish positions with no numbers under a comment claiming live readings. So: never
+    # write the file without readings — but do not call the upstream's own silence a failure either.
+    # Skipping leaves the previously published file in place, and that file carries its own
+    # `generated`/`observed` timestamps, so the panel shows its real age instead of a fake now().
+    state = verdict(readings, invalid, dead)
+    if state == "upstream-silent":
+        print(f"upstream reports no usable reading for any of {invalid} cameras "
+              f"(HTTP ok, Is_valid=N) — keeping the published file, whose own timestamps show its age")
+        return
+    assert state == "publish", "no camera answered with a reading — check the endpoint before publishing"
     with open(OUT, "w", encoding="utf-8") as fh:
         json.dump(
             {"type": "FeatureCollection", "generated": generated, "features": features},

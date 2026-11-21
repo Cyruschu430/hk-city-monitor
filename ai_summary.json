@@ -1,0 +1,87 @@
+{
+ "generated": "2026-11-21T14:10:21+08:00",
+ "model": "ds/deepseek-chat",
+ "provenance": {
+  "generator": "LLM summary of published open data",
+  "inputs": [
+   {
+    "file": "aircraft.json",
+    "from": "live-data",
+    "observed": 1795200584118
+   },
+   {
+    "file": "berth_vacancy.json",
+    "from": "live-data",
+    "observed": "2026-11-21 02:49"
+   },
+   {
+    "file": "water_suspension.json",
+    "from": "live-data",
+    "observed": "2026-11-21T02:53:17+08:00"
+   },
+   {
+    "file": "carpark_info.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "baselines.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "ae_waiting",
+    "from": "live-api",
+    "observed": "2026年11月21日 下午2時00分"
+   },
+   {
+    "file": "cp_queue",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "aqhi",
+    "from": "live-api",
+    "observed": "2026-11-21T13:30:00"
+   },
+   {
+    "file": "wind_10min",
+    "from": "live-api",
+    "observed": "202611211400"
+   },
+   {
+    "file": "warnsum",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "special_traffic",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "beach_grading",
+    "from": "live-api",
+    "observed": "Fri, 20 Nov 2026 11:01:35"
+   },
+   {
+    "file": "journey_time",
+    "from": "live-api",
+    "observed": "2026-11-21T14:08:00"
+   },
+   {
+    "file": "sensor_parking",
+    "from": "live-api",
+    "observed": "2026-11-21 14:09"
+   }
+  ],
+  "frequency": "2x daily (08:00, 20:00 HKT)",
+  "disclaimer": "AI-generated from the figures above. It is not analysis, not advice, and not an official notice."
+ },
+ "brief": {
+  "tc": "而家有一個火災危險警告生效。醫院急症室最長等候時間係三個鐘，廣華醫院同仁濟醫院都係三個鐘，東區尤德夫人那打素醫院就兩個半鐘。十一間泳灘入面，八間水質一級，三間二級。空氣質素健康指數最高係四，風險屬中度。",
+  "en": "A fire danger warning is in force. The longest accident and emergency waiting time is three hours, at Kwong Wah Hospital and Yan Chai Hospital, while Pamela Youde Nethersole Eastern Hospital is two and a half hours. Of eleven beaches, eight have level one water quality and three have level two. The highest air quality health index is four, at moderate risk.",
+  "spoken_tc": "而家有一個火災危險警告生效。醫院急症室最長等候時間係三個鐘，廣華醫院同仁濟醫院都係三個鐘，東區尤德夫人那打素醫院就兩個半鐘。十一間泳灘入面，八間水質一級，三間二級。空氣質素健康指數最高係四，風險屬中度。",
+  "spoken_en": "A fire danger warning is in force. The longest accident and emergency waiting time is three hours, at Kwong Wah Hospital and Yan Chai Hospital, while Pamela Youde Nethersole Eastern Hospital is two and a half hours. Of eleven beaches, eight have level one water quality and three have level two. The highest air quality health index is four, at moderate risk."
+ }
+}

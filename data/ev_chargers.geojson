@@ -512,28 +512,6 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
-     114.196281,
-     22.386976
-    ]
-   },
-   "properties": {
-    "district_tc": "沙田區",
-    "district_en": "Sha Tin",
-    "location_tc": "沙田運動場 & 源禾遊樂場停車場",
-    "location_en": "Sha Tin Sports Ground & Yuen Wo Playground Car Park",
-    "address_en": "18 Yuen Wo Road, Sha Tin, N.T.",
-    "std": 0,
-    "medium": 6,
-    "quick": 0,
-    "fast": 0,
-    "total": 6
-   }
-  },
-  {
-   "type": "Feature",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
      114.151231,
      22.33691
     ]
@@ -13569,10 +13547,10 @@
     "location_en": "H Zentre Middle Road",
     "address_en": "15 Middle Road, Tsim Sha Tsui",
     "std": 0,
-    "medium": 226,
+    "medium": 155,
     "quick": 8,
     "fast": 0,
-    "total": 234
+    "total": 163
    }
   },
   {
@@ -13837,6 +13815,28 @@
     "quick": 4,
     "fast": 0,
     "total": 8
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.002538,
+     22.457784
+    ]
+   },
+   "properties": {
+    "district_tc": "元朗區",
+    "district_en": "Yuen Long",
+    "location_tc": "嘉湖1期停車場",
+    "location_en": "+WOO Phase 1 Car Park",
+    "address_en": "12-18 Tin Yan Road, Tin Shui Wai, Yuen Long, NT",
+    "std": 0,
+    "medium": 0,
+    "quick": 0,
+    "fast": 1,
+    "total": 1
    }
   },
   {
@@ -14715,8 +14715,8 @@
     "std": 0,
     "medium": 32,
     "quick": 2,
-    "fast": 4,
-    "total": 38
+    "fast": 6,
+    "total": 40
    }
   },
   {
@@ -18807,8 +18807,8 @@
     "std": 0,
     "medium": 0,
     "quick": 0,
-    "fast": 1,
-    "total": 1
+    "fast": 3,
+    "total": 3
    }
   },
   {
@@ -20017,8 +20017,8 @@
     "std": 0,
     "medium": 3,
     "quick": 0,
-    "fast": 0,
-    "total": 3
+    "fast": 3,
+    "total": 6
    }
   },
   {
@@ -21801,6 +21801,28 @@
     "quick": 2,
     "fast": 0,
     "total": 2
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     114.152924,
+     22.333423
+    ]
+   },
+   "properties": {
+    "district_tc": "深水埗區",
+    "district_en": "Sham Shui Po",
+    "location_tc": "怡高工業中心",
+    "location_en": "Yee Kuk Industrial Centre",
+    "address_en": "555 Yee Kuk Street, Cheung Sha Wan",
+    "std": 0,
+    "medium": 0,
+    "quick": 6,
+    "fast": 0,
+    "total": 6
    }
   }
  ]

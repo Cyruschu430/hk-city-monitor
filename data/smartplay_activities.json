@@ -241,534 +241,6 @@
  },
  {
   "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "新翠邨 (小型足球場B)",
-  "venue_en": "Sun Chui Estate (Mini-soccer Pitch B)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "06:30–07:30",
-  "fee": 60.0,
-  "quota": 50,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "新田圍邨 (商場平台)",
-  "venue_en": "Sun Tin Wai Estate (Complex Podium)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "沙田公園 (露天劇場)",
-  "venue_en": "Sha Tin Park (Amphitheatre)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "19:30–20:30",
-  "fee": 60.0,
-  "quota": 50,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "西貢區",
-  "district_en": "Sai Kung",
-  "venue_tc": "惠民路遊樂場",
-  "venue_en": "Wai Man Road Playground",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極劍訓練班",
-  "name_en": "Tai Chi Sword Training Course",
-  "type_tc": "太極劍",
-  "type_en": "Tai Chi Sword",
-  "district_tc": "葵青區",
-  "district_en": "Kwai Tsing",
-  "venue_tc": "興芳路遊樂場 (足球場)",
-  "venue_en": "Hing Fong Road Playground (Soccer Pitch)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "新翠邨 (小型足球場A)",
-  "venue_en": "Sun Chui Estate (Mini-soccer Pitch A)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "06:30–07:30",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極劍訓練班(吳式)",
-  "name_en": "Tai Chi Sword Training Course",
-  "type_tc": "太極劍",
-  "type_en": "Tai Chi Sword",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "大埔社區中心",
-  "venue_en": "Tai Po Community Centre",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "黃昏太極訓練班",
-  "name_en": "Evening Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "花園大廈(近孔雀樓側)",
-  "venue_en": "Kwun Tong Garden Estate (Near Hung Cheuk House)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "20:30–21:30",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班(楊式)",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "富善邨中央廣場",
-  "venue_en": "Fu Shin Estate",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "順天邨 (A停車場平台)",
-  "venue_en": "Shun Tin Estate (Roof Garden of Garage A)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 50,
-  "left": 0
- },
- {
-  "name_tc": "太極劍訓練班(楊式)",
-  "name_en": "Tai Chi Sword Training Course",
-  "type_tc": "太極劍",
-  "type_en": "Tai Chi Sword",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "運頭角遊樂場",
-  "venue_en": "Wan Tau Kok Playground",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "月華街遊樂場場滾軸溜冰場",
-  "venue_en": "Yuet Wah Street Playground - Roller Skating Rink",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "沙田大會堂平台 (近圖書館方向)",
-  "venue_en": "Sha Tin Town Hall Podium (Near the library direction)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "06:45–07:45",
-  "fee": 60.0,
-  "quota": 50,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班(吳式)",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "大埔中央廣場",
-  "venue_en": "Tai Po Central Town Square",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極劍訓練班",
-  "name_en": "Tai Chi Sword Training Course",
-  "type_tc": "太極劍",
-  "type_en": "Tai Chi Sword",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "康寧道遊樂場",
-  "venue_en": "Hong Ning Road Recreation Ground",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "廣源邨停車場頂籃球場",
-  "venue_en": "Kwong Yuen Estate (Basketball Court at the roof of carpark)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "06:30–07:30",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班(楊式)",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "大埔社區中心",
-  "venue_en": "Tai Po Community Centre",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "20:30–21:30",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "黃昏太極訓練班",
-  "name_en": "Evening Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "廣田邨平台 (近藍田(南)體育館側)",
-  "venue_en": "Kwong Tin Estate Podium (near Lam Tin South Sports Centre)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "20:30–21:30",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班(吳式)",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "大埔中央廣場",
-  "venue_en": "Tai Po Central Town Square",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "08:00–09:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "藍田配水庫遊樂場",
-  "venue_en": "Lam Tin Service Reservoir Playground",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 70,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "沙田大會堂平台 (近大會堂方向)",
-  "venue_en": "Sha Tin Town Hall Podium",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "06:30–07:30",
-  "fee": 60.0,
-  "quota": 50,
-  "left": 0
- },
- {
-  "name_tc": "太極劍訓練班",
-  "name_en": "Tai Chi Sword Training Course",
-  "type_tc": "太極劍",
-  "type_en": "Tai Chi Sword",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "九龍灣體育館",
-  "venue_en": "Kowloon Bay Sports Centre",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 60,
-  "left": 0
- },
- {
-  "name_tc": "太極劍訓練班",
-  "name_en": "Tai Chi Sword Training Course",
-  "type_tc": "太極劍",
-  "type_en": "Tai Chi Sword",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "安德道遊樂場",
-  "venue_en": "On Tak Road Playground",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "荃灣區",
-  "district_en": "Tsuen Wan",
-  "venue_tc": "豪景花園",
-  "venue_en": "Hong Kong Garden",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "富山邨 (平台)",
-  "venue_en": "Fu Shan Estate (Podium)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 60,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "彩雲(二)邨 (小型足球場)",
-  "venue_en": "Choi Wan (II) Estate (Mini-soccer Pitch)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "竹園體育館",
-  "venue_en": "Chuk Yuen Sports Centre",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "石鼓壟道遊樂場",
-  "venue_en": "Shek Ku Lung Road Playground",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "彩虹邨(停車場天台)",
-  "venue_en": "Choi Hung Estate (Carpark Roof Top)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 80,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "橫頭磡邨 (第四期平台)",
-  "venue_en": "Wang Tau Hom Estate (Civic Square of Phase IV)",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 60.0,
-  "quota": 80,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "馬鞍山遊樂場",
-  "venue_en": "Ma On Shan Recreation Ground",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "06:45–07:45",
-  "fee": 60.0,
-  "quota": 50,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "馬鞍山運動場",
-  "venue_en": "Ma On Shan Sports Ground",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "19:30–20:30",
-  "fee": 60.0,
-  "quota": 50,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
-  "name_en": "Tai Chi Training Course",
-  "type_tc": "太極",
-  "type_en": "Tai Chi",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "牛池灣公園太極園",
-  "venue_en": "Ngau Chi Wan Park Tai Chi Garden",
-  "start": "2026-08-05",
-  "end": "2026-11-25",
-  "time": "07:15–08:15",
-  "fee": 60.0,
-  "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "太極訓練班",
   "name_en": "Tai Chi TC",
   "type_tc": "太極",
   "type_en": "Tai Chi",
@@ -2592,38 +2064,6 @@
   "left": 0
  },
  {
-  "name_tc": "八段錦訓練班",
-  "name_en": "Baduanjin Training Course",
-  "type_tc": "八段錦",
-  "type_en": "Baduanjin",
-  "district_tc": "南區",
-  "district_en": "Southern",
-  "venue_tc": "赤柱體育館",
-  "venue_en": "Stanley Sports Centre",
-  "start": "2026-09-09",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 80.0,
-  "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "八段錦訓練班",
-  "name_en": "Baduanjin Training Course",
-  "type_tc": "八段錦",
-  "type_en": "Baduanjin",
-  "district_tc": "南區",
-  "district_en": "Southern",
-  "venue_tc": "赤柱體育館",
-  "venue_en": "Stanley Sports Centre",
-  "start": "2026-09-09",
-  "end": "2026-11-25",
-  "time": "10:00–11:00",
-  "fee": 80.0,
-  "quota": 30,
-  "left": 0
- },
- {
   "name_tc": "太極訓練班",
   "name_en": "Tai Chi Training Course",
   "type_tc": "太極",
@@ -2928,22 +2368,6 @@
   "left": 0
  },
  {
-  "name_tc": "兒童羽毛球訓練班",
-  "name_en": "Badminton Training Course For Children",
-  "type_tc": "羽毛球",
-  "type_en": "Badminton",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "兆麟體育館",
-  "venue_en": "Siu Lun Sports Centre",
-  "start": "2026-09-16",
-  "end": "2026-11-25",
-  "time": "18:00–20:00",
-  "fee": 118.0,
-  "quota": 24,
-  "left": 0
- },
- {
   "name_tc": "太極劍訓練班 (吳式)",
   "name_en": "Tai Chi Sword Training Course",
   "type_tc": "太極劍",
@@ -3232,22 +2656,6 @@
   "left": 0
  },
  {
-  "name_tc": "長跑訓練班",
-  "name_en": "Long Distance Running Training Course",
-  "type_tc": "長跑",
-  "type_en": "Distance Run",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "沙田運動場",
-  "venue_en": "Sha Tin Sports Ground",
-  "start": "2026-09-23",
-  "end": "2026-11-25",
-  "time": "19:30–21:30",
-  "fee": 130.0,
-  "quota": 40,
-  "left": 0
- },
- {
   "name_tc": "太極訓練班",
   "name_en": "Tai Chi Training Course",
   "type_tc": "太極",
@@ -3264,22 +2672,6 @@
   "left": 0
  },
  {
-  "name_tc": "瑜伽訓練班",
-  "name_en": "Yoga Training Course",
-  "type_tc": "瑜伽",
-  "type_en": "Yoga",
-  "district_tc": "中西區",
-  "district_en": "Central & Western",
-  "venue_tc": "士美非路體育館",
-  "venue_en": "Smithfield Sports Centre",
-  "start": "2026-09-23",
-  "end": "2026-11-25",
-  "time": "13:00–15:00",
-  "fee": 85.0,
-  "quota": 30,
-  "left": 0
- },
- {
   "name_tc": "太極訓練班",
   "name_en": "Tai Chi Training Course",
   "type_tc": "太極",
@@ -3293,22 +2685,6 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "網球訓練班",
-  "name_en": "Tennis Training Course",
-  "type_tc": "網球",
-  "type_en": "Tennis",
-  "district_tc": "東區",
-  "district_en": "Eastern",
-  "venue_tc": "鰂魚涌公園",
-  "venue_en": "Quarry Bay Park",
-  "start": "2026-09-23",
-  "end": "2026-11-25",
-  "time": "18:00–20:00",
-  "fee": 170.0,
-  "quota": 18,
   "left": 0
  },
  {
@@ -7248,22 +6624,6 @@
   "left": 0
  },
  {
-  "name_tc": "長期病患者徒手健體訓練計劃",
-  "name_en": "Fitness Exercise Training Scheme for Persons with Chronic Disease ",
-  "type_tc": "徒手健體",
-  "type_en": "Fitness Exercise",
-  "district_tc": "油尖旺區",
-  "district_en": "Yau Tsim Mong",
-  "venue_tc": "官涌體育館",
-  "venue_en": "Kwun Chung Sports Centre",
-  "start": "2026-10-07",
-  "end": "2026-11-25",
-  "time": "12:00–14:00",
-  "fee": 0.0,
-  "quota": 3,
-  "left": 0
- },
- {
   "name_tc": "兒童羽毛球訓練班",
   "name_en": "Badminton Training Course for Children",
   "type_tc": "羽毛球",
@@ -10624,22 +9984,6 @@
   "left": 0
  },
  {
-  "name_tc": "優質健行訓練班",
-  "name_en": "Quali Walk Training Course",
-  "type_tc": "優質健行",
-  "type_en": "QualiWalk",
-  "district_tc": "深水埗區",
-  "district_en": "Sham Shui Po",
-  "venue_tc": "荔枝角公園(第三期)",
-  "venue_en": "Lai Chi Kok Park (Stage III)",
-  "start": "2026-10-16",
-  "end": "2026-11-25",
-  "time": "15:00–16:00",
-  "fee": 20.0,
-  "quota": 20,
-  "left": 0
- },
- {
   "name_tc": "中國舞訓練班",
   "name_en": "Chinese Dance Training Course",
   "type_tc": "中國舞",
@@ -12592,22 +11936,6 @@
   "left": 0
  },
  {
-  "name_tc": "網球訓練班",
-  "name_en": "Tennis Training Course",
-  "type_tc": "網球",
-  "type_en": "Tennis",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "順利邨公園",
-  "venue_en": "Shun Lee Tsuen Park",
-  "start": "2026-10-26",
-  "end": "2026-11-25",
-  "time": "18:00–20:00",
-  "fee": 170.0,
-  "quota": 12,
-  "left": 0
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -12672,22 +12000,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者徒手健體訓練班",
-  "name_en": "Fitness Exercise Training Course for Elderly",
-  "type_tc": "徒手健體",
-  "type_en": "Fitness Exercise",
-  "district_tc": "中西區",
-  "district_en": "Central & Western",
-  "venue_tc": "士美非路體育館",
-  "venue_en": "Smithfield Sports Centre",
-  "start": "2026-10-26",
-  "end": "2026-11-25",
-  "time": "08:00–09:00",
-  "fee": 0.0,
-  "quota": 50,
-  "left": 0
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -12701,22 +12013,6 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "長者徒手健體訓練班",
-  "name_en": "Fitness Exercise Training Course for Elderly",
-  "type_tc": "徒手健體",
-  "type_en": "Fitness Exercise",
-  "district_tc": "中西區",
-  "district_en": "Central & Western",
-  "venue_tc": "士美非路體育館",
-  "venue_en": "Smithfield Sports Centre",
-  "start": "2026-10-26",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 0.0,
-  "quota": 50,
   "left": 0
  },
  {
@@ -12797,22 +12093,6 @@
   "time": "19:00–21:00",
   "fee": 45.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "成人羽毛球訓練班",
-  "name_en": "Badminton Training Course for Adult",
-  "type_tc": "羽毛球",
-  "type_en": "Badminton",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "蒲崗村道體育館",
-  "venue_en": "Po Kong Village Road Sports Centre",
-  "start": "2026-10-26",
-  "end": "2026-11-25",
-  "time": "19:00–21:00",
-  "fee": 118.0,
-  "quota": 24,
   "left": 0
  },
  {
@@ -13424,54 +12704,6 @@
   "left": 0
  },
  {
-  "name_tc": "器械健體訓練班",
-  "name_en": "Fitness (Multi-gym) Training Course",
-  "type_tc": "器械健體",
-  "type_en": "Fitness (Multi-gym)",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "長洲體育館 (毗鄰長洲醫院）",
-  "venue_en": "Cheung Chau Sports Centre (Adjacent to St. John Hospital)",
-  "start": "2026-10-28",
-  "end": "2026-11-25",
-  "time": "20:00–21:00",
-  "fee": 75.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "器械健體訓練班",
-  "name_en": "Fitness (Multi-gym) Training Course",
-  "type_tc": "器械健體",
-  "type_en": "Fitness (Multi-gym)",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "長洲體育館 (毗鄰長洲醫院）",
-  "venue_en": "Cheung Chau Sports Centre (Adjacent to St. John Hospital)",
-  "start": "2026-10-28",
-  "end": "2026-11-25",
-  "time": "19:00–20:00",
-  "fee": 75.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "器械健體訓練班",
-  "name_en": "Fitness (Multi-gym) Training Course",
-  "type_tc": "器械健體",
-  "type_en": "Fitness (Multi-gym)",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "長洲體育館 (毗鄰長洲醫院）",
-  "venue_en": "Cheung Chau Sports Centre (Adjacent to St. John Hospital)",
-  "start": "2026-10-28",
-  "end": "2026-11-25",
-  "time": "21:00–22:00",
-  "fee": 75.0,
-  "quota": 20,
-  "left": 0
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -13838,38 +13070,6 @@
   "fee": 60.0,
   "quota": 40,
   "left": 20
- },
- {
-  "name_tc": "器械健體訓練班",
-  "name_en": "Fitness (Multi-gym) Training Course",
-  "type_tc": "器械健體",
-  "type_en": "Fitness (Multi-gym)",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "兆麟體育館",
-  "venue_en": "Siu Lun Sports Centre",
-  "start": "2026-10-30",
-  "end": "2026-11-25",
-  "time": "19:00–20:00",
-  "fee": 75.0,
-  "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "器械健體訓練班",
-  "name_en": "Fitness (Multi-gym) Training Course",
-  "type_tc": "器械健體",
-  "type_en": "Fitness (Multi-gym)",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "兆麟體育館",
-  "venue_en": "Siu Lun Sports Centre",
-  "start": "2026-10-30",
-  "end": "2026-11-25",
-  "time": "20:00–21:00",
-  "fee": 75.0,
-  "quota": 30,
-  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -14704,22 +13904,6 @@
   "left": 0
  },
  {
-  "name_tc": "壁球訓練班",
-  "name_en": "Squash Training Course",
-  "type_tc": "壁球",
-  "type_en": "Squash",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "友愛體育館",
-  "venue_en": "Yau Oi Sports Centre",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "20:30–22:30",
-  "fee": 160.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "身心伸展訓練班",
   "name_en": "Body-Mind Stretch Training Course",
   "type_tc": "身心伸展訓練",
@@ -14928,22 +14112,6 @@
   "left": 0
  },
  {
-  "name_tc": "壁球訓練班",
-  "name_en": "Squash Training Course",
-  "type_tc": "壁球",
-  "type_en": "Squash",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "友愛體育館",
-  "venue_en": "Yau Oi Sports Centre",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "18:30–20:30",
-  "fee": 160.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "活力長者計劃 - 乒乓球同樂",
   "name_en": "Healthy Elderly Scheme - Table Tennis Fun Day",
   "type_tc": "活力長者計劃",
@@ -14973,38 +14141,6 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 0
- },
- {
-  "name_tc": "成人背泳訓練班",
-  "name_en": "Backstroke Training Course for Adult",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "東涌游泳池",
-  "venue_en": "Tung Chung Swimming Pool",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "19:00–20:00",
-  "fee": 100.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "成人捷泳訓練班(第三階段)",
-  "name_en": "Front Crawl Training Course for Adult (Level III)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "東涌游泳池",
-  "venue_en": "Tung Chung Swimming Pool",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "20:00–21:00",
-  "fee": 100.0,
-  "quota": 20,
   "left": 0
  },
  {
@@ -15085,22 +14221,6 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 0
- },
- {
-  "name_tc": "成人捷泳訓練班(第一階段)",
-  "name_en": "Front Crawl Training Course for Adult (Level I)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "灣仔區",
-  "district_en": "Wan Chai",
-  "venue_tc": "維多利亞公園游泳池",
-  "venue_en": "Victoria Park Swimming Pool",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 100.0,
-  "quota": 16,
   "left": 0
  },
  {
@@ -15616,22 +14736,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者游泳訓練班(第一階段)",
-  "name_en": "Swimming Training Course for Elderly (Level I)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "灣仔區",
-  "district_en": "Wan Chai",
-  "venue_tc": "維多利亞公園游泳池",
-  "venue_en": "Victoria Park Swimming Pool",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 16,
-  "left": 0
- },
- {
   "name_tc": "活力長者計劃-草地滾球自習計劃",
   "name_en": "Healthy Elderly Scheme-Lawn Bowls Self Practice Scheme",
   "type_tc": "活力長者計劃",
@@ -15789,22 +14893,6 @@
   "time": "16:00–18:00",
   "fee": 170.0,
   "quota": 18,
-  "left": 0
- },
- {
-  "name_tc": "壁球訓練班",
-  "name_en": "Squash Training Course",
-  "type_tc": "壁球",
-  "type_en": "Squash",
-  "district_tc": "深水埗區",
-  "district_en": "Sham Shui Po",
-  "venue_tc": "歌和老街壁球及乒乓球中心",
-  "venue_en": "Cornwall Street Squash & Table Tennis Centre",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "16:00–18:00",
-  "fee": 160.0,
-  "quota": 12,
   "left": 0
  },
  {
@@ -16320,22 +15408,6 @@
   "left": 50
  },
  {
-  "name_tc": "長者游泳訓練班(第二階段)",
-  "name_en": "Swimming Training Course for Elderly (Level II)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "灣仔區",
-  "district_en": "Wan Chai",
-  "venue_tc": "維多利亞公園游泳池",
-  "venue_en": "Victoria Park Swimming Pool",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "08:00–09:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 0
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -16349,22 +15421,6 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "成人胸泳訓練班(第一階段)",
-  "name_en": "Breaststroke Training Course for Adult (Level I)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "灣仔區",
-  "district_en": "Wan Chai",
-  "venue_tc": "維多利亞公園游泳池",
-  "venue_en": "Victoria Park Swimming Pool",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "08:00–09:00",
-  "fee": 100.0,
-  "quota": 16,
   "left": 0
  },
  {
@@ -16480,22 +15536,6 @@
   "left": 6
  },
  {
-  "name_tc": "壁球訓練班",
-  "name_en": "Squash Training Course",
-  "type_tc": "壁球",
-  "type_en": "Squash",
-  "district_tc": "荃灣區",
-  "district_en": "Tsuen Wan",
-  "venue_tc": "楊屋道體育館",
-  "venue_en": "Yeung Uk Road Sports Centre",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "19:00–21:00",
-  "fee": 160.0,
-  "quota": 12,
-  "left": 0
- },
- {
   "name_tc": "社交舞訓練班",
   "name_en": "Social Dance Training Course",
   "type_tc": "社交舞",
@@ -16509,22 +15549,6 @@
   "time": "14:00–16:00",
   "fee": 86.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "壁球訓練班",
-  "name_en": "Squash Training Course",
-  "type_tc": "壁球",
-  "type_en": "Squash",
-  "district_tc": "葵青區",
-  "district_en": "Kwai Tsing",
-  "venue_tc": "荔景體育館",
-  "venue_en": "Lai King Sports Centre",
-  "start": "2026-11-02",
-  "end": "2026-11-25",
-  "time": "19:00–21:00",
-  "fee": 160.0,
-  "quota": 8,
   "left": 0
  },
  {
@@ -19344,54 +18368,6 @@
   "left": 0
  },
  {
-  "name_tc": "活力長者計劃 - 門球同樂",
-  "name_en": "Healthy Elderly Scheme - Gateball Fun Day",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "南區",
-  "district_en": "Southern",
-  "venue_tc": "黃竹坑體育館",
-  "venue_en": "Wong Chuk Hang Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–11:00",
-  "fee": 0.0,
-  "quota": 10,
-  "left": 10
- },
- {
-  "name_tc": "活力長者計劃-室內門球同樂",
-  "name_en": "Healthy Elderly Scheme-Indoor Gateball",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "大興體育館",
-  "venue_en": "Tai Hing Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 20
- },
- {
-  "name_tc": "活力長者計劃-室內門球同樂",
-  "name_en": "Healthy Elderly Scheme-Indoor Gateball",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "大興體育館",
-  "venue_en": "Tai Hing Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "08:00–09:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 20
- },
- {
   "name_tc": "網球訓練班",
   "name_en": "Tennis TC",
   "type_tc": "網球",
@@ -19456,54 +18432,6 @@
   "left": 0
  },
  {
-  "name_tc": "自閉症人士、智障人士及精神病康復者羽毛球訓練計劃",
-  "name_en": "Badminton Training Course for Persons with Autism, Persons with Intellectual Disability and Ex-mentally III Persons  ",
-  "type_tc": "羽毛球",
-  "type_en": "Badminton",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "蒲崗村道體育館",
-  "venue_en": "Po Kong Village Road Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–11:00",
-  "fee": 0.0,
-  "quota": 3,
-  "left": 0
- },
- {
-  "name_tc": "長者體趣同樂-羽毛球自習",
-  "name_en": "Having Fun in Elderly Exercise-Badminton ",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "葵青區",
-  "district_en": "Kwai Tsing",
-  "venue_tc": "青衣體育館",
-  "venue_en": "Tsing Yi Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "長者體趣同樂-羽毛球自習",
-  "name_en": "Having Fun in Elderly Exercise-Badminton ",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "葵青區",
-  "district_en": "Kwai Tsing",
-  "venue_tc": "青衣體育館",
-  "venue_en": "Tsing Yi Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "08:00–09:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 0
- },
- {
   "name_tc": "器械健體訓練班",
   "name_en": "Fitness (Multi-gym) Training Course",
   "type_tc": "器械健體",
@@ -19552,22 +18480,6 @@
   "left": 6
  },
  {
-  "name_tc": "長者體趣同樂-健體",
-  "name_en": "Having Fun in Elderly Exercise-Fitness ",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "葵青區",
-  "district_en": "Kwai Tsing",
-  "venue_tc": "北葵涌鄧肇堅體育館",
-  "venue_en": "North Kwai Chung Tang Shiu Kin Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 0.0,
-  "quota": 18,
-  "left": 0
- },
- {
   "name_tc": "器械健體訓練班",
   "name_en": "Fitness (Multi-gym) Training Course",
   "type_tc": "器械健體",
@@ -19581,22 +18493,6 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 0
- },
- {
-  "name_tc": "長者體趣同樂-健體",
-  "name_en": "Having Fun in Elderly Exercise-Fitness ",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "葵青區",
-  "district_en": "Kwai Tsing",
-  "venue_tc": "北葵涌鄧肇堅體育館",
-  "venue_en": "North Kwai Chung Tang Shiu Kin Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "10:00–11:00",
-  "fee": 0.0,
-  "quota": 18,
   "left": 0
  },
  {
@@ -19664,22 +18560,6 @@
   "left": 0
  },
  {
-  "name_tc": "活力長者計劃-健體同樂",
-  "name_en": "Healthy Elderly Scheme-Fitness Fun Day",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "友愛體育館",
-  "venue_en": "Yau Oi Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–11:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -19693,22 +18573,6 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "成人胸泳訓練班(第二階段)",
-  "name_en": "Breaststroke Swimming Training Course for Adult (Level II)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "摩士公園游泳池",
-  "venue_en": "Morse Park Swimming Pool",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 100.0,
-  "quota": 20,
   "left": 0
  },
  {
@@ -19742,54 +18606,6 @@
   "fee": 0.0,
   "quota": 24,
   "left": 24
- },
- {
-  "name_tc": "成人胸泳訓練班(第三階段)",
-  "name_en": "Breaststroke Swimming TC for Adult (III)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "深水埗區",
-  "district_en": "Sham Shui Po",
-  "venue_tc": "荔枝角公園游泳池",
-  "venue_en": "Lai Chi Kok Park Swimming Pool",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "19:00–20:00",
-  "fee": 100.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "活力長者計劃-棋乒樂無窮",
-  "name_en": "Healthy Elderly Scheme-Chess and Table-tennis Fun Day",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "賽馬會屯門蝴蝶灣體育館",
-  "venue_en": "JC Tuen Mun Butterfly Beach Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
-  "name_tc": "長者體趣同樂 - 羽毛球",
-  "name_en": "Having Fun in Elderly Exercise - Badminton",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "元朗區",
-  "district_en": "Yuen Long",
-  "venue_tc": "元朗體育館",
-  "venue_en": "Yuen Long Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 0.0,
-  "quota": 24,
-  "left": 0
  },
  {
   "name_tc": "成人門球訓練班",
@@ -19856,22 +18672,6 @@
   "left": 0
  },
  {
-  "name_tc": "活力長者計劃 - 網球同樂",
-  "name_en": "Healthy Elderly Scheme - Tennis Fun Day",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "南區",
-  "district_en": "Southern",
-  "venue_tc": "香港仔網球及壁球中心",
-  "venue_en": "Aberdeen Tennis & Squash Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–10:00",
-  "fee": 0.0,
-  "quota": 6,
-  "left": 6
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -19902,22 +18702,6 @@
   "fee": 65.0,
   "quota": 25,
   "left": 0
- },
- {
-  "name_tc": "活力長者計劃-乒乓球同樂",
-  "name_en": "Healthy Elderly Scheme-Table-tennis Play-in",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "東涌文東路體育館",
-  "venue_en": "Tung Chung Man Tung Road Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "11:00–12:00",
-  "fee": 0.0,
-  "quota": 24,
-  "left": 24
  },
  {
   "name_tc": "器械健體訓練班",
@@ -20000,70 +18784,6 @@
   "left": 0
  },
  {
-  "name_tc": "活力長者計劃-棋乒樂無窮",
-  "name_en": "Healthy Elderly Scheme-Chess and Table-tennis Fun Day",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "賽馬會屯門蝴蝶灣體育館",
-  "venue_en": "JC Tuen Mun Butterfly Beach Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "08:00–09:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
-  "name_tc": "美式桌球訓練班（第一階段)",
-  "name_en": "American Pool Training Course (Level I)",
-  "type_tc": "美式桌球",
-  "type_en": "American Pool",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "鯉魚門體育館",
-  "venue_en": "Lei Yue Mun Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "19:00–21:00",
-  "fee": 120.0,
-  "quota": 12,
-  "left": 0
- },
- {
-  "name_tc": "長者體趣同樂 - 乒乓球",
-  "name_en": "Having Fun in Elderly Exercise - Table Tennis",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "元朗區",
-  "district_en": "Yuen Long",
-  "venue_tc": "元朗體育館",
-  "venue_en": "Yuen Long Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "10:00–11:00",
-  "fee": 0.0,
-  "quota": 18,
-  "left": 0
- },
- {
-  "name_tc": "長者體趣同樂 - 八段錦",
-  "name_en": "Having Fun in Elderly Exercise - Baduanjin",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "元朗區",
-  "district_en": "Yuen Long",
-  "venue_tc": "鳳琴街體育館",
-  "venue_en": "Fung Kam Street Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "10:00–11:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 0
- },
- {
   "name_tc": "中國舞訓練班",
   "name_en": "Chinese Dance Training Course",
   "type_tc": "中國舞",
@@ -20078,54 +18798,6 @@
   "fee": 45.0,
   "quota": 30,
   "left": 0
- },
- {
-  "name_tc": "長者康體匯敘-太極",
-  "name_en": "Meeting Point for Elderly-Tai Chi",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "西貢區",
-  "district_en": "Sai Kung",
-  "venue_tc": "坑口文曲里公園",
-  "venue_en": "Hang Hau Man Kuk Lane Park",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
-  "name_tc": "精神病康復者徒手健體訓練班",
-  "name_en": "Fitness Exercise Tr. Cr. for Ex-mentally Ill Persons",
-  "type_tc": "徒手健體",
-  "type_en": "Fitness Exercise",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "美林體育館",
-  "venue_en": "Mei Lam Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "11:00–13:00",
-  "fee": 0.0,
-  "quota": 7,
-  "left": 0
- },
- {
-  "name_tc": "長者康體匯敘-室內短墊滾球",
-  "name_en": "Meeting Point for Elderly-Indoor Short Mat Bowling",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "油尖旺區",
-  "district_en": "Yau Tsim Mong",
-  "venue_tc": "官涌體育館",
-  "venue_en": "Kwun Chung Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:30–11:30",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 20
  },
  {
   "name_tc": "長者康體匯聚-八段錦",
@@ -20208,38 +18880,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者康體匯敘-太極劍",
-  "name_en": "Meeting Point for Elderly-Tai Chi Sword",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "西貢區",
-  "district_en": "Sai Kung",
-  "venue_tc": "唐明街休憩處",
-  "venue_en": "Tong Ming Street Sitting Out Area",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
-  "name_tc": "活力長者計劃-乒乓球同樂",
-  "name_en": "Healthy Elderly Scheme-Table-tennis Play-in",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "離島區",
-  "district_en": "Islands",
-  "venue_tc": "東涌文東路體育館",
-  "venue_en": "Tung Chung Man Tung Road Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "10:00–11:00",
-  "fee": 0.0,
-  "quota": 24,
-  "left": 24
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -20304,22 +18944,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者體趣同樂 - 社交舞",
-  "name_en": "Having Fun in Elderly Exercise - Social Dance",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "元朗區",
-  "district_en": "Yuen Long",
-  "venue_tc": "朗屏體育館",
-  "venue_en": "Long Ping Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "15:00–16:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 0
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -20336,38 +18960,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者康體匯敘-太極",
-  "name_en": "Meeting Point for Elderly-Tai Chi",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "西貢區",
-  "district_en": "Sai Kung",
-  "venue_tc": "明德邨",
-  "venue_en": "Ming Tak Estate",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
-  "name_tc": "活力長者計劃-草地滾球自習計劃",
-  "name_en": "Healthy Elderly Scheme-Lawn Bowls Self Practice Scheme",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "湖山草地滾球場",
-  "venue_en": "Wu Shan Bowling Green",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 0.0,
-  "quota": 24,
-  "left": 24
- },
- {
   "name_tc": "長者體趣同樂-羽毛球",
   "name_en": "Having Fun in Elderly Exercise - Badminton",
   "type_tc": "長者體趣同樂",
@@ -20382,22 +18974,6 @@
   "fee": 0.0,
   "quota": 20,
   "left": 0
- },
- {
-  "name_tc": "長者康體匯敘-乒乓球",
-  "name_en": "Meeting Point for Elderly-Table-tennis",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "油尖旺區",
-  "district_en": "Yau Tsim Mong",
-  "venue_tc": "官涌體育館",
-  "venue_en": "Kwun Chung Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:30–11:30",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 20
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -20496,22 +19072,6 @@
   "left": 16
  },
  {
-  "name_tc": "活力長者計劃 - 羽毛球",
-  "name_en": "Healthy Elderly Scheme-Badminton",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "富亨體育館",
-  "venue_en": "Fu Heng Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "08:00–09:00",
-  "fee": 0.0,
-  "quota": 18,
-  "left": 18
- },
- {
   "name_tc": "羽毛球訓練班",
   "name_en": "Badminton Training Course",
   "type_tc": "羽毛球",
@@ -20592,22 +19152,6 @@
   "left": 16
  },
  {
-  "name_tc": "活力長者計劃-草地滾球自習計劃",
-  "name_en": "Healthy Elderly Scheme-Lawn Bowls Self Practice Scheme",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "湖山草地滾球場",
-  "venue_en": "Wu Shan Bowling Green",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "10:00–11:00",
-  "fee": 0.0,
-  "quota": 24,
-  "left": 24
- },
- {
   "name_tc": "八段錦訓練班",
   "name_en": "Baduanjin Training Course",
   "type_tc": "八段錦",
@@ -20621,22 +19165,6 @@
   "time": "11:00–12:00",
   "fee": 80.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "長者體趣同樂-乒乓球自習",
-  "name_en": "Having Fun in Elderly Exercise-Table-tennis",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "葵青區",
-  "district_en": "Kwai Tsing",
-  "venue_tc": "楓樹窩體育館",
-  "venue_en": "Fung Shue Wo Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "10:00–11:00",
-  "fee": 0.0,
-  "quota": 24,
   "left": 0
  },
  {
@@ -20672,22 +19200,6 @@
   "left": 16
  },
  {
-  "name_tc": "長者游泳訓練班(第二階段)",
-  "name_en": "Swimming Training Course for Elderly (Level II)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "摩士公園游泳池",
-  "venue_en": "Morse Park Swimming Pool",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 0
- },
- {
   "name_tc": "長者康體匯聚-徒手健體",
   "name_en": "Meeting Point for Elderly-Fitness Exercise",
   "type_tc": "長者康體匯聚",
@@ -20718,54 +19230,6 @@
   "fee": 160.0,
   "quota": 8,
   "left": 0
- },
- {
-  "name_tc": "長者康體匯敍 - 門球",
-  "name_en": "Meeting Points for Elderly - Gateball",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "九龍城區",
-  "district_en": "Kowloon City",
-  "venue_tc": "紅磡市政大廈體育館",
-  "venue_en": "Hung Hom Municipal Services Building Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–11:00",
-  "fee": 0.0,
-  "quota": 25,
-  "left": 25
- },
- {
-  "name_tc": "長者康體匯敘 - 社交舞同樂",
-  "name_en": "Meeting Points for Elderly -  Social Dance Play-in",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "深水埗區",
-  "district_en": "Sham Shui Po",
-  "venue_tc": "荔枝角公園體育館",
-  "venue_en": "Lai Chi Kok Park Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:15–11:45",
-  "fee": 0.0,
-  "quota": 130,
-  "left": 130
- },
- {
-  "name_tc": "長者康體匯敍 - 徒手健體",
-  "name_en": "Meeting Points for Elderly - Fitness Exercise",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "九龍城區",
-  "district_en": "Kowloon City",
-  "venue_tc": "紅磡市政大廈體育館",
-  "venue_en": "Hung Hom Municipal Services Building Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "08:00–10:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
  },
  {
   "name_tc": "健體舞訓練班",
@@ -20960,22 +19424,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者體趣同樂-乒乓球",
-  "name_en": "Having Fun in Elderly Exercise-Table Tennis",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "荃灣區",
-  "district_en": "Tsuen Wan",
-  "venue_tc": "楊屋道體育館",
-  "venue_en": "Yeung Uk Road Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–10:50",
-  "fee": 0.0,
-  "quota": 48,
-  "left": 0
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -21056,22 +19504,6 @@
   "left": 0
  },
  {
-  "name_tc": "活力長者計劃 - 羽毛球",
-  "name_en": "Healthy Elderly Scheme-Badminton",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "大埔區",
-  "district_en": "Tai Po",
-  "venue_tc": "富亨體育館",
-  "venue_en": "Fu Heng Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 18,
-  "left": 18
- },
- {
   "name_tc": "活力長者計劃-乒乓球",
   "name_en": "Healthy Elderly Scheme - Table-tennis Play-in",
   "type_tc": "活力長者計劃",
@@ -21118,22 +19550,6 @@
   "fee": 75.0,
   "quota": 30,
   "left": 0
- },
- {
-  "name_tc": "活力長者計劃-乒乓球",
-  "name_en": "Healthy Elderly Scheme-Table-tennis",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "北區",
-  "district_en": "North",
-  "venue_tc": "保榮路體育館",
-  "venue_en": "Po Wing Road Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–11:00",
-  "fee": 0.0,
-  "quota": 24,
-  "left": 24
  },
  {
   "name_tc": "健體舞訓練班",
@@ -21184,22 +19600,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者康體匯敍 - 徒手健體",
-  "name_en": "Meeting Points for Elderly - Fitness Exercise",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "九龍城區",
-  "district_en": "Kowloon City",
-  "venue_tc": "土瓜灣體育館",
-  "venue_en": "To Kwa Wan Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–11:00",
-  "fee": 0.0,
-  "quota": 50,
-  "left": 50
- },
- {
   "name_tc": "太極劍訓練班",
   "name_en": "Tai Chi Sword Training Course",
   "type_tc": "太極劍",
@@ -21232,22 +19632,6 @@
   "left": 24
  },
  {
-  "name_tc": "精神病康復者東方舞訓練班",
-  "name_en": "Oriental Dance Training Course for Persons with Ex-mentally Ill",
-  "type_tc": "東方舞",
-  "type_en": "Oriental Dance",
-  "district_tc": "九龍城區",
-  "district_en": "Kowloon City",
-  "venue_tc": "紅磡市政大廈體育館",
-  "venue_en": "Hung Hom Municipal Services Building Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "11:00–13:00",
-  "fee": 0.0,
-  "quota": 3,
-  "left": 1
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -21261,22 +19645,6 @@
   "time": "07:00–08:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "長者體趣同樂 - 羽毛球",
-  "name_en": "Having Fun in Elderly Exercise - Badminton",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "元朗區",
-  "district_en": "Yuen Long",
-  "venue_tc": "元朗體育館",
-  "venue_en": "Yuen Long Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "10:00–11:00",
-  "fee": 0.0,
-  "quota": 24,
   "left": 0
  },
  {
@@ -21344,38 +19712,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者康體匯敘-太極",
-  "name_en": "Meeting Point for Elderly-Tai Chi",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "西貢區",
-  "district_en": "Sai Kung",
-  "venue_tc": "尚德邨",
-  "venue_en": "Sheung Tak Estate",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
-  "name_tc": "長者體趣同樂 - 八段錦",
-  "name_en": "Having Fun in Elderly Exercise - Baduanjin",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "元朗區",
-  "district_en": "Yuen Long",
-  "venue_tc": "鳳琴街體育館",
-  "venue_en": "Fung Kam Street Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 0
- },
- {
   "name_tc": "器械健體訓練班",
   "name_en": "Fitness (Multi-gym) Training Course",
   "type_tc": "器械健體",
@@ -21392,38 +19728,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者游泳訓練班(第三階段)",
-  "name_en": "Swimming TC for Elderly (Level III)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "深水埗區",
-  "district_en": "Sham Shui Po",
-  "venue_tc": "荔枝角公園游泳池",
-  "venue_en": "Lai Chi Kok Park Swimming Pool",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "18:00–19:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "長者康體匯敘-太極",
-  "name_en": "Meeting Point for Elderly-Tai Chi",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "西貢區",
-  "district_en": "Sai Kung",
-  "venue_tc": "厚德邨",
-  "venue_en": "Hau Tak Estate",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "19:30–20:30",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
   "name_tc": "器械健體訓練班",
   "name_en": "Fitness (Multi-gym) Training Course",
   "type_tc": "器械健體",
@@ -21437,70 +19741,6 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 0
- },
- {
-  "name_tc": "視障人士徒手健體訓練計劃",
-  "name_en": "Multiple Fitness Training Session for Persons with Visual impairment ",
-  "type_tc": "徒手健體",
-  "type_en": "Fitness Exercise",
-  "district_tc": "九龍城區",
-  "district_en": "Kowloon City",
-  "venue_tc": "何文田體育館",
-  "venue_en": "Ho Man Tin Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "14:00–16:00",
-  "fee": 0.0,
-  "quota": 3,
-  "left": 1
- },
- {
-  "name_tc": "長者康體匯敘-太極",
-  "name_en": "Meeting Point for Elderly-Tai Chi",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "西貢區",
-  "district_en": "Sai Kung",
-  "venue_tc": "厚德邨",
-  "venue_en": "Hau Tak Estate",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
-  "name_tc": "長者體趣同樂-乒乓球自習",
-  "name_en": "Having Fun in Elderly Exercise-Table-tennis",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "葵青區",
-  "district_en": "Kwai Tsing",
-  "venue_tc": "楓樹窩體育館",
-  "venue_en": "Fung Shue Wo Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 0.0,
-  "quota": 24,
-  "left": 0
- },
- {
-  "name_tc": "長者體趣同樂 - 健體",
-  "name_en": "Having Fun in Elderly Exercise - Fitness",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "元朗區",
-  "district_en": "Yuen Long",
-  "venue_tc": "朗屏體育館",
-  "venue_en": "Long Ping Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "14:00–15:00",
-  "fee": 0.0,
-  "quota": 30,
   "left": 0
  },
  {
@@ -21520,38 +19760,6 @@
   "left": 0
  },
  {
-  "name_tc": "香港公園清晨觀鳥匯敍",
-  "name_en": "Meeting Point for Morning Bird-Watchers in HKP",
-  "type_tc": "觀鳥",
-  "type_en": "Bird Watching",
-  "district_tc": "中西區",
-  "district_en": "Central & Western",
-  "venue_tc": "香港公園 (集合地點: 人工湖)",
-  "venue_en": "Hong Kong Park (Garthering Point: Artificial Lake)",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "08:00–10:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
-  "name_tc": "長者康體匯敘-太極",
-  "name_en": "Meeting Point for Elderly-Tai Chi",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "西貢區",
-  "district_en": "Sai Kung",
-  "venue_tc": "翠林邨景明苑二號停車場平台",
-  "venue_en": "Tsui Lam Estate Half of covered area and part of outdoor space on the roof of car park No. 2",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
- },
- {
   "name_tc": "身心伸展訓練班",
   "name_en": "Body-Mind Stretch Training Course",
   "type_tc": "身心伸展訓練",
@@ -21565,70 +19773,6 @@
   "time": "11:00–12:00",
   "fee": 85.0,
   "quota": 24,
-  "left": 0
- },
- {
-  "name_tc": "成人捷泳訓練班(第二階段)",
-  "name_en": "Front Swimming Crawl Training Course for Adult (Level II)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "摩士公園游泳池",
-  "venue_en": "Morse Park Swimming Pool",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "08:00–09:00",
-  "fee": 100.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "長者游泳訓練班(第二階段)",
-  "name_en": "Swimming Training Course for Elderly (Level II)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "摩士公園游泳池",
-  "venue_en": "Morse Park Swimming Pool",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "18:00–19:00",
-  "fee": 0.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "成人捷泳訓練班(第二階段)",
-  "name_en": "Front Crawl Training Course for Adult (Level II)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "摩士公園游泳池",
-  "venue_en": "Morse Park Swimming Pool",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "20:00–21:00",
-  "fee": 100.0,
-  "quota": 20,
-  "left": 0
- },
- {
-  "name_tc": "成人胸泳訓練班(第二階段)",
-  "name_en": "Breaststroke Training Course for Adult (Level II)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "黃大仙區",
-  "district_en": "Wong Tai Sin",
-  "venue_tc": "摩士公園游泳池",
-  "venue_en": "Morse Park Swimming Pool",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "19:00–20:00",
-  "fee": 100.0,
-  "quota": 20,
   "left": 0
  },
  {
@@ -21680,22 +19824,6 @@
   "left": 0
  },
  {
-  "name_tc": "長期病患者身心伸展訓練計劃",
-  "name_en": "Body-mind Stretch Training Scheme for Persons with Cronic Illness",
-  "type_tc": "身心伸展訓練",
-  "type_en": "Body-Mind Stretch",
-  "district_tc": "中西區",
-  "district_en": "Central & Western",
-  "venue_tc": "上環體育館",
-  "venue_en": "Sheung Wan Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "13:00–15:00",
-  "fee": 0.0,
-  "quota": 4,
-  "left": 0
- },
- {
   "name_tc": "長者康體匯敘 - 舞蹈同樂",
   "name_en": "Meeting Point for Elderly-Multi Dance",
   "type_tc": "長者康體匯聚",
@@ -21710,54 +19838,6 @@
   "fee": 0.0,
   "quota": 80,
   "left": 80
- },
- {
-  "name_tc": "長期病患者器械健體訓練計劃",
-  "name_en": "Fitness (Multi-gym) Training Courses for Chronic Ill Persons",
-  "type_tc": "器械健體",
-  "type_en": "Fitness (Multi-gym)",
-  "district_tc": "沙田區",
-  "district_en": "Sha Tin",
-  "venue_tc": "美林體育館",
-  "venue_en": "Mei Lam Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "14:00–16:00",
-  "fee": 0.0,
-  "quota": 3,
-  "left": 0
- },
- {
-  "name_tc": "長者體趣同樂 - 乒乓球",
-  "name_en": "Having Fun in Elderly Exercise - Table Tennis",
-  "type_tc": "長者體趣同樂",
-  "type_en": "Having Fun in Elderly Exercise",
-  "district_tc": "元朗區",
-  "district_en": "Yuen Long",
-  "venue_tc": "元朗體育館",
-  "venue_en": "Yuen Long Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 0.0,
-  "quota": 18,
-  "left": 0
- },
- {
-  "name_tc": "活力長者計劃-棋乒樂無窮",
-  "name_en": "Healthy Elderly Scheme-Chess and Table-tennis Fun Day",
-  "type_tc": "活力長者計劃",
-  "type_en": "Healthy Elderly Scheme",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "賽馬會屯門蝴蝶灣體育館",
-  "venue_en": "JC Tuen Mun Butterfly Beach Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "09:00–10:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
  },
  {
   "name_tc": "長者康體匯敘-小型網球",
@@ -21840,22 +19920,6 @@
   "left": 0
  },
  {
-  "name_tc": "長者康體匯敍-八段錦",
-  "name_en": "Meeting Point for Elderly - Baduanjin",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "東區",
-  "district_en": "Eastern",
-  "venue_tc": "柴灣體育館",
-  "venue_en": "Chai Wan Sports Centre",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "08:00–10:00",
-  "fee": 0.0,
-  "quota": 70,
-  "left": 70
- },
- {
   "name_tc": "八段錦訓練班",
   "name_en": "Baduanjin Training Course",
   "type_tc": "八段錦",
@@ -21869,22 +19933,6 @@
   "time": "13:00–14:00",
   "fee": 80.0,
   "quota": 30,
-  "left": 0
- },
- {
-  "name_tc": "成人捷泳訓練班(第三階段)",
-  "name_en": "Front Crawl Training Course for Adult (Level III)",
-  "type_tc": "游泳",
-  "type_en": "Swimming",
-  "district_tc": "深水埗區",
-  "district_en": "Sham Shui Po",
-  "venue_tc": "荔枝角公園游泳池",
-  "venue_en": "Lai Chi Kok Park Swimming Pool",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "20:00–21:00",
-  "fee": 100.0,
-  "quota": 20,
   "left": 0
  },
  {
@@ -21950,22 +19998,6 @@
   "fee": 75.0,
   "quota": 30,
   "left": 0
- },
- {
-  "name_tc": "長者康體匯敘-太極",
-  "name_en": "Meeting Point for Elderly-Tai Chi",
-  "type_tc": "長者康體匯聚",
-  "type_en": "Meeting Point for the Elderly",
-  "district_tc": "西貢區",
-  "district_en": "Sai Kung",
-  "venue_tc": "寶翠公園 (硬地足球場)",
-  "venue_en": "Po Tsui Park (Hard Surfaced Soccer Pitch)",
-  "start": "2026-11-04",
-  "end": "2026-11-25",
-  "time": "07:00–08:00",
-  "fee": 0.0,
-  "quota": 30,
-  "left": 30
  },
  {
   "name_tc": "乒乓球同樂日",
@@ -30413,7 +28445,7 @@
   "time": "08:00–09:00",
   "fee": 60.0,
   "quota": 80,
-  "left": 6
+  "left": 5
  },
  {
   "name_tc": "健體舞訓練班",
@@ -30429,6 +28461,22 @@
   "time": "13:00–14:00",
   "fee": 65.0,
   "quota": 25,
+  "left": 0
+ },
+ {
+  "name_tc": "風帆旅程(禮帽)",
+  "name_en": "Sailing Trip (Topper)",
+  "type_tc": "風帆",
+  "type_en": "Sailing",
+  "district_tc": "賽馬會黃石水上活動中心",
+  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
+  "venue_tc": "賽馬會黃石水上活動中心",
+  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
+  "start": "2026-11-20",
+  "end": "2026-12-24",
+  "time": "09:00–17:00",
+  "fee": 40.0,
+  "quota": 8,
   "left": 0
  },
  {
@@ -30909,7 +28957,7 @@
   "time": "09:00–11:00",
   "fee": 118.0,
   "quota": 24,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "健體舞訓練班",
@@ -31024,38 +29072,6 @@
   "left": 0
  },
  {
-  "name_tc": "風帆入門訓練班(第一級)",
-  "name_en": "Introduction to Sailing Training Course (Level 1)",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-11-23",
-  "end": "2026-11-25",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 6,
-  "left": 0
- },
- {
-  "name_tc": "風帆深造技巧訓練班附加考核日",
-  "name_en": "Additional Assessment for Sailing Advanced Skills Training Course",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "聖士提反灣水上活動中心",
-  "district_en": "St. Stephen's Beach Water Sports Centre",
-  "venue_tc": "聖士提反灣水上活動中心",
-  "venue_en": "St. Stephen's Beach Water Sports Centre",
-  "start": "2026-11-23",
-  "end": "2026-11-25",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "健體舞訓練班",
   "name_en": "Aerobic Dance Training Course",
   "type_tc": "健體舞",
@@ -31085,7 +29101,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "器械健體訓練班",
@@ -31197,7 +29213,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "成人胸泳訓練班(第二階段)",
@@ -31213,7 +29229,7 @@
   "time": "20:00–21:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "室內草地滾球訓練班",
@@ -31472,22 +29488,6 @@
   "left": 0
  },
  {
-  "name_tc": "雙體船舵手訓練班",
-  "name_en": "Multihulls Helmsman Training Course ",
-  "type_tc": "風帆",
-  "type_en": "Sailing",
-  "district_tc": "賽馬會黃石水上活動中心",
-  "district_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "venue_tc": "賽馬會黃石水上活動中心",
-  "venue_en": "The Jockey Club Wong Shek Water Sports Centre",
-  "start": "2026-11-23",
-  "end": "2026-11-25",
-  "time": "09:00–17:00",
-  "fee": 70.0,
-  "quota": 6,
-  "left": 0
- },
- {
   "name_tc": "器械健體訓練班",
   "name_en": "Fitness (Multi-gym) Training Course",
   "type_tc": "器械健體",
@@ -31565,22 +29565,6 @@
   "time": "20:00–22:00",
   "fee": 86.0,
   "quota": 12,
-  "left": 0
- },
- {
-  "name_tc": "中級滑浪風帆訓練班",
-  "name_en": "Intermediate Windsurfing Training Course",
-  "type_tc": "滑浪風帆",
-  "type_en": "Windsurfing",
-  "district_tc": "聖士提反灣水上活動中心",
-  "district_en": "St. Stephen's Beach Water Sports Centre",
-  "venue_tc": "聖士提反灣水上活動中心",
-  "venue_en": "St. Stephen's Beach Water Sports Centre",
-  "start": "2026-11-23",
-  "end": "2026-11-25",
-  "time": "09:00–17:00",
-  "fee": 130.0,
-  "quota": 8,
   "left": 0
  },
  {
@@ -31773,7 +29757,7 @@
   "time": "15:00–16:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -32016,22 +30000,6 @@
   "left": 0
  },
  {
-  "name_tc": "殘疾人士身心伸展訓練計劃",
-  "name_en": "Body-mind Stretch Training Scheme for Persons with Disability",
-  "type_tc": "身心伸展訓練",
-  "type_en": "Body-Mind Stretch",
-  "district_tc": "觀塘區",
-  "district_en": "Kwun Tong",
-  "venue_tc": "九龍東傷健中心",
-  "venue_en": "Kowloon East PHAB Centre",
-  "start": "2026-11-25",
-  "end": "2026-11-25",
-  "time": "10:00–12:00",
-  "fee": 0.0,
-  "quota": 3,
-  "left": 0
- },
- {
   "name_tc": "太極訓練班",
   "name_en": "Tai Chi Training Course",
   "type_tc": "太極",
@@ -32077,22 +30045,6 @@
   "time": "09:00–10:00",
   "fee": 85.0,
   "quota": 24,
-  "left": 0
- },
- {
-  "name_tc": "長者康樂旅行",
-  "name_en": "Excursion for Elderly",
-  "type_tc": "陸上暢遊",
-  "type_en": "Land Excursion",
-  "district_tc": "屯門區",
-  "district_en": "Tuen Mun",
-  "venue_tc": "鹿頸, 沙田王屋村古屋",
-  "venue_en": "Luk Keng Old House, Wong Uk Village, Sha Tin ",
-  "start": "2026-11-25",
-  "end": "2026-11-25",
-  "time": "09:00–17:00",
-  "fee": 0.0,
-  "quota": 48,
   "left": 0
  },
  {
@@ -32272,22 +30224,6 @@
   "left": 11
  },
  {
-  "name_tc": "獨木舟中級銅章訓練班",
-  "name_en": "Kayak Proficiency Bronze Award Training Course",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "聖士提反灣水上活動中心",
-  "district_en": "St. Stephen's Beach Water Sports Centre",
-  "venue_tc": "聖士提反灣水上活動中心",
-  "venue_en": "St. Stephen's Beach Water Sports Centre",
-  "start": "2026-11-25",
-  "end": "2026-11-25",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
   "name_tc": "太極訓練班",
   "name_en": "Tai Chi Training Course",
   "type_tc": "太極",
@@ -32382,38 +30318,6 @@
   "fee": 85.0,
   "quota": 24,
   "left": 12
- },
- {
-  "name_tc": "獨木舟紅樹林之旅(北潭涌) ",
-  "name_en": "Kayak Mangrove Tour (Pak Tam Chung)",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-11-25",
-  "end": "2026-11-25",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
- },
- {
-  "name_tc": "獨木舟紅樹林之旅(北潭涌) ",
-  "name_en": "Kayak Mangrove Tour (Pak Tam Chung)",
-  "type_tc": "獨木舟",
-  "type_en": "Canoeing",
-  "district_tc": "創興水上活動中心",
-  "district_en": "Chong Hing Water Sports Centre",
-  "venue_tc": "創興水上活動中心",
-  "venue_en": "Chong Hing Water Sports Centre",
-  "start": "2026-11-25",
-  "end": "2026-11-25",
-  "time": "09:00–17:00",
-  "fee": 30.0,
-  "quota": 8,
-  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -33261,7 +31165,7 @@
   "time": "20:30–21:30",
   "fee": 60.0,
   "quota": 48,
-  "left": 10
+  "left": 9
  },
  {
   "name_tc": "獨木舟中級銅章訓練班",
@@ -33437,7 +31341,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 80,
-  "left": 17
+  "left": 16
  },
  {
   "name_tc": "獨木舟中級銅章訓練班",
@@ -33581,7 +31485,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 60,
-  "left": 2
+  "left": 1
  },
  {
   "name_tc": "獨木舟二星章訓練班",
@@ -33885,7 +31789,7 @@
   "time": "07:15–08:15",
   "fee": 60.0,
   "quota": 40,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "智障人士及 自閉症人士宿營",
@@ -34525,7 +32429,7 @@
   "time": "18:00–21:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 23
+  "left": 22
  },
  {
   "name_tc": "Nacra 500舵手",
@@ -35773,7 +33677,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 15
+  "left": 11
  },
  {
   "name_tc": "器械健體訓練班",
@@ -35789,7 +33693,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 14,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -35805,7 +33709,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 14,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -35821,7 +33725,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 14,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "瑜伽訓練班",
@@ -35869,7 +33773,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 15,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -35885,7 +33789,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 15,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第一階段)",
@@ -35901,7 +33805,7 @@
   "time": "18:00–19:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -35933,7 +33837,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -35949,7 +33853,7 @@
   "time": "14:00–15:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -35965,7 +33869,7 @@
   "time": "15:00–16:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘 - 門球同樂",
@@ -35997,7 +33901,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 14,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -36077,7 +33981,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -36093,7 +33997,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -36109,7 +34013,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -36125,7 +34029,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "室內網球訓練班",
@@ -36157,7 +34061,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -36173,7 +34077,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第一階段)",
@@ -36189,7 +34093,7 @@
   "time": "20:00–21:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "長期病患者室內草地滾球訓練計劃",
@@ -36221,7 +34125,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 14,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "太極訓練班",
@@ -36237,7 +34141,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 7
+  "left": 5
  },
  {
   "name_tc": "健體舞訓練班",
@@ -36253,7 +34157,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -36269,7 +34173,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-羽毛球",
@@ -36445,7 +34349,7 @@
   "time": "17:00–18:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -36493,7 +34397,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -36509,7 +34413,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 16
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -36525,7 +34429,7 @@
   "time": "17:00–18:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 乒乓球同樂",
@@ -36685,7 +34589,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-門球",
@@ -36717,7 +34621,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 8
+  "left": 7
  },
  {
   "name_tc": "太極訓練班(顧式)",
@@ -36765,7 +34669,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 70,
-  "left": 27
+  "left": 25
  },
  {
   "name_tc": "健體舞訓練班",
@@ -36781,7 +34685,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -36829,7 +34733,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 12,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "智障人士八段錦訓練計劃",
@@ -36861,7 +34765,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -36877,7 +34781,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -36893,7 +34797,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -36909,7 +34813,7 @@
   "time": "16:00–17:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "太極劍訓練班",
@@ -36941,7 +34845,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 13
+  "left": 11
  },
  {
   "name_tc": "草地滾球訓練班",
@@ -37005,7 +34909,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -37021,7 +34925,7 @@
   "time": "16:00–17:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-徒手健體同樂",
@@ -37165,7 +35069,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -37181,7 +35085,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "太極劍訓練班",
@@ -37197,7 +35101,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 80,
-  "left": 37
+  "left": 35
  },
  {
   "name_tc": "太極訓練班 (吳家)",
@@ -37213,7 +35117,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 60,
-  "left": 23
+  "left": 22
  },
  {
   "name_tc": "器械健體訓練班",
@@ -37229,7 +35133,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "太極劍訓練班(楊式)",
@@ -37373,7 +35277,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -37389,7 +35293,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "長者游泳訓練班(第一階段)",
@@ -37405,7 +35309,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 12,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-八段錦",
@@ -37533,7 +35437,7 @@
   "time": "12:00–13:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -37549,7 +35453,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "戶外健體訓練簡介會",
@@ -37581,7 +35485,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-羽毛球",
@@ -37629,7 +35533,7 @@
   "time": "12:00–13:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-乒乓球",
@@ -37661,7 +35565,7 @@
   "time": "16:00–17:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "精神病康復者身心伸展訓練班",
@@ -37709,7 +35613,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "高爾夫球訓練班(第一階段)",
@@ -37741,7 +35645,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘 - 桌球",
@@ -37773,7 +35677,7 @@
   "time": "16:00–17:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 門球同樂",
@@ -37805,7 +35709,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 26
+  "left": 22
  },
  {
   "name_tc": "活力長者計劃 - 乒乓球同樂",
@@ -37885,7 +35789,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-羽毛球",
@@ -37933,7 +35837,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -37965,7 +35869,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -37981,7 +35885,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 羽毛球",
@@ -38045,7 +35949,7 @@
   "time": "06:45–07:45",
   "fee": 60.0,
   "quota": 60,
-  "left": 8
+  "left": 6
  },
  {
   "name_tc": "健體舞訓練班",
@@ -38061,7 +35965,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -38109,7 +36013,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "太極訓練班",
@@ -38157,7 +36061,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -38173,7 +36077,7 @@
   "time": "16:00–17:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "滑浪風帆旅程",
@@ -38205,7 +36109,7 @@
   "time": "07:30–08:30",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -38221,7 +36125,7 @@
   "time": "08:30–09:30",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -38237,7 +36141,7 @@
   "time": "09:30–10:30",
   "fee": 65.0,
   "quota": 30,
-  "left": 16
+  "left": 0
  },
  {
   "name_tc": "壁球訓練班",
@@ -38285,7 +36189,7 @@
   "time": "07:15–08:15",
   "fee": 60.0,
   "quota": 40,
-  "left": 16
+  "left": 15
  },
  {
   "name_tc": "健體舞訓練班",
@@ -38301,7 +36205,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -38317,7 +36221,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -38333,7 +36237,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -38349,7 +36253,7 @@
   "time": "15:00–16:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -38365,7 +36269,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -38381,7 +36285,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -38397,7 +36301,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "乒乓球訓練班",
@@ -38445,7 +36349,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者室內門球訓練班",
@@ -38509,7 +36413,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -38525,7 +36429,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "長者門球訓練班",
@@ -38637,7 +36541,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 22
+  "left": 18
  },
  {
   "name_tc": "活力長者計劃-草地滾球自習",
@@ -38701,7 +36605,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -38909,7 +36813,7 @@
   "time": "11:00–12:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 15
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -38925,7 +36829,7 @@
   "time": "12:00–13:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-乒乓球同樂",
@@ -39005,7 +36909,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39021,7 +36925,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "戶外健體訓練簡介會",
@@ -39149,7 +37053,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "初級滑浪風帆訓練班",
@@ -39197,7 +37101,7 @@
   "time": "08:00–09:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "黃昏太極班",
@@ -39213,7 +37117,7 @@
   "time": "19:00–20:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 22
+  "left": 21
  },
  {
   "name_tc": "太極劍訓練班",
@@ -39293,7 +37197,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -39309,7 +37213,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39325,7 +37229,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39341,7 +37245,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39357,7 +37261,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "太極劍訓練班",
@@ -39405,7 +37309,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -39485,7 +37389,7 @@
   "time": "13:00–14:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "高爾夫球訓練班(第二階段)",
@@ -39533,7 +37437,7 @@
   "time": "07:00–08:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "太極訓練班(顧式)",
@@ -39549,7 +37453,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 5
+  "left": 4
  },
  {
   "name_tc": "器械健體訓練班",
@@ -39565,7 +37469,7 @@
   "time": "16:00–17:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39581,7 +37485,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39597,7 +37501,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39613,7 +37517,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 羽毛球",
@@ -39645,7 +37549,7 @@
   "time": "20:00–21:00",
   "fee": 100.0,
   "quota": 12,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-清晨徒手健體",
@@ -39677,7 +37581,7 @@
   "time": "07:00–08:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 羽毛球",
@@ -39725,7 +37629,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "長者游泳訓練班(第二階段)",
@@ -39741,7 +37645,7 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者游泳訓練班(第一階段)",
@@ -39757,7 +37661,7 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 12,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39773,7 +37677,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "獨木舟三星章訓練班",
@@ -39837,7 +37741,7 @@
   "time": "20:00–23:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39853,7 +37757,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39869,7 +37773,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39885,7 +37789,7 @@
   "time": "12:00–13:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -39901,7 +37805,7 @@
   "time": "13:00–14:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 美式桌球同樂",
@@ -39933,7 +37837,7 @@
   "time": "11:00–12:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "太極訓練班",
@@ -39997,7 +37901,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -40013,7 +37917,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 17
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班 ",
@@ -40029,7 +37933,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "Good Fit 活力計劃 - 普拉提健體訓練班",
@@ -40061,7 +37965,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "外展計劃-長者清晨徒手健體",
@@ -40157,7 +38061,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第三階段)",
@@ -40173,7 +38077,7 @@
   "time": "20:00–21:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -40237,7 +38141,7 @@
   "time": "08:00–09:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -40253,7 +38157,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 15
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-室內門球同樂",
@@ -40285,7 +38189,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -40301,7 +38205,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -40317,7 +38221,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "成人胸泳訓練班(第一階段)",
@@ -40333,7 +38237,7 @@
   "time": "10:00–11:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-門球",
@@ -40349,7 +38253,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 11
+  "left": 10
  },
  {
   "name_tc": "長者體趣同樂-門球",
@@ -40365,7 +38269,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 6
+  "left": 4
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -40413,7 +38317,7 @@
   "time": "09:00–10:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "八段錦訓練班",
@@ -40445,7 +38349,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 乒乓球同樂",
@@ -40509,7 +38413,7 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "成人背泳訓練班",
@@ -40525,7 +38429,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "水中健體訓練班",
@@ -40621,7 +38525,7 @@
   "time": "20:00–21:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "成人背泳訓練班",
@@ -40637,7 +38541,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "壁球訓練班",
@@ -40717,7 +38621,7 @@
   "time": "20:00–21:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "高爾夫球訓練班(第一階段)",
@@ -40765,7 +38669,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "成人胸泳訓練班(第一階段)",
@@ -40781,7 +38685,7 @@
   "time": "07:00–08:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-羽毛球",
@@ -40829,7 +38733,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -40845,7 +38749,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-乒乓球",
@@ -40893,7 +38797,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -40909,7 +38813,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -40989,7 +38893,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -41005,7 +38909,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 18,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "乒乓球同樂日",
@@ -41133,7 +39037,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者高爾夫球訓練班(第二階段)",
@@ -41181,7 +39085,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -41213,7 +39117,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 48,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "精神病康復者羽毛球訓練班",
@@ -41261,7 +39165,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 18,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "長者游泳訓練班(第三階段)",
@@ -41277,7 +39181,7 @@
   "time": "18:00–19:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-乒乓球",
@@ -41309,7 +39213,7 @@
   "time": "16:00–17:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "風帆入門訓練班(第一級)",
@@ -41341,7 +39245,7 @@
   "time": "08:00–09:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 羽毛球",
@@ -41373,7 +39277,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "成人胸泳訓練班(第二階段)",
@@ -41389,7 +39293,7 @@
   "time": "07:00–08:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "背泳訓練班",
@@ -41405,7 +39309,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-乒乓球自習",
@@ -41453,7 +39357,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -41469,7 +39373,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "壓力處理及鬆弛技巧訓練班",
@@ -41501,7 +39405,7 @@
   "time": "16:00–17:00",
   "fee": 80.0,
   "quota": 30,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "健體舞訓練班",
@@ -41517,7 +39421,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -41533,7 +39437,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敍 - 門球",
@@ -41581,7 +39485,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-室內門球",
@@ -41629,7 +39533,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -41725,7 +39629,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 18
+  "left": 0
  },
  {
   "name_tc": "初級滑浪風帆訓練班",
@@ -41773,7 +39677,7 @@
   "time": "20:00–21:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "背泳訓練班",
@@ -41789,7 +39693,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 門球同樂",
@@ -41837,7 +39741,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -41853,7 +39757,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-八段錦",
@@ -41933,7 +39837,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "長者簡易太極班",
@@ -41981,7 +39885,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -41997,7 +39901,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敍-網球",
@@ -42077,7 +39981,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 15,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "視障人士園藝導賞及種植同樂日",
@@ -42141,7 +40045,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者游泳訓練班(第二階段)",
@@ -42157,7 +40061,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -42173,7 +40077,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -42189,7 +40093,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-棋乒樂無窮",
@@ -42221,7 +40125,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -42269,7 +40173,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 10,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -42285,7 +40189,7 @@
   "time": "16:00–17:00",
   "fee": 75.0,
   "quota": 10,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -42301,7 +40205,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "太極劍訓練班(楊式)",
@@ -42317,7 +40221,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 26
+  "left": 20
  },
  {
   "name_tc": "健體舞訓練班",
@@ -42333,7 +40237,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第一階段)",
@@ -42349,7 +40253,7 @@
   "time": "07:00–08:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 羽毛球",
@@ -42429,7 +40333,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -42445,7 +40349,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "香港公園清晨觀鳥匯敍",
@@ -42637,7 +40541,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂 - 乒乓球",
@@ -42701,7 +40605,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-羽毛球",
@@ -42877,7 +40781,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -42893,7 +40797,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-太極",
@@ -42941,7 +40845,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-徒手健體",
@@ -43021,7 +40925,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第二階段)",
@@ -43037,7 +40941,7 @@
   "time": "09:00–10:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -43053,7 +40957,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敍 - 徒手健體",
@@ -43101,7 +41005,7 @@
   "time": "08:00–09:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -43117,7 +41021,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "風帆舵手專修 (H12.2)",
@@ -43181,7 +41085,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者游泳訓練班(第二階段)",
@@ -43197,7 +41101,7 @@
   "time": "18:00–19:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘 - 社交舞同樂",
@@ -43229,7 +41133,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "壁球訓練班",
@@ -43277,7 +41181,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "太極訓練班",
@@ -43309,7 +41213,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -43325,7 +41229,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-室內短墊滾球",
@@ -43469,7 +41373,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 18,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -43485,7 +41389,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第一階段)",
@@ -43501,7 +41405,7 @@
   "time": "08:00–09:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -43565,7 +41469,7 @@
   "time": "18:00–19:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -43597,7 +41501,7 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-草地滾球自習計劃",
@@ -43629,7 +41533,7 @@
   "time": "13:00–14:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者體能測試",
@@ -43757,7 +41661,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 乒乓球同樂",
@@ -43853,7 +41757,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 15,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "成人羽毛球訓練班",
@@ -43885,7 +41789,7 @@
   "time": "07:00–08:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -43901,7 +41805,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -43949,7 +41853,7 @@
   "time": "08:00–09:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "太極訓練班",
@@ -44013,7 +41917,7 @@
   "time": "08:00–09:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-太極",
@@ -44077,7 +41981,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-太極",
@@ -44189,7 +42093,7 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-乒乓球自習",
@@ -44221,7 +42125,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -44237,7 +42141,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 18,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-草地滾球自習計劃",
@@ -44269,7 +42173,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-棋乒樂無窮",
@@ -44349,7 +42253,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -44365,7 +42269,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -44381,7 +42285,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-棋乒樂無窮",
@@ -44413,7 +42317,7 @@
   "time": "17:00–18:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "健體舞訓練班",
@@ -44429,7 +42333,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "長者八段錦訓練班",
@@ -44477,7 +42381,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "簡易太極班",
@@ -44541,7 +42445,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "長者中國舞訓練班",
@@ -44685,7 +42589,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 30,
-  "left": 3
+  "left": 2
  },
  {
   "name_tc": "長者體趣同樂-羽毛球自習",
@@ -44877,7 +42781,7 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 15,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "太極訓練班",
@@ -44893,7 +42797,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 80,
-  "left": 57
+  "left": 52
  },
  {
   "name_tc": "器械健體訓練班",
@@ -44909,7 +42813,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -44925,7 +42829,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 15,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "獨木舟三星章訓練班",
@@ -44941,7 +42845,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 2
+  "left": 1
  },
  {
   "name_tc": "器械健體訓練班",
@@ -44957,7 +42861,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 18,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -44973,7 +42877,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -44989,7 +42893,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-健體",
@@ -45037,7 +42941,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-門球自習",
@@ -45069,7 +42973,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -45149,7 +43053,7 @@
   "time": "13:00–14:00",
   "fee": 75.0,
   "quota": 18,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-室內門球",
@@ -45213,7 +43117,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長期病患者乒乓球球訓練計劃",
@@ -45245,7 +43149,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -45261,7 +43165,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘 - 室內門球",
@@ -45325,7 +43229,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-室內門球",
@@ -45357,7 +43261,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -45373,7 +43277,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "激光XD舵手",
@@ -45437,7 +43341,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -45453,7 +43357,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -45469,7 +43373,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -45485,7 +43389,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -45501,7 +43405,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -45517,7 +43421,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "風帆入門訓練班(第一級)",
@@ -45597,7 +43501,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-乒乓球",
@@ -45661,7 +43565,7 @@
   "time": "08:00–09:00",
   "fee": 60.0,
   "quota": 80,
-  "left": 38
+  "left": 30
  },
  {
   "name_tc": "器械健體訓練班",
@@ -45677,7 +43581,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 18,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者陸上暢遊",
@@ -45693,7 +43597,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 96,
-  "left": 0
+  "left": 2
  },
  {
   "name_tc": "器械健體訓練班",
@@ -45709,7 +43613,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 15,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 乒乓球",
@@ -45869,7 +43773,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 15,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "壁球訓練班",
@@ -45901,7 +43805,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 18,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -45917,7 +43821,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-羽毛球",
@@ -45965,7 +43869,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -45981,7 +43885,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-棋乒樂無窮",
@@ -46061,7 +43965,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "門球同樂日",
@@ -46093,7 +43997,7 @@
   "time": "12:00–13:00",
   "fee": 75.0,
   "quota": 18,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "風帆入門訓練班（第一級）",
@@ -46125,7 +44029,7 @@
   "time": "13:00–14:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -46141,7 +44045,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-乒乓球",
@@ -46237,7 +44141,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 18,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敍 - 活力體操",
@@ -46413,7 +44317,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 15
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -46429,7 +44333,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "高爾夫球訓練班(第二階段)",
@@ -46493,7 +44397,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-太極劍",
@@ -46573,7 +44477,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 3
+  "left": 1
  },
  {
   "name_tc": "活力長者計劃-西方土風舞",
@@ -46717,7 +44621,7 @@
   "time": "21:00–22:00",
   "fee": 0.0,
   "quota": 24,
-  "left": 6
+  "left": 4
  },
  {
   "name_tc": "健體舞訓練班",
@@ -46733,7 +44637,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -46749,7 +44653,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-乒乓球同樂",
@@ -46781,7 +44685,7 @@
   "time": "18:00–21:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 7
+  "left": 1
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -46797,7 +44701,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "清晨觀鳥匯敘",
@@ -47053,7 +44957,7 @@
   "time": "19:45–21:45",
   "fee": 0.0,
   "quota": 30,
-  "left": 14
+  "left": 12
  },
  {
   "name_tc": "活力長者計劃 - 室內草地滾球同樂",
@@ -47165,7 +45069,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -47181,7 +45085,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -47197,7 +45101,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 門球同樂",
@@ -47309,7 +45213,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -47549,7 +45453,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "瑜伽訓練班",
@@ -47661,7 +45565,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-健體同樂",
@@ -47741,7 +45645,7 @@
   "time": "11:00–12:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -47773,7 +45677,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "獨木舟三星章訓練班",
@@ -47805,7 +45709,7 @@
   "time": "11:00–12:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -47821,7 +45725,7 @@
   "time": "12:00–13:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 美式桌球",
@@ -47853,7 +45757,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-社交舞",
@@ -48109,7 +46013,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -48125,7 +46029,7 @@
   "time": "16:00–17:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-門球",
@@ -48157,7 +46061,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -48237,7 +46141,7 @@
   "time": "20:00–23:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 1
  },
  {
   "name_tc": "長者體趣同樂-乒乓球",
@@ -48301,7 +46205,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 26
+  "left": 23
  },
  {
   "name_tc": "太極訓練班 (楊式)",
@@ -48333,7 +46237,7 @@
   "time": "18:00–21:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "青少年滑板同樂日",
@@ -48381,7 +46285,7 @@
   "time": "15:00–17:30",
   "fee": 0.0,
   "quota": 32,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "健步行簡介會",
@@ -48413,7 +46317,7 @@
   "time": "09:00–17:00",
   "fee": 40.0,
   "quota": 48,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "運動攀登同樂日",
@@ -48573,7 +46477,7 @@
   "time": "11:00–13:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 2
+  "left": 1
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -48589,7 +46493,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "簡易太極班",
@@ -48797,7 +46701,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 1
  },
  {
   "name_tc": "小型網球同樂日",
@@ -48813,7 +46717,7 @@
   "time": "15:00–18:00",
   "fee": 0.0,
   "quota": 48,
-  "left": 35
+  "left": 34
  },
  {
   "name_tc": "正確使用健身室設施簡介會(A班)",
@@ -48829,7 +46733,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "長期病患者日營",
@@ -48909,7 +46813,7 @@
   "time": "12:00–13:00",
   "fee": 0.0,
   "quota": 24,
-  "left": 0
+  "left": 2
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -48957,7 +46861,7 @@
   "time": "10:00–13:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "風帆基本技巧訓練班(第二級)",
@@ -49005,7 +46909,7 @@
   "time": "14:00–16:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "巧固球同樂日",
@@ -49021,7 +46925,7 @@
   "time": "14:00–16:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 0
+  "left": 2
  },
  {
   "name_tc": "太極劍訓練班",
@@ -49085,7 +46989,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -49133,7 +47037,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -49149,7 +47053,7 @@
   "time": "14:30–17:30",
   "fee": 0.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "園藝知多D「四色茶花園介紹」(26/WS/85)",
@@ -49213,7 +47117,7 @@
   "time": "09:00–17:00",
   "fee": 70.0,
   "quota": 6,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "健體測試日",
@@ -49341,7 +47245,7 @@
   "time": "10:00–12:00",
   "fee": 160.0,
   "quota": 6,
-  "left": 2
+  "left": 1
  },
  {
   "name_tc": "長期病患者地壺球同樂日",
@@ -49389,7 +47293,7 @@
   "time": "09:00–17:00",
   "fee": 130.0,
   "quota": 4,
-  "left": 4
+  "left": 2
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -49405,7 +47309,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 1
  },
  {
   "name_tc": "乒乓球訓練班",
@@ -49437,7 +47341,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 2
  },
  {
   "name_tc": "園藝講座 - 聖誕小裝飾工作坊",
@@ -49469,7 +47373,7 @@
   "time": "10:00–13:00",
   "fee": 0.0,
   "quota": 10,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "兒童羽毛球訓練班",
@@ -49533,7 +47437,7 @@
   "time": "13:00–16:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "場地單車體驗日",
@@ -49549,7 +47453,7 @@
   "time": "10:00–13:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -49565,7 +47469,7 @@
   "time": "19:00–21:00",
   "fee": 86.0,
   "quota": 30,
-  "left": 20
+  "left": 16
  },
  {
   "name_tc": "智障人士西方土風舞訓練計劃",
@@ -49661,7 +47565,7 @@
   "time": "16:00–18:00",
   "fee": 60.0,
   "quota": 20,
-  "left": 12
+  "left": 11
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -49677,7 +47581,7 @@
   "time": "15:00–18:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "兒童低檯乒乓球訓練班",
@@ -49709,7 +47613,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "成人網球訓練班",
@@ -49885,7 +47789,7 @@
   "time": "12:00–13:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "箭藝同樂日",
@@ -49933,7 +47837,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 21
+  "left": 19
  },
  {
   "name_tc": "球形帆技巧訓練班（Magno）",
@@ -49965,7 +47869,7 @@
   "time": "14:00–15:30",
   "fee": 75.0,
   "quota": 20,
-  "left": 12
+  "left": 11
  },
  {
   "name_tc": "親子(7-17歲) 羽毛球同樂日",
@@ -49997,7 +47901,7 @@
   "time": "10:00–11:00",
   "fee": 0.0,
   "quota": 24,
-  "left": 2
+  "left": 5
  },
  {
   "name_tc": "親子(7-17歲) 羽毛球同樂日",
@@ -50029,7 +47933,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 9
+  "left": 1
  },
  {
   "name_tc": "兒童初級滑浪風帆訓練班",
@@ -50157,7 +48061,7 @@
   "time": "11:00–12:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 0
+  "left": 2
  },
  {
   "name_tc": "西方土風舞訓練班",
@@ -50237,7 +48141,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 60,
-  "left": 14
+  "left": 12
  },
  {
   "name_tc": "長者康體匯聚 - 門球",
@@ -50269,7 +48173,7 @@
   "time": "09:00–17:00",
   "fee": 20.0,
   "quota": 144,
-  "left": 3
+  "left": 1
  },
  {
   "name_tc": "乒乓球訓練班",
@@ -50317,7 +48221,7 @@
   "time": "11:00–12:00",
   "fee": 0.0,
   "quota": 6,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "視障人士日營",
@@ -50461,7 +48365,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 1
  },
  {
   "name_tc": "元朗區舞蹈比賽2026/27",
@@ -50829,7 +48733,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "少年獨木舟海馬章訓練班",
@@ -50861,7 +48765,7 @@
   "time": "15:00–18:00",
   "fee": 0.0,
   "quota": 19,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "障礙高爾夫球同樂日",
@@ -50893,7 +48797,7 @@
   "time": "18:00–21:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -50909,7 +48813,7 @@
   "time": "10:00–13:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "普及體操訓練班",
@@ -51053,7 +48957,7 @@
   "time": "08:00–09:00",
   "fee": 54.0,
   "quota": 30,
-  "left": 14
+  "left": 12
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -51069,7 +48973,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 8
+  "left": 1
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -51085,7 +48989,7 @@
   "time": "15:00–18:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "園藝知多D「從種子到盆栽」(26/WS/86)",
@@ -51165,7 +49069,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "騎馬同樂日",
@@ -51197,7 +49101,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "高爾夫球訓練班(遠距離球技巧改良班)",
@@ -51261,7 +49165,7 @@
   "time": "14:30–17:30",
   "fee": 0.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "圍棋訓練班（第三階段）",
@@ -51293,7 +49197,7 @@
   "time": "10:30–13:30",
   "fee": 0.0,
   "quota": 25,
-  "left": 7
+  "left": 2
  },
  {
   "name_tc": "觀塘區男子七人足球比賽2026",
@@ -51421,7 +49325,7 @@
   "time": "13:00–14:00",
   "fee": 85.0,
   "quota": 24,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "青少年霹靂舞同樂日",
@@ -51453,7 +49357,7 @@
   "time": "14:30–16:00",
   "fee": 0.0,
   "quota": 18,
-  "left": 11
+  "left": 7
  },
  {
   "name_tc": "乒乓球進階班",
@@ -51485,7 +49389,7 @@
   "time": "11:30–13:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 16
+  "left": 14
  },
  {
   "name_tc": "小型網球同樂日",
@@ -51517,7 +49421,7 @@
   "time": "07:00–08:00",
   "fee": 54.0,
   "quota": 30,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "高爾夫球訓練班(第二階段)",
@@ -51741,7 +49645,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 1
  },
  {
   "name_tc": "荃灣區壁球比賽2026/27",
@@ -51981,7 +49885,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "簡易太極班",
@@ -52077,7 +49981,7 @@
   "time": "10:00–13:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 9
+  "left": 6
  },
  {
   "name_tc": "簡易太極班",
@@ -52093,7 +49997,7 @@
   "time": "09:00–10:00",
   "fee": 54.0,
   "quota": 30,
-  "left": 12
+  "left": 11
  },
  {
   "name_tc": "圍棋訓練班(第一階段)",
@@ -52157,7 +50061,7 @@
   "time": "10:00–13:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "獨木舟中級銀章訓練班(技術及旅程)",
@@ -52189,7 +50093,7 @@
   "time": "09:30–12:30",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "草地滾球同樂日",
@@ -52237,7 +50141,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敍-清晨徒手健體",
@@ -52269,7 +50173,7 @@
   "time": "15:00–17:30",
   "fee": 0.0,
   "quota": 32,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "康體匯敍 - 太極",
@@ -52333,7 +50237,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -52349,7 +50253,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "胸泳訓練班 - 第三階段",
@@ -52365,7 +50269,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "太極訓練班",
@@ -52397,7 +50301,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 16,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -52413,7 +50317,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 16,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "捷泳訓練班 - 第三階段",
@@ -52429,7 +50333,7 @@
   "time": "18:00–19:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "高級滑浪風帆訓練班",
@@ -52477,7 +50381,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 6
+  "left": 1
  },
  {
   "name_tc": "社交舞訓練班",
@@ -52557,7 +50461,7 @@
   "time": "17:00–18:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-健體",
@@ -52637,7 +50541,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 15
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -52653,7 +50557,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-器械健體",
@@ -52685,7 +50589,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -52701,7 +50605,7 @@
   "time": "20:00–22:00",
   "fee": 86.0,
   "quota": 30,
-  "left": 10
+  "left": 8
  },
  {
   "name_tc": "器械健體訓練班",
@@ -52717,7 +50621,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 太極同樂",
@@ -52749,7 +50653,7 @@
   "time": "13:00–14:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂 - 乒乓球",
@@ -52893,7 +50797,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -52909,7 +50813,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -52925,7 +50829,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -52941,7 +50845,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -52957,7 +50861,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -52973,7 +50877,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -52989,7 +50893,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "成人草地滾球訓練班",
@@ -53101,7 +51005,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃-草地滾球自習計劃",
@@ -53149,7 +51053,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -53165,7 +51069,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 太極同樂",
@@ -53261,7 +51165,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 8
+  "left": 7
  },
  {
   "name_tc": "活力長者計劃-西方土風舞",
@@ -53309,7 +51213,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 3
+  "left": 1
  },
  {
   "name_tc": "活力長者計劃 - 乒乓球",
@@ -53469,7 +51373,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -53485,7 +51389,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 22
+  "left": 0
  },
  {
   "name_tc": "獨木舟二星章訓練班",
@@ -53549,7 +51453,7 @@
   "time": "16:00–17:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -53565,7 +51469,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 室內短墊滾球暨羽毛球同樂",
@@ -53629,7 +51533,7 @@
   "time": "13:00–14:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -53645,7 +51549,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "長者康體匯敘-徒手健體",
@@ -53677,7 +51581,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "長者體趣遊戲",
@@ -53805,7 +51709,7 @@
   "time": "18:00–21:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -53885,7 +51789,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 17
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-乒乓球",
@@ -54013,7 +51917,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "太極訓練班",
@@ -54029,7 +51933,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 9
+  "left": 2
  },
  {
   "name_tc": "智障人士及肢體傷殘人士箭藝同樂日",
@@ -54077,7 +51981,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -54141,7 +52045,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -54173,7 +52077,7 @@
   "time": "10:00–11:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "八段錦訓練班",
@@ -54205,7 +52109,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 18,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -54221,7 +52125,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 18,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -54237,7 +52141,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "長者中國舞訓練班",
@@ -54269,7 +52173,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -54285,7 +52189,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -54301,7 +52205,7 @@
   "time": "11:00–12:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -54317,7 +52221,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -54333,7 +52237,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 15
+  "left": 0
  },
  {
   "name_tc": "乒乓球訓練班",
@@ -54365,7 +52269,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -54381,7 +52285,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -54413,7 +52317,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -54429,7 +52333,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "長者健體訓練班",
@@ -54461,7 +52365,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -54477,7 +52381,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 10,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -54493,7 +52397,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 10,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -54509,7 +52413,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -54525,7 +52429,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "成人胸泳訓練班(第一階段)",
@@ -54541,7 +52445,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第二階段)",
@@ -54557,7 +52461,7 @@
   "time": "20:00–21:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "乒乓球訓練班",
@@ -54589,7 +52493,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "水中健體訓練班",
@@ -54669,7 +52573,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -54685,7 +52589,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 18,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "中國舞訓練班",
@@ -54717,7 +52621,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者康樂日營",
@@ -54749,7 +52653,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "長者游泳訓練班(第一階段)",
@@ -54765,7 +52669,7 @@
   "time": "13:00–14:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者游泳訓練班(第一階段)",
@@ -54781,7 +52685,7 @@
   "time": "14:00–15:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -54797,7 +52701,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "獨木舟中級金章訓練班(技術及旅程)",
@@ -54845,7 +52749,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -54861,7 +52765,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -54941,7 +52845,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 22,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -54957,7 +52861,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 22,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "殘疾人士太極訓練計劃",
@@ -55005,7 +52909,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "簡易太極班",
@@ -55053,7 +52957,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -55069,7 +52973,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 18,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -55085,7 +52989,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 6
+  "left": 1
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -55149,7 +53053,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 15
+  "left": 0
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -55181,7 +53085,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55197,7 +53101,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 16
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55213,7 +53117,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 15
+  "left": 0
  },
  {
   "name_tc": "長者陸上暢遊",
@@ -55261,7 +53165,7 @@
   "time": "18:00–19:00",
   "fee": 0.0,
   "quota": 12,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "網球同樂日",
@@ -55341,7 +53245,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "門球訓練班",
@@ -55405,7 +53309,7 @@
   "time": "20:00–23:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 1
  },
  {
   "name_tc": "健體舞訓練班",
@@ -55421,7 +53325,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55437,7 +53341,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "獨木舟環島之旅(鹽田仔) ",
@@ -55469,7 +53373,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55485,7 +53389,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55501,7 +53405,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55517,7 +53421,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "箭藝訓練班",
@@ -55565,7 +53469,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者中國舞訓練班",
@@ -55645,7 +53549,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -55661,7 +53565,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -55677,7 +53581,7 @@
   "time": "07:00–08:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -55725,7 +53629,7 @@
   "time": "16:00–17:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55741,7 +53645,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55757,7 +53661,7 @@
   "time": "17:00–18:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者八段錦訓練班",
@@ -55853,7 +53757,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -55869,7 +53773,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -55885,7 +53789,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "乒乓球訓練班",
@@ -55917,7 +53821,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -55933,7 +53837,7 @@
   "time": "16:00–17:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55949,7 +53853,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 10
+  "left": 1
  },
  {
   "name_tc": "器械健體訓練班",
@@ -55965,7 +53869,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 16
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -55981,7 +53885,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "智障人士陸上暢遊",
@@ -56013,7 +53917,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 3
+  "left": 2
  },
  {
   "name_tc": "健體舞訓練班",
@@ -56029,7 +53933,7 @@
   "time": "11:00–12:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "場地單車體驗日",
@@ -56061,7 +53965,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -56157,7 +54061,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "風帆日間航行訓練班",
@@ -56189,7 +54093,7 @@
   "time": "12:00–13:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -56205,7 +54109,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -56221,7 +54125,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -56237,7 +54141,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -56253,7 +54157,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -56285,7 +54189,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -56301,7 +54205,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -56317,7 +54221,7 @@
   "time": "13:00–14:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 21
+  "left": 0
  },
  {
   "name_tc": "初級野外定向訓練班(活動日期及時間請參閱備注)",
@@ -56413,7 +54317,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -56429,7 +54333,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者八段錦訓練班",
@@ -56461,7 +54365,7 @@
   "time": "16:00–17:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 15
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -56477,7 +54381,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -56493,7 +54397,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者日營",
@@ -56525,7 +54429,7 @@
   "time": "09:00–17:00",
   "fee": 130.0,
   "quota": 5,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "健體舞訓練班",
@@ -56541,7 +54445,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -56557,7 +54461,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -56573,7 +54477,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "初級滑浪風帆專修",
@@ -56621,7 +54525,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者八段錦訓練班",
@@ -56653,7 +54557,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 92,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "長者健體訓練班",
@@ -56701,7 +54605,7 @@
   "time": "20:00–23:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "壁球訓練班",
@@ -56749,7 +54653,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -56765,7 +54669,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "雙體船入門訓練班",
@@ -56797,7 +54701,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 12
+  "left": 1
  },
  {
   "name_tc": "器械健體訓練班",
@@ -56813,7 +54717,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "長者八段錦訓練班",
@@ -56989,7 +54893,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -57005,7 +54909,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "乒乓球訓練班",
@@ -57069,7 +54973,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -57085,7 +54989,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -57101,7 +55005,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -57117,7 +55021,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -57197,7 +55101,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "西方土風舞訓練班",
@@ -57229,7 +55133,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "風帆旅程(禮帽)",
@@ -57485,7 +55389,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "太極訓練班 (吳式)",
@@ -57661,7 +55565,7 @@
   "time": "19:45–21:45",
   "fee": 0.0,
   "quota": 30,
-  "left": 14
+  "left": 12
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -57677,7 +55581,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 5
+  "left": 3
  },
  {
   "name_tc": "太極訓練班 (吳式)",
@@ -57853,7 +55757,7 @@
   "time": "09:00–11:00",
   "fee": 0.0,
   "quota": 40,
-  "left": 20
+  "left": 18
  },
  {
   "name_tc": "精神病康復者陸上暢遊",
@@ -57965,7 +55869,7 @@
   "time": "10:00–11:00",
   "fee": 0.0,
   "quota": 24,
-  "left": 3
+  "left": 4
  },
  {
   "name_tc": "園藝知多D「探索球根植物」(26/WS/87)",
@@ -58029,7 +55933,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 200,
-  "left": 72
+  "left": 61
  },
  {
   "name_tc": "器械健體訓練班",
@@ -58045,7 +55949,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "普及健體運動-行山樂",
@@ -58269,7 +56173,7 @@
   "time": "14:00–18:00",
   "fee": 140.0,
   "quota": 20,
-  "left": 16
+  "left": 15
  },
  {
   "name_tc": "初級滑浪風帆專修",
@@ -58397,7 +56301,7 @@
   "time": "11:00–13:00",
   "fee": 60.0,
   "quota": 20,
-  "left": 8
+  "left": 7
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -58413,7 +56317,7 @@
   "time": "10:30–13:30",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "西貢區門球比賽2026 (長者組)",
@@ -58477,7 +56381,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 1
  },
  {
   "name_tc": "智障人士日營",
@@ -58509,7 +56413,7 @@
   "time": "10:00–13:00",
   "fee": 0.0,
   "quota": 10,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -58525,7 +56429,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -58541,7 +56445,7 @@
   "time": "14:30–17:30",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "家庭宿營",
@@ -58621,7 +56525,7 @@
   "time": "15:00–17:00",
   "fee": 0.0,
   "quota": 40,
-  "left": 29
+  "left": 28
  },
  {
   "name_tc": "初級滑浪風帆訓練班",
@@ -58669,7 +56573,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "運動攀登同樂日",
@@ -58685,7 +56589,7 @@
   "time": "15:30–17:00",
   "fee": 0.0,
   "quota": 24,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "健體指導課",
@@ -58733,7 +56637,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 7
+  "left": 1
  },
  {
   "name_tc": "獨木舟中級銅章訓練班",
@@ -58781,7 +56685,7 @@
   "time": "09:30–11:30",
   "fee": 0.0,
   "quota": 40,
-  "left": 9
+  "left": 6
  },
  {
   "name_tc": "健體舞訓練班",
@@ -58797,7 +56701,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "中級滑浪風帆訓練班",
@@ -58845,7 +56749,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -59053,7 +56957,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體指導課",
@@ -59085,7 +56989,7 @@
   "time": "12:00–15:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "公園導賞活動日",
@@ -59117,7 +57021,7 @@
   "time": "19:00–22:30",
   "fee": 20.0,
   "quota": 300,
-  "left": 226
+  "left": 219
  },
  {
   "name_tc": "大埔區聖誕舞蹈之夜",
@@ -59133,7 +57037,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 200,
-  "left": 126
+  "left": 117
  },
  {
   "name_tc": "健體舞訓練班",
@@ -59149,7 +57053,7 @@
   "time": "07:00–08:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -59165,7 +57069,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "少年獨木舟海星章訓練班",
@@ -59293,7 +57197,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "兒童舞訓練班",
@@ -59309,7 +57213,7 @@
   "time": "14:00–16:00",
   "fee": 60.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "少年獨木舟海馬章訓練班",
@@ -59565,7 +57469,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 2
+  "left": 1
  },
  {
   "name_tc": "普及體育 - 親子(7-17歲)羽毛球同樂日",
@@ -59629,7 +57533,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "普及體育 - 親子(7-17歲)羽毛球同樂日",
@@ -59677,7 +57581,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 8
+  "left": 1
  },
  {
   "name_tc": "騎馬同樂日",
@@ -59709,7 +57613,7 @@
   "time": "12:00–13:00",
   "fee": 0.0,
   "quota": 24,
-  "left": 4
+  "left": 2
  },
  {
   "name_tc": "親子(7-17歲)羽毛球同樂日",
@@ -59773,7 +57677,7 @@
   "time": "15:30–17:00",
   "fee": 0.0,
   "quota": 40,
-  "left": 23
+  "left": 16
  },
  {
   "name_tc": "獨木舟沿岸地貌之旅(赤洲)",
@@ -59821,7 +57725,7 @@
   "time": "10:00–13:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "沙灘排球同樂日",
@@ -59853,7 +57757,7 @@
   "time": "15:00–18:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 1
  },
  {
   "name_tc": "普及體育嘉年華",
@@ -59949,7 +57853,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -59997,7 +57901,7 @@
   "time": "10:00–13:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "運動攀登訓練班",
@@ -60109,7 +58013,7 @@
   "time": "10:30–13:30",
   "fee": 0.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "家庭飛盤共奔FUN同樂日",
@@ -60173,7 +58077,7 @@
   "time": "13:00–16:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "獨木舟三星章訓練班",
@@ -60189,7 +58093,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 4
+  "left": 1
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -60205,7 +58109,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -60221,7 +58125,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "社交舞同樂日",
@@ -60237,7 +58141,7 @@
   "time": "19:45–22:15",
   "fee": 0.0,
   "quota": 20,
-  "left": 15
+  "left": 13
  },
  {
   "name_tc": "親子羽毛球同樂日",
@@ -60285,7 +58189,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "視障人士旅行",
@@ -60317,7 +58221,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 3
+  "left": 2
  },
  {
   "name_tc": "獨木舟中級銅章訓練班",
@@ -60333,7 +58237,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "園藝講座 - 香港常見有毒植物講座",
@@ -60349,7 +58253,7 @@
   "time": "10:30–12:30",
   "fee": 30.0,
   "quota": 30,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "高爾夫球新手初探暨同樂日",
@@ -60397,7 +58301,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "屯門區草地滾球三人隊際賽 2026-2027",
@@ -60445,7 +58349,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 6,
-  "left": 2
+  "left": 1
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -60525,7 +58429,7 @@
   "time": "18:00–21:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -60541,7 +58445,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -60557,7 +58461,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -60605,7 +58509,7 @@
   "time": "17:00–18:00",
   "fee": 65.0,
   "quota": 16,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -60637,7 +58541,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 16,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "風帆基本技巧訓練班(第二級)",
@@ -60717,7 +58621,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "壁球訓練班",
@@ -60765,7 +58669,7 @@
   "time": "09:00–10:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -60781,7 +58685,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -60797,7 +58701,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 9
+  "left": 1
  },
  {
   "name_tc": "成人羽毛球訓練班",
@@ -60893,7 +58797,7 @@
   "time": "08:00–09:30",
   "fee": 0.0,
   "quota": 30,
-  "left": 19
+  "left": 8
  },
  {
   "name_tc": "初級滑浪風帆專修",
@@ -61021,7 +58925,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 24,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -61069,7 +58973,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "風帆入門訓練班(第一級)",
@@ -61117,7 +59021,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61133,7 +59037,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第三階段)",
@@ -61149,7 +59053,7 @@
   "time": "07:00–08:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -61165,7 +59069,7 @@
   "time": "19:45–21:45",
   "fee": 86.0,
   "quota": 20,
-  "left": 15
+  "left": 11
  },
  {
   "name_tc": "社交舞訓練班",
@@ -61197,7 +59101,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 3
+  "left": 2
  },
  {
   "name_tc": "長者游泳訓練班(第一階段)",
@@ -61213,7 +59117,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -61245,7 +59149,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 15
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61261,7 +59165,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "風帆旅程(420)",
@@ -61485,7 +59389,7 @@
   "time": "13:00–14:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61501,7 +59405,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 17
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -61517,7 +59421,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61533,7 +59437,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61549,7 +59453,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "長者八段錦同樂",
@@ -61613,7 +59517,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61629,7 +59533,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -61645,7 +59549,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61661,7 +59565,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "獨木舟沿岸地貌之旅(赤柱灣)",
@@ -61725,7 +59629,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61741,7 +59645,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61757,7 +59661,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61773,7 +59677,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "獨木舟中級銀章訓練班（技術及旅程）",
@@ -61837,7 +59741,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 96,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61853,7 +59757,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61869,7 +59773,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -61901,7 +59805,7 @@
   "time": "13:00–16:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "爵士舞訓練班",
@@ -61933,7 +59837,7 @@
   "time": "09:00–12:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -61965,7 +59869,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -61981,7 +59885,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -61997,7 +59901,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -62029,7 +59933,7 @@
   "time": "17:00–18:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62045,7 +59949,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "西方土風舞訓練班",
@@ -62077,7 +59981,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62093,7 +59997,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62109,7 +60013,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -62125,7 +60029,7 @@
   "time": "07:00–08:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62141,7 +60045,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -62157,7 +60061,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62173,7 +60077,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62189,7 +60093,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62205,7 +60109,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 14
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -62253,7 +60157,7 @@
   "time": "16:00–17:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -62269,7 +60173,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62285,7 +60189,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62301,7 +60205,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62317,7 +60221,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62333,7 +60237,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62349,7 +60253,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62365,7 +60269,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "獨木舟三星章訓練班",
@@ -62413,7 +60317,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -62429,7 +60333,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62445,7 +60349,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -62493,7 +60397,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -62525,7 +60429,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "戶外健體訓練簡介會",
@@ -62605,7 +60509,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 48,
-  "left": 0
+  "left": 2
  },
  {
   "name_tc": "視障人士八段錦訓練班",
@@ -62621,7 +60525,7 @@
   "time": "13:00–14:00",
   "fee": 0.0,
   "quota": 15,
-  "left": 11
+  "left": 10
  },
  {
   "name_tc": "長期病患者匹克球同樂日",
@@ -62733,7 +60637,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -62861,7 +60765,7 @@
   "time": "19:00–20:00",
   "fee": 85.0,
   "quota": 24,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -62877,7 +60781,7 @@
   "time": "14:00–15:00",
   "fee": 0.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62893,7 +60797,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62909,7 +60813,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -62925,7 +60829,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -62941,7 +60845,7 @@
   "time": "16:00–17:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -62957,7 +60861,7 @@
   "time": "12:00–13:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 19
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -63021,7 +60925,7 @@
   "time": "13:00–14:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -63037,7 +60941,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -63053,7 +60957,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63069,7 +60973,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 18,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -63085,7 +60989,7 @@
   "time": "18:00–21:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "社交舞同樂日",
@@ -63101,7 +61005,7 @@
   "time": "19:45–21:45",
   "fee": 0.0,
   "quota": 30,
-  "left": 30
+  "left": 28
  },
  {
   "name_tc": "滑浪風帆大海航行專修",
@@ -63133,7 +61037,7 @@
   "time": "07:00–08:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63149,7 +61053,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63165,7 +61069,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63181,7 +61085,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "風帆入門訓練班(第一級)",
@@ -63213,7 +61117,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 18,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -63245,7 +61149,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63261,7 +61165,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -63277,7 +61181,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -63293,7 +61197,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -63309,7 +61213,7 @@
   "time": "18:00–21:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 7
+  "left": 1
  },
  {
   "name_tc": "長者普及體操同樂日",
@@ -63341,7 +61245,7 @@
   "time": "10:00–11:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "太極訓練班（鄭式）",
@@ -63373,7 +61277,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 6
+  "left": 4
  },
  {
   "name_tc": "獨木舟救生員訓練班(技術)",
@@ -63405,7 +61309,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63421,7 +61325,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "瑜伽訓練班",
@@ -63453,7 +61357,7 @@
   "time": "09:00–11:00",
   "fee": 0.0,
   "quota": 40,
-  "left": 21
+  "left": 16
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -63485,7 +61389,7 @@
   "time": "11:00–12:00",
   "fee": 75.0,
   "quota": 10,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -63501,7 +61405,7 @@
   "time": "12:00–13:00",
   "fee": 75.0,
   "quota": 10,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63517,7 +61421,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -63533,7 +61437,7 @@
   "time": "13:00–16:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -63549,7 +61453,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "乒乓球訓練班",
@@ -63597,7 +61501,7 @@
   "time": "09:30–11:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 14
+  "left": 10
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63613,7 +61517,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63629,7 +61533,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "成人胸泳訓練班(第三階段)",
@@ -63645,7 +61549,7 @@
   "time": "09:00–10:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第三階段)",
@@ -63661,7 +61565,7 @@
   "time": "10:00–11:00",
   "fee": 100.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "太極劍訓練班（吳式）",
@@ -63709,7 +61613,7 @@
   "time": "19:00–21:00",
   "fee": 86.0,
   "quota": 12,
-  "left": 5
+  "left": 3
  },
  {
   "name_tc": "初級滑浪風帆訓練班",
@@ -63757,7 +61661,7 @@
   "time": "15:00–17:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 0
+  "left": 1
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -63789,7 +61693,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63805,7 +61709,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -63821,7 +61725,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63837,7 +61741,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63853,7 +61757,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "乒乓球訓練班",
@@ -63901,7 +61805,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63917,7 +61821,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "獨木舟中級金章訓練班(技術及旅程)",
@@ -63981,7 +61885,7 @@
   "time": "08:30–09:30",
   "fee": 60.0,
   "quota": 40,
-  "left": 18
+  "left": 16
  },
  {
   "name_tc": "健體舞訓練班",
@@ -63997,7 +61901,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -64013,7 +61917,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "活力長者計劃 - 八段錦同樂日",
@@ -64045,7 +61949,7 @@
   "time": "07:30–08:30",
   "fee": 60.0,
   "quota": 40,
-  "left": 25
+  "left": 23
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -64093,7 +61997,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -64157,7 +62061,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "社交舞訓練班",
@@ -64269,7 +62173,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "獨木舟二星章訓練班",
@@ -64301,7 +62205,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者八段錦同樂",
@@ -64333,7 +62237,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -64397,7 +62301,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -64429,7 +62333,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -64445,7 +62349,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "舞蹈同樂",
@@ -64461,7 +62365,7 @@
   "time": "19:45–21:45",
   "fee": 0.0,
   "quota": 30,
-  "left": 16
+  "left": 14
  },
  {
   "name_tc": "器械健體訓練班 ",
@@ -64477,7 +62381,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班 ",
@@ -64493,7 +62397,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -64509,7 +62413,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "八段錦訓練班",
@@ -64541,7 +62445,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -64557,7 +62461,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班 ",
@@ -64573,7 +62477,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -64589,7 +62493,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "長者日營",
@@ -64605,7 +62509,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 96,
-  "left": 1
+  "left": 2
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -64621,7 +62525,7 @@
   "time": "13:00–14:00",
   "fee": 0.0,
   "quota": 22,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -64637,7 +62541,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 22,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -64653,7 +62557,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -64717,7 +62621,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班 ",
@@ -64733,7 +62637,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -64749,7 +62653,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "獨木舟中級銅章訓練班",
@@ -64813,7 +62717,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -64829,7 +62733,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -64845,7 +62749,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -64877,7 +62781,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 16
+  "left": 0
  },
  {
   "name_tc": "普及健體運動 - 行山樂",
@@ -64909,7 +62813,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "親子(8-17歲)滑板同樂日",
@@ -64957,7 +62861,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 250,
-  "left": 139
+  "left": 136
  },
  {
   "name_tc": "家庭康樂宿營",
@@ -64973,7 +62877,7 @@
   "time": "13:30–14:00",
   "fee": 86.0,
   "quota": 48,
-  "left": 31
+  "left": 30
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -64989,7 +62893,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 6
+  "left": 1
  },
  {
   "name_tc": "體趣嘉年華暨舞蹈同樂日",
@@ -65021,7 +62925,7 @@
   "time": "15:00–17:00",
   "fee": 60.0,
   "quota": 20,
-  "left": 7
+  "left": 6
  },
  {
   "name_tc": "風帆舵手專修(碧高)",
@@ -65117,7 +63021,7 @@
   "time": "19:00–23:00",
   "fee": 20.0,
   "quota": 200,
-  "left": 85
+  "left": 73
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -65197,7 +63101,7 @@
   "time": "08:00–11:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 1
  },
  {
   "name_tc": "壁球訓練班",
@@ -65309,7 +63213,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 400,
-  "left": 340
+  "left": 334
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -65325,7 +63229,7 @@
   "time": "13:00–16:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 4
+  "left": 1
  },
  {
   "name_tc": "少年帆船第二級:舵手訓練",
@@ -65421,7 +63325,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "風箏嘉年華 ",
@@ -65661,7 +63565,7 @@
   "time": "14:00–13:00",
   "fee": 86.0,
   "quota": 48,
-  "left": 27
+  "left": 20
  },
  {
   "name_tc": "精神病康復者旅行",
@@ -65789,7 +63693,7 @@
   "time": "17:00–20:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "離島區舞蹈晚會",
@@ -65805,7 +63709,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 200,
-  "left": 187
+  "left": 185
  },
  {
   "name_tc": "小射手聖誕訓練班",
@@ -65869,7 +63773,7 @@
   "time": "15:00–17:00",
   "fee": 0.0,
   "quota": 24,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "沙田區聖誕社交舞之夜",
@@ -65885,7 +63789,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 200,
-  "left": 154
+  "left": 153
  },
  {
   "name_tc": "網球同樂日",
@@ -66141,7 +64045,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "跳舞強身-西貢區聖誕舞蹈之夜",
@@ -66157,7 +64061,7 @@
   "time": "19:00–23:00",
   "fee": 20.0,
   "quota": 300,
-  "left": 184
+  "left": 178
  },
  {
   "name_tc": "獨木舟二星章訓練班",
@@ -66349,7 +64253,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 350,
-  "left": 303
+  "left": 299
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -66365,7 +64269,7 @@
   "time": "15:00–18:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 7
+  "left": 1
  },
  {
   "name_tc": "健體指導課",
@@ -66397,7 +64301,7 @@
   "time": "14:00–15:30",
   "fee": 0.0,
   "quota": 40,
-  "left": 12
+  "left": 10
  },
  {
   "name_tc": "普及健體運動 - 行山樂",
@@ -66477,7 +64381,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 100,
-  "left": 76
+  "left": 68
  },
  {
   "name_tc": "獨木舟二星章訓練班",
@@ -66525,7 +64429,7 @@
   "time": "15:00–17:00",
   "fee": 0.0,
   "quota": 40,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "風帆旅程 (2000)",
@@ -66605,7 +64509,7 @@
   "time": "09:30–12:30",
   "fee": 0.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "少年獨木舟海豹章訓練班",
@@ -66637,7 +64541,7 @@
   "time": "10:00–11:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "成人胸泳訓練班(第一階段)",
@@ -66653,7 +64557,7 @@
   "time": "18:00–19:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "太極劍訓練班",
@@ -66669,7 +64573,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 26
+  "left": 20
  },
  {
   "name_tc": "長者游泳訓練班(第一階段)",
@@ -66685,7 +64589,7 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "成人捷泳訓練班(第一階段)",
@@ -66701,7 +64605,7 @@
   "time": "19:00–20:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "智障人士滾球訓練班",
@@ -66733,7 +64637,7 @@
   "time": "20:00–21:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "成人胸泳訓練班(第一階段)",
@@ -66749,7 +64653,7 @@
   "time": "08:00–09:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "獨木舟三星章訓練班",
@@ -66765,7 +64669,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 8
+  "left": 5
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -66797,7 +64701,7 @@
   "time": "12:00–13:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "壁球訓練班",
@@ -66861,7 +64765,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "中級滑浪風帆訓練班",
@@ -66989,7 +64893,7 @@
   "time": "13:00–14:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "中級滑浪風帆訓練班",
@@ -67037,7 +64941,7 @@
   "time": "09:00–17:00",
   "fee": 65.0,
   "quota": 8,
-  "left": 7
+  "left": 6
  },
  {
   "name_tc": "獨木舟中級銅章訓練班",
@@ -67117,7 +65021,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -67133,7 +65037,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "獨木舟高級訓練班(旅程) ",
@@ -67165,7 +65069,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "網球訓練班",
@@ -67485,7 +65389,7 @@
   "time": "09:00–17:00",
   "fee": 130.0,
   "quota": 8,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "太極劍訓練班",
@@ -67533,7 +65437,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 200,
-  "left": 119
+  "left": 113
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -67549,7 +65453,7 @@
   "time": "07:00–08:00",
   "fee": 0.0,
   "quota": 19,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者器械健體訓練班",
@@ -67565,7 +65469,23 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 19,
-  "left": 4
+  "left": 0
+ },
+ {
+  "name_tc": "網球訓練班",
+  "name_en": "Tennis Training Course",
+  "type_tc": "網球",
+  "type_en": "Tennis",
+  "district_tc": "西貢區",
+  "district_en": "Sai Kung",
+  "venue_tc": "寶翠公園",
+  "venue_en": "Po Tsui Park",
+  "start": "2026-12-23",
+  "end": "2027-01-25",
+  "time": "09:00–11:00",
+  "fee": 170.0,
+  "quota": 18,
+  "left": 18
  },
  {
   "name_tc": "器械健體訓練班",
@@ -67581,7 +65501,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -67597,7 +65517,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -67613,7 +65533,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健身室指導課",
@@ -67661,7 +65581,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "獨木舟紅樹林之旅(北潭涌) ",
@@ -67709,7 +65629,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "八段錦訓練班",
@@ -67741,7 +65661,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "球形帆技巧訓練班 (2000)",
@@ -67773,7 +65693,7 @@
   "time": "19:00–20:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -67789,7 +65709,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 13
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -67805,7 +65725,7 @@
   "time": "17:00–18:00",
   "fee": 75.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -67821,7 +65741,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -67837,7 +65757,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "風帆比賽研習",
@@ -67965,7 +65885,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 19,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "風帆深造技巧訓練班附加考核日",
@@ -68077,7 +65997,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 220,
-  "left": 161
+  "left": 137
  },
  {
   "name_tc": "風帆旅程（激光XD）",
@@ -68109,7 +66029,7 @@
   "time": "18:00–19:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -68125,7 +66045,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -68141,7 +66061,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "獨木舟二星章訓練班",
@@ -68221,7 +66141,7 @@
   "time": "19:00–22:00",
   "fee": 20.0,
   "quota": 200,
-  "left": 124
+  "left": 122
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -68253,7 +66173,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "跳舞強身- 九龍城區聖誕前夕社交舞之夜 ",
@@ -68269,7 +66189,7 @@
   "time": "19:00–22:30",
   "fee": 20.0,
   "quota": 400,
-  "left": 224
+  "left": 215
  },
  {
   "name_tc": "深水埗區分齡網球比賽 2026",
@@ -68461,7 +66381,7 @@
   "time": "09:00–17:00",
   "fee": 130.0,
   "quota": 5,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "中西區分齡網球比賽 2026",
@@ -68573,7 +66493,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 3
+  "left": 2
  },
  {
   "name_tc": "少年帆船第一級:入門訓練",
@@ -68654,6 +66574,38 @@
   "fee": 30.0,
   "quota": 8,
   "left": 6
+ },
+ {
+  "name_tc": "家庭飛盤共奔FUN同樂日",
+  "name_en": "Ultimate Fun Day for Family",
+  "type_tc": "飛盤",
+  "type_en": "Flying Disc",
+  "district_tc": "中西區",
+  "district_en": "Central & Western",
+  "venue_tc": "中山紀念公園",
+  "venue_en": "Sun Yat Sen Memorial Park",
+  "start": "2026-12-26",
+  "end": "2026-12-26",
+  "time": "14:00–15:30",
+  "fee": 0.0,
+  "quota": 40,
+  "left": 40
+ },
+ {
+  "name_tc": "家庭飛盤共奔FUN同樂日",
+  "name_en": "Ultimate Fun Day for Family",
+  "type_tc": "飛盤",
+  "type_en": "Flying Disc",
+  "district_tc": "中西區",
+  "district_en": "Central & Western",
+  "venue_tc": "中山紀念公園",
+  "venue_en": "Sun Yat Sen Memorial Park",
+  "start": "2026-12-26",
+  "end": "2026-12-26",
+  "time": "15:30–17:00",
+  "fee": 0.0,
+  "quota": 40,
+  "left": 40
  },
  {
   "name_tc": "初級滑浪風帆訓練班",
@@ -69277,7 +67229,7 @@
   "time": "14:00–17:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "兒童舞訓練班",
@@ -69437,7 +67389,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 15
+  "left": 14
  },
  {
   "name_tc": "瑜伽訓練班",
@@ -69469,7 +67421,7 @@
   "time": "17:00–18:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -69485,7 +67437,7 @@
   "time": "18:00–19:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "壁球訓練班",
@@ -69517,7 +67469,7 @@
   "time": "07:00–08:00",
   "fee": 60.0,
   "quota": 60,
-  "left": 49
+  "left": 42
  },
  {
   "name_tc": "初級滑浪風帆訓練班",
@@ -69565,7 +67517,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "獨木舟中級銅章訓練班",
@@ -69661,7 +67613,7 @@
   "time": "10:00–11:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "長者徒手健體訓練班",
@@ -69693,7 +67645,7 @@
   "time": "08:00–09:00",
   "fee": 60.0,
   "quota": 60,
-  "left": 47
+  "left": 42
  },
  {
   "name_tc": "器械健體訓練班",
@@ -69709,7 +67661,7 @@
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
-  "left": 11
+  "left": 0
  },
  {
   "name_tc": "滑浪風帆旅程",
@@ -69741,7 +67693,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "風帆入門訓練班（第一級）",
@@ -69773,7 +67725,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "獨木舟沿岸地貌之旅（深涌）",
@@ -69805,7 +67757,7 @@
   "time": "18:00–21:00",
   "fee": 0.0,
   "quota": 25,
-  "left": 13
+  "left": 3
  },
  {
   "name_tc": "瑜伽訓練班",
@@ -69917,7 +67869,7 @@
   "time": "09:00–17:00",
   "fee": 0.0,
   "quota": 96,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "水中健體訓練班",
@@ -69965,7 +67917,7 @@
   "time": "21:00–22:00",
   "fee": 75.0,
   "quota": 19,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -70045,7 +67997,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -70093,7 +68045,7 @@
   "time": "14:00–15:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70109,7 +68061,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -70125,7 +68077,7 @@
   "time": "09:00–17:00",
   "fee": 30.0,
   "quota": 8,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70141,7 +68093,7 @@
   "time": "16:00–17:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 12
+  "left": 0
  },
  {
   "name_tc": "少年帆船第四級:競賽入門",
@@ -70189,7 +68141,7 @@
   "time": "09:00–17:00",
   "fee": 130.0,
   "quota": 8,
-  "left": 3
+  "left": 2
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70205,7 +68157,7 @@
   "time": "19:00–20:00",
   "fee": 65.0,
   "quota": 12,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70221,7 +68173,7 @@
   "time": "07:00–08:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "八段錦訓練班",
@@ -70253,7 +68205,7 @@
   "time": "16:00–17:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 3
+  "left": 0
  },
  {
   "name_tc": "正確使用健身室設施簡介會",
@@ -70269,7 +68221,7 @@
   "time": "19:00–22:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 7
+  "left": 1
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70285,7 +68237,7 @@
   "time": "20:00–21:00",
   "fee": 65.0,
   "quota": 12,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "獨木舟中級銅章訓練班",
@@ -70317,7 +68269,7 @@
   "time": "15:00–16:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "壁球訓練班",
@@ -70349,7 +68301,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70365,7 +68317,7 @@
   "time": "07:00–08:00",
   "fee": 65.0,
   "quota": 25,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "兒童羽毛球訓練班",
@@ -70397,7 +68349,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -70413,7 +68365,7 @@
   "time": "20:00–21:00",
   "fee": 75.0,
   "quota": 19,
-  "left": 10
+  "left": 0
  },
  {
   "name_tc": "瑜伽訓練班",
@@ -70445,7 +68397,7 @@
   "time": "17:00–18:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70461,7 +68413,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者社交舞訓練班",
@@ -70493,7 +68445,7 @@
   "time": "09:30–11:00",
   "fee": 60.0,
   "quota": 40,
-  "left": 14
+  "left": 10
  },
  {
   "name_tc": "器械健體訓練班",
@@ -70509,7 +68461,7 @@
   "time": "07:00–08:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "羽毛球訓練班",
@@ -70541,7 +68493,7 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂-乒乓球",
@@ -70621,7 +68573,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -70637,7 +68589,7 @@
   "time": "15:00–16:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 9
+  "left": 0
  },
  {
   "name_tc": "器械健體訓練班",
@@ -70653,7 +68605,7 @@
   "time": "14:00–15:00",
   "fee": 75.0,
   "quota": 28,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70669,7 +68621,7 @@
   "time": "12:00–13:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -70701,7 +68653,7 @@
   "time": "08:00–09:00",
   "fee": 75.0,
   "quota": 25,
-  "left": 8
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70717,7 +68669,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者體趣同樂 - 羽毛球",
@@ -70813,7 +68765,7 @@
   "time": "07:30–08:30",
   "fee": 60.0,
   "quota": 30,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "健體舞訓練班",
@@ -70829,7 +68781,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "雙體船舵手訓練班",
@@ -70877,7 +68829,7 @@
   "time": "11:00–12:00",
   "fee": 65.0,
   "quota": 20,
-  "left": 7
+  "left": 0
  },
  {
   "name_tc": "太極劍訓練班",
@@ -70893,7 +68845,7 @@
   "time": "08:30–09:30",
   "fee": 60.0,
   "quota": 30,
-  "left": 12
+  "left": 10
  },
  {
   "name_tc": "跳舞強身-深水埗區除夕社交舞之夜",
@@ -70909,7 +68861,7 @@
   "time": "20:00–23:59",
   "fee": 20.0,
   "quota": 600,
-  "left": 374
+  "left": 349
  },
  {
   "name_tc": "長者游泳訓練班(第二階段)",
@@ -70925,7 +68877,7 @@
   "time": "09:00–10:00",
   "fee": 0.0,
   "quota": 20,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "長者游泳訓練班(第一階段）",
@@ -70941,7 +68893,7 @@
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 16,
-  "left": 2
+  "left": 0
  },
  {
   "name_tc": "智障人士日營",
@@ -70973,7 +68925,7 @@
   "time": "07:00–08:00",
   "fee": 100.0,
   "quota": 16,
-  "left": 4
+  "left": 0
  },
  {
   "name_tc": "黃大仙區-除夕社交舞之夜",
@@ -70989,7 +68941,7 @@
   "time": "19:00–23:00",
   "fee": 20.0,
   "quota": 400,
-  "left": 293
+  "left": 276
  },
  {
   "name_tc": "健體舞訓練班",
@@ -71005,7 +68957,7 @@
   "time": "09:00–10:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 6
+  "left": 0
  },
  {
   "name_tc": "420調校專修",
@@ -71037,7 +68989,7 @@
   "time": "09:00–17:00",
   "fee": 65.0,
   "quota": 8,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "跳舞強身-灣仔區除夕社交舞之夜",
@@ -71053,7 +69005,7 @@
   "time": "20:30–23:59",
   "fee": 20.0,
   "quota": 300,
-  "left": 207
+  "left": 194
  },
  {
   "name_tc": "獨木舟沿岸地貌之旅（馬屎洲）",
@@ -71085,7 +69037,7 @@
   "time": "08:00–09:00",
   "fee": 65.0,
   "quota": 30,
-  "left": 5
+  "left": 0
  },
  {
   "name_tc": "獨木舟一星章訓練班",
@@ -83709,7 +81661,7 @@
   "time": "19:00–20:00",
   "fee": 0.0,
   "quota": 15,
-  "left": 9
+  "left": 8
  },
  {
   "name_tc": "身心伸展訓練班",
@@ -87373,7 +85325,7 @@
   "time": "10:00–12:00",
   "fee": 0.0,
   "quota": 3,
-  "left": 2
+  "left": 1
  },
  {
   "name_tc": "社交舞訓練班",
@@ -88553,7 +86505,7 @@
   "venue_tc": "恆安體育館 (主場非備空調)",
   "venue_en": "Heng On Sports Centre (Non-air-conditioned in Arena)",
   "start": "2027-01-08",
-  "end": "2027-02-12",
+  "end": "2027-02-15",
   "time": "09:00–10:00",
   "fee": 75.0,
   "quota": 20,
@@ -88781,7 +86733,7 @@
   "time": "18:00–19:00",
   "fee": 0.0,
   "quota": 2,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "自閉症人士羽毛球訓練班",
@@ -89257,7 +87209,7 @@
   "venue_tc": "恆安體育館 (主場非備空調)",
   "venue_en": "Heng On Sports Centre (Non-air-conditioned in Arena)",
   "start": "2027-01-08",
-  "end": "2027-02-12",
+  "end": "2027-02-15",
   "time": "08:00–09:00",
   "fee": 0.0,
   "quota": 20,
@@ -94973,7 +92925,7 @@
   "time": "14:00–16:00",
   "fee": 0.0,
   "quota": 4,
-  "left": 4
+  "left": 3
  },
  {
   "name_tc": "長者陸上暢遊",
@@ -95965,7 +93917,7 @@
   "time": "10:00–12:00",
   "fee": 0.0,
   "quota": 3,
-  "left": 1
+  "left": 0
  },
  {
   "name_tc": "園藝講座 - 水仙切割",
@@ -100976,22 +98928,6 @@
   "left": 24
  },
  {
-  "name_tc": "青少年羽毛球訓練班",
-  "name_en": "Badminton Training Course for Youth",
-  "type_tc": "羽毛球",
-  "type_en": "Badminton",
-  "district_tc": "元朗區",
-  "district_en": "Yuen Long",
-  "venue_tc": "朗屏體育館",
-  "venue_en": "Long Ping Sports Centre",
-  "start": "2027-01-24",
-  "end": "2027-04-11",
-  "time": "09:00–11:00",
-  "fee": 118.0,
-  "quota": 18,
-  "left": 18
- },
- {
   "name_tc": "騎馬同樂日",
   "name_en": "Horse Riding Fun Day",
   "type_tc": "騎馬",
@@ -103262,6 +101198,22 @@
   "fee": 0.0,
   "quota": 20,
   "left": 0
+ },
+ {
+  "name_tc": "北區分齡網球比賽 2026/27",
+  "name_en": "North District Age Group Tennis Competition 2026/27",
+  "type_tc": "網球",
+  "type_en": "Tennis",
+  "district_tc": "北區",
+  "district_en": "North",
+  "venue_tc": "北區運動場",
+  "venue_en": "North District Sports Ground",
+  "start": "2027-02-19",
+  "end": "2027-03-20",
+  "time": "09:00–23:00",
+  "fee": 20.0,
+  "quota": 416,
+  "left": 416
  },
  {
   "name_tc": "荃灣區沙灘排球比賽 2026/27",

@@ -60,8 +60,15 @@ for (const step of STEPS) {
   console.log(`${code === 0 ? "OK  " : "FAIL"}  ${step.name.padEnd(42)} ${secs.toFixed(1).padStart(5)}s  ${verdict}`);
   if (code !== 0) {
     // Only the failing check gets its log shown, and only the lines that say what broke.
-    for (const l of lines.filter((l) => /FAIL|Error|MISSING|timeout|expected|BACKWARDS|EXCEEDED/i.test(l)).slice(0, 8)) {
-      console.log(`        ${l.slice(0, 150)}`);
+    const hits = lines.filter((l) => /FAIL|Error|MISSING|timeout|expected|BACKWARDS|EXCEEDED/i.test(l)).slice(0, 8);
+    for (const l of hits) console.log(`        ${l.slice(0, 150)}`);
+    // ...but a keyword filter can select only the SUMMARY of a failure and drop the detail, because
+    // the detail lines are values with no keyword in them. check-contrast prints its failures as
+    // `  1.2:1 (need 4.5)  12px rgb(...) on rgb(...)` — no "FAIL" anywhere — so a run that failed
+    // on 16 nodes reported nothing but the number 16, and the selector that caused it was lost with
+    // the process. When nothing was selected, the whole log is the only honest thing left to show.
+    if (hits.length === 0) {
+      for (const l of lines.slice(-12)) console.log(`        ${l.slice(0, 150)}`);
     }
   }
   results.push({ name: step.name, code, secs, verdict });

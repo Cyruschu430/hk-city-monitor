@@ -106,14 +106,12 @@ def _minutes(s: str) -> float:
 # list does, and the output records which model actually answered rather than the one we asked for
 # (a brief attributed to a model that did not write it is the kind of claim this project bans).
 MODEL_CHAIN = (
-    # PAID FIRST, 2026-11-15. DeepSeek answered 200 on the first call in the same minute that both
-    # ChatAnywhere keys and all three OpenRouter :free models answered 429 — the free pools are
-    # shared, so they dry up together, which is why this job went red three times in two days
-    # (11-13, 11-14 and again on 11-15). The rest of the chain stays as the fallback it was always
-    # meant to be: a brief that does not publish is a panel showing yesterday, and that costs more
-    # than the fraction of a cent this run spends.
-    "ds/deepseek-chat",
-    # ChatAnywhere next (added 2026-10-02): a dedicated key with its own quota, because the free
+    # FREE MODELS ONLY, owner's rule 2026-11-27: this is a free public dashboard, so not one link
+    # in the chain may cost money. The paid DeepSeek key that used to sit first was removed —
+    # reasoning: a paid link is a link that can silently turn the project into a bill the day a
+    # card or a balance lapses, and the failure it produced (5 days of red runs behind one 402)
+    # was worse than the 429s it was added to dodge.
+    # ChatAnywhere first (added 2026-10-02): a dedicated key with its own quota, because the free
     # pool below answered 429 on every scheduled run for days. Provider by prefix - see PROVIDERS.
     "ca/gpt-4o-mini",
     "ca/deepseek-chat",
@@ -446,10 +444,10 @@ PROVIDERS = {
     # 配额"). Wire it the same way - a prefix and one env var - so whichever key he can actually
     # obtain is a one-line change, not a second code path.
     "groq": ("https://api.groq.com/openai/v1/chat/completions", "GROQ_API_KEY"),
-    # DeepSeek direct, 2026-11-15: every free pool was exhausted at once (both ChatAnywhere keys
-    # 429, the three OpenRouter :free models 429) and the brief went red three times in two days.
-    # A direct call answered 200 on the first try. Two calls a day at this prompt size costs a
-    # fraction of a cent, which is cheaper than a broken panel and cheaper than my time.
+    # DeepSeek direct — DELIBERATELY EMPTY (owner's rule, 2026-11-27: free models only, this is a
+    # free public dashboard). The mapping stays so the prefix is still understood, but no chain
+    # entry names it, the workflow no longer passes its key, and the repository secret is deleted.
+    # Do not add a paid model back here without an explicit instruction to spend money.
     "ds": ("https://api.deepseek.com/v1/chat/completions", "DEEPSEEK_API_KEY"),
 }
 
@@ -493,7 +491,13 @@ def call_model(model: str, context: str, key: str) -> dict:
     payload = {
         "model": bare,
         "messages": [{"role": "user", "content": PROMPT + context}],
-        "max_tokens": 500,
+        # 900, NOT 500. MEASURED 2026-11-27: with 500 the four bilingual fields (tc/en/spoken_tc/
+        # spoken_en, ~80 words each) ran into the cap mid-string, so `json.loads` failed and the log
+        # said "did not return JSON" — a truncation dressed up as a model that cannot follow
+        # instructions, and it cost two providers in the chain before anyone read the body. The
+        # reasoning-style models spend this budget on their trace first, which is the other way the
+        # same cap produced `content: null`.
+        "max_tokens": 900,
         "temperature": 0.2,
     }
     # `response_format: json_object` is an OpenAI/OpenRouter feature that ChatAnywhere does not
@@ -571,16 +575,22 @@ def call_model(model: str, context: str, key: str) -> dict:
         raise _Busy(f"non-JSON body: {body_text[:200]}") from exc
     try:
         text = (payload["choices"][0]["message"]["content"] or "").strip()
+        finish = payload["choices"][0].get("finish_reason") or "?"
     except (KeyError, IndexError, TypeError) as exc:
         # A free proxy can answer 200 with an error object instead of choices; that is still "this
         # model produced nothing", not a crash.
         raise _Busy(f"unexpected response shape: {json.dumps(payload)[:200]}") from exc
+    if not text:
+        # `finish_reason` is the difference between "the model refused to answer" and "the model ran
+        # out of budget mid-thought" — measured 2026-11-27 on a reasoning model, which spent all 500
+        # output tokens on its trace and returned `content: null`.
+        raise _Busy(f"empty content (finish_reason={finish}) — raise max_tokens if it is 'length'")
     if text.startswith("```"):
         text = text.strip("`").split("\n", 1)[-1].rsplit("```", 1)[0]
     try:
         out = json.loads(text)
     except json.JSONDecodeError as exc:
-        raise _Busy(f"did not return JSON: {text[:200]}") from exc
+        raise _Busy(f"did not return JSON (finish_reason={finish}): {text[:200]}") from exc
     if not out.get("tc") or not out.get("en"):
         raise _Busy(f"incomplete brief: {out}")
     known = figures(context)

@@ -27,6 +27,10 @@ os.environ["CHATANYWHERE_API_KEY"] = "dummy-ca"
 os.environ.pop("OPENROUTER_API_KEY", None)
 os.environ.pop("GROQ_API_KEY", None)
 
+# The shipped chain is FREE MODELS ONLY, so pin a two-link chain here: the point of this test is the
+# MECHANISM (a dead link must walk), not which providers the project happens to use today.
+bas.MODEL_CHAIN = ("ds/deepseek-chat", "ca/gpt-4o-mini")
+
 BRIEF = {"tc": "今日數據平穩。", "en": "Conditions are calm today.",
          "spoken_tc": "今日數據平穩。", "spoken_en": "Conditions are calm today."}
 

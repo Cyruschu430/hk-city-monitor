@@ -43,6 +43,12 @@ jobs:
       - name: Data registry consistency
         run: python3 scripts/validate_config.py
 
+      # The brief's model chain must DEGRADE, not die: a 402/404 on one model has to walk to the
+      # next one. Measured 2026-11-27 — a dead balance on link #1 kept every scheduled brief red
+      # for five days while four working models sat behind it. No network, no keys.
+      - name: Brief model chain falls through
+        run: python3 scripts/test_build_ai_summary.py
+
       - name: Documented counts match the registries
         run: python3 scripts/check_doc_counts.py
 

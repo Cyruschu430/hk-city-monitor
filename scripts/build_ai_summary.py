@@ -540,6 +540,15 @@ def call_model(model: str, context: str, key: str) -> dict:
         # a one-line configuration error into a mystery, so they stop the run.
         if exc.code == 429 or exc.code >= 500:
             raise _Busy(f"HTTP {exc.code}: {detail}") from exc
+        # A BILLING, AUTH OR DELISTING failure is about THIS account or THIS model — the next link
+        # in the chain can still answer, so it walks. MEASURED 2026-11-27: the paid DeepSeek key hit
+        # `402 Insufficient Balance` and, because only 429/5xx/edge-403 walked, the run died on link
+        # #1 while four working models sat behind it — every scheduled brief went red for five days
+        # and the panel silently served a five-day-old summary. 404 is the same class (a delisted
+        # `:free` model, measured 2026-10-18). 400/422 stay fatal: those mean OUR payload is wrong,
+        # and retrying them across six models only turns one bug into a mystery.
+        if exc.code in (401, 402, 404, 429) or exc.code >= 500:
+            raise _Busy(f"HTTP {exc.code}: {detail}") from exc
         # A 403 from the EDGE is not our request being wrong - it is the CDN refusing this IP, the
         # same class of event as a 429, so it walks the chain. A 403 from the API itself (bad key)
         # still stops the run below.

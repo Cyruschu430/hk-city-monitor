@@ -1,0 +1,87 @@
+{
+ "generated": "2026-11-28T11:46:00+08:00",
+ "model": "ca/gpt-4o-mini",
+ "provenance": {
+  "generator": "LLM summary of published open data",
+  "inputs": [
+   {
+    "file": "aircraft.json",
+    "from": "live-data",
+    "observed": 1795819197500
+   },
+   {
+    "file": "berth_vacancy.json",
+    "from": "live-data",
+    "observed": "2026-11-28 06:39"
+   },
+   {
+    "file": "water_suspension.json",
+    "from": "live-data",
+    "observed": "2026-11-28T06:44:29+08:00"
+   },
+   {
+    "file": "carpark_info.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "baselines.json",
+    "from": "bundle",
+    "observed": null
+   },
+   {
+    "file": "ae_waiting",
+    "from": "live-api",
+    "observed": "2026年11月28日 上午11時30分"
+   },
+   {
+    "file": "cp_queue",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "aqhi",
+    "from": "live-api",
+    "observed": "2026-11-28T10:30:00"
+   },
+   {
+    "file": "wind_10min",
+    "from": "live-api",
+    "observed": "202611281130"
+   },
+   {
+    "file": "warnsum",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "special_traffic",
+    "from": "live-api",
+    "observed": null
+   },
+   {
+    "file": "beach_grading",
+    "from": "live-api",
+    "observed": "Fri, 27 Nov 2026 12:02:04"
+   },
+   {
+    "file": "journey_time",
+    "from": "live-api",
+    "observed": "2026-11-28T11:44:00"
+   },
+   {
+    "file": "sensor_parking",
+    "from": "live-api",
+    "observed": "2026-11-28 11:44"
+   }
+  ],
+  "frequency": "2x daily (08:00, 20:00 HKT)",
+  "disclaimer": "AI-generated from the figures above. It is not analysis, not advice, and not an official notice."
+ },
+ "brief": {
+  "tc": "目前有三個地區的水供應暫停。火災危險警告仍然有效。十八間醫院的等候時間中，基督教聯合醫院的最長等候時間為五小時。海灘水質中，有九個海灘的水質評級為一級，兩個為二級。",
+  "en": "There are currently three districts with water supply suspension. A fire danger warning is active. Among eighteen hospitals, the longest waiting time is five hours at the United Christian Hospital. In beach water quality, nine beaches are rated level one and two are rated level two.",
+  "spoken_tc": "目前有三個地區的水供應暫停。火災危險警告仍然有效。十八間醫院的等候時間中，基督教聯合醫院的最長等候時間為五小時。海灘水質中，有九個海灘的水質評級為一級，兩個為二級。",
+  "spoken_en": "There are currently three districts with water supply suspension. A fire danger warning is active. Among eighteen hospitals, the longest waiting time is five hours at the United Christian Hospital. In beach water quality, nine beaches are rated level one and two are rated level two."
+ }
+}
